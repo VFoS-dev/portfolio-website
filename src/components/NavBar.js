@@ -13,7 +13,7 @@ class NavBar extends Component {
     }
 
     random(nav) {
-        const page = window.location.href.split('/')[3].split('?')[0];
+        const page = window.location.href.split('/')[3].split('?')[0] || "intro";
         const _newPage = nav || "intro";
         window.history.pushState(`/${_newPage}`, 'Title', `/${_newPage}`);
         this.props.updatePage(page, _newPage);
