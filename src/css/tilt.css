@@ -1,0 +1,20 @@
+html {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+  
+#tilt {
+    display: block;
+    height: 300px;
+    width: 300px;
+    background-color: grey;
+    margin: 0 auto;
+    transition: box-shadow 0.1s, transform 0.1s;
+}
+   
+#tilt:hover {
+    box-shadow: 0px 0px 30px rgba(0,0,0, 0.6);
+    cursor: pointer;
+}
