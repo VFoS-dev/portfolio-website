@@ -8,30 +8,45 @@ import '../css/navbar.css';
 class NavBar extends Component {
     constructor(props) {
         super(props);
-
-        this.random = this.random.bind(this);
+        this.state = {
+            nav: false
+        }
+        // binds
+        this.changePage = this.changePage.bind(this);
+        this.listener = this.listener.bind(this);
+        // listeners
+        window.addEventListener('popstate', this.listener);
     }
 
-    random(nav) {
-        const page = window.location.href.split('/')[3].split('?')[0] || "intro";
-        const _newPage = nav || "intro";
-        window.history.pushState(`/${_newPage}`, 'Title', `/${_newPage}`);
-        this.props.updatePage(page, _newPage);
+    listener() {
+        this.props.updatePage(this.props.last, window.location.href.split('/').splice(-1)[0].split('?')[0] || "intro");
+        this.setState({ nav: false });
+    }
+
+    changePage(nav) {
+        const page = window.location.href.split('/').splice(-1)[0].split('?')[0] || "intro";
+        if (nav !== page) {
+            const _newPage = nav || "intro";
+            window.history.pushState(`/${_newPage}`, 'Title', `/${_newPage}`);
+            this.props.updatePage(page, _newPage);
+            this.setState({ nav: false });
+        }
     }
 
     render() { // | intro | about | projects | resume | education | contact | secret |
         const ref = window.location.href.split('/')[3].split('?')[0];
+        const { nav } = this.state;
         return (
-            <Navbar className="navbar navbar-expand-lg navbar-dark fixed-top bg-dark" bg="light" expand="lg">
-                <Navbar.Brand className="pointer" id='intro' onClick={(e) => this.random(e.target.id)}>Jonathan Kido</Navbar.Brand>
-                <Navbar.Toggle aria-controls="basic-navbar-nav" />
-                <Navbar.Collapse id="basic-navbar-nav">
+            <Navbar className="navbar navbar-expand-lg navbar-dark fixed-top bg-dark" bg="light" expand="lg" onToggle={() => this.setState({ nav: !nav })} expanded={nav}>
+                <Navbar.Brand className="pointer" id='intro' onClick={(e) => this.changePage(e.target.id)}>Jonathan Kido</Navbar.Brand>
+                <Navbar.Toggle />
+                <Navbar.Collapse>
                     <Nav className="mr-auto">
-                        <Nav.Link className={(ref === 'about') ? "active" : ""} id='about' onClick={(e) => this.random(e.target.id)}>About</Nav.Link>
-                        <Nav.Link className={(ref === 'projects') ? "active" : ""} id='projects' onClick={(e) => this.random(e.target.id)}>Projects</Nav.Link>
-                        <Nav.Link className={(ref === 'resume') ? "active" : ""} id='resume' onClick={(e) => this.random(e.target.id)}>Resume</Nav.Link>
-                        <Nav.Link className={(ref === 'education') ? "active" : ""} id='education' onClick={(e) => this.random(e.target.id)}>Education</Nav.Link>
-                        <Nav.Link className={(ref === 'contact') ? "active" : ""} id='contact' onClick={(e) => this.random(e.target.id)}>Contact</Nav.Link>
+                        <Nav.Link className={(ref === 'about') ? "active" : ""} id='about' onClick={(e) => this.changePage(e.target.id)}>About</Nav.Link>
+                        <Nav.Link className={(ref === 'projects') ? "active" : ""} id='projects' onClick={(e) => this.changePage(e.target.id)}>Projects</Nav.Link>
+                        <Nav.Link className={(ref === 'resume') ? "active" : ""} id='resume' onClick={(e) => this.changePage(e.target.id)}>Resume</Nav.Link>
+                        <Nav.Link className={(ref === 'education') ? "active" : ""} id='education' onClick={(e) => this.changePage(e.target.id)}>Education</Nav.Link>
+                        <Nav.Link className={(ref === 'contact') ? "active" : ""} id='contact' onClick={(e) => this.changePage(e.target.id)}>Contact</Nav.Link>
                     </Nav>
                 </Navbar.Collapse>
             </Navbar>

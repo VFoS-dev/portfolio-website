@@ -1,8 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
+// CSS
 import '../css/router.css';
-
 // Components
 import { NavBar } from './NavBar';
 // Pages
@@ -22,27 +22,38 @@ class CustomRouter extends React.Component {
         this.updatePage = this.updatePage.bind(this);
     }
 
-    updatePage(_page, _new) { // animated
+    updatePage(_page, _new) {
         const { rotation } = this.props;
+        const { loc, animate, aniTimer, animations, update } = this.state;
 
-        const loc = JSON.stringify(rotation).split(`":"${_new}"`)[0].split('"').slice(-1)[0];
-        if (loc === "front") {
-            this.setState({ animate: false })
+        const _loc = JSON.stringify(rotation).split(`":"${_new}"`)[0].split('"').slice(-1)[0];
+
+        if (_loc === "front") {
+            this.setState({ animate: false });
             return;
         }
 
-        const { aniTimer, animations, update } = this.state;
+        var extend = false
+        if (animate && loc !== 'front' && loc === _loc) {
+            var e0 = document.getElementsByClassName(`ani-${loc}`);
+            while (e0.length > 0) e0[0].classList.remove(`ani-${loc}`);
+            setTimeout(() => {
+                document.getElementsByClassName(`focus`)[0].classList.add(`ani-${loc}`);
+                document.getElementsByClassName(`prior`)[0].classList.add(`ani-${loc}`);
+                if (loc === "back")
+                    document.getElementsByClassName(`skip`)[0].classList.add(`ani-${loc}`);
+            }, 10)
+            extend = true;
+        }
+
         if (aniTimer) window.clearTimeout(aniTimer);
+        var timer = setTimeout(() => this.setState({ animate: false }), 1000 + 10 * (extend));
 
-        var timer = setTimeout(() => {
-            this.setState({ animate: false })
-        }, 1000);
-        var queue = (_new === _page) ? false : _page;
+        var queue = (_new !== _page) ? _page : false;
 
+        this.setState({ update: !update, animate: animations, aniTimer: timer, loc: _loc, queue: queue });
 
-        this.setState({ update: !update, animate: animations, aniTimer: timer, loc: loc, queue: queue });
-
-        this.props.rotate(loc)
+        this.props.rotate(_loc)
     }
 
     Router(req) { // actual router
@@ -71,13 +82,16 @@ class CustomRouter extends React.Component {
         if (!!page && rotation.front !== page) this.props.rotate(JSON.stringify(rotation).split(`":"${page}`)[0].split('"').splice(-1)[0]);
 
         return (<>
-            <NavBar id={`nav_${update}`} updatePage={this.updatePage} />
+            <NavBar updatePage={this.updatePage} last={page} />
             <div className="cube-container">
                 {/* hi */}
                 {!!queue && animate && <>
                     < div className={`face prior ani-${loc}`}>{this.Router(queue)}</div>
                     {loc === "back" &&
-                        <div className={`face skip ani-back`}>{this.Router(rotation.top)}</div>
+                        <div className={`face skip ani-back`}>
+                            {/* using bottom to grab the top because the value of the sides have already swapped */}
+                            {this.Router(rotation.bottom)}
+                        </div>
                     }
                 </>}
                 <div className={`face focus${animate && !!queue ? ` ani-${loc}` : ""}`}>{this.Router(page)}</div>
