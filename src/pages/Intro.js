@@ -5,15 +5,16 @@ import '../css/pages.css';
 
 class Intro extends React.Component {
     render() {
-        return (<>
-            <div className="side5">This Website is still a work in progress</div>
-        </>);
+        return (<div className="intro">
+            This Website is still a work in progress
+        </div>);
     }
 }
 
 function mapState(state) {
     return {};
 }
+
 const actionCreators = {};
 
 const connectedIntro = connect(mapState, actionCreators)(Intro);

@@ -5,9 +5,9 @@ import '../css/pages.css';
 
 class Resume extends React.Component {
     render() {
-        return (<>
-            <div className="side3">This Website is still a work in progress</div>
-        </>);
+        return (<div className="resume">
+            This Website is still a work in progress
+        </div>);
     }
 }
 

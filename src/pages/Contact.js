@@ -5,9 +5,9 @@ import '../css/pages.css';
 
 class Contact extends React.Component {
     render() {
-        return (<>
-            <div className="side1">This Website is still a work in progress</div>
-        </>);
+        return (<div className="contact">
+            This Website is still a work in progress
+        </div>);
     }
 }
 

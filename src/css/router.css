@@ -8,16 +8,20 @@
 }
 
 .face {
-    overflow: auto;
+    border-style: solid;
+    border-color: black;
+    border-width: 3px;
+    overflow: overlay;
+    padding: -10px !important;
     position: absolute;
     width: 100%;
     height: calc(100% - 56px);
 }
 
-.face div {
+.face>div {
     min-height: calc(100%) !important;
+    padding: 20px;
 }
-
 /*Rotate Up*/
 
 .focus.ani-top {
