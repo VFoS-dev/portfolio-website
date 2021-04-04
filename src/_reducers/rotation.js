@@ -1,4 +1,28 @@
 export function rotation(state = origin, action) {
+    var secret = process.env.secret || '["right","bottom","bottom","bottom","right","top","top","top","right","right"]';
+    var history = state.history;
+    var check = [];
+
+    switch (action.type) {
+        case 'right':
+        case 'left':
+        case 'bottom':
+        case 'top':
+            history.push(action.type);
+            if (history.length > 10) history.shift();
+            break;
+        case 'back':
+            history.push('top');
+            history.push('top');
+            if (history.length > 10) history.shift();
+            if (history.length > 10) history.shift();
+        default:
+            break;
+    }
+
+    history.forEach((c, index) => check.push(JSON.parse(secret)[index] == c))
+
+    // console.log(history, check, 10 === check.reduce((a, b) => a + b, 0));
     switch (action.type) {
         case 'right':
             return {
@@ -8,7 +32,8 @@ export function rotation(state = origin, action) {
                 front: state.right,
 
                 top: state.top,
-                bottom: state.bottom
+                bottom: state.bottom,
+                history: history
             };
         case 'bottom':
             return {
@@ -18,7 +43,8 @@ export function rotation(state = origin, action) {
                 back: state.top,
 
                 left: state.left,
-                right: state.right
+                right: state.right,
+                history: history
             };
         case 'top':
             return {
@@ -28,7 +54,8 @@ export function rotation(state = origin, action) {
                 front: state.top,
 
                 left: state.left,
-                right: state.right
+                right: state.right,
+                history: history
             };
         case 'left':
             return {
@@ -38,7 +65,8 @@ export function rotation(state = origin, action) {
                 front: state.left,
 
                 top: state.top,
-                bottom: state.bottom
+                bottom: state.bottom,
+                history: history
             };
         case 'back':
             return {
@@ -48,7 +76,8 @@ export function rotation(state = origin, action) {
                 bottom: state.top,
 
                 right: state.right,
-                left: state.left
+                left: state.left,
+                history: history
             };
         default:
             return state
@@ -61,5 +90,6 @@ const origin = {
     right: 'about',
     bottom: 'projects',
     back: 'contact',
-    front: 'intro'
+    front: 'intro',
+    history: []
 }

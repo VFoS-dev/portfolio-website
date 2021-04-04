@@ -29,13 +29,17 @@ class NavBar extends Component {
             const _newPage = nav || "intro";
             window.history.pushState(`/${_newPage}`, 'Title', `/${_newPage}`);
             this.props.updatePage(page, _newPage);
-            this.setState({ nav: false });
+
+            setTimeout(() => {
+                this.setState({ nav: false });
+            }, 10);
         }
     }
 
     render() { // | intro | about | projects | resume | education | contact | secret |
         const ref = window.location.href.split('/')[3].split('?')[0];
         const { nav } = this.state;
+
         return (
             <Navbar className="navbar navbar-expand-lg navbar-dark fixed-top bg-dark" bg="light" expand="lg" onToggle={() => this.setState({ nav: !nav })} expanded={nav}>
                 <Navbar.Brand className="pointer" id='intro' onClick={(e) => this.changePage(e.target.id)}>Jonathan Kido</Navbar.Brand>

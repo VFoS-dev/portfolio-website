@@ -19,7 +19,45 @@ class CustomRouter extends React.Component {
             loc: 'front',
             queue: false
         }
+
         this.updatePage = this.updatePage.bind(this);
+        this.keyRot = this.keyRot.bind(this);
+
+        document.addEventListener('keydown', this.keyRot);
+    }
+
+    keyRot(e) {
+        const { rotation } = this.props;
+
+        var p;
+        switch (e.keyCode) {
+            case 38: // up
+                p = "top";
+                break;
+            case 40: // down
+                p = "bottom";
+                break;
+            case 37: // left
+                p = "left";
+                break;
+            case 39: // right
+                p = "right";
+                break;
+            default:
+                return;
+        }
+
+        const _newPage = rotation[p] || "intro";
+        const page = window.location.href.split('/').splice(-1)[0].split('?')[0] || "intro";
+
+        window.history.pushState(`/${_newPage}`, 'Title', `/${_newPage}`);
+
+        this.updatePage(page, _newPage);
+
+        document.removeEventListener('keydown', this.keyRot);
+        setTimeout(() => {
+            document.addEventListener('keydown', this.keyRot);
+        }, 250)
     }
 
     updatePage(_page, _new) {
@@ -32,7 +70,6 @@ class CustomRouter extends React.Component {
             this.setState({ animate: false });
             return;
         }
-
         var extend = false
         if (animate && loc !== 'front' && loc === _loc) {
             var e0 = document.getElementsByClassName(`ani-${loc}`);
@@ -51,9 +88,9 @@ class CustomRouter extends React.Component {
 
         var queue = (_new !== _page) ? _page : false;
 
-        this.setState({ update: !update, animate: animations, aniTimer: timer, loc: _loc, queue: queue });
+        this.props.rotate(_loc);
 
-        this.props.rotate(_loc)
+        this.setState({ update: !update, animate: animations, aniTimer: timer, loc: _loc, queue: queue });
     }
 
     Router(req) { // actual router
@@ -79,7 +116,8 @@ class CustomRouter extends React.Component {
         const { rotation } = this.props;
 
         const page = window.location.href.split('/').splice(-1)[0].split('?')[0];
-        if (!!page && rotation.front !== page) this.props.rotate(JSON.stringify(rotation).split(`":"${page}`)[0].split('"').splice(-1)[0]);
+        if (!!page && rotation.front !== page)
+            this.props.rotate(JSON.stringify(rotation).split(`":"${page}`)[0].split('"').splice(-1)[0]);
 
         return (<>
             <NavBar updatePage={this.updatePage} last={page} />
