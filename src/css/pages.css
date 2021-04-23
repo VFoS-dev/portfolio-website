@@ -72,3 +72,17 @@
     margin-top: 10%;
     text-align: center;
 }
+
+.about .self {
+    width: 20%;
+    height: 20%;
+}
+
+.intro .demo {
+    width: 80vmin;
+    height: calc(80vmin*9/16);
+}
+
+.intro .demoSpacing {
+    margin-top: 5%;
+}
