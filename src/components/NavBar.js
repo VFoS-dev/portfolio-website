@@ -48,8 +48,8 @@ class NavBar extends Component {
                     <Nav className="mr-auto">
                         <Nav.Link className={(ref === 'about') ? "active" : ""} id='about' onClick={(e) => this.changePage(e.target.id)}>About</Nav.Link>
                         <Nav.Link className={(ref === 'projects') ? "active" : ""} id='projects' onClick={(e) => this.changePage(e.target.id)}>Projects</Nav.Link>
+                        <Nav.Link className={(ref === 'skills') ? "active" : ""} id='skills' onClick={(e) => this.changePage(e.target.id)}>Skills</Nav.Link>
                         <Nav.Link className={(ref === 'resume') ? "active" : ""} id='resume' onClick={(e) => this.changePage(e.target.id)}>Resume</Nav.Link>
-                        <Nav.Link className={(ref === 'education') ? "active" : ""} id='education' onClick={(e) => this.changePage(e.target.id)}>Education</Nav.Link>
                         <Nav.Link className={(ref === 'contact') ? "active" : ""} id='contact' onClick={(e) => this.changePage(e.target.id)}>Contact</Nav.Link>
                     </Nav>
                 </Navbar.Collapse>

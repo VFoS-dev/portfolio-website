@@ -85,7 +85,7 @@ export function rotation(state = origin, action) {
 }
 
 const origin = {
-    top: 'education',
+    top: 'skills',
     left: 'resume',
     right: 'about',
     bottom: 'projects',

@@ -1,23 +1,74 @@
 .resume {
-    background-color: gold;
+    background-color: lightgray;
 }
 
 .projects {
-    background-color: rebeccapurple;
+    background-color: lightgray;
 }
 
 .about {
-    background-color: red;
-}
-
-.contact {
-    background-color: chocolate;
-}
-
-.education {
-    background-color: wheat;
+    background-color: lightgray;
 }
 
 .intro {
-    background-color: palevioletred;
+    background-color: lightgray;
+}
+
+.skills {
+    background-color: darkgray;
+}
+
+.skills .segment {
+    color: wheat;
+    padding: 5px;
+}
+
+.segment .title {
+    color: black;
+    display: inline;
+}
+
+.segment .percent {
+    float: right;
+    padding-top: 12px;
+}
+
+.segment .barContainer {
+    height: 10px;
+    background-color: gray;
+    border-radius: 10px;
+}
+
+.segment .bar {
+    height: 100%;
+    background-color: wheat;
+    border-radius: 10px;
+}
+
+.contact {
+    background-color: lightgray;
+}
+
+.contact .form {
+    margin: 15%;
+    margin-top: 2.5%;
+}
+
+.contact .email {
+    width: min(100%, 250px);
+    margin-left: 20px;
+}
+
+.contact .name {
+    width: min(100%, 250px);
+    margin-left: 20px;
+}
+
+.contact .text {
+    height: 45vh;
+}
+
+.contact .message {
+    margin-top: 10%;
+    text-align: center;
 }

@@ -7,15 +7,14 @@
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: center;
-    background-color: DodgerBlue;
 }
 
 #tile {
     display: inline-flex;
     height: min(calc(100vmin - 61px), 320px);
     width: min(calc(100vmin - 61px), 320px);
-    background-color: grey;
     margin: 7.5px;
+    background-size: contain !important;
     transition: box-shadow 0.1s, transform 0.1s;
     z-index: 1;
 }

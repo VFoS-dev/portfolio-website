@@ -17,6 +17,10 @@ module.exports = {
                 loader: ['style-loader', 'css-loader']
             },
             {
+                test: /\.pdf$/,
+                loader: 'file-loader'
+            },
+            {
                 test: /\.(jpg|png)$/,
                 use: {
                     loader: 'url-loader',
@@ -27,7 +31,7 @@ module.exports = {
     plugins: [
         new HtmlWebpackPlugin({
             template: './public/index.html',
-            favicon: "./public/favicon.ico",
+           // favicon: "./public/favicon.ico",
         }),
         new dotenv({
             path: './.env'

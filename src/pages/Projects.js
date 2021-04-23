@@ -1,6 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
+import abcStories from '../pictures/abcStories.png';
+import PD from '../pictures/PD-v1.7.png';
+
 import '../css/pages.css';
 import '../css/tile.css';
 
@@ -22,27 +25,26 @@ class Projects extends React.Component {
         e.style.transform = 'perspective(500px) scale(1) rotateX(0) rotateY(0)';
     }
 
+    mapTile(name = '', description = '', img, radius = '0%', imgcss = {}) {
+        var compiled = {
+            'border-radius': radius,
+            'background-image': `url(${img})`
+        };
+        if (imgcss != {}) Object.assign(compiled, imgcss);
+
+        return (
+            <div id="tile" style={compiled} onMouseMove={this.handleMove} onMouseOut={(e) => this.handleMoveOut(e.target)} >
+
+            </div>
+        );
+    }
+
     render() {
         return (<div className="projects">
             <h1>Projects</h1>
-            This Website is still a work in progress
             <div className="tile-container">
-                <div id="tile" onMouseMove={this.handleMove} onMouseOut={(e) => this.handleMoveOut(e.target)} />
-                <div id="tile" onMouseMove={this.handleMove} onMouseOut={(e) => this.handleMoveOut(e.target)} />
-                <div id="tile" onMouseMove={this.handleMove} onMouseOut={(e) => this.handleMoveOut(e.target)} />
-                <div id="tile" onMouseMove={this.handleMove} onMouseOut={(e) => this.handleMoveOut(e.target)} />
-                <div id="tile" onMouseMove={this.handleMove} onMouseOut={(e) => this.handleMoveOut(e.target)} />
-                <div id="tile" onMouseMove={this.handleMove} onMouseOut={(e) => this.handleMoveOut(e.target)} />
-                <div id="tile" onMouseMove={this.handleMove} onMouseOut={(e) => this.handleMoveOut(e.target)} />
-                <div id="tile" onMouseMove={this.handleMove} onMouseOut={(e) => this.handleMoveOut(e.target)} />
-                <div id="tile" onMouseMove={this.handleMove} onMouseOut={(e) => this.handleMoveOut(e.target)} />
-                <div id="tile" onMouseMove={this.handleMove} onMouseOut={(e) => this.handleMoveOut(e.target)} />
-                <div id="tile" onMouseMove={this.handleMove} onMouseOut={(e) => this.handleMoveOut(e.target)} />
-                <div id="tile" onMouseMove={this.handleMove} onMouseOut={(e) => this.handleMoveOut(e.target)} />
-                <div id="tile" onMouseMove={this.handleMove} onMouseOut={(e) => this.handleMoveOut(e.target)} />
-                <div id="tile" onMouseMove={this.handleMove} onMouseOut={(e) => this.handleMoveOut(e.target)} />
-                <div id="tile" onMouseMove={this.handleMove} onMouseOut={(e) => this.handleMoveOut(e.target)} />
-                <div id="tile" onMouseMove={this.handleMove} onMouseOut={(e) => this.handleMoveOut(e.target)} onClick={() => document.getElementsByClassName('face focus')[0].scrollTo({ bottom: 50 })} />
+                {this.mapTile('', '', abcStories, '10%')}
+                {this.mapTile('', '', PD)}
             </div>
         </div>);
     }

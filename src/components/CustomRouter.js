@@ -6,7 +6,7 @@ import '../css/router.css';
 // Components
 import { NavBar } from './NavBar';
 // Pages
-import { About, Contact, Education, Intro, Projects, Resume } from '../pages';
+import { About, Contact, Skills, Intro, Projects, Resume } from '../pages';
 
 class CustomRouter extends React.Component {
     constructor(props) {
@@ -57,7 +57,7 @@ class CustomRouter extends React.Component {
         document.removeEventListener('keydown', this.keyRot);
         setTimeout(() => {
             document.addEventListener('keydown', this.keyRot);
-        }, 250)
+        }, 300)
     }
 
     updatePage(_page, _new) {
@@ -79,12 +79,12 @@ class CustomRouter extends React.Component {
                 document.getElementsByClassName(`prior`)[0].classList.add(`ani-${loc}`);
                 if (loc === "back")
                     document.getElementsByClassName(`skip`)[0].classList.add(`ani-${loc}`);
-            }, 10)
+            }, 6)
             extend = true;
         }
 
         if (aniTimer) window.clearTimeout(aniTimer);
-        var timer = setTimeout(() => this.setState({ animate: false }), 1000 + 10 * (extend));
+        var timer = setTimeout(() => this.setState({ animate: false }), 1000 + 6 * (extend));
 
         var queue = (_new !== _page) ? _page : false;
 
@@ -102,8 +102,8 @@ class CustomRouter extends React.Component {
                 return <Projects />
             case 'resume':
                 return <Resume />
-            case 'education':
-                return <Education />
+            case 'skills':
+                return <Skills />
             case 'contact':
                 return <Contact />
             case 'about':
