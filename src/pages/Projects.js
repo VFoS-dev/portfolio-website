@@ -49,7 +49,7 @@ class Projects extends React.Component {
     render() {
         return (<div className="projects">
             <h1>Projects</h1>
-            <p>filter and cards of what they are about coming soon</p>
+            <p>filtering and more project info coming soon</p>
             <div className="tile-container">
                 {this.mapTile('', '', abcStories, '10%')}
                 {this.mapTile('', '', PD)}

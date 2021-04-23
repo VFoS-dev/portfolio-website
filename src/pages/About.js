@@ -12,8 +12,8 @@ class About extends React.Component {
             </center>
             <div className='temp'>
                 <p>Hello my name is Jon Kido</p>
-                <p>was a peer mentor of GIMM nicknamed 'The Wizard' because of my ability to debug almost everything thrown at me; joining the development team for the major</p>
-                <p>field of studies: <strong>GIMM</strong> (Games, Interactive Media, and Mobile), <strong>MATH</strong> (Applied Mathematics), <strong>ITM</strong> (Information Technology Management)</p>
+                <p>I was a GIMM peer mentor nicknamed "The Wizard" because of my ability to debug almost everything thrown at me. Later I joined the development team for the major.</p>
+                <p>fields of study: <strong>GIMM</strong> (Games, Interactive Media, and Mobile), <strong>MATH</strong> (Applied Mathematics), <strong>ITM</strong> (Information Technology Management)</p>
             </div>
         </div>);
     }
