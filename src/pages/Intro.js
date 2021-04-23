@@ -7,7 +7,7 @@ class Intro extends React.Component {
     render() {
         return (<div className="intro">
             <center>
-                <h1>Welcome to my porfolio site!</h1>
+                <h1>Welcome to my portfolio site!</h1>
                 <p>this is a site that is getting content added weekly so comeback and see newer items</p>
             </center>
             <center className='demoSpacing'>

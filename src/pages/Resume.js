@@ -9,7 +9,7 @@ class Resume extends React.Component {
     render() {
         return (
             <div className="resume">
-                <h5>PDF render is temporarily down</h5>
+                <h5>PDF renderer is temporarily down</h5>
                 <p><a href={resume}>Click Here</a> To load the PDF</p>
                 {/*
             <Document file={resume} onLoadSuccess={this.onDocumentLoadSuccess}>
