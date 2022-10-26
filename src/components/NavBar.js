@@ -66,7 +66,7 @@ class NavBar extends Component {
         return (
             <Navbar className="navbar navbar-expand-lg navbar-light fixed-top bg-transparent" bg="light" expand="lg" onToggle={() => this.setState({ nav: !nav })} expanded={nav}>
                 <Navbar.Brand className="pointer" id='intro' onClick={(e) => this.changePage(e.target.id)}>
-                    <img src={`/images/nav/${frame || "18"}.png`} style={{ width: "10vh" }} />
+                    <img src={`/images/nav/${frame || "18"}.png`} alt='VFoS.dev' style={{ width: "min(10vh, 10vw)" }} />
                 </Navbar.Brand>
                 <Navbar.Toggle />
                 <Navbar.Collapse>

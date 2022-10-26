@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 
 // CSS
 import '../css/router.css';
+import '../css/stars.css';
 // Components
 import { NavBar } from './NavBar';
 // Pages
@@ -18,7 +19,7 @@ class CustomRouter extends React.Component {
             aniTimer: null,
             loc: 'front',
             queue: false,
-            logoFrame: "00"
+            logoFrame: "18"
         }
 
         this.updatePage = this.updatePage.bind(this);
@@ -97,7 +98,6 @@ class CustomRouter extends React.Component {
     UpdateNavBar(e) {
         const { logoFrame } = this.state
         if (e.scrollTop === 0) {
-            console.log(e.offsetHeight < e.scrollHeight)
             if (e.offsetHeight < e.scrollHeight) this.setState({ logoFrame: "01" })
             else this.setState({ logoFrame: "18" })
         } else {
@@ -107,6 +107,7 @@ class CustomRouter extends React.Component {
     }
 
     Router(req) { // actual router
+        const { logoFrame } = this.state;
         switch (req) {
             default:
             case 'intro':
@@ -116,7 +117,7 @@ class CustomRouter extends React.Component {
             case 'resume':
                 return <Resume />
             case 'skills':
-                return <Skills />
+                return <Skills scrolled={logoFrame} />
             case 'contact':
                 return <Contact />
             case 'about':
@@ -140,6 +141,11 @@ class CustomRouter extends React.Component {
 
         return (<>
             <NavBar updatePage={this.updatePage} last={page} logoFrame={logoFrame} />
+            <div style={{ width: "100vw", height: "100vh", overflow: 'hidden', background:"black", position:"fixed" }}>
+                <div id='stars' />
+                <div id='stars2' />
+                <div id='stars3' />
+            </div>
             <div className="cube-container">
                 {/* hi */}
                 {!!queue && animate && <>
