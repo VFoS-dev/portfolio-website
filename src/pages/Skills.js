@@ -9,39 +9,114 @@ class Skills extends React.Component {
             <div className='segment'>
                 <h3 className='title'>{name}</h3>
                 <h6 className='percent'>{perc}%</h6>
-                <div className='barContainer'>
-                    <div className='bar' style={{ width: `${perc}%` }} />
+                <div class="progress">
+                    <div class="progress-bar ani" role="progressbar" style={{ width: `${perc}%` }} aria-valuemax="100"></div>
                 </div>
             </div>
         </>);
     }
 
     render() {
-        var lookupTable = [
-
-        ];
-        return (<div className="skills">
-            {this.mapSkills('Adobe Animate', 95)}
-            {this.mapSkills('AutoHotKey (AHK)', 75)}
-            {this.mapSkills('ActionScript 3 (AS3)', 90)}
-            {this.mapSkills('AWS', 80)}
-            {this.mapSkills('Azure', 60)}
-            {this.mapSkills('C++', 65)}
-            {this.mapSkills('C#', 95)}
-            {this.mapSkills('CSS', 95)}
-            {this.mapSkills('Express.js', 80)}
-            {this.mapSkills('Firebase', 87)}
-            {this.mapSkills('git', 80)}
-            {this.mapSkills('HTML', 98)}
-            {this.mapSkills('Ionic', 70)}
-            {this.mapSkills('Javascript', 98)}
-            {this.mapSkills('MongoDB', 87)}
-            {this.mapSkills('.Net', 72)}
-            {this.mapSkills('Node.js', 80)}
-            {this.mapSkills('Python', 80)}
-            {this.mapSkills('React', 87)}
-            {this.mapSkills('Unity', 90)}
-            {this.mapSkills('Unreal', 50)}
+        return (<div className="skills" onScroll={(e) => this.props.onScroll(e)}>
+            <div className='navpadding' />
+            <center><h1>Skills</h1></center>
+            <br />
+            <div className='flex-container'>
+                <div className='flex-catagory'>
+                    <center>
+                        <h1>Applications</h1>
+                    </center>
+                    {[
+                        { name: 'Adobe Animate', compentence: 95 },
+                        { name: 'Blender', compentence: 73 },
+                        { name: 'Insomnia', compentence: 86 },
+                        { name: 'Krita', compentence: 80 },
+                        { name: 'Maya', compentence: 32 },
+                        { name: 'Photoshop', compentence: 60 },
+                        { name: 'Substance Painter', compentence: 67 },
+                        { name: 'Unity', compentence: 90 },
+                        { name: 'Unreal', compentence: 66 },
+                    ].map(n => this.mapSkills(n.name, n.compentence))}
+                </div>
+                <div className='flex-catagory'>
+                    <center>
+                        <h1>Frameworks</h1>
+                    </center>
+                    {[
+                        { name: '.Net', compentence: 72 },
+                        { name: 'Bootstrap', compentence: 93 },
+                        { name: 'Express.js', compentence: 95 },
+                        { name: 'Ionic', compentence: 70 },
+                        { name: 'Node.js', compentence: 80 },
+                        { name: 'React', compentence: 97 },
+                        { name: 'React Native', compentence: 90 },
+                    ].map(n => this.mapSkills(n.name, n.compentence))}
+                </div>
+                <div className='flex-catagory'>
+                    <center>
+                        <h1>Coding Languages</h1>
+                    </center>
+                    {[
+                        { name: 'ActionScript 3 (AS3)', compentence: 98 },
+                        { name: 'AutoHotKey (AHK)', compentence: 75 },
+                        { name: 'C++', compentence: 65 },
+                        { name: 'C#', compentence: 95 },
+                        { name: 'Javascript', compentence: 100 },
+                        { name: 'Python', compentence: 75 },
+                        { name: 'Swift', compentence: 30 },
+                    ].map(n => this.mapSkills(n.name, n.compentence))}
+                </div>
+                <div className='flex-catagory'>
+                    <center>
+                        <h1>Languages Derivatives</h1>
+                    </center>
+                    {[
+                        { name: 'CSS', compentence: 95 },
+                        { name: 'HTML', compentence: 98 },
+                        { name: 'JSON', compentence: 100 },
+                        { name: 'MarkDown', compentence: 86 },
+                    ].map(n => this.mapSkills(n.name, n.compentence))}
+                </div>
+                <div className='flex-catagory'>
+                    <center>
+                        <h1>Databases</h1>
+                    </center>
+                    {[
+                        { name: 'MongoDB', compentence: 90 },
+                        { name: 'SQLite', compentence: 87 },
+                    ].map(n => this.mapSkills(n.name, n.compentence))}
+                </div>
+                <div className='flex-catagory'>
+                    <center>
+                        <h1>Version Control</h1>
+                    </center>
+                    {[
+                        { name: 'git', compentence: 80 },
+                        { name: 'github', compentence: 89 },
+                    ].map(n => this.mapSkills(n.name, n.compentence))}
+                </div>
+                <div className='flex-catagory'>
+                    <center>
+                        <h1>Cloud Services</h1>
+                    </center>
+                    {[
+                        { name: 'AWS', compentence: 90 },
+                        { name: 'Azure', compentence: 50 },
+                        { name: 'Firebase', compentence: 70 },
+                        { name: 'Google APIs', compentence: 93 },
+                        { name: 'MongoDB Atlas', compentence: 87 },
+                        { name: 'NGINX', compentence: 83 },
+                    ].map(n => this.mapSkills(n.name, n.compentence))}
+                </div>
+                <div className='flex-catagory'>
+                    <center>
+                        <h1>Misc.</h1>
+                    </center>
+                    {[
+                        { name: 'Agile Methodology', compentence: 99 },
+                    ].map(n => this.mapSkills(n.name, n.compentence))}
+                </div>
+            </div>
         </div>);
     }
 }

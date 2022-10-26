@@ -9,13 +9,33 @@ class NavBar extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            nav: false
+            nav: false,
+            timeout: null,
+            frame: "18",
+            queueStart: false
         }
         // binds
         this.changePage = this.changePage.bind(this);
         this.listener = this.listener.bind(this);
+        this.queue = this.queue.bind(this);
         // listeners
         window.addEventListener('popstate', this.listener);
+    }
+
+    async queue() {
+        const { frame } = this.state
+        const { logoFrame } = this.props;
+        this.setState({ queueStart: true })
+        while (frame !== logoFrame) {
+            await this.timeout(25)
+            this.setState({ frame: `00${parseInt(frame) + (parseInt(logoFrame) > parseInt(frame) ? 1 : -1)}`.slice(-2) })
+            break;
+        }
+        this.setState({ queueStart: false })
+    }
+
+    timeout(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
     }
 
     listener() {
@@ -38,11 +58,16 @@ class NavBar extends Component {
 
     render() { // | intro | about | projects | resume | education | contact | secret |
         const ref = window.location.href.split('/')[3].split('?')[0];
-        const { nav } = this.state;
+        const { nav, frame, queueStart } = this.state;
+        const { logoFrame } = this.props;
+
+        if (frame !== logoFrame && !queueStart) this.queue()
 
         return (
-            <Navbar className="navbar navbar-expand-lg navbar-dark fixed-top bg-dark" bg="light" expand="lg" onToggle={() => this.setState({ nav: !nav })} expanded={nav}>
-                <Navbar.Brand className="pointer" id='intro' onClick={(e) => this.changePage(e.target.id)}>Jonathan Kido</Navbar.Brand>
+            <Navbar className="navbar navbar-expand-lg navbar-light fixed-top bg-transparent" bg="light" expand="lg" onToggle={() => this.setState({ nav: !nav })} expanded={nav}>
+                <Navbar.Brand className="pointer" id='intro' onClick={(e) => this.changePage(e.target.id)}>
+                    <img src={`/images/nav/${frame || "18"}.png`} style={{ width: "10vh" }} />
+                </Navbar.Brand>
                 <Navbar.Toggle />
                 <Navbar.Collapse>
                     <Nav className="mr-auto">

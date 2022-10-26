@@ -17,12 +17,13 @@ class CustomRouter extends React.Component {
             animations: true,
             aniTimer: null,
             loc: 'front',
-            queue: false
+            queue: false,
+            logoFrame: "00"
         }
 
         this.updatePage = this.updatePage.bind(this);
         this.keyRot = this.keyRot.bind(this);
-
+        this.focusRef = React.createRef();
         document.addEventListener('keydown', this.keyRot);
     }
 
@@ -93,6 +94,18 @@ class CustomRouter extends React.Component {
         this.setState({ update: !update, animate: animations, aniTimer: timer, loc: _loc, queue: queue });
     }
 
+    UpdateNavBar(e) {
+        const { logoFrame } = this.state
+        if (e.scrollTop === 0) {
+            console.log(e.offsetHeight < e.scrollHeight)
+            if (e.offsetHeight < e.scrollHeight) this.setState({ logoFrame: "01" })
+            else this.setState({ logoFrame: "18" })
+        } else {
+            var screen = `00${Math.round((e.scrollTop / Math.min(e.scrollHeight - e.offsetHeight, e.scrollHeight)) * 18)}`.slice(-2)
+            if (screen != logoFrame) this.setState({ logoFrame: screen })
+        }
+    }
+
     Router(req) { // actual router
         switch (req) {
             default:
@@ -112,27 +125,37 @@ class CustomRouter extends React.Component {
     }
 
     render() {
-        const { animate, loc, queue, update } = this.state;
+        const { animate, loc, queue, logoFrame } = this.state;
         const { rotation } = this.props;
 
         const page = window.location.href.split('/').splice(-1)[0].split('?')[0];
         if (!!page && rotation.front !== page)
             this.props.rotate(JSON.stringify(rotation).split(`":"${page}`)[0].split('"').splice(-1)[0]);
 
+
+        const f = document.getElementById("focused")
+        if (f?.offsetHeight < f?.scrollHeight && logoFrame == 18) this.UpdateNavBar(f)
+        else if (f?.offsetHeight > f?.scrollHeight && logoFrame < 18) this.setState({ logoFrame: "18" })
+
+
         return (<>
-            <NavBar updatePage={this.updatePage} last={page} />
+            <NavBar updatePage={this.updatePage} last={page} logoFrame={logoFrame} />
             <div className="cube-container">
                 {/* hi */}
                 {!!queue && animate && <>
-                    < div className={`face prior ani-${loc}`}>{this.Router(queue)}</div>
+                    < div className={`face prior ani-${loc}`} >
+                        {this.Router(queue)}
+                    </div>
                     {loc === "back" &&
-                        <div className={`face skip ani-back`}>
+                        <div className={`face skip ani-back`} >
                             {/* using bottom to grab the top because the value of the sides have already swapped */}
                             {this.Router(rotation.bottom)}
                         </div>
                     }
                 </>}
-                <div className={`face focus${animate && !!queue ? ` ani-${loc}` : ""}`}>{this.Router(page)}</div>
+                <div id="focused" className={`face focus${animate && !!queue ? ` ani-${loc}` : ""}`} ref={this.focusRef} onScroll={(e) => this.UpdateNavBar(e.currentTarget)}>
+                    {this.Router(page)}
+                </div>
             </div>
         </>);
     }

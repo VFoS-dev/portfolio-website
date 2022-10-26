@@ -4,7 +4,6 @@
     position: absolute;
     width: 100%;
     height: 100%;
-    padding-top: 56px;
 }
 
 .face {
@@ -12,16 +11,18 @@
     border-color: black;
     border-width: 3px;
     overflow: overlay;
+    overflow-x: hidden;
     padding: -10px !important;
     position: absolute;
     width: 100%;
-    height: calc(100% - 56px);
+    height: 100%;
 }
 
 .face>div {
     min-height: calc(100%) !important;
     padding: 20px;
 }
+
 /*Rotate Up*/
 
 .focus.ani-top {
@@ -39,9 +40,11 @@
         z-index: -1;
         transform: translateY(-100%) rotate3d(1, 0, 0, 90deg);
     }
+
     50% {
         z-index: 0;
     }
+
     100% {
         z-index: 0;
         transform: translateY(0%) rotate3d(0, 0, 0, 0deg);
@@ -53,9 +56,11 @@
         z-index: 0;
         transform: translateY(0%) rotate3d(0, 0, 0, 0deg);
     }
+
     50% {
         z-index: -1;
     }
+
     100% {
         z-index: -1;
         transform: translateY(100%)rotate3d(-1, 0, 0, 90deg);
@@ -79,9 +84,11 @@
         z-index: -1;
         transform: translateX(-100%) rotate3d(0, -1, 0, 90deg);
     }
+
     50% {
         z-index: 0;
     }
+
     100% {
         z-index: 0;
         transform: translateX(0%) rotate3d(0, 0, 0, 0deg);
@@ -93,9 +100,11 @@
         z-index: 0;
         transform: translateX(0%) rotate3d(0, 0, 0, 0deg);
     }
+
     50% {
         z-index: -1;
     }
+
     100% {
         z-index: -1;
         transform: translateX(100%) rotate3d(0, 1, 0, 90deg);
@@ -119,9 +128,11 @@
         z-index: -1;
         transform: translateY(100%) rotate3d(-1, 0, 0, 90deg);
     }
+
     50% {
         z-index: 0;
     }
+
     100% {
         z-index: 0;
         transform: translateY(0%) rotate3d(0, 0, 0, 0deg);
@@ -133,9 +144,11 @@
         z-index: 0;
         transform: translateY(0%) rotate3d(0, 0, 0, 0deg);
     }
+
     50% {
         z-index: -1;
     }
+
     100% {
         z-index: -1;
         transform: translateY(-100%) rotate3d(1, 0, 0, 90deg);
@@ -159,9 +172,11 @@
         z-index: -1;
         transform: translateX(100%) rotate3d(0, 1, 0, 90deg);
     }
+
     50% {
         z-index: 0;
     }
+
     100% {
         z-index: 0;
         transform: translateX(0%) rotate3d(0, 0, 0, 90deg);
@@ -173,9 +188,11 @@
         z-index: 0;
         transform: translateX(0%) rotate3d(0, 0, 0, 90deg);
     }
+
     50% {
         z-index: -1;
     }
+
     100% {
         z-index: -1;
         transform: translateX(-100%) rotate3d(0, -1, 0, 90deg);
@@ -204,20 +221,25 @@
         z-index: -4;
         transform: translateY(-100%) rotate3d(1, 0, 0, 180deg);
     }
+
     33% {
         z-index: -2;
     }
+
     49.99% {
         visibility: hidden;
     }
+
     50% {
         visibility: visible;
         z-index: -1;
         transform: translateY(-100%) rotate3d(1, 0, 0, 90deg);
     }
+
     66% {
         z-index: 0;
     }
+
     100% {
         z-index: 0;
         transform: translateY(0%) rotate3d(0, 0, 0, 0deg);
@@ -230,19 +252,24 @@
         z-index: -1;
         transform: translateY(-100%) rotate3d(1, 0, 0, 90deg);
     }
+
     33% {
         z-index: 0;
     }
+
     50% {
         transform-origin: center bottom;
         transform: translateY(0%) rotate3d(0, 0, 0, 0deg);
     }
+
     50.01% {
         transform-origin: center top;
     }
+
     66% {
         z-index: 0;
     }
+
     100% {
         transform-origin: center top;
         transform: translateY(100%) rotate3d(-1, 0, 0, 90deg);
@@ -256,19 +283,24 @@
         z-index: 0;
         transform: translateY(0%) rotate3d(0, 0, 0, 0deg);
     }
+
     33% {
         z-index: -1;
     }
+
     50% {
         visibility: visible;
         transform: translateY(100%) rotate3d(-1, 0, 0, 90deg);
     }
+
     50.01% {
         visibility: hidden;
     }
+
     66% {
         z-index: -2;
     }
+
     100% {
         visibility: hidden;
         transform: translateY(100%) rotate3d(-1, 0, 0, 90deg);
