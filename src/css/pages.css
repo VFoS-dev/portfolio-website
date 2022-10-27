@@ -1,9 +1,9 @@
 .resume {
-    background-color: #bec8eb;
+    background-color: rgb(26, 26, 26);
 }
 
 .projects {
-    background-color: #839675;
+    background-color: green;
 }
 
 .about {
@@ -25,7 +25,7 @@
 }
 
 .skills {
-    background-color: rgb(63, 63, 63);
+    background-color: rgb(36, 36, 36);
 }
 
 .skills .segment {
@@ -192,5 +192,15 @@
 }
 
 .navpadding {
-    padding-top: 5vh;
+    padding-top: 10vh;
+}
+
+.projects .cardspot {
+    width: min(15vh, 15vw);
+    max-width: calc(50vw / 4 - 2%);
+    display: inline-block;
+    margin-right: 0.5%;
+    border-radius: 5%;
+    background-color: rgba(255, 255, 255, 0.2);
+    aspect-ratio: 2.5/3.5;
 }

@@ -73,7 +73,7 @@ class Skills extends React.Component {
 
         return (<div className="skills">
             <div className='navpadding' />
-            <center><h1>Skills</h1></center>
+            <center><h1 className='lato-title'>Skills</h1></center>
             <br />
             <div className='flex-container'>
                 <div className='flex-catagory' ref={this.appRef} style={{ boxShadow: "0 0 5px #fff, 0 0 15px blue", position: "relative" }}>

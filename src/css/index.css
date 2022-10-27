@@ -21,3 +21,46 @@ body {
     box-shadow: none !important;
     background-color: transparent;
 }
+
+.lato {
+    font-family: 'lato', sans-serif !important;
+    font-size: 30px;
+    color: #FFF;
+    background: -webkit-linear-gradient(orange, #38495a);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.lato:hover,
+.lato.active:hover {
+    background: -webkit-linear-gradient(orange, white);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.lato.active {
+    background: -webkit-linear-gradient(white, #38495a);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.lato-title {
+    font-family: 'lato', sans-serif !important;
+    font-size: 50px;
+    color: #FFF;
+    background: -webkit-linear-gradient(white, orange);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.lato#secret {
+    background: -webkit-linear-gradient(orange, white, orange);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.lato#secret:hover {
+    background: -webkit-linear-gradient(white, orange, white);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}

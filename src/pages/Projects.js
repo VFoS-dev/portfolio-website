@@ -40,16 +40,25 @@ class Projects extends React.Component {
         if (imgcss != {}) Object.assign(compiled, imgcss);
 
         return (
-            <div id="tile" style={compiled} onMouseMove={this.handleMove} onMouseOut={(e) => this.handleMoveOut(e.target)} >
-
-            </div>
+            <div id="tile" style={compiled} onMouseMove={this.handleMove} onMouseOut={(e) => this.handleMoveOut(e.target)} />
         );
     }
 
     render() {
         return (<div className="projects">
-            <h1>Projects</h1>
-            <p>filtering and more project info coming soon</p>
+            <div className='disable' style={{ position: "fixed", top: '10vh', width: '50%', display: 'flex', justifyContent: 'flex-start', left: 0, marginLeft: '30px' }}>
+                <div className='cardspot enable pointer' />
+            </div>
+            <div className='disable' style={{ position: "fixed", top: '10vh', width: '50%', display: 'flex', justifyContent: 'flex-end', right: 0, marginRight: '30px' }}>
+                <div className='cardspot enable pointer' />
+                <div className='cardspot enable pointer' />
+                <div className='cardspot enable pointer' />
+                <div className='cardspot enable pointer' />
+            </div>
+            <div className='navpadding' />
+            <center><h1 className='lato-title'>Projects</h1></center>
+            <div className='navpadding' />
+            <div className='navpadding' />
             <div className="tile-container">
                 {this.mapTile('', '', abcStories, '10%')}
                 {this.mapTile('', '', PD)}
@@ -60,7 +69,7 @@ class Projects extends React.Component {
                 {this.mapTile('', '', swordwhip)}
                 {this.mapTile('', '', uno)}
             </div>
-        </div>);
+        </div >);
     }
 }
 

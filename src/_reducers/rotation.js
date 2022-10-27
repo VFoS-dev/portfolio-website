@@ -1,7 +1,7 @@
+var secret = JSON.parse(process.env.secret || '["right","bottom","bottom","bottom","right","top","top","top","right","right"]');
+
 export function rotation(state = origin, action) {
-    var secret = process.env.secret || '["right","bottom","bottom","bottom","right","top","top","top","right","right"]';
     var history = state.history;
-    var check = [];
 
     switch (action.type) {
         case 'right':
@@ -19,8 +19,8 @@ export function rotation(state = origin, action) {
         default:
             break;
     }
-
-    history.forEach((c, index) => check.push(JSON.parse(secret)[index] == c))
+    const correct = secret.map((c, index) => (history[index] || false) == c).reduce((a, b) => a + b) == secret.length
+    const checkpoints = history.map((c, index) => secret[index] == c)
 
     // console.log(history, check, 10 === check.reduce((a, b) => a + b, 0));
     switch (action.type) {
@@ -33,7 +33,10 @@ export function rotation(state = origin, action) {
 
                 top: state.top,
                 bottom: state.bottom,
-                history: history
+                history: history,
+                checkpoints: checkpoints,
+                correct: correct,
+                secretLength: secret.length
             };
         case 'bottom':
             return {
@@ -44,7 +47,10 @@ export function rotation(state = origin, action) {
 
                 left: state.left,
                 right: state.right,
-                history: history
+                history: history,
+                checkpoints: checkpoints,
+                correct: correct,
+                secretLength: secret.length
             };
         case 'top':
             return {
@@ -55,7 +61,10 @@ export function rotation(state = origin, action) {
 
                 left: state.left,
                 right: state.right,
-                history: history
+                history: history,
+                checkpoints: checkpoints,
+                correct: correct,
+                secretLength: secret.length
             };
         case 'left':
             return {
@@ -66,7 +75,10 @@ export function rotation(state = origin, action) {
 
                 top: state.top,
                 bottom: state.bottom,
-                history: history
+                history: history,
+                checkpoints: checkpoints,
+                correct: correct,
+                secretLength: secret.length
             };
         case 'back':
             return {
@@ -77,7 +89,10 @@ export function rotation(state = origin, action) {
 
                 right: state.right,
                 left: state.left,
-                history: history
+                history: history,
+                checkpoints: checkpoints,
+                correct: correct,
+                secretLength: secret.length
             };
         default:
             return state
@@ -91,5 +106,7 @@ const origin = {
     bottom: 'projects',
     back: 'contact',
     front: 'intro',
-    history: []
+    history: [],
+    checkpoints: [],
+    secretLength: secret.length
 }

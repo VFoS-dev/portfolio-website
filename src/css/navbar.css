@@ -1,3 +1,56 @@
 .pointer {
     cursor: pointer;
 }
+
+.disable {
+    pointer-events: none;
+}
+
+.enable {
+    pointer-events: all;
+}
+
+.navShadow {
+    width: 100%;
+    z-index: 0;
+    background: -webkit-linear-gradient(rgba(1, 1, 1, 0.7), rgba(1, 1, 1, 0));
+    height: 10vh;
+    top: 0;
+    translate: -1rem;
+    position: absolute;
+}
+
+.z-2 {
+    z-index: 2;
+}
+
+
+.checkpoint {
+    aspect-ratio: 1/1;
+    height: 100%;
+    position: relative;
+}
+
+.checkpoint div {
+    aspect-ratio: 1/1;
+    height: 40%;
+    top: 50%;
+    left: 50%;
+    border-radius: 100%;
+    border: solid rgba(175, 175, 175, 0.2) 2px;
+    position: absolute;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+}
+
+.checkpoint.correct div {
+    border: solid rgb(9, 255, 0) 2px;
+    box-shadow: 0 0 5px #fff, 0 0 12px rgb(255, 255, 255), 0 0 15px rgb(0, 150, 20), 0 0 35px rgb(46, 201, 54), 0 0 11px inset rgb(0, 255, 85);
+    background-color: rgb(218, 253, 218);
+}
+
+.checkpoint.complete div {
+    border: solid rgb(248, 223, 1) 2px;
+    box-shadow: 0 0 5px #fff, 0 0 12px rgb(255, 255, 255), 0 0 15px rgb(150, 85, 0), 0 0 35px rgb(240, 236, 28), 0 0 11px inset rgb(223, 197, 51);
+    background-color: rgb(253, 253, 253);
+}
