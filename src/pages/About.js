@@ -12,7 +12,9 @@ class About extends React.Component {
             ducksKeys: [],
             duckAni: false,
             limited: null,
-            addingDucks: false
+            addingDucks: false,
+            maxDuck: 2,
+            hitDucks: 0
         }
         this.moveDucks = this.moveDucks.bind(this)
     }
@@ -20,7 +22,7 @@ class About extends React.Component {
     async AddDucks(n) {
         this.setState({ addingDucks: true })
         while (this.state.ducks.length < n) {
-            await this.timeout(250)
+            await this.timeout(500)
             const { ducks, ducksKeys } = this.state;
             var newduck = this.addDuck()
             if (window.location.pathname != '/about') break;
@@ -28,7 +30,7 @@ class About extends React.Component {
                 ducks: [...ducks, newduck],
                 ducksKeys: [...ducksKeys, newduck.id]
             })
-            await this.timeout(250)
+            await this.timeout(500)
         }
         this.setState({ addingDucks: false })
     }
@@ -58,7 +60,7 @@ class About extends React.Component {
                 top = 100
                 right = !angle ?
                     10 + 80 * Math.random() :
-                    50 - 40 * angle * Math.random()
+                    50 + 40 * (2 * Math.random() - 1)
                 break;
         }
 
@@ -79,7 +81,7 @@ class About extends React.Component {
             const { ducks } = this.state;
             this.setState({
                 ducks: ducks.map(a => {
-                    if (a.pos.top < -15 - a.noise || a.pos.right < -15 - a.noise || a.pos.right > 115 + a.noise)
+                    if (a.pos.top < -5 - a.noise || a.pos.right < -5 - a.noise || a.pos.right > 105 + a.noise)
                         return this.addDuck()
 
                     return {
@@ -102,8 +104,12 @@ class About extends React.Component {
     }
 
     hitDuck(id) {
-        const { ducks } = this.state
-        this.setState({ ducks: ducks.map(d => ((id == d.id) ? { ...d, dead: true } : d)) })
+        const { ducks, hitDucks } = this.state
+        this.setState({
+            ducks: ducks.map(d => ((id == d.id) ? { ...d, dead: true } : d)),
+            hitDucks: hitDucks + 1,
+            maxDuck: Math.min(25, 2 + Math.floor(hitDucks / 5))
+        })
     }
 
     timeout(ms) {
@@ -113,25 +119,28 @@ class About extends React.Component {
     visualizeDucks() {
         const { ducks } = this.state;
         return ducks.map(d => <div id={d.id} key={d.id} className={`bird ${d.dead ? "death" : ""}`} style={{ top: `${d.pos.top}vh`, right: `${d.pos.right}vw` }} onAnimationEnd={(e) => (this.duckRespawn(e.target.id))} onClick={(e) => this.hitDuck(e.target.id)}>
+            <div className='crosshair' id={d.id} />
             <div id={d.id} className={`${d.type} ${d.dead ? "hit" : ""} ${d.dir.ani}`} style={{ scale: '3' }} />
         </div>)
     }
 
     render() {
-        const { ducks, duckAni, limited, addingDucks } = this.state;
+        const { ducks, duckAni, limited, addingDucks, maxDuck, hitDucks } = this.state;
         if (ducks.length > 0 && !duckAni) this.moveDucks()
-        if (ducks.length < 10 && typeof limited != 'boolean' && !addingDucks) this.AddDucks(10)
+        if (ducks.length < maxDuck && typeof limited != 'boolean' && !addingDucks) this.AddDucks(maxDuck)
 
         return (<Fragment>
             <div className='sticky-overlay' >
                 {this.visualizeDucks()}
                 <div className='grass' />
+                {hitDucks > 0 && <div className='score'>
+                    score: {hitDucks} <br />
+                    ducks: {ducks.filter(a => !a.dead).length}/{maxDuck} {maxDuck < 25 && `x(${(hitDucks - 1) % 5}/5)`}
+                </div>}
                 <div className={`dog${typeof limited != 'boolean' ? "" : limited ? " retrieve" : " unbound"}`} onAnimationEnd={() => this.setState({ limited: !limited ? null : limited })} onClick={() => this.setState({ limited: !limited })} />
             </div>
             <div className="about">
-                <center>
-                    <img className='self' src='/images/about/self.jpg' />
-                </center>
+                <div className='navpadding' />
                 <div className='temp'>
                     <p>Hello my name is Jon Kido</p>
                     <p>I was a GIMM peer mentor nicknamed "The Wizard" because of my ability to debug almost everything thrown at me. Later I joined the development team for the major.</p>

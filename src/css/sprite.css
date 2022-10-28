@@ -2,8 +2,23 @@
     width: calc((375px - 15px) / 3);
     height: calc((375px - 15px) / 3);
     pointer-events: all;
-    cursor: pointer !important;
+    cursor: pointer;
     position: absolute;
+}
+
+.crosshair {
+    background: url(/public/images/about/crosshair.svg);
+    width: 446px;
+    position: absolute;
+    display: none;
+    transform: translate(-190%, -195%) !important;
+    scale: 0.2;
+    z-index: 2;
+    aspect-ratio: 1/1;
+}
+
+.bird:hover .crosshair {
+    display: block;
 }
 
 .bird.death {
