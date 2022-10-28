@@ -1,16 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-// photos
-import abcStories from '../pictures/abcStories.png';
-import deadline from '../pictures/deadline.png';
-import defend from '../pictures/defend.png';
-import mine from '../pictures/minesweeper.png';
-import PD from '../pictures/PD-v1.7.png';
-import survive from '../pictures/survive.png';
-import swordwhip from '../pictures/swordwhip.png';
-import uno from '../pictures/uno.png';
-
 import '../css/pages.css';
 import '../css/tile.css';
 
@@ -60,14 +50,14 @@ class Projects extends React.Component {
             <div className='navpadding' />
             <div className='navpadding' />
             <div className="tile-container">
-                {this.mapTile('', '', abcStories, '10%')}
-                {this.mapTile('', '', PD)}
-                {this.mapTile('', '', deadline)}
-                {this.mapTile('', '', defend)}
-                {this.mapTile('', '', mine)}
-                {this.mapTile('', '', survive)}
-                {this.mapTile('', '', swordwhip)}
-                {this.mapTile('', '', uno)}
+                {this.mapTile('', '', '/images/projects/abcStories.png', '10%')}
+                {this.mapTile('', '', '/images/projects/PD-v1.7.png')}
+                {this.mapTile('', '', '/images/projects/deadline.png')}
+                {this.mapTile('', '', '/images/projects/defend.png')}
+                {this.mapTile('', '', '/images/projects/minesweeper.png')}
+                {this.mapTile('', '', '/images/projects/survive.png')}
+                {this.mapTile('', '', '/images/projects/swordwhip.png')}
+                {this.mapTile('', '', '/images/projects/uno.png')}
             </div>
         </div >);
     }

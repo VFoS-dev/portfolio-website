@@ -54,3 +54,9 @@
     box-shadow: 0 0 5px #fff, 0 0 12px rgb(255, 255, 255), 0 0 15px rgb(150, 85, 0), 0 0 35px rgb(240, 236, 28), 0 0 11px inset rgb(223, 197, 51);
     background-color: rgb(253, 253, 253);
 }
+
+.checkpoint.wrong div {
+    border: solid rgb(243, 34, 34) 2px;
+    box-shadow: 0 0 5px rgb(236, 104, 104), 0 0 12px rgb(230, 144, 144), 0 0 15px rgb(150, 0, 0), 0 0 35px rgb(240, 28, 28), 0 0 11px inset rgb(238, 94, 94);
+    background-color: rgb(255, 0, 0);
+}

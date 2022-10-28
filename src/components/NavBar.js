@@ -29,10 +29,10 @@ class NavBar extends Component {
     async queue() {
         this.setState({ queueStart: true })
         while (this.state.frame !== this.props.logoFrame) {
-            await this.timeout(20)
+            await this.timeout(25)
             const { frame } = this.state
             const { logoFrame } = this.props;
-            this.setState({ frame: `00${parseInt(frame) + (parseInt(logoFrame) > parseInt(frame) ? 1 : -1)}`.slice(-2) })
+            this.setState({ frame: `00${Math.min(Math.max(0, parseInt(frame) + (parseInt(logoFrame) > parseInt(frame) ? 1 : -1)), 18)}`.slice(-2) })
         }
         this.setState({ queueStart: false })
     }
@@ -80,7 +80,7 @@ class NavBar extends Component {
         const ref = window.location.href.split('/')[3].split('?')[0];
         const { nav, frame, queueStart, animateLogo, aniStart } = this.state;
         const { logoFrame, secretLength, checkpoints, correct } = this.props;
-        if (!animateLogo && frame !== logoFrame && !queueStart) this.queue()
+        if (!animateLogo && frame !== logoFrame && !queueStart && !aniStart) this.queue()
         if (animateLogo && !aniStart) this.aniLogo()
 
         return (
@@ -91,7 +91,7 @@ class NavBar extends Component {
                 <Navbar.Brand className="pointer enable z-2" id='intro' style={{ position: 'relative' }} onClick={(e) => this.changePage(e.target.id)} onMouseOut={() => this.setState({ animateLogo: false })} onMouseOver={() => this.setState({ animateLogo: true })}>
                     <img src={`/images/nav/${frame || "18"}.png`} alt='VFoS.dev' style={{ width: "min(10vh, 10vw)" }} />
                     <div className='disable' style={{ position: 'absolute', display: 'flex', top: 0, left: 'min(11vh, 11vw)', height: '30%', marginRight: '15px', marginTop: '1vh' }}>
-                        {[...new Array(secretLength)].map((c, index) => (<div className={`checkpoint${correct ? " complete" : checkpoints[index] ? " correct" : " wrong"}`}>
+                        {[...new Array(secretLength)].map((c, index) => (<div className={`checkpoint${correct ? " complete" : checkpoints[index] ? " correct" : typeof checkpoints[index] == 'boolean' ? " wrong" : ''}`}>
                             <div />
                         </div>))}
                     </div>
