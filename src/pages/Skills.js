@@ -30,7 +30,7 @@ class Skills extends React.Component {
             updatedRefs: true,
             onScreen: refs.map(r => {
                 const c = r.current
-                return (f?.scrollTop + document.documentElement.clientHeight > c?.offsetTop + document.documentElement.clientHeight * 2 / 5) || (f?.scrollTop + document.documentElement.clientHeight > f?.scrollHeight - 100);
+                return (f?.scrollTop + document.documentElement.clientHeight > c?.offsetTop + document.documentElement.clientHeight * 1 / 5) || (f?.scrollTop + document.documentElement.clientHeight > f?.scrollHeight - 100);
             })
         })
     }
@@ -74,8 +74,6 @@ class Skills extends React.Component {
 
         return (<div className="skills">
             <div className='navpadding' />
-            <center><h1 className='lato-title'>Skills</h1></center>
-            <br />
             <div className='flex-container'>
                 <div className='flex-catagory' ref={this.appRef} style={{ boxShadow: "0 0 5px #fff, 0 0 15px blue", position: "relative" }}>
                     {this.mapSkills("Applications", [
