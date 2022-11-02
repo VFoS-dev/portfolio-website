@@ -2,7 +2,7 @@
     width: 100%;
     aspect-ratio: 1/1;
     background-image: url(/public/images/projects/minesweeperAni/toMinesweeper.png);
-    animation: toMinesweeper 1.2s steps(34) forwards;
+    animation: toMinesweeper 1s steps(34) 50ms forwards;
     background-size: cover;
     z-index: 20;
 }
@@ -71,7 +71,7 @@
 .cell-tile.toMine {
     border: 9px outset rgb(219, 219, 219);
     padding: 0px;
-    animation: TiletoCell 2s forwards;
+    animation: TiletoCell 1s forwards;
 }
 
 @keyframes TiletoCell {
@@ -164,10 +164,27 @@
     height: 24px;
     margin: 15px;
     scale: 2.5;
-    background-position-x: -1px;
+    background-position-x: -55px;
     background-position-y: -25px;
+    box-sizing: content-box;
+}
+
+.mineHeader .button.lose {
+    background-position-x: -109px;
+}
+
+.mineHeader .button.play {
+    background-position-x: -1px;
+}
+
+.mineHeader .button.win {
+    background-position-x: -82px;
+}
+
+.mineHeader .button-container {
+    width: 60px;
+    height: 100%;
     cursor: pointer;
-    box-sizing:content-box;
 }
 
 .tile-center {
@@ -197,9 +214,9 @@
 }
 
 .flag {
-    background-color: aqua;
     width: 100%;
     height: 100%;
+    background-size: contain !important;
 }
 
 .mineOutline {
