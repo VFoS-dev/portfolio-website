@@ -104,7 +104,7 @@ const origin = {
     left: 'skills',
     right: 'about',
     bottom: 'projects',
-    back: 'contact',
+    back: 'socials',
     front: 'intro',
     history: [],
     checkpoints: [],

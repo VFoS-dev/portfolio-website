@@ -41,15 +41,15 @@ class NavBar extends Component {
         this.setState({ aniStart: true })
         while (this.state.animateLogo) {
             const { frame, aniInc } = this.state
-            await this.timeout(10)
+            await this.timeout(20)
             this.setState({
                 aniInc: parseInt(frame) == 0 ? true : (parseInt(frame) == 18 ? false : aniInc),
             })
-            await this.timeout(5)
+            await this.timeout(10)
             this.setState({
                 frame: `00${Math.max(Math.min(parseInt(frame) + (aniInc ? 1 : -1), 18), 0)}`.slice(-2)
             })
-            await this.timeout(10)
+            await this.timeout(20)
         }
         this.setState({ aniStart: false })
     }
@@ -103,7 +103,7 @@ class NavBar extends Component {
                         <Nav.Link className={((ref === 'projects') ? "active" : "") + " lato enable"} id='projects' onClick={(e) => this.changePage(e.target.id)}>Projects</Nav.Link>
                         <Nav.Link className={((ref === 'skills') ? "active" : "") + " lato enable"} id='skills' onClick={(e) => this.changePage(e.target.id)}>Skills</Nav.Link>
                         <Nav.Link className={((ref === 'resume') ? "active" : "") + " lato enable"} id='resume' onClick={(e) => this.changePage(e.target.id)}>Resume</Nav.Link>
-                        <Nav.Link className={((ref === 'contact') ? "active" : "") + " lato enable"} id='contact' onClick={(e) => this.changePage(e.target.id)}>Contact</Nav.Link>
+                        <Nav.Link className={((ref === 'socials') ? "active" : "") + " lato enable"} id='socials' onClick={(e) => this.changePage(e.target.id)}>Socials</Nav.Link>
                         {correct && <Nav.Link className={((ref === 'secret') ? "active" : "") + " lato enable"} id='secret' onClick={(e) => this.changePage(e.target.id)}>Secret</Nav.Link>}
                     </Nav>
                 </Navbar.Collapse>

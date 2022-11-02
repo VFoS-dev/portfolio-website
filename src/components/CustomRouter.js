@@ -19,7 +19,8 @@ class CustomRouter extends React.Component {
             aniTimer: null,
             loc: 'front',
             queue: false,
-            logoFrame: "18"
+            logoFrame: "18",
+            scrollPer: 0
         }
 
         this.updatePage = this.updatePage.bind(this);
@@ -99,15 +100,21 @@ class CustomRouter extends React.Component {
         const { logoFrame } = this.state
         if (e.scrollTop === 0) {
             if (e.offsetHeight < e.scrollHeight) this.setState({ logoFrame: "00" })
-            else this.setState({ logoFrame: "18" })
+            else this.setState({
+                logoFrame: "18",
+                scrollPer: e.scrollTop
+            })
         } else {
             var screen = `00${Math.round((e.scrollTop / Math.min(e.scrollHeight - e.offsetHeight, e.scrollHeight)) * 18)}`.slice(-2)
-            if (screen != logoFrame) this.setState({ logoFrame: screen })
+            if (screen != logoFrame) this.setState({
+                logoFrame: screen,
+                scrollPer: e.scrollTop
+            })
         }
     }
 
     Router(req) { // actual router
-        const { logoFrame } = this.state;
+        const { scrollPer } = this.state;
         switch (req) {
             default:
             case 'intro':
@@ -117,8 +124,8 @@ class CustomRouter extends React.Component {
             case 'resume':
                 return <Resume />
             case 'skills':
-                return <Skills scrolled={logoFrame} />
-            case 'contact':
+                return <Skills scrolled={scrollPer} />
+            case 'socials':
                 return <Contact />
             case 'about':
                 return <About />

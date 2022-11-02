@@ -13,8 +13,8 @@
 .navShadow {
     width: 100%;
     z-index: 0;
-    background: -webkit-linear-gradient(rgba(1, 1, 1, 0.7), rgba(1, 1, 1, 0));
-    height: 10vh;
+    background: -webkit-linear-gradient(rgba(1, 1, 1, 0.9), rgba(1, 1, 1, 0));
+    height: 12vh;
     top: 0;
     translate: -1rem;
     position: absolute;

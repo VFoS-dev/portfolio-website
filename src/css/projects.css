@@ -1,0 +1,213 @@
+.toMinesweeper {
+    width: 100%;
+    aspect-ratio: 1/1;
+    background-image: url(/public/images/projects/minesweeperAni/toMinesweeper.png);
+    animation: toMinesweeper 1.2s steps(34) forwards;
+    background-size: cover;
+    z-index: 20;
+}
+
+@keyframes toMinesweeper {
+    from {
+        background-position-x: 0px
+    }
+
+    to {
+        background-position-x: 100%
+    }
+}
+
+.cell.in {
+    background-color: rgb(212, 212, 212);
+    animation: toCell 400ms 500ms forwards;
+    border: 0px outset rgba(212, 212, 212, 0);
+}
+
+@keyframes toCell {
+    from {
+        border: 0px outset rgba(212, 212, 212, 0);
+    }
+
+    to {
+        border: 9px outset rgba(219, 219, 219, 1);
+    }
+}
+
+.cell {
+    aspect-ratio: 1/1;
+    overflow: hidden;
+    background-color: rgb(212, 212, 212);
+    border: 9px outset rgb(219, 219, 219);
+    text-align: center;
+    vertical-align: middle;
+    cursor: pointer;
+}
+
+.mineContainer {
+    align-items: center;
+    width: 70vw;
+    margin: auto;
+    overflow-y: auto;
+    overflow: visible;
+    border: 10px inset #fff;
+}
+
+.cell.revealed {
+    border: 1px solid darkgray;
+
+}
+
+.mineContainer .row {
+    margin: 0px;
+}
+
+.cell-tile {
+    border: 9px outset rgb(219, 219, 219);
+    padding: 0px;
+    line-height: 0px;
+    background-color: lightgray;
+}
+
+.cell-tile.toMine {
+    border: 9px outset rgb(219, 219, 219);
+    padding: 0px;
+    animation: TiletoCell 2s forwards;
+}
+
+@keyframes TiletoCell {
+    from {
+        border: 9px outset rgba(219, 219, 219, 1);
+        padding: 0px;
+    }
+
+    to {
+        border: 0px outset rgba(212, 212, 212, 1);
+        padding: 9px;
+    }
+}
+
+.mineHeader {
+    border: 10px inset #fff;
+    margin: 15px;
+    margin-top: 10px;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+}
+
+.mineHeader .numbs {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    scale: 2.5;
+}
+
+.mineHeader .numbs.left {
+    margin-left: 24px;
+}
+
+.mineHeader .numbs.right {
+    margin-right: 24px;
+}
+
+.numb {
+    background-image: url(/public/images/projects/minesweeperAni/minesweeperSpriteSheet.png);
+    width: 12px;
+    height: 24px;
+    margin-top: 15px;
+}
+
+.numb.n0 {
+    background-position-x: 13px;
+}
+
+.numb.n1 {
+    background-position-x: 0px;
+}
+
+.numb.n2 {
+    background-position-x: -14px;
+}
+
+.numb.n3 {
+    background-position-x: -29px;
+}
+
+.numb.n4 {
+    background-position-x: -42px;
+}
+
+.numb.n5 {
+    background-position-x: -56px;
+}
+
+.numb.n6 {
+    background-position-x: -70px;
+}
+
+.numb.n7 {
+    background-position-x: -85px;
+}
+
+.numb.n8 {
+    background-position-x: -98px;
+}
+
+.numb.n9 {
+    background-position-x: 27px;
+}
+
+.mineHeader .button {
+    background-image: url(/public/images/projects/minesweeperAni/minesweeperSpriteSheet.png);
+    width: 24px;
+    height: 24px;
+    margin: 15px;
+    scale: 2.5;
+    background-position-x: -1px;
+    background-position-y: -25px;
+    cursor: pointer;
+    box-sizing:content-box;
+}
+
+.tile-center {
+    margin: auto;
+}
+
+.tile-container {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    display: flex;
+}
+
+#tile {
+    display: inline-flex;
+    width: min(calc(100vmin - 61px), 320px);
+    aspect-ratio: 1/1;
+    background-size: contain !important;
+    transition: box-shadow 0.1s, transform 0.1s;
+    z-index: 1;
+    margin: 5px;
+}
+
+#tile:hover {
+    z-index: 10;
+    box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.6);
+    cursor: pointer;
+}
+
+.flag {
+    background-color: aqua;
+    width: 100%;
+    height: 100%;
+}
+
+.mineOutline {
+    box-sizing: unset;
+    align-items: center;
+    width: calc(70vw + 30px);
+    background-color: lightgray;
+    padding: 15px;
+    margin: auto;
+    border: 10px outset #fff;
+}

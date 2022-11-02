@@ -29,7 +29,8 @@ class Skills extends React.Component {
             scrolled: this.props.scrolled,
             updatedRefs: true,
             onScreen: refs.map(r => {
-                return (0 > r.current?.offsetTop - f?.scrollTop - r.current?.clientHeight || f?.scrollTop + document.documentElement.clientHeight >= f?.scrollHeight - 100) || false;
+                const c = r.current
+                return (f?.scrollTop + document.documentElement.clientHeight > c?.offsetTop + document.documentElement.clientHeight * 2 / 5) || (f?.scrollTop + document.documentElement.clientHeight > f?.scrollHeight - 100);
             })
         })
     }
