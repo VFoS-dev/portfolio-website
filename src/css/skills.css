@@ -1,0 +1,128 @@
+.skills {
+    background-color: rgb(36, 36, 36);
+}
+
+.skills .segment {
+    color: #0077ff;
+    padding: 5px;
+}
+
+.skills .flex-catagory h1 {
+    color: #0077ff;
+}
+
+.skills .progress {
+    background-color: transparent;
+    overflow: visible;
+    z-index: 0;
+}
+
+.progress-bar.clear {
+    background-color: white;
+    height: 50%;
+    transform: translateY(50%);
+}
+
+.skills .progress-bar {
+    overflow: visible;
+    background-color: transparent;
+}
+
+.skills .progress-bar .light {
+    height: 100%;
+    background-color: white;
+    box-shadow: 0 0 5px #fff, 0 0 12px #fff, 0 0 15px #00f, 0 0 35px #00f;
+    border-bottom-right-radius: 50px;
+    border-top-right-radius: 50px;
+}
+
+.ani-back .skills .progress-bar .light.in {
+    width: 0%;
+}
+
+.focus .skills .progress-bar .light.in {
+    width: 100%;
+    animation: light-in 1.5s ease-in-out 0ms forwards;
+}
+
+
+@keyframes light-in {
+    0% {
+        width: 0%;
+    }
+
+    100% {
+        width: 100%;
+    }
+}
+
+.focus .skills .progress-bar .light.out {
+    width: 0%;
+    animation: light-out 1.5s ease-in-out 0ms forwards;
+}
+
+
+@keyframes light-out {
+    0% {
+        width: 100%;
+    }
+
+    100% {
+        width: 0%;
+    }
+}
+
+.skills .flex-catagory {
+    background-color: rgb(26, 26, 26);
+    border-radius: 30px;
+    border: #fff 1px solid;
+    box-shadow: 0 0 5px #fff, 0 0 15px #00f;
+}
+
+@media (max-width: 1200px) {
+    .skills .flex-container {
+        width: 100%;
+    }
+
+    .skills .flex-catagory {
+        width: 80%;
+        margin-bottom: 5%;
+        margin-left: 10%;
+    }
+}
+
+@media (min-width: 1201px) {
+    .skills .flex-container {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-evenly;
+    }
+
+    .skills .flex-catagory {
+        margin-bottom: 5%;
+        min-width: 40%;
+    }
+}
+
+.segment .title {
+    color: rgb(69, 71, 197);
+    display: inline;
+}
+
+.segment .percent {
+    float: right;
+    padding-top: 12px;
+}
+
+.segment .barContainer {
+    height: 10px;
+    background-color: #636363;
+    border-radius: 10px;
+}
+
+.segment .bar {
+    height: 100%;
+    background-color: #f79234;
+    border-radius: 10px;
+}

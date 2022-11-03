@@ -7,7 +7,7 @@ import '../css/stars.css';
 // Components
 import { NavBar } from './NavBar';
 // Pages
-import { About, Contact, Skills, Intro, Projects, Resume } from '../pages';
+import { About, Socials, Skills, Intro, Projects, Resume } from '../pages';
 
 class CustomRouter extends React.Component {
     constructor(props) {
@@ -99,7 +99,8 @@ class CustomRouter extends React.Component {
     UpdateNavBar(e) {
         const { logoFrame } = this.state
         if (e.scrollTop === 0) {
-            if (e.offsetHeight < e.scrollHeight) this.setState({ logoFrame: "00" })
+            console.log(e.offsetHeight, e.scrollHeight);
+            if (e.offsetHeight <= e.scrollHeight) this.setState({ logoFrame: "00" })
             else this.setState({
                 logoFrame: "18",
                 scrollPer: e.scrollTop
@@ -126,7 +127,7 @@ class CustomRouter extends React.Component {
             case 'skills':
                 return <Skills scrolled={scrollPer} />
             case 'socials':
-                return <Contact />
+                return <Socials />
             case 'about':
                 return <About />
         }
@@ -152,8 +153,11 @@ class CustomRouter extends React.Component {
                 <div id='stars' />
                 <div id='stars2' />
                 <div id='stars3' />
+                <div id='stars' className='right' />
+                <div id='stars2' className='right' />
+                <div id='stars3' className='right' />
             </div>
-            <div className="cube-container">
+            <div className="cube-container" style={{ perspective: `${document.documentElement.clientWidth}px` }}>
                 {/* hi */}
                 {!!queue && animate && <>
                     <div className={`face prior ani-${loc}`} key={queue}>

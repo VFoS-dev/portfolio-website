@@ -15,12 +15,12 @@ class Projects extends React.Component {
             nbombs: 0,
             flags: 0,
             gameStatus: 0,
-            refresh: false,
             rows: 10,
-            container: -1,
+            refresh: false,
             projects: [
                 { img: '/images/projects/portfolioSite.png', imgcss: { backgroundColor: '#303030' } },
                 { img: '/images/projects/AllinFavor.png', imgcss: { borderRadius: '100%', borderBottomLeftRadius: '0%' } },
+                { img: '/images/projects/TheSimpleRing.png' },
                 { img: '/images/projects/BroncoBeam.png', imgcss: { borderRadius: '10%' } },
                 { img: '/images/projects/PD-v1.7.png' },
                 { img: '/images/projects/minesweeper.png' },
@@ -34,18 +34,16 @@ class Projects extends React.Component {
             ]
         }
 
-        this.selfRef = React.createRef();
         this.handleMove = this.handleMove.bind(this)
-        this.resize = this.resize.bind(this)
         this.checkWin = this.checkWin.bind(this)
+        this.resize = this.resize.bind(this)
 
         window.addEventListener('resize', this.resize);
     }
 
     resize(e) {
-        if (!this.selfRef?.current) return;
-        if (this.selfRef.current.offsetWidth - 30 < 330) this.setState({ container: 100 })
-        this.setState({ container: 330 * Math.floor((this.selfRef.current.offsetWidth - 30) / 330) / (this.selfRef.current.offsetWidth - 30) * 100 })
+        const { refresh, minesweeper } = this.state;
+        if (!minesweeper) this.setState({ refresh: !refresh })
     }
 
     timeout(ms) {
@@ -202,9 +200,8 @@ class Projects extends React.Component {
     }
 
     render() {
-        const { minesweeper, cells, projects, refresh, container, nbombs, flags, gameStatus } = this.state;
-        if (!minesweeper && !this.selfRef.current) setTimeout(() => this.setState({ refresh: !refresh }), 0);
-        if (container < 0 && !this.selfRef.current) setTimeout(() => this.resize(), 0);
+        const { minesweeper, cells, projects, nbombs, flags, gameStatus } = this.state;
+
         return (<div className="projects">
             <div className='navpadding' />
             <div className='mineOutline'>
@@ -223,8 +220,8 @@ class Projects extends React.Component {
                         <div className='numb n0' />
                     </div>
                 </div>
-                <div className='mineContainer' ref={this.selfRef}>
-                    {!minesweeper && <div className="tile-center" style={{ width: this.selfRef.current?.offsetWidth - 30 < 330 ? "100%" : `${container}%` }}>
+                <div className='mineContainer'>
+                    {!minesweeper && <div className="tile-center" style={{ width: `${(330 * Math.floor((document.documentElement.clientWidth * 0.7 - 30) / 330) / (document.documentElement.clientWidth * 0.7 - 30) * 100) || 100}%` }}>
                         <div className='tile-container' >
                             {projects.map(p => this.mapTile(p))}
                         </div>

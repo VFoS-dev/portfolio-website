@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 import '../css/pages.css';
 
-class Contact extends React.Component {
+class Socials extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -63,5 +63,5 @@ function mapState(state) {
 
 const actionCreators = {};
 
-const connectedContact = connect(mapState, actionCreators)(Contact);
-export { connectedContact as Contact };
+const connectedSocials = connect(mapState, actionCreators)(Socials);
+export { connectedSocials as Socials };

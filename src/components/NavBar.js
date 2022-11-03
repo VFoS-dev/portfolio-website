@@ -71,8 +71,10 @@ class NavBar extends Component {
             this.props.updatePage(page, _newPage);
 
             setTimeout(() => {
-                this.setState({ nav: false });
-            }, 10);
+                this.setState({
+                    nav: false
+                });
+            }, 0);
         }
     }
 
@@ -116,6 +118,7 @@ function mapState(state) {
     const { checkpoints, correct, secretLength } = state.rotation
     return { checkpoints, correct, secretLength };
 }
+
 const actionCreators = {};
 
 const connectedNavBar = connect(mapState, actionCreators)(NavBar);

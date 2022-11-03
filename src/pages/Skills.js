@@ -2,6 +2,7 @@ import React, { Fragment } from 'react';
 import { connect } from 'react-redux';
 
 import '../css/pages.css';
+import '../css/skills.css';
 
 class Skills extends React.Component {
     constructor(props) {
@@ -87,8 +88,7 @@ class Skills extends React.Component {
                         { name: 'Unity', compentence: 90 },
                         { name: 'Unreal', compentence: 66 },
                     ], 0, "blue")}
-                </div >
-
+                </div>
                 <div className='flex-catagory' ref={this.frameRef} style={{ boxShadow: "0 0 5px #fff, 0 0 15px magenta", position: "relative" }}>
                     {this.mapSkills("Frameworks", [
                         { name: '.Net', compentence: 72 },
@@ -147,7 +147,7 @@ class Skills extends React.Component {
                     ], 7, "red")}
                 </div>
             </div>
-        </div >);
+        </div>);
     }
 }
 
