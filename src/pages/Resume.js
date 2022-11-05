@@ -15,13 +15,8 @@ class Resume extends React.Component {
         return (
             <div className="resume">
                 <div className='navpadding' />
-                <center>
-                    <h1 className='lato-title'>Resume</h1>
-                    {showResume && <Fragment>
-                        <br />
-                        <br />
-                        <embed src='/pdf/resume.pdf' style={{ width: "85%", height: "85vh", }} />
-                    </Fragment>}
+                <center className='demoSpacing'>
+                    <h2>THIS PAGE IS UNDER CONSTRUCTION</h2>
                 </center>
             </div>
         );
