@@ -201,7 +201,7 @@ class Projects extends React.Component {
 
     render() {
         const { minesweeper, cells, projects, nbombs, flags, gameStatus } = this.state;
-
+        const { clientWidth } = document.documentElement
         return (<div className="projects">
             <div className='navpadding' />
             <div className='mineOutline'>
@@ -221,7 +221,7 @@ class Projects extends React.Component {
                     </div>
                 </div>
                 <div className='mineContainer'>
-                    {!minesweeper && <div className="tile-center" style={{ width: `${(330 * Math.floor((document.documentElement.clientWidth * 0.7 - 30) / 330) / (document.documentElement.clientWidth * 0.7 - 30) * 100) || 100}%` }}>
+                    {!minesweeper && <div className="tile-center" style={{ width: `${(330 * Math.floor((clientWidth * 0.7 - 30) / 330) / (clientWidth * 0.7 - 30) * 100) || 100}%` }}>
                         <div className='tile-container' >
                             {projects.map(p => this.mapTile(p))}
                         </div>
@@ -231,15 +231,20 @@ class Projects extends React.Component {
                             let x = index
                             return <div className='row'>
                                 {m.map((c, index) => {
-                                    return <div id={`${x} ${index}`} className={`cell${!c ? ' in' : c.revealed ? ' revealed' : c.flagged ? ' flagged' : ''}`} style={{ width: `${100 / cells.length}%` }} onClick={(e) => this.minesweep(e.target.id)} onContextMenu={(e) => this.flagCell(e)}>
-                                        {!c ? "" : c.revealed ? !c.value ? '' : c.value : <div id={`${x} ${index}`} style={{ backgroundImage: `url(${projects[c.img].img})` }} className={c.flagged ? 'flag' : ''} >{c.flagged}</div>}
+                                    return <div id={`${x} ${index}`}
+                                        className={`cell${!c ? ' in' : c.revealed ? ` revealed${c.value < 0 ? ' mine' : ''}` : c.flagged ? ' flag' : ''}`}
+                                        style={{ width: `${100 / cells.length}%`, ...(!!c && c.flagged && !c.revealed ? { backgroundImage: `url(${projects[c.img].img})` } : {}) }}
+                                        onClick={(e) => this.minesweep(e.target.id)}
+                                        onContextMenu={(e) => this.flagCell(e)}
+                                    >
+                                        <div className={`c-${!!c && c.revealed && c.value > 0 ? c.value : ''}`}>{!c ? "" : (c.revealed && c.value > 0) ? c.value : ''}</div>
                                     </div>
                                 })}
                             </div>
                         })}
                     </Fragment>}
                 </div>
-            </div>
+            </div >
         </div >);
     }
 }

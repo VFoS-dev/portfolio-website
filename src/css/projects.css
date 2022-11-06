@@ -1,7 +1,7 @@
 .toMinesweeper {
     width: 100%;
     aspect-ratio: 1/1;
-    background-image: url(/public/images/projects/minesweeperAni/toMinesweeper.png);
+    background-image: url(/public/images/projects/minesweeper/toMinesweeper.png);
     animation: toMinesweeper 1s steps(34) 50ms forwards;
     background-size: cover;
     z-index: 20;
@@ -34,7 +34,10 @@
 }
 
 .cell {
+    position: relative;
     aspect-ratio: 1/1;
+    display: flex;
+    justify-content: space-around;
     overflow: hidden;
     background-color: rgb(212, 212, 212);
     border: 9px outset rgb(219, 219, 219);
@@ -112,10 +115,11 @@
 }
 
 .numb {
-    background-image: url(/public/images/projects/minesweeperAni/minesweeperSpriteSheet.png);
+    background-image: url(/public/images/projects/minesweeper/minesweeperSpriteSheet.png);
     width: 12px;
     height: 24px;
     margin-top: 15px;
+    background-position-x: 13px;
 }
 
 .numb.n0 {
@@ -159,7 +163,7 @@
 }
 
 .mineHeader .button {
-    background-image: url(/public/images/projects/minesweeperAni/minesweeperSpriteSheet.png);
+    background-image: url(/public/images/projects/minesweeper/minesweeperSpriteSheet.png);
     width: 24px;
     height: 24px;
     margin: 15px;
@@ -227,4 +231,54 @@
     padding: 15px;
     margin: auto;
     border: 10px outset #fff;
+}
+
+.cell.revealed.mine {
+    background-image: url(/public/images/projects/minesweeper/mine.png);
+    background-size: contain;
+    background-color: red;
+}
+
+.cell div {
+    position: absolute;
+    font-family: 'VT323', latin !important;
+    font-size: 6.5vw;
+    transform: translateY(-50%);
+}
+
+.cell div {
+    height: 50%;
+    pointer-events: none;
+}
+
+.cell div.c-1 {
+    color: blue;
+}
+
+.cell div.c-2 {
+    color: green;
+}
+
+.cell div.c-3 {
+    color: red;
+}
+
+.cell div.c-4 {
+    color: darkblue;
+}
+
+.cell div.c-5 {
+    color: darkred;
+}
+
+.cell div.c-6 {
+    color: darkcyan;
+}
+
+.cell div.c-7 {
+    color: black;
+}
+
+.cell div.c-8 {
+    color: gray;
 }
