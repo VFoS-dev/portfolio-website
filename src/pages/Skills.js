@@ -52,12 +52,12 @@ class Skills extends React.Component {
                     <h1 style={color ? { color: color } : {}}>{title}</h1>
                 </center>
                 {entries.map(n => (
-                    <div className='segment'>
+                    <div key={n.name} className='segment'>
                         <h3 className='title' style={color ? { color: color } : {}}>{n.name}</h3>
                         <h6 className='percent' style={color ? { color: color } : {}}>{n.compentence}%</h6>
-                        <div class="progress" style={{ backgroundColor: "none" }} >
+                        <div className="progress" style={{ backgroundColor: "none" }} >
                             <img src="/images/skills/hilt.png" style={{ zIndex: 1 }} />
-                            <div class="progress-bar clear" style={{ width: `calc(${n.compentence}% - 90px)` }}>
+                            <div className="progress-bar clear" style={{ width: `calc(${n.compentence}% - 90px)` }}>
                                 <div className={`light ${onScreen[refIndex] ? "in" : "out"}`}
                                     style={color ? {
                                         boxShadow: `0 0 5px #fff, 0 0 12px #fff, 0 0 15px ${color}, 0 0 35px ${color}`

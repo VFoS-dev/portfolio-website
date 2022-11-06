@@ -11,48 +11,15 @@ class NavBar extends Component {
         this.state = {
             nav: false,
             timeout: null,
-            frame: "18",
             aniInc: true,
-            queueStart: false,
-            aniStart: false,
-            animateLogo: false
         }
         // binds
         this.changePage = this.changePage.bind(this);
         this.listener = this.listener.bind(this);
-        this.queue = this.queue.bind(this);
-        this.aniLogo = this.aniLogo.bind(this);
         // listeners
         window.addEventListener('popstate', this.listener);
     }
 
-    async queue() {
-        this.setState({ queueStart: true })
-        while (this.state.frame !== this.props.logoFrame) {
-            await this.timeout(25)
-            const { frame } = this.state
-            const { logoFrame } = this.props;
-            this.setState({ frame: `00${Math.min(Math.max(0, parseInt(frame) + (parseInt(logoFrame) > parseInt(frame) ? 1 : -1)), 18)}`.slice(-2) })
-        }
-        this.setState({ queueStart: false })
-    }
-
-    async aniLogo() {
-        this.setState({ aniStart: true })
-        while (this.state.animateLogo) {
-            const { frame, aniInc } = this.state
-            await this.timeout(20)
-            this.setState({
-                aniInc: parseInt(frame) == 0 ? true : (parseInt(frame) == 18 ? false : aniInc),
-            })
-            await this.timeout(10)
-            this.setState({
-                frame: `00${Math.max(Math.min(parseInt(frame) + (aniInc ? 1 : -1), 18), 0)}`.slice(-2)
-            })
-            await this.timeout(20)
-        }
-        this.setState({ aniStart: false })
-    }
 
     timeout(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
@@ -80,22 +47,16 @@ class NavBar extends Component {
 
     render() { // | intro | about | projects | resume | education | contact | secret |
         const ref = window.location.href.split('/')[3].split('?')[0];
-        const { nav, frame, queueStart, animateLogo, aniStart } = this.state;
-        const { logoFrame, secretLength, checkpoints, correct } = this.props;
-        if (!animateLogo && frame !== logoFrame && !queueStart && !aniStart) this.queue()
-        if (animateLogo && !aniStart) this.aniLogo()
+        const { nav } = this.state;
+        const { scrollPercent, secretLength, checkpoints, correct } = this.props;
 
         return (
             <Navbar className="navbar navbar-expand-lg fixed-top bg-transparent disable" bg="light" expand="lg" onToggle={() => this.setState({ nav: !nav })} expanded={nav}>
-                <div className='navShadow'>
-
-                </div>
+                <div className='navShadow' />
                 <Navbar.Brand className="pointer enable z-2" id='intro' style={{ position: 'relative' }} onClick={(e) => this.changePage(e.target.id)} onMouseOut={() => this.setState({ animateLogo: false })} onMouseOver={() => this.setState({ animateLogo: true })}>
-                    <img src={`/images/nav/${frame || "18"}.png`} alt='VFoS.dev' style={{ width: "min(10vh, 10vw)" }} />
+                    <div className='navImage' style={{ '--frame': `${Math.round((scrollPercent) * 16)}` }} />
                     <div className='disable' style={{ position: 'absolute', display: 'flex', top: 0, left: 'min(11vh, 11vw)', height: '30%', marginRight: '15px', marginTop: '1vh' }}>
-                        {[...new Array(secretLength)].map((c, index) => (<div className={`checkpoint${correct ? " complete" : checkpoints[index] ? " correct" : typeof checkpoints[index] == 'boolean' ? " wrong" : ''}`}>
-                            <div />
-                        </div>))}
+                        {[...new Array(secretLength)].map((c, index) => (<div className={`checkpoint${correct ? " complete" : checkpoints[index] ? " correct" : typeof checkpoints[index] == 'boolean' ? " wrong" : ''}`}><div /></div>))}
                     </div>
                 </Navbar.Brand>
                 <Navbar.Toggle className='enable z-2' />
@@ -109,7 +70,7 @@ class NavBar extends Component {
                         {correct && <Nav.Link className={((ref === 'secret') ? "active" : "") + " lato enable"} id='secret' onClick={(e) => this.changePage(e.target.id)}>Secret</Nav.Link>}
                     </Nav>
                 </Navbar.Collapse>
-            </Navbar >
+            </Navbar>
         );
     }
 }

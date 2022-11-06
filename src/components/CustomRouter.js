@@ -19,13 +19,11 @@ class CustomRouter extends React.Component {
             aniTimer: null,
             loc: 'front',
             queue: false,
-            logoFrame: "18",
-            scrollPer: 0
+            scrollPercent: 0
         }
 
         this.updatePage = this.updatePage.bind(this);
         this.keyRot = this.keyRot.bind(this);
-        this.focusRef = React.createRef();
         document.addEventListener('keydown', this.keyRot);
     }
 
@@ -96,26 +94,22 @@ class CustomRouter extends React.Component {
         this.setState({ update: !update, animate: animations, aniTimer: timer, loc: _loc, queue: queue });
     }
 
-    UpdateNavBar(e) {
-        const { logoFrame } = this.state
-        if (e.scrollTop === 0) {
-            console.log(e.offsetHeight, e.scrollHeight);
-            if (e.offsetHeight <= e.scrollHeight) this.setState({ logoFrame: "00" })
-            else this.setState({
-                logoFrame: "18",
-                scrollPer: e.scrollTop
-            })
-        } else {
-            var screen = `00${Math.round((e.scrollTop / Math.min(e.scrollHeight - e.offsetHeight, e.scrollHeight)) * 18)}`.slice(-2)
-            if (screen != logoFrame) this.setState({
-                logoFrame: screen,
-                scrollPer: e.scrollTop
-            })
-        }
+    async UpdateNavBar() {
+        const f = document.getElementById("focused")
+
+        var _scroll;
+        if (document.documentElement.clientHeight < f.scrollHeight) {
+            _scroll = f.scrollTop / Math.min(f.scrollHeight - f.offsetHeight, f.scrollHeight)
+        } else _scroll = 1
+
+        const { scrollPercent } = this.state
+        if (_scroll != scrollPercent) this.setState({
+            scrollPercent: _scroll
+        })
     }
 
     Router(req) { // actual router
-        const { scrollPer } = this.state;
+        const { scrollPercent } = this.state;
         switch (req) {
             default:
             case 'intro':
@@ -125,7 +119,7 @@ class CustomRouter extends React.Component {
             case 'resume':
                 return <Resume />
             case 'skills':
-                return <Skills scrolled={scrollPer} />
+                return <Skills scrolled={scrollPercent} />
             case 'socials':
                 return <Socials />
             case 'about':
@@ -134,21 +128,15 @@ class CustomRouter extends React.Component {
     }
 
     render() {
-        const { animate, loc, queue, logoFrame } = this.state;
+        const { animate, loc, queue, scrollPercent } = this.state;
         const { rotation } = this.props;
 
         const page = window.location.href.split('/').splice(-1)[0].split('?')[0];
-        if (!!page && rotation.front !== page)
-            this.props.rotate(JSON.stringify(rotation).split(`":"${page}`)[0].split('"').splice(-1)[0]);
-
-
-        const f = document.getElementById("focused")
-        if (f?.offsetHeight < f?.scrollHeight && logoFrame == 18) this.UpdateNavBar(f)
-        else if (f?.offsetHeight > f?.scrollHeight && logoFrame < 18) this.setState({ logoFrame: "18" })
-
+        if (!!page && rotation.front !== page) this.props.rotate(JSON.stringify(rotation).split(`":"${page} `)[0].split('"').splice(-1)[0]);
+        if (!!queue && !animate) this.UpdateNavBar();
 
         return (<>
-            <NavBar updatePage={this.updatePage} last={page} logoFrame={logoFrame} />
+            <NavBar updatePage={this.updatePage} last={page} scrollPercent={scrollPercent} />
             <div style={{ width: "100vw", height: "100vh", overflow: 'hidden', background: "black", position: "fixed" }}>
                 <div id='stars' />
                 <div id='stars2' />
@@ -158,9 +146,8 @@ class CustomRouter extends React.Component {
                 <div id='stars3' className='right' />
             </div>
             <div className="cube-container" style={{ perspective: `${document.documentElement.clientWidth}px` }}>
-                {/* hi */}
                 {!!queue && animate && <>
-                    <div className={`face prior ani-${loc}`} key={queue}>
+                    <div className={`face prior ani-${loc} `} key={queue}>
                         {this.Router(queue)}
                     </div>
                     {loc === "back" &&
@@ -170,7 +157,7 @@ class CustomRouter extends React.Component {
                         </div>
                     }
                 </>}
-                <div id="focused" key={page} className={`face focus${animate && !!queue ? ` ani-${loc}` : ""}`} ref={this.focusRef} onScroll={(e) => this.UpdateNavBar(e.currentTarget)}>
+                <div id="focused" key={page} className={`face focus${animate && !!queue ? ` ani-${loc}` : ""} `} onScroll={() => this.UpdateNavBar()}>
                     {this.Router(page)}
                 </div>
             </div>
