@@ -7,11 +7,9 @@ class Resume extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            showResume: false
         }
     }
     render() {
-        const { showResume } = this.state;
         return (
             <div className="resume">
                 <div className='navpadding' />

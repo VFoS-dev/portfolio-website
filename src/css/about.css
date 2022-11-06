@@ -12,6 +12,11 @@
     margin-top: 2%;
 }
 
+.about .self {
+    width: 15%;
+    height: 15%;
+}
+
 .sticky-overlay .score {
     position: absolute;
     bottom: calc(min(10vh, 90px) + 60px);

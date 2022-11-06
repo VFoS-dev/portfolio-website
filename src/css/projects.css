@@ -1,3 +1,7 @@
+.projects {
+    background-color: rgb(92, 92, 92);
+}
+
 .toMinesweeper {
     width: 100%;
     aspect-ratio: 1/1;
@@ -5,6 +9,16 @@
     animation: toMinesweeper 1s steps(34) 50ms forwards;
     background-size: cover;
     z-index: 20;
+}
+
+.projects .cardspot {
+    width: min(15vh, 15vw);
+    max-width: calc(50vw / 4 - 2%);
+    display: inline-block;
+    margin-right: 0.5%;
+    border-radius: 5%;
+    background-color: rgba(255, 255, 255, 0.2);
+    aspect-ratio: 2.5/3.5;
 }
 
 @keyframes toMinesweeper {

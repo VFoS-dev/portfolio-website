@@ -1,11 +1,6 @@
 .resume {
-    background-color: rgb(26, 26, 26);
+    background-color: rgb(141, 83, 83);
 }
-
-.projects {
-    background-color: rgb(92, 92, 92);
-}
-
 
 .intro {
     background-color: #d5f1f5;
@@ -15,56 +10,8 @@
     background-color: #69c2ac;
 }
 
-.contact .form {
-    margin: 15%;
-    margin-top: 2.5%;
-}
-
-.contact .email {
-    width: min(100%, 250px);
-    margin-left: 20px;
-}
-
-.contact .name {
-    width: min(100%, 250px);
-    margin-left: 20px;
-}
-
-.contact .text {
-    height: 45vh;
-}
-
-.contact .message {
-    margin-top: 10%;
-    text-align: center;
-}
-
-.about .self {
-    width: 15%;
-    height: 15%;
-}
-
-.intro .demo {
-    width: 80vmin;
-    height: calc(80vmin*9/16);
-}
-
-.intro .demoSpacing {
-    margin-top: 5%;
-}
-
 .navpadding {
     padding-top: 10vh;
-}
-
-.projects .cardspot {
-    width: min(15vh, 15vw);
-    max-width: calc(50vw / 4 - 2%);
-    display: inline-block;
-    margin-right: 0.5%;
-    border-radius: 5%;
-    background-color: rgba(255, 255, 255, 0.2);
-    aspect-ratio: 2.5/3.5;
 }
 
 .sticky-overlay {
