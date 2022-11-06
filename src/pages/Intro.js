@@ -6,6 +6,7 @@ import '../css/pages.css';
 class Intro extends React.Component {
     render() {
         return (<div className="intro">
+            <div className='navpadding' />
             <center>
                 <h1>Welcome to my portfolio site!</h1>
             </center>

@@ -19,7 +19,7 @@ class CustomRouter extends React.Component {
             aniTimer: null,
             loc: 'front',
             queue: false,
-            scrollPercent: 0
+            scrollPercent: 1
         }
 
         this.updatePage = this.updatePage.bind(this);
