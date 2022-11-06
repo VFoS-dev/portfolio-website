@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/static/css/main.8c72f993.css",
+    "main.js": "/static/js/main.acc7fd33.js",
+    "static/media/toMinesweeper.png": "/static/media/toMinesweeper.ce331baa6fb36cefdbfa.png",
+    "static/media/grass.png": "/static/media/grass.fd672754175c47ae50cb.png",
+    "static/media/crosshair.svg": "/static/media/crosshair.d5d1561b02aa864564a4.svg",
+    "index.html": "/index.html",
+    "main.8c72f993.css.map": "/static/css/main.8c72f993.css.map",
+    "main.acc7fd33.js.map": "/static/js/main.acc7fd33.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.8c72f993.css",
+    "static/js/main.acc7fd33.js"
+  ]
+}
