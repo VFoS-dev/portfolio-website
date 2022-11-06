@@ -18,19 +18,19 @@ class Projects extends React.Component {
             rows: 10,
             refresh: false,
             projects: [
-                { img: '/images/projects/portfolioSite.png', imgcss: { backgroundColor: '#303030' } },
-                { img: '/images/projects/AllinFavor.png', imgcss: { borderRadius: '100%', borderBottomLeftRadius: '0%' } },
-                { img: '/images/projects/TheSimpleRing.png' },
-                { img: '/images/projects/BroncoBeam.png', imgcss: { borderRadius: '10%' } },
-                { img: '/images/projects/PD-v1.7.png' },
-                { img: '/images/projects/minesweeper.png' },
-                { img: '/images/projects/CashnSlash.png' },
-                { img: '/images/projects/swordwhip.png' },
-                { img: '/images/projects/abcStories.png', imgcss: { borderRadius: '10%' } },
-                { img: '/images/projects/defend.png' },
-                { img: '/images/projects/deadline.png' },
-                { img: '/images/projects/uno.png' },
-                { img: '/images/projects/survive.png' },
+                { title: 'Portfolio Website', date: "Oct 26, '22 - Today", createdIn: 'React', img: '/images/projects/portfolioSite.png', imgcss: { backgroundColor: '#303030' } },
+                { title: 'Bronco Beam', date: "Dec 21, '20 - Jul 30, '22", createdIn: 'React Native / React website', img: '/images/projects/BroncoBeam.png', imgcss: { borderRadius: '10%' } },
+                { title: 'All in Favor', date: "Sept 4, '21 - Jan 6, '22", createdIn: 'React', img: '/images/projects/AllinFavor.png', imgcss: { borderRadius: '100%', borderBottomLeftRadius: '0%' } },
+                { title: 'The Simple Ring Alpha', date: "Oct 8, '20 - Dec 24, '21", createdIn: 'React w/ Unity WebGL', img: '/images/projects/TheSimpleRing.png' },
+                { title: 'Planet Destroyer v1.7', date: "Dec 5, '20 - Apr 15, '21", createdIn: 'Unity VR', img: '/images/projects/PD-v1.7.png' },
+                { title: 'ABC Stories', date: "Apr 12 - Dec 23, 2020", createdIn: 'Swift app / React website', img: '/images/projects/abcStories.png', imgcss: { borderRadius: '10%' } },
+                { title: 'Minesweeper Solver', date: "Nov 1 - Dec 4, 2020", createdIn: 'Unity', img: '/images/projects/minesweeper.png' },
+                { title: "Cash n' Slash", date: "Sep 14 - Nov 17, 2020", createdIn: 'Unity VR', img: '/images/projects/CashnSlash.png' },
+                { title: 'Swordwhip', date: "Sep 15 - 16, 2020", createdIn: 'Unity', img: '/images/projects/swordwhip.png' },
+                { title: 'Deadline', date: "Sept 6 - 13, 2018", createdIn: 'Flash', img: '/images/projects/deadline.png' },
+                { title: 'Defend', date: "Aug 3 - 18, 2018", createdIn: 'Flash', img: '/images/projects/defend.png' },
+                { title: 'UNO AI', date: "Nov 21 - Dec 10, 2017", createdIn: 'Flash', img: '/images/projects/uno.png' },
+                { title: 'Survive', date: "Sep 18 - Oct 31, 2017", createdIn: 'Flash', img: '/images/projects/survive.png' },
             ]
         }
 
@@ -72,7 +72,7 @@ class Projects extends React.Component {
         e.style.transform = 'perspective(500px) scale(1) rotateX(0) rotateY(0)';
     }
 
-    mapTile({ name = '', description = '', img = "", imgcss = {} }) {
+    mapTile({ title = '', date = '', createdIn = '', img = "", imgcss = {} }) {
         const { toMine, rows } = this.state;
         return (
             <div id='tile' style={{ backgroundImage: `url(${img})`, ...imgcss, ...(toMine ? { boxShadow: 'none', cursor: 'auto' } : {}) }} onMouseMove={this.handleMove} onMouseOut={(e) => this.handleMoveOut(e.target)}>
@@ -80,6 +80,10 @@ class Projects extends React.Component {
                     minesweeper: true,
                     cells: [...new Array(rows)].map(n => [...new Array(rows)])
                 })} />}
+                <div className='tile-title'>{title}</div>
+                <div className='tile-date'>{date}</div>
+                <div className='tile-createdIn'>{createdIn}</div>
+                <div className='tile-decal'></div>
             </div>
         );
     }
