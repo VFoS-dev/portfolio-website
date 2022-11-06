@@ -19,11 +19,11 @@ class Projects extends React.Component {
             refresh: false,
             projects: [
                 { title: 'Portfolio Website', date: "Oct 26, '22 - Today", createdIn: 'React', img: '/images/projects/portfolioSite.png', imgcss: { backgroundColor: '#303030' } },
-                { title: 'Bronco Beam', date: "Dec 21, '20 - Jul 30, '22", createdIn: 'React Native / React website', img: '/images/projects/BroncoBeam.png', imgcss: { borderRadius: '10%' } },
+                { title: 'Bronco Beam', date: "Dec 21, '20 - Jul 30, '22", createdIn: 'React Native / React', img: '/images/projects/BroncoBeam.png', imgcss: { borderRadius: '10%' } },
                 { title: 'All in Favor', date: "Sept 4, '21 - Jan 6, '22", createdIn: 'React', img: '/images/projects/AllinFavor.png', imgcss: { borderRadius: '100%', borderBottomLeftRadius: '0%' } },
                 { title: 'The Simple Ring Alpha', date: "Oct 8, '20 - Dec 24, '21", createdIn: 'React w/ Unity WebGL', img: '/images/projects/TheSimpleRing.png' },
                 { title: 'Planet Destroyer v1.7', date: "Dec 5, '20 - Apr 15, '21", createdIn: 'Unity VR', img: '/images/projects/PD-v1.7.png' },
-                { title: 'ABC Stories', date: "Apr 12 - Dec 23, 2020", createdIn: 'Swift app / React website', img: '/images/projects/abcStories.png', imgcss: { borderRadius: '10%' } },
+                { title: 'ABC Stories', date: "Apr 12 - Dec 23, 2020", createdIn: 'Swift / React', img: '/images/projects/abcStories.png', imgcss: { borderRadius: '10%' } },
                 { title: 'Minesweeper Solver', date: "Nov 1 - Dec 4, 2020", createdIn: 'Unity', img: '/images/projects/minesweeper.png' },
                 { title: "Cash n' Slash", date: "Sep 14 - Nov 17, 2020", createdIn: 'Unity VR', img: '/images/projects/CashnSlash.png' },
                 { title: 'Swordwhip', date: "Sep 15 - 16, 2020", createdIn: 'Unity', img: '/images/projects/swordwhip.png' },

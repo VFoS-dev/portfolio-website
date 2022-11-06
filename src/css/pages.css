@@ -6,32 +6,6 @@
     background-color: rgb(92, 92, 92);
 }
 
-.about {
-    background-color: #34d0ff;
-    pointer-events: none;
-}
-
-.about .temp {
-    margin-left: 15%;
-    margin-right: 15%;
-    margin-top: 2%;
-}
-
-.sticky-overlay .score {
-    position: absolute;
-    bottom: calc(min(10vh, 90px) + 60px);
-    font-weight: 400;
-    font-size: 1.5rem;
-    color: white;
-    left: 60px;
-    font-family: 'VT323', latin !important;
-}
-
-.about {
-    font-size: 2rem;
-    color: white;
-    font-family: 'VT323', latin !important;
-}
 
 .intro {
     background-color: #d5f1f5;

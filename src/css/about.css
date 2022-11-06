@@ -1,3 +1,27 @@
+.about {
+    background-color: #34d0ff;
+    pointer-events: none;
+    font-size: 2.5em;
+    color: white;
+    font-family: 'VT323', latin !important;
+}
+
+.about .temp {
+    margin-left: 15%;
+    margin-right: 15%;
+    margin-top: 2%;
+}
+
+.sticky-overlay .score {
+    position: absolute;
+    bottom: calc(min(10vh, 90px) + 60px);
+    font-weight: 400;
+    font-size: 1.5rem;
+    color: white;
+    left: 60px;
+    font-family: 'VT323', latin !important;
+}
+
 .bird {
     width: calc((375px - 15px) / 3);
     height: calc((375px - 15px) / 3);
