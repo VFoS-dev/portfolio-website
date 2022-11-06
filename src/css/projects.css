@@ -217,6 +217,7 @@
 
 #tile {
     display: inline-flex;
+    background-color: grey;
     width: min(calc(100vmin - 61px), 320px);
     aspect-ratio: 1/1;
     background-size: contain !important;

@@ -3,34 +3,21 @@ import { Form, Button, Row } from 'react-bootstrap';
 import { connect } from 'react-redux';
 
 import '../css/pages.css';
+import '../css/socials.css';
 
 class Socials extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            changed: false,
-            sent: false,
-            userEmail: '',
-            name: '',
-            subject: '',
-            text: ''
+            pos: [0, 0],
+            rot: (0)
         }
-        this.sendEmail = this.setEmail.bind(this);
-    }
-
-    setEmail(e) {
-        e.preventDefault();
-        this.setState({ sent: true });
     }
 
     render() {
-        const { sent } = this.state;
         return (
-            <div className="contact">
+            <div className="socials">
                 <div className='navpadding' />
-                <center className='demoSpacing'>
-                    <h2>THIS PAGE IS UNDER CONSTRUCTION</h2>
-                </center>
             </div >
         );
     }
