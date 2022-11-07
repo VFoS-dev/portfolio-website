@@ -54,7 +54,7 @@ class Socials extends React.Component {
             "#ffffff",
         ];
 
-        var particles = path
+        var vectors = path
         const { clientWidth, clientHeight } = document.documentElement
 
         var canvas = document.getElementById("slash");
@@ -64,37 +64,37 @@ class Socials extends React.Component {
         context.clearRect(0, 0, clientWidth, clientHeight);
         context.lineJoin = "round";
 
-        let particleSets = [];
+        let _Vectors = [];
 
         let x = path[0].x, y = path[0].y;
 
-        particles.forEach(function (particle, index, particles) {
-            let nextParticle = particles[index + 1] || particles[0];
+        vectors.forEach(function (v, index) {
+            let nVectors = vectors[index + 1] || vectors[0];
 
-            particle.x = x;
-            particle.y = y;
+            v.x = x;
+            v.y = y;
 
-            particleSets.push({ x: x, y: y });
+            _Vectors.push({ x: x, y: y });
 
-            x += (nextParticle.x - particle.x) * 0.6;
-            y += (nextParticle.y - particle.y) * 0.6;
+            x += (nVectors.x - v.x) * 0.6;
+            y += (nVectors.y - v.y) * 0.6;
         });
 
-        particleSets.reverse()
+        _Vectors.reverse()
 
         colors.forEach((color, index) => {
             context.strokeStyle = color;
             context.lineCap = "round";
 
-            particleSets.forEach((set, particleIndex, sets) => {
+            _Vectors.forEach((set, vIndex, sets) => {
                 context.beginPath();
 
                 context.lineTo(set.x, set.y);
-                if (particleIndex) {
-                    context.lineTo(sets[particleIndex - 1].x, sets[particleIndex - 1].y);
+                if (vIndex) {
+                    context.lineTo(sets[vIndex - 1].x, sets[vIndex - 1].y);
                 }
 
-                context.lineWidth = (size + 10 * (colors.length - index) / colors.length) * 2 * (particleIndex + 1) / particleSets.length
+                context.lineWidth = (size + 10 * (colors.length - index) / colors.length) * 2 * (vIndex + 1) / _Vectors.length
 
                 context.stroke();
             });
@@ -107,6 +107,7 @@ class Socials extends React.Component {
         if (path.length > 0 && !pathAni) this.updateSlash()
         return (<Fragment>
             <canvas id='slash' className='sticky-overlay' />
+            <div className='sticky-overlay' />
             <div className="socials" onMouseMove={(e) => this.addVector(e)}>
                 <div className='navpadding' />
                 <center className='demoSpacing'>

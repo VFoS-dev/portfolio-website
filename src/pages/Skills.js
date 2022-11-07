@@ -10,7 +10,7 @@ class Skills extends React.Component {
         this.state = {
             scrolled: "-1",
             updatedRefs: false,
-            onScreen: [true, false, false, false, false, false, false, false]
+            onScreen: [true, true, false, false, false, false, false, false]
         }
 
         this.appRef = React.createRef();
@@ -58,9 +58,10 @@ class Skills extends React.Component {
                         <div className="progress" style={{ backgroundColor: "none" }} >
                             <img src="/images/skills/hilt.png" style={{ zIndex: 1 }} />
                             <div className="progress-bar clear" style={{ width: `calc(${n.compentence}% - 90px)` }}>
-                                <div className={`light ${onScreen[refIndex] ? "in" : "out"}`}
+                                <div className={`light${onScreen[refIndex] ? ' in' : ''}`}
                                     style={color ? {
-                                        boxShadow: `0 0 5px #fff, 0 0 12px #fff, 0 0 15px ${color}, 0 0 35px ${color}`
+                                        boxShadow: `0 0 5px #fff, 0 0 12px #fff, 0 0 15px ${color}, 0 0 35px ${color}`,
+                                        width: `${onScreen[refIndex] * 100}%`
                                     } : {}} />
                             </div>
                         </div>

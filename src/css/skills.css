@@ -29,47 +29,48 @@
 }
 
 .skills .progress-bar .light {
+    width: 100%;
     height: 100%;
     background-color: white;
     box-shadow: 0 0 5px #fff, 0 0 12px #fff, 0 0 15px #00f, 0 0 35px #00f;
     border-bottom-right-radius: 50px;
     border-top-right-radius: 50px;
+    transition: width 2s;
 }
 
-.ani-back .skills .progress-bar .light.in {
-    width: 0%;
+.focus.ani-back .skills .progress-bar .light.in,
+.focus.ani-bottom .skills .progress-bar .light.in,
+.focus.ani-right .skills .progress-bar .light.in,
+.focus.ani-left .skills .progress-bar .light.in {
+    animation: light-in 1s ease forwards;
 }
-
-.focus .skills .progress-bar .light.in {
-    width: 100%;
-    animation: light-in 1.5s ease-in-out 0ms forwards;
-}
-
 
 @keyframes light-in {
-    0% {
-        width: 0%;
+    from {
+        width: 20%;
     }
 
-    100% {
+    to {
         width: 100%;
     }
 }
 
-.focus .skills .progress-bar .light.out {
-    width: 0%;
-    animation: light-out 1.5s ease-in-out 0ms forwards;
+.prior .skills .progress-bar .light.in {
+    animation: light-out 0.7s linear forwards;
 }
-
 
 @keyframes light-out {
-    0% {
+    from {
         width: 100%;
     }
 
-    100% {
+    to {
         width: 0%;
     }
+}
+
+.skip .skills .progress-bar .light.in {
+    width: 0% !important;
 }
 
 .skills .flex-catagory {

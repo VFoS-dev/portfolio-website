@@ -14,7 +14,7 @@ class CustomRouter extends React.Component {
         super(props);
         this.state = {
             update: false,
-            animate: true,
+            animate: false,
             animations: true,
             aniTimer: null,
             loc: 'front',
@@ -109,7 +109,7 @@ class CustomRouter extends React.Component {
     }
 
     Router(req) { // actual router
-        const { scrollPercent } = this.state;
+        const { scrollPercent, animate } = this.state;
         switch (req) {
             default:
             case 'intro':
@@ -119,9 +119,9 @@ class CustomRouter extends React.Component {
             case 'resume':
                 return <Resume />
             case 'skills':
-                return <Skills scrolled={scrollPercent} />
+                return <Skills animating={animate} scrolled={scrollPercent} />
             case 'socials':
-                return <Socials />
+                return <Socials animating={animate} />
             case 'about':
                 return <About />
         }
@@ -147,7 +147,7 @@ class CustomRouter extends React.Component {
             </div>
             <div className="cube-container" style={{ perspective: `${document.documentElement.clientWidth}px` }}>
                 {!!queue && animate && <>
-                    <div className={`face prior ani-${loc} `} key={queue}>
+                    <div className={`face prior ani-${loc}`} key={queue}>
                         {this.Router(queue)}
                     </div>
                     {loc === "back" &&

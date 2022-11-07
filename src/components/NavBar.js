@@ -20,7 +20,6 @@ class NavBar extends Component {
         window.addEventListener('popstate', this.listener);
     }
 
-
     timeout(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
