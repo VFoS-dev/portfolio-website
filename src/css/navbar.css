@@ -15,12 +15,14 @@
 }
 
 .navShadow {
-    width: 100%;
+    width: 100vw;
     z-index: 0;
     background: -webkit-linear-gradient(rgba(1, 1, 1, 0.9), rgba(1, 1, 1, 0));
+    -webkit-transform: translateX(-1rem);
+    transform: translateX(-1rem);
+    ;
     height: 12vh;
     top: 0;
-    translate: -1rem;
     position: absolute;
     pointer-events: none;
 }
@@ -69,6 +71,7 @@
 .navImage {
     aspect-ratio: 1/1;
     width: 160px;
+    height: 160px;
     background-image: url(/public/images/nav/logosprite.png);
     background-position-x: calc(var(--frame, 16) / 16 * 100%);
     padding-right: 10px;

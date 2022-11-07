@@ -37,11 +37,12 @@
 
 .crosshair {
     background: url(/public/images/about/crosshair.svg);
-    width: 446px;
+    width: 120%;
+    height: 120%;
+    background-size: contain;
     position: absolute;
     display: none;
-    transform: translate(-190%, -195%) !important;
-    scale: 0.2;
+    transform: translate(-10%, -10%) !important;
     z-index: 2;
     aspect-ratio: 1/1;
 }
@@ -67,10 +68,12 @@
 }
 
 .bird .left {
+    -webkit-transform: scaleX(-1) translate(-40%, 50%);
     transform: scaleX(-1) translate(-40%, 50%);
 }
 
 .bird .up-left {
+    -webkit-transform: scaleX(-1) translate(-40%, 50%);
     transform: scaleX(-1) translate(-40%, 50%);
 }
 
@@ -79,15 +82,18 @@
 }
 
 .bird .hit.left {
+    -webkit-transform: scaleX(-1) translate(-30%, 25%);
     transform: scaleX(-1) translate(-30%, 25%);
 }
 
 .bird .hit.up-left {
+    -webkit-transform: scaleX(-1) translate(-30%, 25%);
     transform: scaleX(-1) translate(-30%, 25%);
 }
 
 .bird .blue {
     width: calc((375px - 60px) / 9);
+    height: calc((375px - 60px) / 9);
     aspect-ratio: 1/1;
     background: url(/public/images/about/sprite_sheet.png);
     background-position-y: -120px;
@@ -108,6 +114,7 @@
 
 .bird .blue.hit {
     width: 36px;
+    height: 36px;
     animation: blueDuckHit 0.5s steps(2) 0.5s infinite;
     background-position-y: -231px;
     background-position-x: 0px;
@@ -128,16 +135,20 @@
 @keyframes blueDuckHit {
     from {
         width: calc((375px - 80px) / 9);
+        height: calc((375px - 80px) / 9 * 3/2);
         aspect-ratio: 2/3;
         background-position-x: -35px;
-        transform: scaleX(-1)translate(-35%, 25%);
+        -webkit-transform: scaleX(-1) translate(-35%, 25%);
+        transform: scaleX(-1) translate(-35%, 25%);
     }
 
     to {
         width: calc((375px - 80px) / 9);
+        height: calc((375px - 80px) / 9 * 3/2);
         aspect-ratio: 2/3;
         background-position-x: -35px;
-        transform: scaleX(3)translate(90%, 25%);
+        -webkit-transform: scaleX(3) translate(90%, 25%);
+        transform: scaleX(3) translate(90%, 25%);
     }
 }
 
@@ -182,11 +193,13 @@
 @keyframes greenDuckHit {
     from {
         background-position-x: -166px;
+        -webkit-transform: scaleX(-1) translate(-35%, 25%);
         transform: scaleX(-1) translate(-35%, 25%);
     }
 
     to {
         background-position-x: -166px;
+        -webkit-transform: scaleX(3) translate(90%, 25%);
         transform: scaleX(3) translate(90%, 25%);
     }
 }
@@ -232,11 +245,13 @@
 @keyframes brownDuckHit {
     from {
         background-position-x: -296px;
+        -webkit-transform: scaleX(-1) translate(-35%, 25%);
         transform: scaleX(-1) translate(-35%, 25%);
     }
 
     to {
         background-position-x: -296px;
+        -webkit-transform: scaleX(3) translate(90%, 25%);
         transform: scaleX(3) translate(90%, 25%);
     }
 }
@@ -259,8 +274,10 @@
     position: absolute;
     bottom: min(90px, 10vh);
     transform: translate(50%, 25%);
+    -webkit-transform: translate(50%, 25%);
     margin-left: 30px;
     width: 60px;
+    height: 60px;
     scale: 2;
     z-index: 0;
     aspect-ratio: 1/1;
