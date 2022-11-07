@@ -32,7 +32,7 @@ class Socials extends React.Component {
     addVector(e) {
         const { path } = this.state
         var _p = path
-        if (_p.length > 20) _p.pop()
+        if (_p.length > 10) _p.pop()
         var p = [{
             x: e.pageX,
             y: e.pageY
@@ -45,6 +45,7 @@ class Socials extends React.Component {
     }
 
     updatePath(path) {
+        if (window.location.pathname != '/socials') return
         const { size } = this.state
         const colors = [
             '#4d4d4d',
@@ -105,11 +106,9 @@ class Socials extends React.Component {
         const { path, pathAni } = this.state
         if (path.length > 0 && !pathAni) this.updateSlash()
         return (<Fragment>
-            <canvas id='slash' className='sticky-overlay' style={{ pointerEvents: 'all' }} onMouseMove={(e) => this.addVector(e)}>
-            </canvas>
-            <div className="socials">
+            <canvas id='slash' className='sticky-overlay' />
+            <div className="socials" onMouseMove={(e) => this.addVector(e)}>
                 <div className='navpadding' />
-
                 <center className='demoSpacing'>
                     <h2>THIS PAGE IS UNDER CONSTRUCTION</h2>
                 </center>
