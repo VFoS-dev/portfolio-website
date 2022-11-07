@@ -28,6 +28,11 @@
     background-color: transparent;
 }
 
+.hilt {
+    width: 92px;
+    height: 16px;
+}
+
 .skills .progress-bar .light {
     width: 100%;
     height: 100%;

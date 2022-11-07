@@ -56,7 +56,7 @@ class Skills extends React.Component {
                         <h3 className='title' style={color ? { color: color } : {}}>{n.name}</h3>
                         <h6 className='percent' style={color ? { color: color } : {}}>{n.compentence}%</h6>
                         <div className="progress" style={{ backgroundColor: "none" }} >
-                            <img src="/images/skills/hilt.png" style={{ zIndex: 1 }} />
+                            <img className='hilt' src="/images/skills/hilt.png" style={{ zIndex: 1 }} />
                             <div className="progress-bar clear" style={{ width: `calc(${n.compentence}% - 90px)` }}>
                                 <div className={`light${onScreen[refIndex] ? ' in' : ''}`}
                                     style={color ? {
