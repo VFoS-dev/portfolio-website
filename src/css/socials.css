@@ -1,3 +1,7 @@
 .socials {
-    background-color: white;
+    background-color: rgb(143, 89, 45);
+    background-image: url(/public/images/socials/woodPlankBackground.jpg);
+    background-repeat: repeat-x;
+    background-size: cover;
+    background-position: 50%;
 }

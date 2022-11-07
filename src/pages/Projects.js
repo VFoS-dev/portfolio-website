@@ -96,7 +96,7 @@ class Projects extends React.Component {
         cells.forEach(_ => _.forEach(c => {
             if (lost) return;
             if (c.value < 0 && c.revealed) lost = true;
-            if (c.value >= 0 && c.revealed || c.value < 0 && !c.revealed) win++;
+            if (c.value >= 0 && c.revealed || c.value < 0 && c.flagged) win++;
         }))
         win = win == cells.length * cells.length
 
