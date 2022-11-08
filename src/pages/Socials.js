@@ -111,6 +111,10 @@ class Socials extends React.Component {
                 <div className='navpadding' />
                 <center className='demoSpacing'>
                     <h2>THIS PAGE IS UNDER CONSTRUCTION</h2>
+                    <a href='https://leetcode.com/VFoS/'>leetcode</a>
+                    <a href='https://www.linkedin.com/in/jon-kido-vfos/'>linkedin</a>
+                    <a href='https://github.com/VFoS-dev'>github</a>
+                    <a href='https://www.youtube.com/channel/UCbHIwUTtZwRiiPTyl_3ncLQ/'>youtube</a>
                 </center>
             </div>
         </Fragment>);
