@@ -1,8 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import '../css/pages.css';
-
 class Intro extends React.Component {
     render() {
         return (<div className="intro">

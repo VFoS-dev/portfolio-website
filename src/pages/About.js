@@ -1,7 +1,6 @@
 import React, { Fragment } from 'react';
 import { connect } from 'react-redux';
 
-import '../css/pages.css';
 import '../css/about.css';
 
 class About extends React.Component {

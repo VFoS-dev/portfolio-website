@@ -1,7 +1,5 @@
 import React, { Fragment } from 'react';
 import { connect } from 'react-redux';
-import '../css/pages.css';
-
 
 class Resume extends React.Component {
     constructor(props) {

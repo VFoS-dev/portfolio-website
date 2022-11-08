@@ -1,9 +1,7 @@
 import React, { Fragment } from 'react';
 import { connect } from 'react-redux';
 
-import '../css/pages.css';
 import '../css/projects.css';
-
 
 class Projects extends React.Component {
     constructor(props) {
@@ -213,7 +211,7 @@ class Projects extends React.Component {
                 <div className="mineHeader">
                     <div className='numbs left'>
                         {[...new Array(3)].map((a, index) =>
-                            <div className={`numb n${Math.floor((!minesweeper ? projects.length : nbombs - flags) / Math.pow(10, 2 - index)) % 10}`} />
+                            <div className={`numb n${Math.floor((!minesweeper ? projects.length : nbombs - cells.map(a => a.map(c => c ? c.flagged && !c.revealed : 0).reduce((a, b) => a + b)).reduce((a, b) => a + b)) / Math.pow(10, 2 - index)) % 10}`} />
                         )}
                     </div>
                     <center className='button-container' onClick={() => this.changeState()} >
