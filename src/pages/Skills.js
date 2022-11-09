@@ -35,7 +35,7 @@ class Skills extends React.Component {
         })
     }
 
-    mapSkills(title, entries, refIndex, color) {
+    mapSkills(title, entries, refIndex, color, textColor = null) {
         const { onScreen } = this.state;
         return <Fragment>
             <div style={{ width: "100%", height: "100%", overflow: 'hidden', position: "absolute", zIndex: 0, borderRadius: "30px" }}>
@@ -48,12 +48,12 @@ class Skills extends React.Component {
                 padding: '18px'
             }}>
                 <center>
-                    <h1 style={color ? { color: color } : {}}>{title}</h1>
+                    <h1 style={color || textColor ? { color: textColor || color } : {}}>{title}</h1>
                 </center>
                 {entries.map(n => (
                     <div key={n.name} className='segment'>
-                        <h3 className='title' style={color ? { color: color } : {}}>{n.name}</h3>
-                        <h6 className='percent' style={color ? { color: color } : {}}>{n.compentence}%</h6>
+                        <h3 className='title' style={color || textColor ? { color: textColor || color } : {}}>{n.name}</h3>
+                        <h6 className='percent' style={color || textColor ? { color: textColor || color } : {}}>{n.compentence}%</h6>
                         <div className="progress" style={{ backgroundColor: "none" }} >
                             <img className='hilt' src="/images/skills/hilt.png" style={{ zIndex: 1 }} />
                             <div className="progress-bar clear" style={{ width: `calc(${n.compentence}% - 90px)` }}>
@@ -87,7 +87,7 @@ class Skills extends React.Component {
                         { name: 'Substance Painter', compentence: 67 },
                         { name: 'Unity', compentence: 90 },
                         { name: 'Unreal', compentence: 66 },
-                    ], 0, "blue")}
+                    ], 0, "blue", '#335cff')}
                 </div>
                 <div className='flex-catagory' ref={this.frameRef} style={{ boxShadow: "0 0 5px #fff, 0 0 15px magenta", position: "relative" }}>
                     {this.mapSkills("Frameworks", [
@@ -123,7 +123,7 @@ class Skills extends React.Component {
                     {this.mapSkills("Databases", [
                         { name: 'MongoDB', compentence: 90 },
                         { name: 'SQLite', compentence: 87 },
-                    ], 4, "purple")}
+                    ], 4, "#a733ff")}
                 </div>
                 <div className='flex-catagory' ref={this.versRef} style={{ boxShadow: "0 0 5px #fff, 0 0 15px green", position: "relative" }}>
                     {this.mapSkills("Version Control", [
