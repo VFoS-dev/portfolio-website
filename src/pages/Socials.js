@@ -207,7 +207,7 @@ class Socials extends React.Component {
     }
 
     createOptions(op, index) {
-        return <div className='options' key={'options' + index}>
+        return <div className='grow'><div className='options' key={'options' + index}>
             <div className='svg'>
                 <svg className='shadow' viewBox="0 0 168 168" filter='blur(2.5em)'>
                     <circle mask="url(#donut)" fill='rgba(10,10,10,1)' transform="matrix(1 0 0 1 30 30" r="82" cx="84" cy="84" />
@@ -230,8 +230,9 @@ class Socials extends React.Component {
                     </text>
                 </svg>
             </div>
-            {op.href && <div className='hoverEvent' id={index} onClick={e => this.openLink(e.target.id, true)} onMouseEnter={e => this.openLink(e.target.id)} />}
+            {op.href && <div className='hoverEvent' id={index} onClick={this.props.animating ? {} : e => this.openLink(e.target.id, true)} onMouseEnter={this.props.animating ? {} : e => this.openLink(e.target.id)} />}
             {op.gif && <img class='gif' src={op.gif} />}
+        </div>
         </div>
     }
 
@@ -242,10 +243,9 @@ class Socials extends React.Component {
             <canvas id='slash' className='sticky-overlay' />
             <div className="socials" onMouseMove={(e) => this.addVector(e)}>
                 <div className='navpadding' />
-                <center className='demoSpacing'>
-                    <h2>THIS PAGE IS UNDER CONSTRUCTION</h2>
+                <div className='links'>
                     {options.map((a, index) => this.createOptions(a, index))}
-                </center>
+                </div>
             </div>
         </Fragment>);
     }

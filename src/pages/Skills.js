@@ -9,7 +9,7 @@ class Skills extends React.Component {
         this.state = {
             scrolled: "-1",
             updatedRefs: false,
-            onScreen: [true, true, false, false, false, false, false, false]
+            onScreen: [false, false, false, false, false, false, false, false]
         }
 
         this.appRef = React.createRef();

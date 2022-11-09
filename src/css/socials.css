@@ -4,6 +4,7 @@
 }
 
 .socials {
+    padding: 0px !important;
     background-color: rgb(138, 90, 75);
     background-image: url(/public/images/socials/game/woodPlankBackground.jpg);
     background-repeat: repeat;
@@ -16,13 +17,31 @@
     width: 200px;
     height: 200px;
     position: relative;
-    margin: 150px;
+    margin: auto;
+    margin-top: 105px;
+    margin-bottom: 105px;
 }
 
 .socials .options .gif {
     position: absolute;
     left: 0px;
     top: 0px;
+}
+
+.socials .links {
+    padding-top: 10vh;
+    min-height: 80vh;
+    width: max(80%, 410px) !important;
+    margin: auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    padding-bottom: 60px;
+}
+
+.socials .links .grow {
+    min-width: 410px;
+    flex: 1 0 30%;
 }
 
 .socials .options .inner {
@@ -91,7 +110,6 @@ div.rainbowGradient {
     border-radius: 50%;
     background-image: conic-gradient(from 270deg, #ff4800 10%, #dfd902 35%, #20dc68, #0092f4, #da54d8 72% 75%, #ff4800 95%);
 }
-
 
 div.gradient {
     width: 100%;

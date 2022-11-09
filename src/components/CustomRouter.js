@@ -133,10 +133,8 @@ class CustomRouter extends React.Component {
     render() {
         const { animate, loc, queue, scrollPercent } = this.state;
         const { rotation } = this.props;
-
         const page = window.location.href.split('/').splice(-1)[0].split('?')[0];
         if (!!page && rotation.front !== page) this.props.rotate(JSON.stringify(rotation).split(`":"${page} `)[0].split('"').splice(-1)[0]);
-
 
         return (<>
             <NavBar updatePage={this.updatePage} last={page} scrollPercent={scrollPercent} />
