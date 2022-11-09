@@ -17,7 +17,7 @@ class Projects extends React.Component {
             refresh: false,
             projects: [
                 { title: 'Project Kuro', date: "Starting: Jan 1, 2023", createdIn: 'Unreal', img: '/images/projects/projectkuro.png' },
-                { title: 'Portfolio Website', date: "Oct 26, '22 - Today", createdIn: 'React', img: '/images/projects/portfolioSite.png' },
+                { title: 'Portfolio Website', date: "Oct 26, '22 - Present", createdIn: 'React', img: '/images/projects/portfolioSite.png' },
                 { title: 'Bronco Beam', date: "Dec 21, '20 - Jul 30, '22", createdIn: 'React Native / React', img: '/images/projects/BroncoBeam.png', imgcss: { borderRadius: '10%' } },
                 { title: 'All in Favor', date: "Sept 4, '21 - Jan 6, '22", createdIn: 'React', img: '/images/projects/AllinFavor.png', imgcss: { borderRadius: '100%', borderBottomLeftRadius: '0%' } },
                 { title: 'The Simple Ring Alpha', date: "Oct 8, '20 - Dec 24, '21", createdIn: 'React w/ Unity WebGL', img: '/images/projects/TheSimpleRing.png' },

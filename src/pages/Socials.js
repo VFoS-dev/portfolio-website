@@ -12,6 +12,18 @@ class Socials extends React.Component {
             size: 4,
             options: [
                 {
+                    name: 'Coming Soon',
+                    gif: '/images/socials//game/pineapple.gif',
+                    startRot: Math.random() * 360,
+                    hovered: false,
+                    styles: {
+                        outerLine: 'white',
+                        innerLine: 'white',
+                        textBorder: 'black',
+                        textColor: 'white'
+                    }
+                },
+                {
                     id: '',
                     name: 'Github',
                     gif: '/images/socials/github.gif',
@@ -19,7 +31,6 @@ class Socials extends React.Component {
                     href: 'https://github.com/VFoS-dev',
                     hovered: false,
                     styles: {
-                        fill: null,
                         foreignShadow: <foreignObject x="2" y="2" width="164" height="164" mask="url(#donut)">
                             <div class="rainbowGradient" />
                         </foreignObject>,
@@ -77,14 +88,13 @@ class Socials extends React.Component {
                     }
                 },
                 {
-                    id: 'pattern0',
+                    id: '',
                     name: 'LeetCode',
                     gif: '/images/socials/leetcode.gif',
                     startRot: Math.random() * 360,
                     href: 'https://leetcode.com/VFoS/',
                     hovered: false,
                     styles: {
-                        fill: null,
                         foreign: <foreignObject x="2" y="2" width="164" height="164" mask="url(#donut)">
                             <div class="gradient" />
                         </foreignObject>,
@@ -174,14 +184,9 @@ class Socials extends React.Component {
 
             _Vectors.forEach((set, vIndex, sets) => {
                 context.beginPath();
-
                 context.lineTo(set.x, set.y);
-                if (vIndex) {
-                    context.lineTo(sets[vIndex - 1].x, sets[vIndex - 1].y);
-                }
-
+                if (vIndex) context.lineTo(sets[vIndex - 1].x, sets[vIndex - 1].y);
                 context.lineWidth = (size + 10 * (colors.length - index) / colors.length) * 2 * (vIndex + 1) / _Vectors.length
-
                 context.stroke();
             });
         });
@@ -225,8 +230,8 @@ class Socials extends React.Component {
                     </text>
                 </svg>
             </div>
-            <div className='hoverEvent' id={index} onClick={e => this.openLink(e.target.id, true)} onMouseEnter={e => this.openLink(e.target.id)} />
-            <img class='gif' src={op.gif} />
+            {op.href && <div className='hoverEvent' id={index} onClick={e => this.openLink(e.target.id, true)} onMouseEnter={e => this.openLink(e.target.id)} />}
+            {op.gif && <img class='gif' src={op.gif} />}
         </div>
     }
 
