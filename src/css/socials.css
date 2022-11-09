@@ -5,3 +5,46 @@
     background-size: cover;
     background-position: 50%;
 }
+
+.socials .options {
+    pointer-events: none;
+    width: 200px;
+    height: 200px;
+    position: relative;
+    margin: 150px;
+}
+
+.socials .options .hoverEvent {
+    pointer-events: all;
+    cursor: pointer;
+    width: 102%;
+    height: 102%;
+    border-radius: 100%;
+    position: absolute;
+}
+
+.socials .options img {
+    width: 200px;
+    height: 200px;
+}
+
+.socials .options .svg {
+    transform: translate(-21%, -21%);
+    width: 175%;
+    height: 175%;
+    position: absolute;
+}
+
+.socials .options .svg svg {
+    animation: rotSVG 20s forwards infinite linear;
+}
+
+@keyframes rotSVG {
+    from {
+        rotate: calc(var(--rot, 0deg) + 0deg);
+    }
+
+    to {
+        rotate: calc(var(--rot, 0deg) + 360deg);
+    }
+}
