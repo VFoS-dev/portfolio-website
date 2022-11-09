@@ -4,11 +4,22 @@
 }
 
 .socials {
-    background-color: rgb(143, 89, 45);
+    background-color: rgb(138, 90, 75);
     background-image: url(/public/images/socials/woodPlankBackground.jpg);
-    background-repeat: repeat-x;
-    background-size: cover;
+    background-repeat: repeat;
     background-position: 50%;
+    background-blend-mode: multiply;
+    animation: backdrop 360s linear infinite;
+}
+
+@keyframes backdrop {
+    from {
+        background-position: 50% 50%;
+    }
+
+    to {
+        background-position: 150% 150%;
+    }
 }
 
 .socials .options {
