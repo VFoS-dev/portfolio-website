@@ -32,10 +32,10 @@ class Socials extends React.Component {
                     hovered: false,
                     styles: {
                         foreignShadow: <foreignObject x="2" y="2" width="164" height="164" mask="url(#donut)">
-                            <div class="rainbowGradient" />
+                            <div className="rainbowGradient" />
                         </foreignObject>,
                         foreign: <foreignObject x="2" y="2" width="164" height="164" mask="url(#donut)">
-                            <div class="rainbowGradient" />
+                            <div className="rainbowGradient" />
                         </foreignObject>,
                         outerLine: 'white',
                         innerLine: 'white',
@@ -54,10 +54,10 @@ class Socials extends React.Component {
                         fill: <linearGradient
                             id="pattern1"
                             gradientTransform="rotate(30)">
-                            <stop offset="0%" stop-color="rgba(255,0,0,0.5)" />
-                            <stop offset="20%" stop-color="rgba(255,0,0,0.5)" />
-                            <stop offset="95%" stop-color="rgba(0,0,255,0.5)" />
-                            <stop offset="100%" stop-color="rgba(0,0,255,0.5)" />
+                            <stop offset="0%" stopColor="rgba(255,0,0,0.5)" />
+                            <stop offset="20%" stopColor="rgba(255,0,0,0.5)" />
+                            <stop offset="95%" stopColor="rgba(0,0,255,0.5)" />
+                            <stop offset="100%" stopColor="rgba(0,0,255,0.5)" />
                         </linearGradient>,
                         outerLine: '#4b61db',
                         innerLine: '#db4b4b',
@@ -79,7 +79,7 @@ class Socials extends React.Component {
                     styles: {
                         fill: <pattern id="pattern3" width="25" height="1" patternUnits="userSpaceOnUse" patternTransform="rotate(45 50 50)">
                             <rect fill='rgba(0, 86, 255, 0.5)' width='25px' height='10px' />
-                            <line stroke='rgba(61, 127, 255, 0.5)' stroke-width="25px" y2="10" />
+                            <line stroke='rgba(61, 127, 255, 0.5)' strokeWidth="25px" y2="10" />
                         </pattern>,
                         outerLine: '#3469d1',
                         innerLine: '#3469d1',
@@ -96,7 +96,7 @@ class Socials extends React.Component {
                     hovered: false,
                     styles: {
                         foreign: <foreignObject x="2" y="2" width="164" height="164" mask="url(#donut)">
-                            <div class="gradient" />
+                            <div className="gradient" />
                         </foreignObject>,
                         outerLine: 'rgba(255,100,100,0.5)',
                         innerLine: 'rgba(255,100,100,0.5)',
@@ -207,32 +207,33 @@ class Socials extends React.Component {
     }
 
     createOptions(op, index) {
-        return <div className='grow'><div className='options' key={'options' + index}>
-            <div className='svg'>
-                <svg className='shadow' viewBox="0 0 168 168" filter='blur(2.5em)'>
-                    <circle mask="url(#donut)" fill='rgba(10,10,10,1)' transform="matrix(1 0 0 1 30 30" r="82" cx="84" cy="84" />
-                    {op.styles.foreignShadow}
-                </svg>
-                <svg className='rot' viewBox="0 0 168 168" style={{ '--rot': `${op.startRot}deg` }}>
-                    <defs>{op.styles.fill}</defs>
-                    {op.styles.foreign}
-                    <circle id="visual" mask="url(#donut)" fill={`url(#${op.id})`} stroke={op.styles.outerLine} strokeWidth="1.4" transform="matrix(1 0 0 1 30 30" r="82" cx="84" cy="84" />
-                    <circle fill='none' stroke={op.styles.innerLine} strokeWidth="1.4" transform="matrix(1 0 0 1 28 28)" r="55.9095409898556" cx="55.9095409898556" cy="55.9095409898556" />
-                    <path id="upper" fill="none" transform="translate(19.7999976778584, 84) scale(1,-1)" d="M0 -1.26218e-29C-3.33663e-14 22.9365 12.2365 44.1306 32.1 55.5988C51.9636 67.0671 76.4365 67.0671 96.3 55.5988C116.164 44.1306 128.4 22.9365 128.4 1.09118e-13" />
-                    <path id="lower" fill="none" transform="matrix(-0.999980871067792 0.00618381781983816 -0.00618381781983816 -0.999980871067792 148.19877424465 83.6029988816068)  scale(1,-1)" d="M0 1.77501e-13C1.05879e-13 35.4567 28.7433 64.2 64.2 64.2C99.6567 64.2 128.4 35.4567 128.4 2.29597e-13" />
-                    <mask id='donut'>
-                        <rect fill='white' width='168px' height='168px' />
-                        <circle fill='black' transform="matrix(1 0 0 1 28 28)" r="55.9095409898556" cx="55.9095409898556" cy="55.9095409898556" />
-                    </mask>
-                    <text className='fnFont' alignmentBaseline="top">
-                        <textPath href="#upper" fill={op.styles.textColor || op.styles.text.upperColor} stroke={op.styles.textBorder || op.styles.text.upperBorder}>{op.name}</textPath>
-                        <textPath href="#lower" fill={op.styles.textColor || op.styles.text.lowerColor} stroke={op.styles.textBorder || op.styles.text.lowerBorder}>{op.name}</textPath>
-                    </text>
-                </svg>
+        return <div className='grow' key={'options' + index}>
+            <div className='options'>
+                <div className='svg'>
+                    <svg className='shadow' viewBox="0 0 168 168" filter='blur(2.5em)'>
+                        <circle mask="url(#donut)" fill='rgba(10,10,10,1)' r="82" cx="84" cy="84" />
+                        {op.styles.foreignShadow}
+                    </svg>
+                    <svg className='rot' viewBox="0 0 168 168" style={{ '--rot': `${op.startRot}deg` }}>
+                        <defs>{op.styles.fill}</defs>
+                        {op.styles.foreign}
+                        <circle id="visual" mask="url(#donut)" fill={`url(#${op.id})`} stroke={op.styles.outerLine} strokeWidth="1.4" r="82" cx="84" cy="84" />
+                        <circle fill='none' stroke={op.styles.innerLine} strokeWidth="1.4" transform="matrix(1 0 0 1 28 28)" r="55.9095409898556" cx="55.9095409898556" cy="55.9095409898556" />
+                        <path id="upper" fill="none" transform="translate(19.7999976778584, 84) scale(1,-1)" d="M0 -1.26218e-29C-3.33663e-14 22.9365 12.2365 44.1306 32.1 55.5988C51.9636 67.0671 76.4365 67.0671 96.3 55.5988C116.164 44.1306 128.4 22.9365 128.4 1.09118e-13" />
+                        <path id="lower" fill="none" transform="matrix(-0.999980871067792 0.00618381781983816 -0.00618381781983816 -0.999980871067792 148.19877424465 83.6029988816068)  scale(1,-1)" d="M0 1.77501e-13C1.05879e-13 35.4567 28.7433 64.2 64.2 64.2C99.6567 64.2 128.4 35.4567 128.4 2.29597e-13" />
+                        <mask id='donut'>
+                            <rect fill='white' width='168px' height='168px' />
+                            <circle fill='black' transform="matrix(1 0 0 1 28 28)" r="55.9095409898556" cx="55.9095409898556" cy="55.9095409898556" />
+                        </mask>
+                        <text className='fnFont' alignmentBaseline="top">
+                            <textPath href="#upper" fill={op.styles.textColor || op.styles.text.upperColor} stroke={op.styles.textBorder || op.styles.text.upperBorder}>{op.name}</textPath>
+                            <textPath href="#lower" fill={op.styles.textColor || op.styles.text.lowerColor} stroke={op.styles.textBorder || op.styles.text.lowerBorder}>{op.name}</textPath>
+                        </text>
+                    </svg>
+                </div>
+                {op.href && <div className='hoverEvent' id={index} onClick={this.props.animating ? {} : e => this.openLink(e.target.id, true)} onMouseEnter={this.props.animating ? {} : e => this.openLink(e.target.id)} />}
+                {op.gif && <img className='gif' src={op.gif} />}
             </div>
-            {op.href && <div className='hoverEvent' id={index} onClick={this.props.animating ? {} : e => this.openLink(e.target.id, true)} onMouseEnter={this.props.animating ? {} : e => this.openLink(e.target.id)} />}
-            {op.gif && <img class='gif' src={op.gif} />}
-        </div>
         </div>
     }
 
