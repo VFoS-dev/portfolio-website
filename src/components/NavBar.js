@@ -26,7 +26,6 @@ class NavBar extends Component {
 
     listener() {
         this.props.updatePage(this.props.last, window.location.href.split('/').splice(-1)[0].split('?')[0] || "intro");
-        this.setState({ nav: false });
     }
 
     changePage(nav) {
@@ -52,10 +51,10 @@ class NavBar extends Component {
         return (
             <Navbar className="navbar navbar-expand-lg fixed-top bg-transparent disable" bg="light" expand="lg" onToggle={() => this.setState({ nav: !nav })} expanded={nav}>
                 <div className='navShadow' />
-                <Navbar.Brand className="pointer enable z-2" id='intro' style={{ position: 'relative' }} onClick={(e) => this.changePage(e.target.id)} onMouseOut={() => this.setState({ animateLogo: false })} onMouseOver={() => this.setState({ animateLogo: true })}>
+                <Navbar.Brand className="pointer enable z-2" id='intro' style={{ position: 'relative' }} onClick={(e) => this.changePage(e.target.id)} onMouseOut={() => this.setState({ animateLogo: false })} onMouseEnter={() => this.setState({ animateLogo: true })}>
                     <div className='navImage' style={{ '--frame': `${Math.round((scrollPercent) * 16)}` }} />
                     <div className='disable' style={{ position: 'absolute', display: 'flex', top: 0, left: 'min(11vh, 11vw)', height: '30%', marginRight: '15px', marginTop: '1vh' }}>
-                        {[...new Array(secretLength)].map((c, index) => (<div className={`checkpoint${correct ? " complete" : checkpoints[index] ? " correct" : typeof checkpoints[index] == 'boolean' ? " wrong" : ''}`}><div /></div>))}
+                        {[...new Array(secretLength)].map((c, index) => (<div key={index+"checkpoints"}className={`checkpoint${correct ? " complete" : checkpoints[index] ? " correct" : typeof checkpoints[index] == 'boolean' ? " wrong" : ''}`}><div /></div>))}
                     </div>
                 </Navbar.Brand>
                 <Navbar.Toggle className='enable z-2' />

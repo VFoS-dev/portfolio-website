@@ -70,7 +70,7 @@ class Skills extends React.Component {
     }
 
     render() {
-        if (this.props.scrolled != this.state.scrolled) this.userScrolled()
+        if (this.props.scrolled != this.state.scrolled) setTimeout(() => this.userScrolled(), 0)
         if (!this.state.updatedRefs) setTimeout(() => this.userScrolled(), 0)
 
         return (<div className="skills">

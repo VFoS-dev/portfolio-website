@@ -19,6 +19,7 @@ class CustomRouter extends React.Component {
             animations: true,
             aniTimer: null,
             loc: 'front',
+            winloc: '',
             queue: false,
             scrollPercent: 1
         }
@@ -109,22 +110,23 @@ class CustomRouter extends React.Component {
         })
     }
 
+
     Router(req) { // actual router
         const { scrollPercent, animate } = this.state;
         switch (req) {
             default:
             case 'intro':
-                return <Intro />
+                return <Intro key="Intro" />
             case 'projects':
-                return <Projects />
+                return <Projects key="Projects" />
             case 'resume':
-                return <Resume />
+                return <Resume key="Resume" />
             case 'skills':
-                return <Skills animating={animate} scrolled={scrollPercent} />
+                return <Skills animating={animate} scrolled={scrollPercent} key="Skills" />
             case 'socials':
-                return <Socials animating={animate} />
+                return <Socials animating={animate} key="Socials" />
             case 'about':
-                return <About />
+                return <About key="About" />
         }
     }
 
@@ -134,7 +136,7 @@ class CustomRouter extends React.Component {
 
         const page = window.location.href.split('/').splice(-1)[0].split('?')[0];
         if (!!page && rotation.front !== page) this.props.rotate(JSON.stringify(rotation).split(`":"${page} `)[0].split('"').splice(-1)[0]);
-        if (!!queue && !animate) this.UpdateNavBar();
+
 
         return (<>
             <NavBar updatePage={this.updatePage} last={page} scrollPercent={scrollPercent} />

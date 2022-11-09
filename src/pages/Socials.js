@@ -11,10 +11,89 @@ class Socials extends React.Component {
             pathAni: false,
             size: 4,
             options: [
-                { name: 'Linkedin', gif: '/images/socials/linkedin.gif', startRot: Math.random() * 360, href: 'https://www.linkedin.com/in/jon-kido-vfos/', hovered: false },
-                { name: 'YouTube', gif: '/images/socials/youtube.gif', startRot: Math.random() * 360, href: 'https://www.youtube.com/channel/UCbHIwUTtZwRiiPTyl_3ncLQ/', hovered: false },
-                { name: 'LeetCode', gif: '/images/socials/leetcode.gif', startRot: Math.random() * 360, href: 'https://leetcode.com/VFoS/', hovered: false },
-                { name: 'Github', gif: '/images/socials/github.gif', startRot: Math.random() * 360, href: 'https://github.com/VFoS-dev', hovered: false }
+                {
+                    id: '',
+                    name: 'Github',
+                    gif: '/images/socials/github.gif',
+                    startRot: Math.random() * 360,
+                    href: 'https://github.com/VFoS-dev',
+                    hovered: false,
+                    styles: {
+                        fill: null,
+                        foreignShadow: <foreignObject x="2" y="2" width="164" height="164" mask="url(#donut)">
+                            <div class="rainbowGradient" />
+                        </foreignObject>,
+                        foreign: <foreignObject x="2" y="2" width="164" height="164" mask="url(#donut)">
+                            <div class="rainbowGradient" />
+                        </foreignObject>,
+                        outerLine: 'white',
+                        innerLine: 'white',
+                        textBorder: 'black',
+                        textColor: 'white'
+                    }
+                },
+                {
+                    id: 'pattern1',
+                    name: 'Linkedin',
+                    gif: '/images/socials/linkedin.gif',
+                    startRot: Math.random() * 360,
+                    href: 'https://www.linkedin.com/in/jon-kido-vfos/',
+                    hovered: false,
+                    styles: {
+                        fill: <linearGradient
+                            id="pattern1"
+                            gradientTransform="rotate(30)">
+                            <stop offset="0%" stop-color="rgba(255,0,0,0.5)" />
+                            <stop offset="20%" stop-color="rgba(255,0,0,0.5)" />
+                            <stop offset="95%" stop-color="rgba(0,0,255,0.5)" />
+                            <stop offset="100%" stop-color="rgba(0,0,255,0.5)" />
+                        </linearGradient>,
+                        outerLine: '#4b61db',
+                        innerLine: '#db4b4b',
+                        text: {
+                            upperBorder: '#700000',
+                            upperColor: 'yellow',
+                            lowerBorder: '#002d8f',
+                            lowerColor: '#dce6fc',
+                        }
+                    }
+                },
+                {
+                    id: 'pattern3',
+                    name: 'YouTube',
+                    gif: '/images/socials/youtube.gif',
+                    startRot: Math.random() * 360,
+                    href: 'https://www.youtube.com/channel/UCbHIwUTtZwRiiPTyl_3ncLQ/',
+                    hovered: false,
+                    styles: {
+                        fill: <pattern id="pattern3" width="25" height="1" patternUnits="userSpaceOnUse" patternTransform="rotate(45 50 50)">
+                            <rect fill='rgba(0, 86, 255, 0.5)' width='25px' height='10px' />
+                            <line stroke='rgba(61, 127, 255, 0.5)' stroke-width="25px" y2="10" />
+                        </pattern>,
+                        outerLine: '#3469d1',
+                        innerLine: '#3469d1',
+                        textBorder: '#002d8f',
+                        textColor: '#dce6fc'
+                    }
+                },
+                {
+                    id: 'pattern0',
+                    name: 'LeetCode',
+                    gif: '/images/socials/leetcode.gif',
+                    startRot: Math.random() * 360,
+                    href: 'https://leetcode.com/VFoS/',
+                    hovered: false,
+                    styles: {
+                        fill: null,
+                        foreign: <foreignObject x="2" y="2" width="164" height="164" mask="url(#donut)">
+                            <div class="gradient" />
+                        </foreignObject>,
+                        outerLine: 'rgba(255,100,100,0.5)',
+                        innerLine: 'rgba(255,100,100,0.5)',
+                        textBorder: '#700000',
+                        textColor: 'yellow'
+                    }
+                },
             ]
         }
 
@@ -43,6 +122,7 @@ class Socials extends React.Component {
             x: e.pageX,
             y: e.pageY
         }, ..._p]
+        if (window.location.pathname != '/socials') return;
         this.updatePath(p)
     }
 
@@ -109,46 +189,52 @@ class Socials extends React.Component {
     }
 
     openLink(index, clicked = false) {
+        if (window.location.pathname != '/socials') return;
         const { options } = this.state
         if (!options[index].hovered || clicked) {
             options[index].hovered = true;
-            if (!clicked) setTimeout(() => window.open(options[index].href, '_blank'), 500);
-            else window.open(options[index].href, '_blank')
+            setTimeout(() => {
+                if (window.location.pathname != '/socials') return;
+                window.open(options[index].href, '_blank')
+            }, 500 * !clicked);
             this.setState({ options: options });
         }
     }
 
     createOptions(op, index) {
-        return <div className='options'>
+        return <div className='options' key={'options' + index}>
             <div className='svg'>
-                <svg viewBox="0 0 168 168" style={{ '--rot': `${op.startRot}deg` }}>
-                    <ellipse id="shape0" transform="matrix(0.927142888710217 0 0 0.932857140571063 6.1199973483418 5.6400001920307)" rx="84" ry="84" cx="84" cy="84" fill="none" stroke="#000000" stroke-width="2.4" stroke-linecap="square" />
-                    <circle id="shape0" transform="matrix(0.927142864724638 0 0 0.932857116437654 34.018153730675 33.7101010437258)" r="53.9095409898556" cx="53.9095409898556" cy="53.9095409898556" fill="none" stroke="#000000" stroke-width="2.4" stroke-linecap="square" />
-                    <path id="upper" transform="translate(19.7999976778584, 84)" d="M0 -1.26218e-29C-3.33663e-14 22.9365 12.2365 44.1306 32.1 55.5988C51.9636 67.0671 76.4365 67.0671 96.3 55.5988C116.164 44.1306 128.4 22.9365 128.4 1.09118e-13" fill="none" stroke="transparent" stroke-width="2.4" stroke-linecap="square" />
-                    <path id="lower" transform="matrix(-0.999980871067792 0.00618381781983816 -0.00618381781983816 -0.999980871067792 148.19877424465 83.6029988816068)" d="M0 1.77501e-13C1.05879e-13 35.4567 28.7433 64.2 64.2 64.2C99.6567 64.2 128.4 35.4567 128.4 2.29597e-13" fill="none" stroke="transparent" stroke-width="2.4" stroke-linecap="square" />
-                    <text width="500">
-                        <textPath alignment-baseline="middle" href="#upper">
-                            {op.name}
-                        </textPath>
-                    </text>
-                    <text width="500">
-                        <textPath alignment-baseline="middle" href="#lower">
-                            {op.name}
-                        </textPath>
+                <svg className='shadow' viewBox="0 0 168 168" filter='blur(2.5em)'>
+                    <circle mask="url(#donut)" fill='rgba(10,10,10,1)' transform="matrix(1 0 0 1 30 30" r="82" cx="84" cy="84" />
+                    {op.styles.foreignShadow}
+                </svg>
+                <svg className='rot' viewBox="0 0 168 168" style={{ '--rot': `${op.startRot}deg` }}>
+                    <defs>{op.styles.fill}</defs>
+                    {op.styles.foreign}
+                    <circle id="visual" mask="url(#donut)" fill={`url(#${op.id})`} stroke={op.styles.outerLine} strokeWidth="1.4" transform="matrix(1 0 0 1 30 30" r="82" cx="84" cy="84" />
+                    <circle fill='none' stroke={op.styles.innerLine} strokeWidth="1.4" transform="matrix(1 0 0 1 28 28)" r="55.9095409898556" cx="55.9095409898556" cy="55.9095409898556" />
+                    <path id="upper" fill="none" transform="translate(19.7999976778584, 84) scale(1,-1)" d="M0 -1.26218e-29C-3.33663e-14 22.9365 12.2365 44.1306 32.1 55.5988C51.9636 67.0671 76.4365 67.0671 96.3 55.5988C116.164 44.1306 128.4 22.9365 128.4 1.09118e-13" />
+                    <path id="lower" fill="none" transform="matrix(-0.999980871067792 0.00618381781983816 -0.00618381781983816 -0.999980871067792 148.19877424465 83.6029988816068)  scale(1,-1)" d="M0 1.77501e-13C1.05879e-13 35.4567 28.7433 64.2 64.2 64.2C99.6567 64.2 128.4 35.4567 128.4 2.29597e-13" />
+                    <mask id='donut'>
+                        <rect fill='white' width='168px' height='168px' />
+                        <circle fill='black' transform="matrix(1 0 0 1 28 28)" r="55.9095409898556" cx="55.9095409898556" cy="55.9095409898556" />
+                    </mask>
+                    <text className='fnFont' alignmentBaseline="top">
+                        <textPath href="#upper" fill={op.styles.textColor || op.styles.text.upperColor} stroke={op.styles.textBorder || op.styles.text.upperBorder}>{op.name}</textPath>
+                        <textPath href="#lower" fill={op.styles.textColor || op.styles.text.lowerColor} stroke={op.styles.textBorder || op.styles.text.lowerBorder}>{op.name}</textPath>
                     </text>
                 </svg>
             </div>
             <div className='hoverEvent' id={index} onClick={e => this.openLink(e.target.id, true)} onMouseEnter={e => this.openLink(e.target.id)} />
-            <img src={op.gif} />
+            <img class='gif' src={op.gif} />
         </div>
     }
 
     render() {
         const { path, pathAni, options } = this.state
-        if (path.length > 0 && !pathAni) this.updateSlash()
+        if (path.length > 0 && !pathAni) setTimeout(() => this.updateSlash(), 0)
         return (<Fragment>
             <canvas id='slash' className='sticky-overlay' />
-            <div className='sticky-overlay' />
             <div className="socials" onMouseMove={(e) => this.addVector(e)}>
                 <div className='navpadding' />
                 <center className='demoSpacing'>

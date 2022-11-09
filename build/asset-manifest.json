@@ -1,18 +1,19 @@
 {
   "files": {
-    "main.css": "/static/css/main.9df8a4c2.css",
-    "main.js": "/static/js/main.8b260b50.js",
+    "main.css": "/static/css/main.139cf2c0.css",
+    "main.js": "/static/js/main.99d2cb1e.js",
     "static/media/toMinesweeper.png": "/static/media/toMinesweeper.ce331baa6fb36cefdbfa.png",
     "static/media/logosprite.png": "/static/media/logosprite.221e2bb8668b7044f263.png",
     "static/media/woodPlankBackground.jpg": "/static/media/woodPlankBackground.b34a135997919e1886cd.jpg",
+    "static/media/go3v2.ttf": "/static/media/go3v2.59287eb584ab9acf3e25.ttf",
     "static/media/grass.png": "/static/media/grass.fd672754175c47ae50cb.png",
     "static/media/crosshair.svg": "/static/media/crosshair.d5d1561b02aa864564a4.svg",
     "index.html": "/index.html",
-    "main.9df8a4c2.css.map": "/static/css/main.9df8a4c2.css.map",
-    "main.8b260b50.js.map": "/static/js/main.8b260b50.js.map"
+    "main.139cf2c0.css.map": "/static/css/main.139cf2c0.css.map",
+    "main.99d2cb1e.js.map": "/static/js/main.99d2cb1e.js.map"
   },
   "entrypoints": [
-    "static/css/main.9df8a4c2.css",
-    "static/js/main.8b260b50.js"
+    "static/css/main.139cf2c0.css",
+    "static/js/main.99d2cb1e.js"
   ]
 }

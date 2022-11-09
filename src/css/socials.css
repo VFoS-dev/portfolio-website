@@ -1,3 +1,8 @@
+@font-face {
+    font-family: "go3v2";
+    src: url(/public/fonts/go3v2.ttf);
+}
+
 .socials {
     background-color: rgb(143, 89, 45);
     background-image: url(/public/images/socials/woodPlankBackground.jpg);
@@ -14,6 +19,20 @@
     margin: 150px;
 }
 
+.socials .options .gif {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+}
+
+.socials .options .inner {
+    z-index: 1;
+}
+
+.socials .options .outer {
+    z-index: 0;
+}
+
 .socials .options .hoverEvent {
     pointer-events: all;
     cursor: pointer;
@@ -21,6 +40,13 @@
     height: 102%;
     border-radius: 100%;
     position: absolute;
+}
+
+.socials .options .fnFont {
+    fill: white;
+    stroke: black;
+    font-family: go3v2, sans-serif;
+    letter-spacing: 0.15rem;
 }
 
 .socials .options img {
@@ -35,16 +61,41 @@
     position: absolute;
 }
 
-.socials .options .svg svg {
+.socials .options .svg .rot {
     animation: rotSVG 20s forwards infinite linear;
+}
+
+.svg .shadow {
+    position: absolute;
+    left: -20px;
+    top: 30px;
+}
+
+.mix {
+    mix-blend-mode: multiply;
 }
 
 @keyframes rotSVG {
     from {
-        rotate: calc(var(--rot, 0deg) + 0deg);
+        rotate: calc(var(--rot, 0deg) + 360deg);
     }
 
     to {
-        rotate: calc(var(--rot, 0deg) + 360deg);
+        rotate: calc(var(--rot, 0deg) + 0deg);
     }
+}
+
+div.rainbowGradient {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background-image: conic-gradient(from 270deg, #ff4800 10%, #dfd902 35%, #20dc68, #0092f4, #da54d8 72% 75%, #ff4800 95%);
+}
+
+
+div.gradient {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background-image: conic-gradient(rgba(255, 47, 33, 0.5) 0% 5%, rgba(140, 9, 0, 0.5) 5% 10%, rgba(255, 47, 33, 0.5) 10% 15%, rgba(140, 9, 0, 0.5) 15% 20%, rgba(255, 47, 33, 0.5) 20% 25%, rgba(140, 9, 0, 0.5) 25% 30%, rgba(255, 47, 33, 0.5) 30% 35%, rgba(140, 9, 0, 0.5) 35% 40%, rgba(255, 47, 33, 0.5) 40% 45%, rgba(140, 9, 0, 0.5) 45% 50%, rgba(255, 47, 33, 0.5) 50% 55%, rgba(140, 9, 0, 0.5) 55% 60%, rgba(255, 47, 33, 0.5) 60% 65%, rgba(140, 9, 0, 0.5) 65% 70%, rgba(255, 47, 33, 0.5) 70% 75%, rgba(140, 9, 0, 0.5) 75% 80%, rgba(255, 47, 33, 0.5) 80% 85%, rgba(140, 9, 0, 0.5) 85% 90%, rgba(255, 47, 33, 0.5) 90% 95%, rgba(140, 9, 0, 0.5) 95% 100%);
 }
