@@ -15,7 +15,6 @@ class Socials extends React.Component {
                     name: 'Coming Soon',
                     gif: '/images/socials//game/pineapple.gif',
                     startRot: Math.random() * 360,
-                    hovered: false,
                     styles: {
                         outerLine: 'white',
                         innerLine: 'white',
@@ -29,7 +28,6 @@ class Socials extends React.Component {
                     gif: '/images/socials/github.gif',
                     startRot: Math.random() * 360,
                     href: 'https://github.com/VFoS-dev',
-                    hovered: false,
                     styles: {
                         foreignShadow: <foreignObject x="2" y="2" width="164" height="164" mask="url(#donut)">
                             <div className="rainbowGradient" />
@@ -49,7 +47,6 @@ class Socials extends React.Component {
                     gif: '/images/socials/linkedin.gif',
                     startRot: Math.random() * 360,
                     href: 'https://www.linkedin.com/in/jon-kido-vfos/',
-                    hovered: false,
                     styles: {
                         fill: <linearGradient
                             id="pattern1"
@@ -75,7 +72,6 @@ class Socials extends React.Component {
                     gif: '/images/socials/youtube.gif',
                     startRot: Math.random() * 360,
                     href: 'https://www.youtube.com/channel/UCbHIwUTtZwRiiPTyl_3ncLQ/',
-                    hovered: false,
                     styles: {
                         fill: <pattern id="pattern3" width="25" height="1" patternUnits="userSpaceOnUse" patternTransform="rotate(45 50 50)">
                             <rect fill='rgba(0, 86, 255, 0.5)' width='25px' height='10px' />
@@ -93,7 +89,6 @@ class Socials extends React.Component {
                     gif: '/images/socials/leetcode.gif',
                     startRot: Math.random() * 360,
                     href: 'https://leetcode.com/VFoS/',
-                    hovered: false,
                     styles: {
                         foreign: <foreignObject x="2" y="2" width="164" height="164" mask="url(#donut)">
                             <div className="gradient" />
@@ -193,17 +188,9 @@ class Socials extends React.Component {
         this.setState({ path: path })
     }
 
-    openLink(index, clicked = false) {
-        if (window.location.pathname != '/socials') return;
+    openLink(index) {
         const { options } = this.state
-        if (!options[index].hovered || clicked) {
-            options[index].hovered = true;
-            setTimeout(() => {
-                if (window.location.pathname != '/socials') return;
-                window.open(options[index].href, '_blank')
-            }, 500 * !clicked);
-            this.setState({ options: options });
-        }
+        window.open(options[index].href, '_blank')
     }
 
     createOptions(op, index) {
@@ -231,7 +218,7 @@ class Socials extends React.Component {
                         </text>
                     </svg>
                 </div>
-                {op.href && <div className='hoverEvent' id={index} onClick={this.props.animating ? {} : e => this.openLink(e.target.id, true)} onMouseEnter={this.props.animating ? {} : e => this.openLink(e.target.id)} />}
+                {op.href && <div className='hoverEvent' id={index} onClick={e => this.openLink(e.target.id, true)} />}
                 {op.gif && <img className='gif' src={op.gif} />}
             </div>
         </div>
