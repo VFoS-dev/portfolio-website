@@ -110,10 +110,10 @@ class Socials extends React.Component {
 
     openLink(index, clicked = false) {
         const { options } = this.state
-        if (clicked) window.open(options[index].href, '_blank');
-        else if (!options[index].hovered) {
+        if (!options[index].hovered || clicked) {
             options[index].hovered = true;
-            setTimeout(() => window.open(options[index].href, '_blank'), 500);
+            if (!clicked) setTimeout(() => window.open(options[index].href, '_blank'), 500);
+            else window.open(options[index].href, '_blank')
             this.setState({ options: options });
         }
     }
