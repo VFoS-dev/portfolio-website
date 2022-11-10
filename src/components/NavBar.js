@@ -49,7 +49,7 @@ class NavBar extends Component {
         const { secretLength, checkpoints, correct } = this.props;
 
         const f = document.getElementById('focused')
-        const _scrollPercent = (document.documentElement.clientHeight >= f.scrollHeight) ? 1 : (f.scrollHeight == 0) ? 0 : f.scrollTop / Math.min(f.scrollHeight - f.offsetHeight, f.scrollHeight);
+        const _scrollPercent = f ? (document.documentElement.clientHeight >= f.scrollHeight) ? 1 : (f.scrollHeight == 0) ? 0 : f.scrollTop / Math.min(f.scrollHeight - f.offsetHeight, f.scrollHeight) : 1;
 
         return (
             <Navbar className="navbar navbar-expand-lg fixed-top bg-transparent disable" bg="light" expand="lg" onToggle={() => this.setState({ nav: !nav })} expanded={nav}>
