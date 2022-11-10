@@ -24,12 +24,12 @@ body {
 
 .lato {
     font-family: 'lato', sans-serif !important;
-    font-size: 30px;
-    color: #FFF;
+    font-size: 30px !important;
+    color: #FFF !important;
     background: -webkit-linear-gradient(white, orange, white);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
 }
 
 .lato:hover,

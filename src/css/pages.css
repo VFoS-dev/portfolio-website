@@ -2,10 +2,6 @@
     background-color: rgb(141, 83, 83);
 }
 
-.navpadding {
-    padding-top: 10vh;
-}
-
 .sticky-overlay {
     z-index: 1;
     position: fixed;

@@ -10,8 +10,7 @@
     background-image: url(/public/images/projects/minesweeper/toMinesweeper.png);
     background-size: cover;
     z-index: 20;
-    filter: opacity(0%);
-
+    filter: opacity(0.5%);
 }
 
 .toMinesweeper {
