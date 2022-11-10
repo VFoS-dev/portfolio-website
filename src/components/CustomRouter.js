@@ -137,7 +137,7 @@ class CustomRouter extends React.Component {
         if (!!page && rotation.front !== page) this.props.rotate(JSON.stringify(rotation).split(`":"${page} `)[0].split('"').splice(-1)[0]);
 
         return (<>
-            <NavBar updatePage={this.updatePage} last={page} />
+            <NavBar updatePage={this.updatePage} last={page} scrollPercent={scrollPercent} />
             <div style={{ width: "100vw", height: "100vh", overflow: 'hidden', background: "black", position: "fixed" }}>
                 <div id='stars' />
                 <div id='stars2' />
