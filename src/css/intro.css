@@ -1,0 +1,8 @@
+.intro {
+    background-color: rgb(117, 102, 102);
+    padding: 0px !important;
+    overflow: hidden;
+    position: relative;
+    max-width: 100vw;
+    max-height: 100vh;
+}

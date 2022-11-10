@@ -75,10 +75,10 @@ class Projects extends React.Component {
         const { toMine, rows } = this.state;
         return (
             <div key={index + "tile"} id='tile' style={{ backgroundImage: `url(${img})`, ...imgcss, ...(toMine ? { boxShadow: 'none', cursor: 'auto' } : {}) }} onMouseMove={this.handleMove} onMouseOut={(e) => this.handleMoveOut(e.target)}>
-                {toMine && <div className='toMinesweeper' onAnimationEnd={() => this.setState({
+                <div className={` ${toMine ? 'toMinesweeper' : 'overlay'}`} onAnimationEnd={() => this.setState({
                     minesweeper: true,
                     cells: [...new Array(rows)].map(n => [...new Array(rows)])
-                })} />}
+                })} />
                 <div className='tile-title'>{title}</div>
                 <div className='tile-date'>{date}</div>
                 <div className='tile-createdIn'>{createdIn}</div>

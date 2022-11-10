@@ -46,15 +46,18 @@ class NavBar extends Component {
     render() { // | intro | about | projects | resume | education | contact | secret |
         const ref = window.location.href.split('/')[3].split('?')[0];
         const { nav } = this.state;
-        const { scrollPercent, secretLength, checkpoints, correct } = this.props;
+        const { secretLength, checkpoints, correct } = this.props;
+
+        const f = document.getElementById('focused')
+        const _scrollPercent = (document.documentElement.clientHeight >= f.scrollHeight) ? 1 : (f.scrollHeight == 0) ? 0 : f.scrollTop / Math.min(f.scrollHeight - f.offsetHeight, f.scrollHeight);
 
         return (
             <Navbar className="navbar navbar-expand-lg fixed-top bg-transparent disable" bg="light" expand="lg" onToggle={() => this.setState({ nav: !nav })} expanded={nav}>
                 <div className='navShadow' />
                 <Navbar.Brand className="pointer enable z-2" id='intro' style={{ position: 'relative' }} onClick={(e) => this.changePage(e.target.id)} onMouseOut={() => this.setState({ animateLogo: false })} onMouseEnter={() => this.setState({ animateLogo: true })}>
-                    <div className='navImage' style={{ '--frame': `${Math.round((scrollPercent) * 16)}` }} />
+                    <div className='navImage' style={{ '--frame': `${Math.round((_scrollPercent) * 16)}` }} />
                     <div className='disable' style={{ position: 'absolute', display: 'flex', top: 0, left: 'min(11vh, 11vw)', height: '30%', marginRight: '15px', marginTop: '1vh' }}>
-                        {[...new Array(secretLength)].map((c, index) => (<div key={index+"checkpoints"}className={`checkpoint${correct ? " complete" : checkpoints[index] ? " correct" : typeof checkpoints[index] == 'boolean' ? " wrong" : ''}`}><div /></div>))}
+                        {[...new Array(secretLength)].map((c, index) => (<div key={index + "checkpoints"} className={`checkpoint${correct ? " complete" : checkpoints[index] ? " correct" : typeof checkpoints[index] == 'boolean' ? " wrong" : ''}`}><div /></div>))}
                     </div>
                 </Navbar.Brand>
                 <Navbar.Toggle className='enable z-2' />

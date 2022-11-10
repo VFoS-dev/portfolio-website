@@ -1,17 +1,19 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { connect } from 'react-redux';
+
+import '../css/intro.css';
 
 class Intro extends React.Component {
     render() {
-        return (<div className="intro">
-            <div className='navpadding' />
-            <center>
-                <h1>Welcome to my portfolio site!</h1>
-            </center>
-            <center className='demoSpacing'>
-                <h2>THIS PAGE IS UNDER CONSTRUCTION</h2>
-            </center>
-        </div>);
+        return (
+            <Fragment>
+                <div className="intro">
+                    <div className='navpadding' />
+                    <center>
+                        <h1 style={{ color: 'rgb(204, 158, 73)' }}>Welcome to my portfolio site!</h1>
+                    </center>
+                </div>
+            </Fragment>);
     }
 }
 
