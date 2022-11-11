@@ -3,14 +3,20 @@
 
 <head>
   <title>VFoS.dev</title>
+
   <link rel="icon" type="image/x-icon" href="./favicon.gif">
   <link href='https://fonts.googleapis.com/css?family=Lato:300,400,700' rel='stylesheet' type='text/css'>
   <link href='https://fonts.googleapis.com/css?family=VT323:300,400,700' rel='stylesheet' type='text/css'>
 </head>
 
 <body>
-  <noscript>You need to enable JavaScript to run this website.</noscript>
   <div id="root"></div>
+  <noscript>You need to enable JavaScript to run this website.</noscript>
+  <script>
+    // Safari 3.0+ "[object HTMLElementConstructor]" 
+    var isSafari = /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!window['safari'] || (typeof safari !== 'undefined' && window['safari'].pushNotification));
+    document.body.innerHTML = `<div id="${isSafari && false ? "safari" : "root"}"></div>` 
+  </script>
 </body>
 
 </html>
