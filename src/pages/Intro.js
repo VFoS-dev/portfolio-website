@@ -11,6 +11,7 @@ class Intro extends React.Component {
                     <div className='navpadding' />
                     <center>
                         <h1 style={{ color: 'rgb(204, 158, 73)' }}>Welcome to my portfolio site!</h1>
+                        <h2 style={{ color: 'rgb(204, 158, 73)' }}>THIS PAGE IS UNDER CONSTRUCTION</h2>
                     </center>
                 </div>
             </Fragment>);
