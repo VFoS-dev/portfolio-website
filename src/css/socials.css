@@ -29,7 +29,6 @@
 }
 
 .socials .links {
-    padding-top: 10vh;
     min-height: 80vh;
     width: max(80%, 410px) !important;
     margin: auto;
