@@ -27,7 +27,7 @@ class Resume extends React.Component {
             <div className="resume" style={{ backgroundImage: 'url(/images/resume/windows_xp_background.jpg)' }}>
                 <div className='navpadding' />
 
-                <div className="window" style={{ margin: '0px 15vw', width: "70vw" }}>
+                <div className="window" style={{ margin: '0px 10vw', width: "80vw" }}>
                     <div className="title-bar">
                         <div className="title-bar-text"><div className='wordIcon title' />Jon Kido Resume 20XX Rough Draft - Microsoft Word</div>
                         <div className="title-bar-controls">
