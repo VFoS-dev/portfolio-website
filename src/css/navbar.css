@@ -125,7 +125,6 @@ a.nav-link {
     aspect-ratio: 1/1;
     width: 160px;
     height: 160px;
-    background-image: url(/public/images/nav/logosprite.png);
     background-position-x: calc(var(--frame, 16) / 16 * 100%);
     padding-right: 10px;
     background-size: cover;

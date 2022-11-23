@@ -53,7 +53,7 @@ class NavBar extends Component {
 
         return (<Navbar key='lg' bg="dark" expand='lg' className="navbar navbar-expand-lg fixed-top bg-transparent disable" expanded={nav} onToggle={() => this.setState({ nav: !nav })}>
             <Navbar.Brand className="brand pointer enable z-2" id='intro' style={{ position: 'relative' }} onClick={(e) => this.changePage(e.target.id)} onMouseOut={() => this.setState({ animateLogo: false })} onMouseEnter={() => this.setState({ animateLogo: true })}>
-                <div className='navImage' style={{ '--frame': `${Math.round((_scrollPercent) * 16)}` }} />
+                <div className='navImage' style={{ '--frame': `${Math.round((_scrollPercent) * 16)}`, backgroundImage: `url(/images/nav/logosprite.png)` }} />
                 <div className='disable checkpoint-container'>
                     {[...new Array(secretLength)].map((c, index) => (<div key={index + "checkpoints"} className={`checkpoint${correct ? " complete" : checkpoints[index] ? " correct" : typeof checkpoints[index] == 'boolean' ? " wrong" : ''}`}><div /></div>))}
                 </div>

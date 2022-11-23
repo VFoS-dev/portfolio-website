@@ -24,7 +24,7 @@ class Resume extends React.Component {
 
     render() {
         return (
-            <div className="resume">
+            <div className="resume" style={{backgroundImage:'url(/images/resume/windows_xp_background.jpg)'}}>
                 <div className='navpadding' />
 
                 <div className="window" style={{ margin: '0px 15vw', width: "70vw" }}>
