@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.2f0f8852.css",
-    "main.js": "/static/js/main.d2a3482a.js",
+    "main.css": "/static/css/main.f831e940.css",
+    "main.js": "/static/js/main.c22491e2.js",
     "static/media/toMinesweeper.png": "/static/media/toMinesweeper.ce331baa6fb36cefdbfa.png",
     "static/media/windows_xp_background.jpg": "/static/media/windows_xp_background.81cfbea4977dd15af6d1.jpg",
     "static/media/logosprite.png": "/static/media/logosprite.221e2bb8668b7044f263.png",
@@ -11,11 +11,11 @@
     "static/media/grass.png": "/static/media/grass.fd672754175c47ae50cb.png",
     "static/media/crosshair.svg": "/static/media/crosshair.d5d1561b02aa864564a4.svg",
     "index.html": "/index.html",
-    "main.2f0f8852.css.map": "/static/css/main.2f0f8852.css.map",
-    "main.d2a3482a.js.map": "/static/js/main.d2a3482a.js.map"
+    "main.f831e940.css.map": "/static/css/main.f831e940.css.map",
+    "main.c22491e2.js.map": "/static/js/main.c22491e2.js.map"
   },
   "entrypoints": [
-    "static/css/main.2f0f8852.css",
-    "static/js/main.d2a3482a.js"
+    "static/css/main.f831e940.css",
+    "static/js/main.c22491e2.js"
   ]
 }

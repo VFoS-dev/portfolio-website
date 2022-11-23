@@ -39,7 +39,7 @@ class Skills extends React.Component {
     mapSkills(title, entries, refIndex, color, textColor = null) {
         const { onScreen } = this.state;
         return <Fragment>
-            <div style={{ width: "100%", height: "100%", overflow: 'hidden', position: "absolute", zIndex: 0, borderRadius: "30px" }}>
+            <div style={{ width: "100%", height: "100%", overflow: 'hidden', position: "absolute", zIndex: 0, borderRadius: "30px", pointerEvents: 'none' }}>
                 <div id='stars' />
                 <div id='stars2' />
                 <div id='stars3' />
