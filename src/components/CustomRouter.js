@@ -138,14 +138,6 @@ class CustomRouter extends React.Component {
 
         return (<>
             <NavBar updatePage={this.updatePage} last={page} scrollPercent={scrollPercent} />
-            <div style={{ width: "100vw", height: "100vh", overflow: 'hidden', background: "black", position: "fixed" }}>
-                <div id='stars' />
-                <div id='stars2' />
-                <div id='stars3' />
-                <div id='stars' className='right' />
-                <div id='stars2' className='right' />
-                <div id='stars3' className='right' />
-            </div>
             <div className="cube-container" style={{ perspective: `${document.documentElement.clientWidth}px` }}>
                 {!!queue && animate && <>
                     <div className={`face prior ani-${loc}`} key={queue}>

@@ -4,6 +4,18 @@
     position: absolute;
     width: 100%;
     height: 100%;
+    animation: fadeIn 1s ease forwards;
+    background-color: black;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }
 
 .face {
