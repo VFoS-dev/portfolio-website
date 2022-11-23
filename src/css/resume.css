@@ -179,7 +179,7 @@
     margin: 8px;
     background: #afada1;
     border: rgb(221, 221, 221) 3px inset;
-    height: calc(70vh - 21px);
+    height: calc(90vh - (12vh + 135px));
     overflow: scroll;
     padding: 0px !important;
 }
