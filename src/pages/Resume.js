@@ -19,12 +19,12 @@ class Resume extends React.Component {
     }
 
     getTime() {
-        return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        return new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
     }
 
     render() {
         return (
-            <div className="resume" style={{backgroundImage:'url(/images/resume/windows_xp_background.jpg)'}}>
+            <div className="resume" style={{ backgroundImage: 'url(/images/resume/windows_xp_background.jpg)' }}>
                 <div className='navpadding' />
 
                 <div className="window" style={{ margin: '0px 15vw', width: "70vw" }}>
