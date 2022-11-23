@@ -184,6 +184,7 @@
 }
 
 .window-page {
+    font-family: "Times New Roman", Times, serif;
     margin: 30px auto;
     height: calc((70vw - 36px) * 0.7 * 1.41421);
     border: black 2px solid;

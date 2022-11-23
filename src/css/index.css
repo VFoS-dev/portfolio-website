@@ -5,6 +5,7 @@ body {
 
 ::-webkit-scrollbar {
     width: 15px;
+    scrollbar-width: 15px;
     position: absolute !important;
 }
 
