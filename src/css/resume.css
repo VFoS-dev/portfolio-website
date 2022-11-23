@@ -1,5 +1,5 @@
 .resume {
-    background-image: url(/public/images/resume/windows_xp_background.jpg), linear-gradient(lightblue, lightgreen);
+    background-image: linear-gradient(lightblue, lightgreen);
     background-size: cover;
     background-position: 50%;
     overflow: hidden;
