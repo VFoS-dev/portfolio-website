@@ -1,18 +1,21 @@
 {
   "files": {
-    "main.css": "/static/css/main.9bf3e615.css",
-    "main.js": "/static/js/main.dd0f4d79.js",
+    "main.css": "/static/css/main.442328cd.css",
+    "main.js": "/static/js/main.d2a3482a.js",
     "static/media/toMinesweeper.png": "/static/media/toMinesweeper.ce331baa6fb36cefdbfa.png",
+    "static/media/windows_xp_background.jpg": "/static/media/windows_xp_background.81cfbea4977dd15af6d1.jpg",
     "static/media/logosprite.png": "/static/media/logosprite.221e2bb8668b7044f263.png",
+    "static/media/xpIcon.png": "/static/media/xpIcon.a4d349842a5b6a9f0a80.png",
+    "static/media/options.jpg": "/static/media/options.ee27e8589f4ec1afcbfb.jpg",
     "static/media/go3v2.ttf": "/static/media/go3v2.59287eb584ab9acf3e25.ttf",
     "static/media/grass.png": "/static/media/grass.fd672754175c47ae50cb.png",
     "static/media/crosshair.svg": "/static/media/crosshair.d5d1561b02aa864564a4.svg",
     "index.html": "/index.html",
-    "main.9bf3e615.css.map": "/static/css/main.9bf3e615.css.map",
-    "main.dd0f4d79.js.map": "/static/js/main.dd0f4d79.js.map"
+    "main.442328cd.css.map": "/static/css/main.442328cd.css.map",
+    "main.d2a3482a.js.map": "/static/js/main.d2a3482a.js.map"
   },
   "entrypoints": [
-    "static/css/main.9bf3e615.css",
-    "static/js/main.dd0f4d79.js"
+    "static/css/main.442328cd.css",
+    "static/js/main.d2a3482a.js"
   ]
 }

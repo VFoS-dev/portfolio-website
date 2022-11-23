@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 
 // CSS
 import '../css/router.css';
-import '../css/stars.css';
 import '../css/pages.css';
 // Components
 import { NavBar } from './NavBar';

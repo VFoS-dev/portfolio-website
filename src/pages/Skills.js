@@ -2,6 +2,7 @@ import React, { Fragment } from 'react';
 import { connect } from 'react-redux';
 
 import '../css/skills.css';
+import '../css/stars.css';
 
 class Skills extends React.Component {
     constructor(props) {
