@@ -129,7 +129,7 @@ class About extends React.Component {
         if (ducks.length < maxDuck && typeof limited != 'boolean' && !addingDucks) this.AddDucks(maxDuck)
 
         return (<Fragment>
-            <div className='sticky-overlay noselect' >
+            <div className='sticky-overlay' >
                 {this.visualizeDucks()}
                 <div className='grass' />
                 {hitDucks > 0 && <div className='score'>
@@ -138,7 +138,7 @@ class About extends React.Component {
                 </div>}
                 <div className={`dog${typeof limited != 'boolean' ? "" : limited ? " retrieve" : " unbound"}`} onAnimationEnd={() => this.setState({ limited: !limited ? null : limited })} onClick={() => this.setState({ limited: !limited })} />
             </div>
-            <div className="about noselect">
+            <div className="about">
                 <div className='navpadding' />
                 <div className='temp'>
                     <p>Hello my name is Jon Kido</p>

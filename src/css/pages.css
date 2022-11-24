@@ -1,9 +1,0 @@
-.sticky-overlay {
-    z-index: 1;
-    position: fixed;
-    width: 100vw;
-    height: 100vh;
-    pointer-events: none;
-    overflow: hidden;
-    padding: 0px !important;
-}

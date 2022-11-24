@@ -231,7 +231,7 @@ class Socials extends React.Component {
             <canvas id='slash' className='sticky-overlay' />
             <div className="socials" onMouseMove={(e) => this.addVector(e)}>
                 <div className='navpadding' />
-                <div className='links noselect'>
+                <div className='links'>
                     {options.map((a, index) => this.createOptions(a, index))}
                 </div>
             </div>

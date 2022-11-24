@@ -28,7 +28,7 @@ class Resume extends React.Component {
                 <div className='navpadding' />
 
                 <div className="window" style={{ margin: '0px 10vw', width: "80vw" }}>
-                    <div className="title-bar noselect">
+                    <div className="title-bar">
                         <div className="title-bar-text"><div className='wordIcon title' />Jon Kido Resume 20XX Rough Draft - Microsoft Word</div>
                         <div className="title-bar-controls">
                             <button aria-label="Minimize"></button>
@@ -47,7 +47,7 @@ class Resume extends React.Component {
                     <hr />
                 </div>
 
-                <div className='taskbar noselect'>
+                <div className='taskbar'>
                     <div className='start'><div className='windowIcon' />start</div>
                     <div className='application'><div className='wordIcon' /><div className='txt'>Jon Kido Resume 20XX Rough Draft - Microsoft Word</div></div>
                     <div id="time">{this.getTime()}</div>
