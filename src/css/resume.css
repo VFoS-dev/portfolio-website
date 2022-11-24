@@ -6,6 +6,15 @@
     padding: 0px !important;
 }
 
+.window-page p {
+    font-size: 1vw;
+    margin-bottom: 0.1vw;
+}
+
+.window-page .tab {
+    padding-left: calc(1vw * var(--tabAmount, 1));
+}
+
 .resume .taskbar {
     pointer-events: none;
     background-color: #265fdb;
