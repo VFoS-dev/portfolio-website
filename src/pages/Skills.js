@@ -38,21 +38,26 @@ class Skills extends React.Component {
 
     mapSkills(title, entries, refIndex, color, textColor = null) {
         const { onScreen } = this.state;
+        const sorted = JSON.parse(`{${JSON.parse(JSON.stringify(entries)).sort((a, b) => b.compentence - a.compentence).map((a, index) => `"${a.name}":${index}`).join(',')}}`)
         return <Fragment>
             <div style={{ width: "100%", height: "100%", overflow: 'hidden', position: "absolute", zIndex: 0, borderRadius: "30px", pointerEvents: 'none' }}>
                 <div id='stars' />
                 <div id='stars2' />
                 <div id='stars3' />
             </div>
+            <center>
+                <h1 style={{
+                    paddingTop: '18px', ...(color || textColor ? { color: textColor || color } : {})
+                }}>{title}</h1>
+            </center>
             <div style={{
                 zIndex: 2,
-                padding: '18px'
+                margin: '18px',
+                height: `calc(60px * ${entries.length})`,
+                position: 'relative'
             }}>
-                <center>
-                    <h1 style={color || textColor ? { color: textColor || color } : {}}>{title}</h1>
-                </center>
-                {entries.map(n => (
-                    <div key={n.name} className='segment'>
+                {entries.map((n, index) => (
+                    <div key={n.name} className='segment' style={{ '--base-height': `${60 * index}px`, '--sorted-height': `${60 * sorted[n.name]}px` }}>
                         <h3 className='title' style={color || textColor ? { color: textColor || color } : {}}>{n.name}</h3>
                         <h6 className='percent' style={color || textColor ? { color: textColor || color } : {}}>{n.compentence}%</h6>
                         <div className="progress" style={{ backgroundColor: "none" }} >
@@ -67,7 +72,7 @@ class Skills extends React.Component {
                         </div>
                     </div>))}
             </div>
-        </Fragment>
+        </Fragment >
     }
 
     render() {
@@ -81,49 +86,49 @@ class Skills extends React.Component {
                     {this.mapSkills("Applications", [
                         { name: 'Adobe Animate', compentence: 95 },
                         { name: 'Blender', compentence: 73 },
-                        { name: 'Insomnia', compentence: 86 },
-                        { name: 'Krita', compentence: 80 },
+                        { name: 'Insomnia', compentence: 80 },
+                        { name: 'Krita', compentence: 78 },
                         { name: 'Maya', compentence: 32 },
                         { name: 'Photoshop', compentence: 60 },
-                        { name: 'Substance Painter', compentence: 67 },
+                        { name: 'Substance Painter', compentence: 40 },
                         { name: 'Unity', compentence: 90 },
                         { name: 'Unreal', compentence: 66 },
                     ], 0, "blue", '#335cff')}
                 </div>
                 <div className='flex-catagory' ref={this.frameRef} style={{ boxShadow: "0 0 5px #fff, 0 0 15px magenta", position: "relative" }}>
                     {this.mapSkills("Frameworks", [
-                        { name: '.Net', compentence: 72 },
-                        { name: 'Bootstrap', compentence: 93 },
-                        { name: 'Express.js', compentence: 95 },
-                        { name: 'Ionic', compentence: 70 },
+                        { name: '.Net', compentence: 65 },
+                        { name: 'Bootstrap', compentence: 76 },
+                        { name: 'Express.js', compentence: 90 },
+                        { name: 'Ionic', compentence: 50 },
                         { name: 'Node.js', compentence: 80 },
-                        { name: 'React', compentence: 97 },
-                        { name: 'React Native', compentence: 90 },
+                        { name: 'React', compentence: 96 },
+                        { name: 'React Native', compentence: 80 },
                     ], 1, "magenta")}
                 </div>
                 <div className='flex-catagory' ref={this.codRef} style={{ boxShadow: "0 0 5px #fff, 0 0 15px orange", position: "relative" }}>
                     {this.mapSkills("Coding Languages", [
-                        { name: 'ActionScript 3 (AS3)', compentence: 98 },
-                        { name: 'AutoHotKey (AHK)', compentence: 75 },
+                        { name: 'ActionScript 3 (AS3)', compentence: 93 },
+                        { name: 'AutoHotKey (AHK)', compentence: 60 },
                         { name: 'C++', compentence: 65 },
-                        { name: 'C#', compentence: 95 },
+                        { name: 'C#', compentence: 82 },
                         { name: 'Javascript', compentence: 100 },
-                        { name: 'Python', compentence: 75 },
-                        { name: 'Swift', compentence: 30 },
+                        { name: 'Python', compentence: 70 },
+                        { name: 'Swift', compentence: 20 },
                     ], 2, "orange")}
                 </div>
                 <div className='flex-catagory' ref={this.derRef} style={{ boxShadow: "0 0 5px #fff, 0 0 15px yellow", position: "relative" }}>
                     {this.mapSkills("Language Derivatives", [
-                        { name: 'CSS', compentence: 95 },
-                        { name: 'HTML', compentence: 98 },
+                        { name: 'CSS', compentence: 80 },
+                        { name: 'HTML', compentence: 90 },
                         { name: 'JSON', compentence: 100 },
-                        { name: 'MarkDown', compentence: 86 },
+                        { name: 'MarkDown', compentence: 75 },
                     ], 3, "yellow")}
                 </div>
                 <div className='flex-catagory' ref={this.dataRef} style={{ boxShadow: "0 0 5px #fff, 0 0 15px purple", position: "relative" }}>
                     {this.mapSkills("Databases", [
                         { name: 'MongoDB', compentence: 90 },
-                        { name: 'SQLite', compentence: 87 },
+                        { name: 'SQLite', compentence: 83 },
                     ], 4, "#a733ff")}
                 </div>
                 <div className='flex-catagory' ref={this.versRef} style={{ boxShadow: "0 0 5px #fff, 0 0 15px green", position: "relative" }}>
@@ -134,12 +139,12 @@ class Skills extends React.Component {
                 </div>
                 <div className='flex-catagory' ref={this.cloudRef} style={{ boxShadow: "0 0 5px #fff, 0 0 15px white", position: "relative" }}>
                     {this.mapSkills("Cloud Services", [
-                        { name: 'AWS', compentence: 90 },
+                        { name: 'AWS', compentence: 93 },
                         { name: 'Azure', compentence: 50 },
-                        { name: 'Firebase', compentence: 70 },
-                        { name: 'Google APIs', compentence: 93 },
+                        { name: 'Firebase', compentence: 63 },
+                        { name: 'Google APIs', compentence: 83 },
                         { name: 'MongoDB Atlas', compentence: 87 },
-                        { name: 'NGINX', compentence: 83 },
+                        { name: 'NGINX', compentence: 90 },
                     ], 6, "white")}
                 </div>
                 <div className='flex-catagory' ref={this.miscRef} style={{ boxShadow: "0 0 5px #fff, 0 0 15px red", position: "relative" }}>
