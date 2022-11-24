@@ -208,7 +208,7 @@ class Projects extends React.Component {
         const { clientWidth } = document.documentElement
         return (<div className="projects">
             <div className='navpadding' />
-            <div className='mineOutline'>
+            <div className='mineOutline noselect'>
                 <div className="mineHeader">
                     <div className='numbs left'>
                         {[...new Array(3)].map((a, index) =>

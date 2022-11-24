@@ -81,7 +81,7 @@ class Skills extends React.Component {
 
         return (<div className="skills">
             <div className='navpadding' />
-            <div className='flex-container'>
+            <div className='flex-container noselect'>
                 <div className='flex-catagory' ref={this.appRef} style={{ boxShadow: "0 0 5px #fff, 0 0 15px blue", position: "relative" }}>
                     {this.mapSkills("Applications", [
                         { name: 'Adobe Animate', compentence: 95 },
@@ -119,7 +119,7 @@ class Skills extends React.Component {
                 </div>
                 <div className='flex-catagory' ref={this.derRef} style={{ boxShadow: "0 0 5px #fff, 0 0 15px yellow", position: "relative" }}>
                     {this.mapSkills("Language Derivatives", [
-                        { name: 'CSS', compentence: 80 },
+                        { name: 'CSS', compentence: 93 },
                         { name: 'HTML', compentence: 90 },
                         { name: 'JSON', compentence: 100 },
                         { name: 'MarkDown', compentence: 75 },
