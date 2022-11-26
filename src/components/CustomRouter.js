@@ -119,7 +119,7 @@ class CustomRouter extends React.Component {
             case 'projects':
                 return <Projects key="Projects" />
             case 'resume':
-                return <Resume key="Resume" />
+                return <Resume key="Resume" updatePage={this.updatePage} />
             case 'skills':
                 return <Skills animating={animate} scrolled={scrollPercent} key="Skills" />
             case 'socials':
@@ -136,7 +136,7 @@ class CustomRouter extends React.Component {
     render() {
         const { animate, loc, queue, scrollPercent } = this.state;
         const { rotation } = this.props;
-        const page = window.location.href.split('/').splice(-1)[0].split('?')[0];
+        const page = window.location.pathname.split('/')[1];
         if (!!page && rotation.front !== page) this.props.rotate(JSON.stringify(rotation).split(`":"${page} `)[0].split('"').splice(-1)[0]);
 
         return (<>

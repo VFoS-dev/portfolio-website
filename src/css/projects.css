@@ -12,6 +12,44 @@
     filter: opacity(0.5%);
 }
 
+.tile div {
+    pointer-events: none;
+}
+
+._modal {
+    z-index: 20 !important;
+    transition: background-color 1s;
+}
+
+._modal.hide {
+    background-color: rgba(0, 0, 0, 0);
+}
+
+._modal.show {
+    background-color: rgba(0, 0, 0, 0.3);
+    pointer-events: all;
+    cursor: pointer;
+}
+
+._modal .card {
+    cursor: auto;
+    width: 80vw;
+    height: 80vh;
+    overflow-y: scroll;
+    padding: 0px !important;
+    margin: auto;
+    background-color: rgb(216, 216, 216);
+    transition: top .7s;
+}
+
+._modal.hide .card {
+    top: -80vh;
+}
+
+._modal.show .card {
+    top: 14vh;
+}
+
 .toMinesweeper {
     width: 100%;
     height: 100%;
@@ -229,10 +267,13 @@
     display: flex;
 }
 
-#tile {
+.tile {
     display: inline-flex;
     background-color: grey;
+    min-width: 320px;
+    min-height: 320px;
     width: min(calc(100vmin - 61px), 320px);
+    height: min(calc(100vmin - 61px), 320px);
     aspect-ratio: 1/1;
     background-size: contain !important;
     transition: box-shadow 0.1s, transform 0.1s;
@@ -243,7 +284,7 @@
 }
 
 
-#tile:hover .tile-decal {
+.tile:hover .tile-decal {
     box-shadow: 0px 0px 30px inset rgba(0, 0, 0, 0.75);
     transform: translateZ(25px);
     top: -10%;
@@ -269,9 +310,9 @@
     transition: 2s;
 }
 
-#tile:hover .tile-title,
-#tile:hover .tile-date,
-#tile:hover .tile-createdIn {
+.tile:hover .tile-title,
+.tile:hover .tile-date,
+.tile:hover .tile-createdIn {
     color: rgba(255, 255, 255, 1);
     transform: translate(-50%, -50%) translateZ(100px);
     transition: color 0.5s, transform 0.5s;
@@ -305,9 +346,9 @@
     left: 50%;
 }
 
-#tile:hover {}
+.tile:hover {}
 
-#tile:hover {
+.tile:hover {
     z-index: 10;
     box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.6);
     cursor: pointer;
