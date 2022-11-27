@@ -16,11 +16,12 @@ export function rotation(state = origin, action) {
             history.push('top');
             if (history.length > 10) history.shift();
             if (history.length > 10) history.shift();
+            break;
         default:
             break;
     }
-    const correct = secret.map((c, index) => (history[index] || false) == c).reduce((a, b) => a + b) == secret.length
-    const checkpoints = history.map((c, index) => secret[index] == c)
+    const correct = secret.map((c, index) => (history[index] || false) === c).reduce((a, b) => a + b) === secret.length
+    const checkpoints = history.map((c, index) => secret[index] === c)
 
     switch (action.type) {
         case 'right':

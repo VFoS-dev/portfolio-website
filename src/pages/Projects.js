@@ -104,9 +104,9 @@ class Projects extends React.Component {
         cells.forEach(_ => _.forEach(c => {
             if (lost) return;
             if (c.value < 0 && c.revealed) lost = true;
-            if (c.value >= 0 && c.revealed || c.value < 0 && c.flagged) win++;
+            if ((c.value >= 0 && c.revealed) || (c.value < 0 && c.flagged)) win++;
         }))
-        win = win == cells.length * cells.length
+        win = win === cells.length * cells.length
 
         if (win || lost) this.setState({ gameStatus: +win || -1 })
     }
@@ -150,16 +150,17 @@ class Projects extends React.Component {
     }
 
     floodReveal(index, cells) {
+        var j, k;
         if (cells[index[0]][index[1]].revealed && cells[index[0]][index[1]].value > 0) {
             var flags = 0
-            for (var j = -1; j <= 1; j++)
-                for (var k = -1; k <= 1; k++) {
+            for (j = -1; j <= 1; j++)
+                for (k = -1; k <= 1; k++) {
                     if ((index[0] + j < 0) || (index[1] + k < 0) || (index[1] + k > cells.length - 1) || (index[0] + j > cells.length - 1)) continue;
                     flags += cells[index[0] + j][index[1] + k].revealed ? 0 : cells[index[0] + j][index[1] + k].flagged
                 }
             if (flags >= cells[index[0]][index[1]].value)
-                for (var j = -1; j <= 1; j++)
-                    for (var k = -1; k <= 1; k++) {
+                for (j = -1; j <= 1; j++)
+                    for (k = -1; k <= 1; k++) {
                         if ((index[0] + j < 0) || (index[1] + k < 0) || (index[1] + k > cells.length - 1) || (index[0] + j > cells.length - 1)) continue;
                         cells[index[0] + j][index[1] + k].revealed = !cells[index[0] + j][index[1] + k].flagged;
                         if (!cells[index[0] + j][index[1] + k].value)
@@ -171,8 +172,8 @@ class Projects extends React.Component {
 
         cells[index[0]][index[1]].revealed = true
 
-        for (var j = -1; j <= 1; j++)
-            for (var k = -1; k <= 1; k++) {
+        for (j = -1; j <= 1; j++)
+            for (k = -1; k <= 1; k++) {
                 if ((index[0] + j < 0) || (index[1] + k < 0) || (index[1] + k > cells.length - 1) || (index[0] + j > cells.length - 1)) continue;
                 if (!cells[index[0]][index[1]].value) {
                     if (cells[index[0] + j][index[1] + k].revealed) continue;
@@ -250,7 +251,7 @@ class Projects extends React.Component {
                                 let x = index
                                 return <div className='row' key={index + "row"}>
                                     {m.map((c, index) => {
-                                        return <div id={`${x} ${index}`} key={`${x} ${index}` + "col"}
+                                        return <div id={`${x} ${index}`} key={`${x} ${index}col`}
                                             className={`cell${!c ? ' in' : c.revealed ? ` revealed${c.value < 0 ? ' mine' : ''}` : c.flagged ? ' flag' : ''}`}
                                             style={{ width: `${100 / cells.length}%`, ...(!!c && c.flagged && !c.revealed ? { backgroundImage: `url(${projects[c.img].img})` } : {}) }}
                                             onClick={(e) => this.minesweep(e.target.id)}

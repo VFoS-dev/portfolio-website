@@ -24,7 +24,7 @@ class About extends React.Component {
             await this.timeout(500)
             const { ducks, ducksKeys } = this.state;
             var newduck = this.addDuck()
-            if (window.location.pathname != '/about') break;
+            if (window.location.pathname !== '/about') break;
             this.setState({
                 ducks: [...ducks, newduck],
                 ducksKeys: [...ducksKeys, newduck.id]
@@ -76,7 +76,7 @@ class About extends React.Component {
         this.setState({ duckAni: true })
         while (this.state.ducks.length > 0) {
             await this.timeout(24)
-            if (window.location.pathname != '/about') break;
+            if (window.location.pathname !== '/about') break;
             const { ducks } = this.state;
             this.setState({
                 ducks: ducks.map(a => {
@@ -99,13 +99,13 @@ class About extends React.Component {
 
     duckRespawn(id) {
         const { ducks, limited } = this.state
-        this.setState({ ducks: (limited) ? ducks.filter(a => (a.id != id)) : ducks.map(a => (a.id == id ? this.addDuck() : a)) })
+        this.setState({ ducks: (limited) ? ducks.filter(a => (a.id !== id)) : ducks.map(a => (a.id === id ? this.addDuck() : a)) })
     }
 
     hitDuck(id) {
         const { ducks, hitDucks } = this.state
         this.setState({
-            ducks: ducks.map(d => ((id == d.id) ? { ...d, dead: true } : d)),
+            ducks: ducks.map(d => ((id === d.id) ? { ...d, dead: true } : d)),
             hitDucks: hitDucks + 1,
             maxDuck: Math.min(25, 2 + Math.floor(hitDucks / 5))
         })

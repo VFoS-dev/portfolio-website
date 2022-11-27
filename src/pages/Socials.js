@@ -110,7 +110,7 @@ class Socials extends React.Component {
         this.setState({ pathAni: true })
         while (this.state.path.length > 0) {
             await this.timeout(20)
-            if (window.location.pathname != '/socials') break;
+            if (window.location.pathname !== '/socials') break;
             const { path } = this.state;
             var p = [...path];
             p.pop()
@@ -127,7 +127,7 @@ class Socials extends React.Component {
             x: e.pageX,
             y: e.pageY
         }, ..._p]
-        if (window.location.pathname != '/socials') return;
+        if (window.location.pathname !== '/socials') return;
         this.updatePath(p)
     }
 
@@ -136,7 +136,7 @@ class Socials extends React.Component {
     }
 
     updatePath(path) {
-        if (window.location.pathname != '/socials') return
+        if (window.location.pathname !== '/socials') return
         const { size } = this.state
         const colors = [
             '#4d4d4d',
@@ -219,7 +219,7 @@ class Socials extends React.Component {
                     </svg>
                 </div>
                 {op.href && <div className='hoverEvent' id={index} onClick={e => this.openLink(e.target.id, true)} />}
-                {op.gif && <img className='gif' src={op.gif} />}
+                {op.gif && <img className='gif' src={op.gif} alt=''/>}
             </div>
         </div>
     }

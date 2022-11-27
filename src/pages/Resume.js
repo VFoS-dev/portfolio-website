@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 
 import '../css/resume.css'
@@ -75,12 +75,11 @@ class Resume extends React.Component {
                                 <li>Managed checking out equipment to other students</li>
                             </ul>
                             <br />
-                            <h2>Projects: <a className='hyperlink' onClick={() => this.changePage('projects')} >Click Here</a></h2>
+                            <h2>Projects: <button className='hyperlink' onClick={() => this.changePage('projects')} >Click Here</button></h2>
                             <br />
-                            <h2>Skills: <a className='hyperlink' onClick={() => this.changePage('skills')} >Click Here</a></h2>
-                        </div>
-                        <div className='window-page'>
-                            <h2>Contact Information: <a className='hyperlink' onClick={() => this.changePage('socials')} >Click Here</a></h2>
+                            <h2>Skills: <button className='hyperlink' onClick={() => this.changePage('skills')} >Click Here</button></h2>
+                            <br />
+                            <h2>Contact Information: <button className='hyperlink' onClick={() => this.changePage('socials')} >Click Here</button></h2>
                             <p>Email: jonkido@vfos.dev</p>
                         </div>
                     </div>

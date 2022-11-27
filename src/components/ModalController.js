@@ -11,7 +11,7 @@ export class ModalController extends Component {
     }
 
     remove(e) {
-        if (e != 'cancel') return
+        if (e !== 'cancel') return
         const { update } = this.state
         var past = window.location.pathname.split('/')
         var sub = `/${past[1]}`

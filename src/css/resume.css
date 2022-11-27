@@ -21,11 +21,13 @@
     font-size: 3vw;
     margin: 0px;
 }
-.window-page li{
+
+.window-page li {
     font-size: 1vw;
 }
-.window-page ul{
-    margin-bottom: 0.5vw; 
+
+.window-page ul {
+    margin-bottom: 0.5vw;
 }
 
 .window-page h2 {
@@ -39,6 +41,8 @@
 }
 
 .resume .hyperlink {
+    background-color: transparent;
+    border: none;
     color: var(--bs-link-color);
     text-decoration: underline;
     cursor: pointer;

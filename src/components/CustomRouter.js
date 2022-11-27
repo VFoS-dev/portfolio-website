@@ -104,7 +104,7 @@ class CustomRouter extends React.Component {
         } else _scroll = 1
 
         const { scrollPercent } = this.state
-        if (_scroll != scrollPercent) this.setState({
+        if (_scroll !== scrollPercent) this.setState({
             scrollPercent: _scroll
         })
     }
