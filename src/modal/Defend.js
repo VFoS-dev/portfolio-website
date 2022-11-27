@@ -16,7 +16,7 @@ export class Defend extends Component {
                     <hr />
                     <h1>Playable Flash game</h1>
                     <br />
-                        <object height={`${Math.floor(clientHeight * 0.6)}px`} width={`${Math.floor(clientHeight * 0.6 * 1.77778)}px`} type="application/x-shockwave-flash" data="/flash/Defend.swf" />
+                    <object height={`${Math.floor(clientHeight * 0.6)}px`} width={`${Math.floor(clientHeight * 0.6 * 1.77778)}px`} type="application/x-shockwave-flash" data="/flash/Defend.swf" />
                     <p>This project is a Flash game. If you want to play it for yourself, you will have to use a supporting brower like <a href='https://www.palemoon.org' target="_blank">Pale Moon</a>.</p>
                 </center>
             </Fragment>
