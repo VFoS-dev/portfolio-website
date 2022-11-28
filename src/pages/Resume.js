@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 
 import '../css/resume.css'
@@ -22,6 +22,14 @@ class Resume extends React.Component {
         return new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
     }
 
+    changePage(nav) {
+        const page = window.location.href.split('/').splice(-1)[0].split('?')[0] || "intro";
+        if (nav !== page) {
+            const _newPage = nav || "intro";
+            window.history.pushState(`/${_newPage}`, 'Title', `/${_newPage}`);
+            this.props.updatePage(page, _newPage);
+        }
+    }
     render() {
         return (
             <div className="resume" style={{ backgroundImage: 'url(/images/resume/windows_xp_background.jpg)' }}>
@@ -46,7 +54,39 @@ class Resume extends React.Component {
                                 <br />Major: <strong>GIMM</strong> (Games, Interactive Media, and Mobile)
                                 <br />Minors: <strong>MATH</strong> (Applied Mathematics), <strong>ITM</strong> (Information Technology Management)
                             </p>
-                            <h6>more content added soon</h6>
+                            <br />
+                            <h2>Experience: </h2>
+                            <p><strong>Lead Software Developer - GIMM Works</strong> </p>
+                            <p><em>January 2020 - January 2023</em></p>
+                            <ul>
+                                <li>Worked with other student developers on unique software projects for clients</li>
+                                <li>Led back-end dev on several projects</li>
+                                <li>Did full stack development and 3D modeling for multiple projects</li>
+                                <li>Helped other teams implement security features on their projects</li>
+                                <li>Mentored two new hires to help them learn React</li>
+                            </ul>
+                            <p> <strong>Independent Contractor, App Development - The Simple Ring</strong> </p>
+                            <p><em>September 2020 - December 2021</em></p>
+                            <ul>
+                                <li>Worked for the founders of The Simple Ring on a consumer-based mobile app</li>
+                                <li>Wrote the back-end data storage structure, designed and implemented the front-end UI, and integrated Firebase into the app</li>
+                                <li>Prompted improvements in code quality and structure that affected both the front-end and the back-end</li>
+                            </ul>
+                            <p><strong>GIMM Senior Peer Mentor - Boise State GIMM Program</strong></p>
+                            <p><em>July 2018 - December 2019</em></p>
+                            <ul>
+                                <li>Helped current GIMM students with debugging and gave advice about their code</li>
+                                <li>Assisted other peer mentors when they got stuck</li>
+                                <li>Presented previous projects of the department to prospective students and clients</li>
+                                <li>Managed checking out equipment to other students</li>
+                            </ul>
+                            <br />
+                            <h2>Projects: <button className='hyperlink' onClick={() => this.changePage('projects')} >Click Here</button></h2>
+                            <br />
+                            <h2>Skills: <button className='hyperlink' onClick={() => this.changePage('skills')} >Click Here</button></h2>
+                            <br />
+                            <h2>Contact Information: <button className='hyperlink' onClick={() => this.changePage('socials')} >Click Here</button></h2>
+                            <p>Email: jonkido@vfos.dev</p>
                         </div>
                     </div>
                     <hr />

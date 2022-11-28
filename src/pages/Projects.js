@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react';
 import { connect } from 'react-redux';
+import { ModalController } from '../components/ModalController';
 
 import '../css/projects.css';
 
@@ -8,6 +9,7 @@ class Projects extends React.Component {
         super(props)
         this.state = {
             toMine: false,
+            updateModal: false,
             minesweeper: false,
             cells: [],
             nbombs: 0,
@@ -22,7 +24,7 @@ class Projects extends React.Component {
                 { title: 'Bronco Beam', date: "Dec 21, '20 - Jul 30, '22", createdIn: 'React Native / React', img: '/images/projects/BroncoBeam.png', imgcss: { borderRadius: '10%' } },
                 { title: 'All in Favor', date: "Sept 4, '21 - Jan 6, '22", createdIn: 'React', img: '/images/projects/AllinFavor.png', imgcss: { borderRadius: '100%', borderBottomLeftRadius: '0%' } },
                 { title: 'The Simple Ring Alpha', date: "Oct 8, '20 - Dec 24, '21", createdIn: 'React w/ Unity WebGL', img: '/images/projects/TheSimpleRing.png' },
-                { title: 'Planet Destroyer v1.7', date: "Dec 5, '20 - Apr 15, '21", createdIn: 'Unity VR', img: '/images/projects/PD-v1.7.png' },
+                { title: 'Planet Destroyer', date: "Dec 5, '20 - Apr 15, '21", createdIn: 'Unity VR', img: '/images/projects/PD-v1.7.png' },
                 { title: 'ABC Stories', date: "Apr 12 - Dec 23, 2020", createdIn: 'Swift / React', img: '/images/projects/abcStories.png', imgcss: { borderRadius: '10%' } },
                 { title: 'Minesweeper Solver', date: "Nov 1 - Dec 4, 2020", createdIn: 'Unity', img: '/images/projects/minesweeper.png' },
                 { title: "Cash n' Slash", date: "Sep 14 - Nov 17, 2020", createdIn: 'Unity VR', img: '/images/projects/CashnSlash.png' },
@@ -72,10 +74,17 @@ class Projects extends React.Component {
         e.style.transform = 'perspective(500px) scale(1) rotateX(0) rotateY(0)';
     }
 
+    modalShow(title) {
+        const { updateModal } = this.state;
+        var sub = `/${window.location.pathname.split('/')[1]}/${title.toLowerCase()}`
+        window.history.replaceState(sub, 'Title', sub)
+        this.setState({ updateModal: !updateModal })
+    }
+
     mapTile({ title = '', date = '', createdIn = '', img = "", imgcss = {} }, index) {
         const { toMine, rows } = this.state;
         return (
-            <div key={index + "tile"} id='tile' style={{ backgroundImage: `url(${img})`, ...imgcss, ...(toMine ? { boxShadow: 'none', cursor: 'auto' } : {}) }} onMouseMove={this.handleMove} onMouseOut={(e) => this.handleMoveOut(e.target)}>
+            <div key={index + "tile"} id={title.replace(/[^a-zA-Z ]/g, "").split(' ').join('_')} className='tile' style={{ backgroundImage: `url(${img})`, ...imgcss, ...(toMine ? { boxShadow: 'none', cursor: 'auto' } : {}) }} onMouseMove={this.handleMove} onMouseOut={(e) => this.handleMoveOut(e.target)} onClick={(e) => this.modalShow(e.target.id)}>
                 <div className={` ${toMine ? 'toMinesweeper' : 'overlay'}`} style={{ backgroundImage: `url(/images/projects/minesweeper/toMinesweeper.png)` }} onAnimationEnd={() => this.setState({
                     minesweeper: true,
                     cells: [...new Array(rows)].map(n => [...new Array(rows)])
@@ -95,9 +104,9 @@ class Projects extends React.Component {
         cells.forEach(_ => _.forEach(c => {
             if (lost) return;
             if (c.value < 0 && c.revealed) lost = true;
-            if (c.value >= 0 && c.revealed || c.value < 0 && c.flagged) win++;
+            if ((c.value >= 0 && c.revealed) || (c.value < 0 && c.flagged)) win++;
         }))
-        win = win == cells.length * cells.length
+        win = win === cells.length * cells.length
 
         if (win || lost) this.setState({ gameStatus: +win || -1 })
     }
@@ -141,16 +150,17 @@ class Projects extends React.Component {
     }
 
     floodReveal(index, cells) {
+        var j, k;
         if (cells[index[0]][index[1]].revealed && cells[index[0]][index[1]].value > 0) {
             var flags = 0
-            for (var j = -1; j <= 1; j++)
-                for (var k = -1; k <= 1; k++) {
+            for (j = -1; j <= 1; j++)
+                for (k = -1; k <= 1; k++) {
                     if ((index[0] + j < 0) || (index[1] + k < 0) || (index[1] + k > cells.length - 1) || (index[0] + j > cells.length - 1)) continue;
                     flags += cells[index[0] + j][index[1] + k].revealed ? 0 : cells[index[0] + j][index[1] + k].flagged
                 }
             if (flags >= cells[index[0]][index[1]].value)
-                for (var j = -1; j <= 1; j++)
-                    for (var k = -1; k <= 1; k++) {
+                for (j = -1; j <= 1; j++)
+                    for (k = -1; k <= 1; k++) {
                         if ((index[0] + j < 0) || (index[1] + k < 0) || (index[1] + k > cells.length - 1) || (index[0] + j > cells.length - 1)) continue;
                         cells[index[0] + j][index[1] + k].revealed = !cells[index[0] + j][index[1] + k].flagged;
                         if (!cells[index[0] + j][index[1] + k].value)
@@ -162,8 +172,8 @@ class Projects extends React.Component {
 
         cells[index[0]][index[1]].revealed = true
 
-        for (var j = -1; j <= 1; j++)
-            for (var k = -1; k <= 1; k++) {
+        for (j = -1; j <= 1; j++)
+            for (k = -1; k <= 1; k++) {
                 if ((index[0] + j < 0) || (index[1] + k < 0) || (index[1] + k > cells.length - 1) || (index[0] + j > cells.length - 1)) continue;
                 if (!cells[index[0]][index[1]].value) {
                     if (cells[index[0] + j][index[1] + k].revealed) continue;
@@ -177,11 +187,15 @@ class Projects extends React.Component {
     minesweep(id) {
         var index = id.split(' ').map(i => parseInt(i))
         const { cells, gameStatus } = this.state
+        const c = cells[index[0]][index[1]]
         if (!!gameStatus) return;
-        if (cells[index[0]][index[1]] === undefined) this.createGame(index)
-        else {
+        if (c === undefined) this.createGame(index)
+        else if (!c.flagged) {
             this.setState({ cells: this.floodReveal(index, cells) })
             this.checkWin()
+        } else {
+            const { projects } = this.state;
+            this.modalShow(projects[c.img].title.replace(/[^a-zA-Z ]/g, "").split(' ').join('_'));
         }
     }
 
@@ -204,52 +218,55 @@ class Projects extends React.Component {
     }
 
     render() {
-        const { minesweeper, cells, projects, nbombs, flags, gameStatus } = this.state;
+        const { minesweeper, cells, projects, nbombs, gameStatus, updateModal } = this.state;
         const { clientWidth } = document.documentElement
-        return (<div className="projects">
-            <div className='navpadding' />
-            <div className='mineOutline'>
-                <div className="mineHeader">
-                    <div className='numbs left'>
-                        {[...new Array(3)].map((a, index) =>
-                            <div key={index + "num"} className={`numb n${Math.floor((!minesweeper ? projects.length : nbombs - cells.map(a => a.map(c => c ? c.flagged && !c.revealed : 0).reduce((a, b) => a + b)).reduce((a, b) => a + b)) / Math.pow(10, 2 - index)) % 10}`} />
-                        )}
-                    </div>
-                    <center className='button-container' onClick={() => this.changeState()} >
-                        <div className={`button${!minesweeper ? "" : { 0: ' play', '-1': ' lose', 1: ' win' }[gameStatus]}`} />
-                    </center>
-                    <div className='numbs right'>
-                        <div className='numb n0' />
-                        <div className='numb n0' />
-                        <div className='numb n0' />
-                    </div>
-                </div>
-                <div className='mineContainer'>
-                    {!minesweeper && <div className="tile-center" style={{ width: `${(330 * Math.floor((clientWidth * 0.7 - 30) / 330) / (clientWidth * 0.7 - 30) * 100) || 100}%` }}>
-                        <div className='tile-container' >
-                            {projects.map((p, index) => this.mapTile(p, index))}
+        return (<Fragment>
+            <ModalController updateModal={updateModal} />
+            <div className="projects">
+                <div className='navpadding' />
+                <div className='mineOutline'>
+                    <div className="mineHeader">
+                        <div className='numbs left'>
+                            {[...new Array(3)].map((a, index) =>
+                                <div key={index + "num"} className={`numb n${Math.floor((!minesweeper ? projects.length : nbombs - cells.map(a => a.map(c => c ? c.flagged && !c.revealed : 0).reduce((a, b) => a + b)).reduce((a, b) => a + b)) / Math.pow(10, 2 - index)) % 10}`} />
+                            )}
                         </div>
-                    </div>}
-                    {minesweeper && <Fragment>
-                        {cells.map((m, index) => {
-                            let x = index
-                            return <div className='row' key={index + "row"}>
-                                {m.map((c, index) => {
-                                    return <div id={`${x} ${index}`} key={`${x} ${index}` + "col"}
-                                        className={`cell${!c ? ' in' : c.revealed ? ` revealed${c.value < 0 ? ' mine' : ''}` : c.flagged ? ' flag' : ''}`}
-                                        style={{ width: `${100 / cells.length}%`, ...(!!c && c.flagged && !c.revealed ? { backgroundImage: `url(${projects[c.img].img})` } : {}) }}
-                                        onClick={(e) => this.minesweep(e.target.id)}
-                                        onContextMenu={(e) => this.flagCell(e)}
-                                    >
-                                        <div className={`c-${!!c && c.revealed && c.value > 0 ? c.value : ''}`}>{!c ? "" : (c.revealed && c.value > 0) ? c.value : ''}</div>
-                                    </div>
-                                })}
+                        <center className='button-container' onClick={() => this.changeState()} >
+                            <div className={`button${!minesweeper ? "" : { 0: ' play', '-1': ' lose', 1: ' win' }[gameStatus]}`} />
+                        </center>
+                        <div className='numbs right'>
+                            <div className='numb n0' />
+                            <div className='numb n0' />
+                            <div className='numb n0' />
+                        </div>
+                    </div>
+                    <div className='mineContainer'>
+                        {!minesweeper && <div className="tile-center" style={{ width: `${(330 * Math.floor((clientWidth * 0.7 - 30) / 330) / (clientWidth * 0.7 - 30) * 100) || 100}%` }}>
+                            <div className='tile-container' >
+                                {projects.map((p, index) => this.mapTile(p, index))}
                             </div>
-                        })}
-                    </Fragment>}
-                </div>
-            </div >
-        </div >);
+                        </div>}
+                        {minesweeper && <Fragment>
+                            {cells.map((m, index) => {
+                                let x = index
+                                return <div className='row' key={index + "row"}>
+                                    {m.map((c, index) => {
+                                        return <div id={`${x} ${index}`} key={`${x} ${index}col`}
+                                            className={`cell${!c ? ' in' : c.revealed ? ` revealed${c.value < 0 ? ' mine' : ''}` : c.flagged ? ' flag' : ''}`}
+                                            style={{ width: `${100 / cells.length}%`, ...(!!c && c.flagged && !c.revealed ? { backgroundImage: `url(${projects[c.img].img})` } : {}) }}
+                                            onClick={(e) => this.minesweep(e.target.id)}
+                                            onContextMenu={(e) => this.flagCell(e)}
+                                        >
+                                            <div className={`c-${!!c && c.revealed && c.value > 0 ? c.value : ''}`}>{!c ? "" : (c.revealed && c.value > 0) ? c.value : ''}</div>
+                                        </div>
+                                    })}
+                                </div>
+                            })}
+                        </Fragment>}
+                    </div>
+                </div >
+            </div>
+        </Fragment>);
     }
 }
 

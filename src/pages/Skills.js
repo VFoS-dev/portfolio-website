@@ -61,7 +61,7 @@ class Skills extends React.Component {
                         <h3 className='title' style={color || textColor ? { color: textColor || color } : {}}>{n.name}</h3>
                         <h6 className='percent' style={color || textColor ? { color: textColor || color } : {}}>{n.compentence}%</h6>
                         <div className="progress" style={{ backgroundColor: "none" }} >
-                            <img className='hilt' src="/images/skills/hilt.png" style={{ zIndex: 1 }} />
+                            <img className='hilt' src="/images/skills/hilt.png" style={{ zIndex: 1 }} alt=''/>
                             <div className="progress-bar clear" style={{ width: `calc(${n.compentence}% - 90px)` }}>
                                 <div className={`light${onScreen[refIndex] ? ' in' : ''}`}
                                     style={color ? {
@@ -76,7 +76,7 @@ class Skills extends React.Component {
     }
 
     render() {
-        if (this.props.scrolled != this.state.scrolled) setTimeout(() => this.userScrolled(), 0)
+        if (this.props.scrolled !== this.state.scrolled) setTimeout(() => this.userScrolled(), 0)
         if (!this.state.updatedRefs) setTimeout(() => this.userScrolled(), 0)
 
         return (<div className="skills">
