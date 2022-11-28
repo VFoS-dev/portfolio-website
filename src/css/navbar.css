@@ -73,7 +73,7 @@
     }
 }
 
-@media (max-height:542px) {
+@media (max-height:542px) and (min-width:991px) {
     .checkpoint-container {
         top: 16vh !important;
         left: 0vh !important;

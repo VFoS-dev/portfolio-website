@@ -60,7 +60,6 @@ class NavBar extends Component {
             </Navbar.Brand>
             <Navbar.Toggle aria-controls="offcanvasNavbar-expand-lg" className="enable hamButton" />
             <div className='navShadow' />
-
             <Container fluid className="z-2">
                 <Navbar.Offcanvas
                     id="offcanvasNavbar-expand-lg"
@@ -80,7 +79,7 @@ class NavBar extends Component {
                             <Nav.Link className={((ref === 'skills') ? "active" : "") + " lato enable"} id='skills' onClick={(e) => this.changePage(e.target.id)}>Skills</Nav.Link>
                             <Nav.Link className={((ref === 'resume') ? "active" : "") + " lato enable"} id='resume' onClick={(e) => this.changePage(e.target.id)}>Resume</Nav.Link>
                             <Nav.Link className={((ref === 'socials') ? "active" : "") + " lato enable"} id='socials' onClick={(e) => this.changePage(e.target.id)}>Socials</Nav.Link>
-                            {correct && <Nav.Link className={((ref === 'secret') ? "active" : "") + " lato enable"} id='secret' onClick={(e) => this.changePage(e.target.id)}>Secret</Nav.Link>}
+                            {correct && <Nav.Link className={((ref === 'secret') ? "active" : "") + " lato enable"} id='intro' onClick={(e) => this.changePage(e.target.id)}>(Secret page not made yet)</Nav.Link>}
                         </Nav>
                     </Offcanvas.Body>
                 </Navbar.Offcanvas>

@@ -48,7 +48,7 @@ class Resume extends React.Component {
                     <div className="window-body">
                         <div className='window-page'>
                             <center><h1 style={{ fontSize: '2vw' }}>Want a polished resume? <a href='/pdf/resume.pdf' target="_blank">Click Here</a></h1></center>
-                            <p>Education:</p>
+                            <h2>Education: </h2>
                             <p className='tab'>
                                 Boise State University: 2017 - 2022
                                 <br />Major: <strong>GIMM</strong> (Games, Interactive Media, and Mobile)
@@ -56,7 +56,7 @@ class Resume extends React.Component {
                             </p>
                             <br />
                             <h2>Experience: </h2>
-                            <p><strong>Lead Software Developer - GIMM Works</strong> </p>
+                            <p><strong>Software Developer - GIMM Works</strong></p>
                             <p><em>January 2020 - January 2023</em></p>
                             <ul>
                                 <li>Worked with other student developers on unique software projects for clients</li>
@@ -65,7 +65,7 @@ class Resume extends React.Component {
                                 <li>Helped other teams implement security features on their projects</li>
                                 <li>Mentored two new hires to help them learn React</li>
                             </ul>
-                            <p> <strong>Independent Contractor, App Development - The Simple Ring</strong> </p>
+                            <p><strong>Independent Contractor, App Development - The Simple Ring</strong></p>
                             <p><em>September 2020 - December 2021</em></p>
                             <ul>
                                 <li>Worked for the founders of The Simple Ring on a consumer-based mobile app</li>
@@ -81,11 +81,11 @@ class Resume extends React.Component {
                                 <li>Managed checking out equipment to other students</li>
                             </ul>
                             <br />
-                            <h2>Projects: <button className='hyperlink' onClick={() => this.changePage('projects')} >Click Here</button></h2>
+                            <h2>Projects:<button className='hyperlink' onClick={() => this.changePage('projects')} >Click Here</button></h2>
                             <br />
-                            <h2>Skills: <button className='hyperlink' onClick={() => this.changePage('skills')} >Click Here</button></h2>
+                            <h2>Skills:<button className='hyperlink' onClick={() => this.changePage('skills')} >Click Here</button></h2>
                             <br />
-                            <h2>Contact Information: <button className='hyperlink' onClick={() => this.changePage('socials')} >Click Here</button></h2>
+                            <h2>Contact Information:<button className='hyperlink' onClick={() => this.changePage('socials')} >Click Here</button></h2>
                             <p>Email: jonkido@vfos.dev</p>
                         </div>
                     </div>
