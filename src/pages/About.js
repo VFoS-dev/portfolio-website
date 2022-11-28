@@ -141,24 +141,24 @@ class About extends React.Component {
             <div className="about">
                 <div className='navpadding' />
                 <div className='info'>
-                    <p>Hello I'm Jon Kido, a Full Stack and Game Developer</p>
+                    <p>Hello, I'm Jon Kido, a Full Stack and Game Developer</p>
                     <br />
                     <p>Early life:</p>
                     <p className='tab'>Ever since I got my hands on Legos when I was a little kid, I have been interested in creating things. My bedroom at the time had a walkable pathway from the door to the bed and a piles of legos on the ground everywhere else.</p>
-                    <p className='tab'>Throughout middle school I offen attended summer camps (Ida-Haven) in McCall Idaho, this is where I realized I had a passion for Robotics, Water Sports, and Archery.</p>
-                    <p className='tab'>This journey continued all the way to high school where I took all of the Engineering classes I could, and some basic 3d modeling. This is where I got addicted to video games and created the tag V~FoS later removing the tilde.</p>
-                    <p className='tab'>Ending High shool I didnt have a sense of direction for colleges or degrees, there were too many options and couldn't decide; So I took a year off.</p>
+                    <p className='tab'>Throughout middle school I often attended summer camps (Ida-Haven) in McCall, Idaho. This is where I realized I had a passion for Robotics, Water Sports, and Archery.</p>
+                    <p className='tab'>This journey continued all the way to high school where I took all of the Engineering classes I could, and some basic 3d modeling. This is where I got passionate about video games and created the tag V~FoS later removing the tilde.</p>
+                    <p className='tab'>Ending high school I didnt have a sense of direction for colleges or degrees, there were too many options and couldn't decide; So I took a year off.</p>
                     <br />
                     <p>University:</p>
-                    <p className='tab'>Entering College as a part time student, I attended courses from GIMM, where I quickly fell in love with the major.</p>
-                    <p className='tab'>At the end of my first year I was contacted by the director, Anthony Ellertson, to become a peer mentor. During my job as a peer mentor i was nicknamed "The Wizard" because of my ability to debug everything thrown at me. Later I joined the development team for the major.</p>
+                    <p className='tab'>Entering college as a part time student, I attended courses from GIMM (Games, Interactive Media, and Mobile) , where I quickly fell in love with the major.</p>
+                    <p className='tab'>At the end of my first year I was contacted by the director, Anthony Ellertson, to become a peer mentor. During my job as a peer mentor I was nicknamed "The Wizard" because of my ability to debug everything thrown at me. Later I joined the development team for the major.</p>
                     <br />
                     <p>Origin of VFoS:</p>
                     <p className='tab'>
                         VFoS was created during high school as V~FoS, when I was into the game Super Smash Bros: Melee. 
                         This tag was inspired by an Anime series I was watching at the time, Kenichi: The Mightiest Disciple. 
                         The villains of this Anime were part of a gang called The Fists of Ragnarok. 
-                        My favorite villain was The Fifth Fist of Ragnarok, Hibiki Kugenin, he was a pianist who wouldn't give up and tricked his opponents by faking getting hit to do a potent counterattack. 
+                        My favorite villain was The Fifth Fist of Ragnarok, Hibiki Kugenin. He was a pianist who wouldn't give up and tricked his opponents by faking getting hit to do a potent counterattack. 
                         So in the end VFoS is the acronym: Fifth Fist of Smash. Although I have stopped playing Smash the tag has stuck with me because of the memories I have with it.
                     </p>
                 </div>
