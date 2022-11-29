@@ -67,3 +67,15 @@ body {
     overflow: hidden;
     padding: 0px !important;
 }
+
+.hyperlink {
+    background-color: transparent;
+    border: none;
+    color: var(--bs-link-color);
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.hyperlink:hover {
+    color: var(--bs-link-hover-color);
+}

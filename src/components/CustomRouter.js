@@ -117,7 +117,7 @@ class CustomRouter extends React.Component {
             case 'intro':
                 return <Intro key="Intro" />
             case 'projects':
-                return <Projects key="Projects" />
+                return <Projects key="Projects" updatePage={this.updatePage} />
             case 'resume':
                 return <Resume key="Resume" updatePage={this.updatePage} />
             case 'skills':

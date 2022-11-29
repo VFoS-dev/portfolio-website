@@ -222,7 +222,7 @@ class Projects extends React.Component {
         const { minesweeper, cells, projects, nbombs, gameStatus, updateModal } = this.state;
         const { clientWidth } = document.documentElement
         return (<Fragment>
-            <ModalController updateModal={updateModal} />
+            <ModalController updateModal={updateModal} updatePage={this.props.updatePage}/>
             <div className="projects">
                 <div className='navpadding' />
                 <div className='mineOutline'>

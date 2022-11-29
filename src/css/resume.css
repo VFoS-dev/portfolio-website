@@ -57,19 +57,6 @@
     margin: 0px;
 }
 
-.resume .hyperlink {
-    background-color: transparent;
-    border: none;
-    color: var(--bs-link-color);
-    text-decoration: underline;
-    cursor: pointer;
-}
-
-.resume .hyperlink:hover {
-    color: var(--bs-link-hover-color);
-}
-
-
 .resume .taskbar .start {
     background-color: #52be27;
     width: 90px;
