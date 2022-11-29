@@ -150,7 +150,7 @@ class About extends React.Component {
                     <p className='tab'>Ending high school I didnt have a sense of direction for colleges or degrees, there were too many options and couldn't decide; So I took a year off.</p>
                     <br />
                     <p>University:</p>
-                    <p className='tab'>Entering college as a part time student, I attended courses from GIMM (Games, Interactive Media, and Mobile) , where I quickly fell in love with the major.</p>
+                    <p className='tab'>Entering college as a part time student, I attended courses from GIMM (Games, Interactive Media, and Mobile), where I quickly fell in love with the major.</p>
                     <p className='tab'>At the end of my first year I was contacted by the director, Anthony Ellertson, to become a peer mentor. During my job as a peer mentor I was nicknamed "The Wizard" because of my ability to debug everything thrown at me. Later I joined the development team for the major.</p>
                     <br />
                     <p>Origin of VFoS:</p>

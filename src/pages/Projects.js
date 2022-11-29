@@ -33,6 +33,7 @@ class Projects extends React.Component {
                 { title: 'Defend', date: "Aug 3 - 18, 2018", createdIn: 'Flash', img: '/images/projects/defend.png' },
                 { title: 'UNO AI', date: "Nov 21 - Dec 10, 2017", createdIn: 'Flash', img: '/images/projects/uno.png' },
                 { title: 'Survive', date: "Sep 18 - Oct 31, 2017", createdIn: 'Flash', img: '/images/projects/survive.png' },
+                { title: 'Original Logo Animation', date: "June 13, 2015", createdIn: 'Blender', img: '/images/projects/OriginalLogoAnimation.png' },
             ]
         }
 
