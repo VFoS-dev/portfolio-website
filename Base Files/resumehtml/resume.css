@@ -22,7 +22,7 @@
     }
 
     .pagebreak-spacing {
-        margin-top: 8vw;
+        margin-top: 1vw;
     }
 }
 
@@ -187,7 +187,7 @@ main div {
 }
 
 main {
-    margin-bottom: 2vw;
+    margin-bottom: 2.5vw;
 }
 
 #alt {
@@ -210,10 +210,11 @@ main {
     position: relative;
     background-color: var(--buttons);
     width: fit-content;
-    margin-top: 3vw;
-    margin-bottom: 2vw;
+    margin-top: 1vw;
+    margin-bottom: 1vw;
     padding: 1vw 4vw;
     display: flex;
+    overflow: hidden;
 }
 
 .header .icon {
@@ -270,7 +271,7 @@ svg {
 
 .info-container.full {
     width: 80vw;
-    margin-bottom: 3.5vw;
+    margin-top: 3vw;
 }
 
 .info-container {
@@ -424,7 +425,8 @@ em {
 }
 
 h1.more-info {
-    margin: 2vw auto;
+    margin: 1vw auto;
+    margin-top: 0.5vw;
     font-size: 2vw;
     text-align: center;
     color: var(--header);
@@ -439,13 +441,11 @@ h1.more-info a {
 }
 
 footer {
-    background-color: rgba(0, 0, 0, 0.25);
-    height: 6vw;
+    margin-bottom: 3vw;
     color: var(--OffWhite);
 }
 
 footer h1 {
-    padding-top: 2vw;
     font-size: 2vw;
     text-align: center;
 }
