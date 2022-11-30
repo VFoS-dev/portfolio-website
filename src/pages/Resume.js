@@ -47,7 +47,7 @@ class Resume extends React.Component {
                     <div className="window-options" />
                     <div className="window-body">
                         <div className='window-page'>
-                            <center><h1 style={{ fontSize: '2vw' }}>Want a polished resume? <a href='/pdf/resume.pdf' target="_blank">Click Here</a></h1></center>
+                            <center><h1 style={{ fontSize: '2vw' }}>Want a polished resume? <a href='/pdf/resume_eye_friendly.pdf' target="_blank">Click Here</a></h1></center>
                             <h2>Education: </h2>
                             <p className='tab'>
                                 Boise State University: 2017 - 2022

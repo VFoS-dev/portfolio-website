@@ -1,0 +1,496 @@
+@import url('./reset.css');
+
+@font-face {
+    font-family: "Avenir Next";
+    src: url('./fonts/AvenirNextLTPro-Regular.otf');
+}
+
+@font-face {
+    font-family: "Avenir Next Bold";
+    src: url('./fonts/AvenirNextLTPro-Bold.otf');
+}
+
+@font-face {
+    font-family: "Avenir Next Italic";
+    src: url('./fonts/AvenirNextLTPro-It.otf');
+}
+
+@media print {
+    .pagebreak {
+        clear: both;
+        page-break-after: always;
+    }
+
+    .pagebreak-spacing {
+        margin-top: 8vw;
+    }
+}
+
+
+:root {
+    --background: #333333;
+    --buttons: #007EA7;
+    --buttonsAlpha: #007da738;
+    --header: #F7B423;
+    --OffWhite: #F7F4F3;
+    --lightBlue: #277691;
+    font-family: "Avenir Next";
+    --OffRed: rgb(211, 83, 83);
+    --OffOrange: rgb(211, 133, 60);
+    --OffYellow: rgb(209, 189, 6);
+    --OffGreen: rgb(32, 180, 44);
+    --OffBlue: rgb(9, 166, 172);
+    --OffPurple: rgb(195, 39, 209);
+}
+
+
+#printer {
+    --background: #fff;
+    --buttons: #575757;
+    --buttonsAlpha: #007da738;
+    --OffWhite: #000000;
+    --lightBlue: #277691;
+}
+
+#printer .logo {
+    border-radius: 0px;
+}
+
+#printer header {
+    background-color: transparent;
+}
+
+#printer footer {
+    background-color: transparent;
+}
+
+#printer #alt a,
+#printer .more-info a,
+#printer section a {
+    color: var(--header);
+    font-family: "Avenir Next Bold";
+}
+
+#printer .links svg {
+    stroke: #fff;
+    fill: #fff;
+}
+
+#printer #alt {
+    background-color: transparent;
+}
+
+
+#printer .header {
+    background-color: #fff;
+}
+
+#printer .advanced,
+#printer .beginner,
+#printer .intermediate,
+#printer .novice {
+    --visual-color: #fff;
+    color: #fff;
+}
+
+#printer header h1,
+#printer header h4 {
+    color: #000 !important;
+}
+
+#printer h1.more-info {
+    color: #000 !important;
+}
+
+#printer header h5 {
+    color: #fff !important;
+}
+
+strong {
+    font-family: "Avenir Next Bold";
+}
+
+body {
+    background-color: var(--background);
+    padding: 0px;
+    margin: 0px;
+}
+
+header {
+    background-color: var(--header);
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.logo {
+    width: 8vw;
+    height: 8vw;
+    background-image: url('https://vfos.dev/images/nav/logosprite.png');
+    background-size: cover;
+    background-position-x: 100%;
+    background-color: var(--background);
+    border-radius: 100%;
+    margin: 1vw;
+}
+
+header h1 {
+    font-size: 4vw;
+}
+
+
+header h4 {
+    font-size: 2vw;
+}
+
+header .title {
+    align-self: center;
+    padding-bottom: 1vw;
+    color: var(--background);
+}
+
+.header-container {
+    display: flex;
+}
+
+header .links {
+    align-self: center;
+    text-align: end;
+}
+
+
+header h5 {
+    position: relative;
+    background-color: var(--buttons);
+    color: var(--OffWhite);
+    margin: 1vw 1vw 1vw auto;
+    padding: 0.5vw;
+    padding-left: 1vw;
+    width: fit-content;
+    border-radius: 1vw;
+    padding-right: 4vw;
+    font-size: 1.5vw;
+}
+
+.links .icon {
+    padding: 0.5vw;
+    position: absolute;
+    top: 0px;
+    width: 2.8vw;
+    height: 100%;
+    right: 0px;
+    margin-right: 0.5vw;
+}
+
+main div {
+    margin: auto;
+}
+
+main {
+    margin-bottom: 2vw;
+}
+
+#alt {
+    background-color: rgba(0, 0, 0, 0.25);
+    height: 5vw;
+    color: var(--OffWhite);
+}
+
+#alt h1 {
+    padding-top: 1vw;
+    font-size: 2vw;
+    text-align: center;
+}
+
+#alt h1 a {
+    font-family: "Avenir Next Bold";
+}
+
+.header {
+    position: relative;
+    background-color: var(--buttons);
+    width: fit-content;
+    margin-top: 3vw;
+    margin-bottom: 2vw;
+    padding: 1vw 4vw;
+    display: flex;
+}
+
+.header .icon {
+    color: var(--OffWhite);
+    width: 4vw;
+    height: 4vw;
+}
+
+.header h1 {
+    align-self: center;
+    padding-left: 1vw;
+    color: var(--OffWhite);
+    font-size: 4vw;
+    padding-top: 0.3vw;
+    text-transform: uppercase;
+}
+
+.cut-outs div {
+    position: absolute;
+    width: 4vw;
+    height: 4vw;
+    border-radius: 100%;
+    background-color: var(--background);
+}
+
+.cut-outs div:nth-child(1) {
+    left: 0px;
+    bottom: 0px;
+    transform: translate(-50%, 50%);
+}
+
+.cut-outs div:nth-child(2) {
+    right: 0px;
+    top: 0px;
+    transform: translate(50%, -50%);
+}
+
+.cut-outs div:nth-child(3) {
+    right: 0px;
+    bottom: 0px;
+    transform: translate(50%, 50%);
+}
+
+.cut-outs div:nth-child(4) {
+    left: 0px;
+    top: 0px;
+    transform: translate(-50%, -50%);
+}
+
+svg {
+    stroke: var(--OffWhite);
+    fill: var(--OffWhite);
+}
+
+.info-container.full {
+    width: 80vw;
+    margin-bottom: 3.5vw;
+}
+
+.info-container {
+    position: relative;
+    border: var(--OffWhite) 0.25vw solid;
+    width: fit-content;
+    border-radius: 2vw;
+    color: var(--OffWhite);
+}
+
+.info-container .title {
+    position: absolute;
+    top: 0px;
+    transform: translate(-0.25vw, -50%);
+    padding: 0.5vw;
+    padding-left: 3.5vw;
+    padding-right: 1vw;
+    font-size: 2vw;
+    color: var(--OffWhite);
+    background-color: var(--background);
+}
+
+em {
+    font-family: "Avenir Next Italic";
+}
+
+.info-container .content {
+    margin: 2vw;
+    font-size: 1.5vw;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.info-container .icon {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 3vw;
+}
+
+.info-container .content {}
+
+.info-container .content.row {
+    flex-direction: row;
+}
+
+.info-container .content.col {
+    flex-direction: column;
+}
+
+.content .advanced,
+.content .intermediate,
+.content .beginner,
+.content .novice {
+    padding: 0.5vw;
+    padding-right: 1vw;
+    padding-left: 2.5vw;
+    border-radius: 1vw;
+    position: relative;
+    background-color: var(--color);
+    margin: 0.25vw;
+}
+
+.content .visual {
+    position: absolute;
+    top: 0.7vw;
+    left: 0.5vw;
+    width: 1.5vw;
+    height: 1.5vw;
+    padding: 0px;
+    margin: 0px;
+    transform: rotate(45deg);
+    border: 0.15vw var(--visual-color) solid;
+    overflow: hidden;
+}
+
+.visual>div {
+    width: 2vw;
+    height: 1.5vw;
+    background-color: var(--visual-color);
+}
+
+.advanced .visual>div {}
+
+.intermediate .visual>div {
+    transform: rotate(-45deg) translateY(10%);
+}
+
+.beginner .visual>div {
+    transform: rotate(-45deg) translateY(40%);
+}
+
+.novice .visual>div {
+    transform: rotate(-45deg) translateY(70%);
+}
+
+.skills-container {
+    width: 80vw;
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: row;
+}
+
+.skills-container>.info {
+    margin-top: 0px;
+    display: flex;
+    align-self: flex-start;
+    flex-wrap: nowrap;
+    flex-direction: column;
+    gap: 2.2vw;
+    width: 100%;
+}
+
+.legend {
+    background-color: var(--header);
+    border-radius: 2vw;
+    margin-top: 0px;
+    padding: 0.5vw;
+    width: 20vw;
+    margin-left: 2.5vw;
+    font-size: 1.5vw;
+    border: var(--OffWhite) 0.25vw solid;
+    color: var(--background);
+}
+
+.info .info-container {
+    width: 100%;
+}
+
+.content .container {
+    border-bottom: var(--color) 0.25vw solid;
+    display: flex;
+    flex-direction: row;
+    width: fit-content;
+    margin: 0px;
+    padding-bottom: 1vw;
+    margin-bottom: 1vw;
+    position: relative;
+    margin-right: 1vw;
+}
+
+.content .container .category {
+    position: absolute;
+    left: 50%;
+    bottom: 0px;
+    transform: translate(-50%, 55%);
+    padding: 0px 0.5vw;
+    white-space: nowrap;
+    background-color: var(--background);
+    font-size: 1.5vw;
+}
+
+h1.more-info {
+    margin: 2vw auto;
+    font-size: 2vw;
+    text-align: center;
+    color: var(--header);
+}
+
+h1.more-info a {
+    color: var(--OffWhite);
+}
+
+.info-container .content.block {
+    display: block;
+}
+
+footer {
+    background-color: rgba(0, 0, 0, 0.25);
+    height: 6vw;
+    color: var(--OffWhite);
+}
+
+footer h1 {
+    padding-top: 2vw;
+    font-size: 2vw;
+    text-align: center;
+}
+
+ul {
+    margin-top: 0px;
+    padding-left: 2.5vw;
+    margin-bottom: 0px;
+}
+
+li {
+    padding-left: 0.25vw;
+}
+
+section {
+    margin-top: 2vw;
+    margin-bottom: 2vw;
+    padding: 0.5vw;
+    border: 0.25vw solid transparent;
+}
+
+section header {
+    background-color: transparent;
+    border-bottom: var(--OffWhite) 0.2vw solid;
+    margin-bottom: 0.5vw;
+}
+
+section.present {
+    background-color: var(--buttonsAlpha);
+    padding: 0.5vw;
+    border-radius: 1vw;
+    border: 0.25vw solid var(--OffBlue);
+}
+
+.minors {
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    gap: 0.5vw
+}
+
+section a {
+    color: var(--header);
+}
+
+section header em {
+    white-space: nowrap;
+}
