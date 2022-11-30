@@ -278,8 +278,8 @@
 .tile {
     display: inline-flex;
     background-color: grey;
-    min-width: 320px;
-    min-height: 320px;
+    max-width: 320px;
+    max-height: 320px;
     width: min(calc(100vmin - 61px), 320px);
     height: min(calc(100vmin - 61px), 320px);
     aspect-ratio: 1/1;

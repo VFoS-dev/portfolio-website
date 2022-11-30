@@ -66,16 +66,13 @@
         left: max(90px, min(17vh, 121px)) !important;
         align-content: center;
     }
-
-    .checkpoint {
-        transform: translateY(0%) !important;
-    }
 }
 
 @media (min-width:992px) {
     .checkpoint-container {
-        margin-top: 1vh;
         width: 80vw;
+        height: calc(max(90px, min(17vh, 121px)) / 2);
+        align-content: center;
     }
 
     .navImage {
@@ -87,13 +84,9 @@
     .checkpoint-container {
         align-content: unset !important;
         width: fit-content;
-        top: max(90px, min(17vh, 121px)) !important;
+        top: 120px !important;
         left: 0vh !important;
         width: 90px;
-    }
-
-    .checkpoint {
-        transform: translateY(0%) !important;
     }
 }
 
@@ -102,20 +95,18 @@ a.nav-link {
 }
 
 .checkpoint-container {
-    height: 100%;
     position: absolute;
     display: flex;
     flex-wrap: wrap;
-    align-content: center;
     top: 0;
+    z-index: 20;
     left: min(19vh, 135px);
 }
 
 .checkpoint {
-    transform: translateY(-130%);
     aspect-ratio: 1/1;
-    width: min(30px, 7vw);
-    height: min(30px, 7vw);
+    width: 30px;
+    height: 30px;
     position: relative;
 }
 
@@ -144,11 +135,21 @@ a.nav-link {
     background-color: rgb(253, 253, 253);
 }
 
+.checkpoint.wrong {
+    pointer-events: all !important;
+    cursor: pointer;
+}
+
 .checkpoint.wrong div {
     border: solid rgb(243, 34, 34) 2px;
     box-shadow: 0 0 5px rgb(236, 104, 104), 0 0 12px rgb(230, 144, 144), 0 0 15px rgb(150, 0, 0), 0 0 35px rgb(240, 28, 28), 0 0 11px inset rgb(238, 94, 94);
     background-color: rgb(255, 0, 0);
 }
+
+.checkpoint.wrong:hover div {
+    opacity: 0.5;
+}
+
 
 .navImage {
     height: max(90px, min(17vh, 121px));
@@ -159,7 +160,7 @@ a.nav-link {
 }
 
 .navImage:hover {
-    animation: iconAni 1150ms steps(16) 500ms infinite alternate-reverse;
+    animation: iconAni 1s steps(16) 500ms infinite alternate-reverse;
 }
 
 @keyframes iconAni {
