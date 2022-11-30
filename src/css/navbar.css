@@ -49,7 +49,7 @@
     width: 100vw;
     z-index: 0;
     background: -webkit-linear-gradient(rgba(1, 1, 1, 0.9), rgba(1, 1, 1, 0));
-    height: 14vh;
+    height: max(100px, min(18vh, 120px));
     top: 0;
     position: absolute;
     pointer-events: none;
@@ -59,25 +59,41 @@
     z-index: 2;
 }
 
-@media (max-width:992px) {
+@media (max-width:991px) {
     .checkpoint-container {
-        margin-top: 3vh;
-        width: 50vw
+        width: 50vw;
+        height: 100%;
+        left: max(90px, min(17vh, 121px)) !important;
+        align-content: center;
+    }
+
+    .checkpoint {
+        transform: translateY(0%) !important;
     }
 }
 
-@media (min-width:991px) {
+@media (min-width:992px) {
     .checkpoint-container {
         margin-top: 1vh;
         width: 80vw;
+    }
+
+    .navImage {
+        margin-top: 15px;
     }
 }
 
 @media (max-height:542px) and (min-width:991px) {
     .checkpoint-container {
-        top: 16vh !important;
+        align-content: unset !important;
+        width: fit-content;
+        top: max(90px, min(17vh, 121px)) !important;
         left: 0vh !important;
         width: 90px;
+    }
+
+    .checkpoint {
+        transform: translateY(0%) !important;
     }
 }
 
@@ -86,14 +102,17 @@ a.nav-link {
 }
 
 .checkpoint-container {
+    height: 100%;
     position: absolute;
     display: flex;
     flex-wrap: wrap;
+    align-content: center;
     top: 0;
-    left: 17vh;
+    left: min(19vh, 135px);
 }
 
 .checkpoint {
+    transform: translateY(-130%);
     aspect-ratio: 1/1;
     width: min(30px, 7vw);
     height: min(30px, 7vw);
@@ -132,17 +151,15 @@ a.nav-link {
 }
 
 .navImage {
+    height: max(90px, min(17vh, 121px));
     aspect-ratio: 1/1;
-    width: 15vh;
-    height: 15vh;
     background-position-x: calc(var(--frame, 16) / 16 * 100%);
-    padding-right: 10px;
     background-size: cover;
     background-repeat: no-repeat;
 }
 
 .navImage:hover {
-    animation: iconAni 0.8s steps(16) 250ms infinite alternate-reverse;
+    animation: iconAni 1150ms steps(16) 500ms infinite alternate-reverse;
 }
 
 @keyframes iconAni {
@@ -156,5 +173,10 @@ a.nav-link {
 }
 
 .navpadding {
-    padding-top: 12vh;
+    padding-top: max(80px, 12vh);
+}
+
+.navbar {
+    max-height:
+        121px;
 }

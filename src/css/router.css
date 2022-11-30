@@ -8,6 +8,11 @@
     background-color: black;
 }
 
+:root {
+    --cube-rot-speed: 600ms;
+    --cube-rot-speed-back: 900ms;
+}
+
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -35,12 +40,12 @@
 
 .focus.ani-top {
     transform-origin: center bottom;
-    animation: focus-top 1s ease 0ms 1 forwards;
+    animation: focus-top var(--cube-rot-speed) ease forwards;
 }
 
 .prior.ani-top {
     transform-origin: center top;
-    animation: prior-top 1s ease 0ms 1 forwards;
+    animation: prior-top var(--cube-rot-speed) ease forwards;
 }
 
 @keyframes focus-top {
@@ -79,12 +84,12 @@
 
 .focus.ani-left {
     transform-origin: right center;
-    animation: focus-left 1s ease 0ms 1 forwards;
+    animation: focus-left var(--cube-rot-speed) ease forwards;
 }
 
 .prior.ani-left {
     transform-origin: left center;
-    animation: prior-left 1s ease 0ms 1 forwards;
+    animation: prior-left var(--cube-rot-speed) ease forwards;
 }
 
 @keyframes focus-left {
@@ -123,12 +128,12 @@
 
 .focus.ani-bottom {
     transform-origin: top center;
-    animation: focus-bottom 1s ease 0ms 1 forwards;
+    animation: focus-bottom var(--cube-rot-speed) ease forwards;
 }
 
 .prior.ani-bottom {
     transform-origin: bottom center;
-    animation: prior-bottom 1s ease 0ms 1 forwards;
+    animation: prior-bottom var(--cube-rot-speed) ease forwards;
 }
 
 @keyframes focus-bottom {
@@ -167,12 +172,12 @@
 
 .focus.ani-right {
     transform-origin: left center;
-    animation: focus-right 1s ease 0ms 1 forwards;
+    animation: focus-right var(--cube-rot-speed) ease forwards;
 }
 
 .prior.ani-right {
     transform-origin: right center;
-    animation: prior-right 1s ease 0ms 1 forwards;
+    animation: prior-right var(--cube-rot-speed) ease forwards;
 }
 
 @keyframes focus-right {
@@ -211,16 +216,16 @@
 
 .focus.ani-back {
     transform-origin: center bottom;
-    animation: focus-back 1s ease 0ms 1 forwards;
+    animation: focus-back var(--cube-rot-speed-back) ease forwards;
 }
 
 .skip.ani-back {
-    animation: skip-back 1s ease 0ms 1 forwards;
+    animation: skip-back var(--cube-rot-speed-back) ease forwards;
 }
 
 .prior.ani-back {
     transform-origin: center top;
-    animation: prior-back 1s ease 0ms 1 forwards;
+    animation: prior-back var(--cube-rot-speed-back) ease forwards;
 }
 
 @keyframes focus-back {
