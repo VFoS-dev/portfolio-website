@@ -294,7 +294,7 @@
 
 .tile:hover .tile-decal {
     box-shadow: 0px 0px 30px inset rgba(0, 0, 0, 0.75);
-    transform: translateZ(25px);
+    transform: translateZ(15px);
     top: -10%;
     left: -10%;
     width: 120%;
@@ -322,7 +322,7 @@
 .tile:hover .tile-date,
 .tile:hover .tile-createdIn {
     color: rgba(255, 255, 255, 1);
-    transform: translate(-50%, -50%) translateZ(100px);
+    transform: translate(-50%, -50%) translateZ(80px);
     transition: color 0.5s, transform 0.5s;
 }
 

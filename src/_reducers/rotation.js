@@ -26,87 +26,95 @@ export function rotation(state = origin, action) {
     switch (action.type) {
         case 'right':
             return {
+                ...state,
                 right: state.back,
                 left: state.front,
                 back: state.left,
                 front: state.right,
-
-                top: state.top,
-                bottom: state.bottom,
                 history: history,
                 checkpoints: checkpoints,
                 correct: correct,
-                secretLength: secret.length
             };
         case 'bottom':
             return {
+                ...state,
                 bottom: state.back,
                 top: state.front,
                 front: state.bottom,
                 back: state.top,
-
-                left: state.left,
-                right: state.right,
                 history: history,
                 checkpoints: checkpoints,
                 correct: correct,
-                secretLength: secret.length
             };
         case 'top':
             return {
+                ...state,
                 top: state.back,
                 bottom: state.front,
                 back: state.bottom,
                 front: state.top,
-
-                left: state.left,
-                right: state.right,
                 history: history,
                 checkpoints: checkpoints,
                 correct: correct,
-                secretLength: secret.length
             };
         case 'left':
             return {
+                ...state,
                 left: state.back,
                 right: state.front,
                 back: state.right,
                 front: state.left,
-
-                top: state.top,
-                bottom: state.bottom,
                 history: history,
                 checkpoints: checkpoints,
                 correct: correct,
-                secretLength: secret.length
             };
         case 'back':
             return {
+                ...state,
                 back: state.front,
                 front: state.back,
                 top: state.bottom,
                 bottom: state.top,
-
-                right: state.right,
-                left: state.left,
                 history: history,
                 checkpoints: checkpoints,
                 correct: correct,
-                secretLength: secret.length
             };
+        case 'front':
+            return {
+                ...state,
+                history: history,
+                checkpoints: checkpoints,
+                correct: correct,
+            }
         default:
             return state
     }
 }
 
+function onMount() {
+    const pos = {
+        resume: 'top',
+        skills: 'left',
+        about: 'right',
+        projects: 'bottom',
+        socials: 'back',
+        intro: 'front',
+    }[(window.location.pathname.split('/')[1] || 'intro').toLowerCase()]
+
+    return rotation({
+        top: 'resume',
+        left: 'skills',
+        right: 'about',
+        bottom: 'projects',
+        back: 'socials',
+        front: 'intro',
+        history: [],
+        checkpoints: [],
+        correct: []
+    }, { type: pos })
+}
+
 const origin = {
-    top: 'resume',
-    left: 'skills',
-    right: 'about',
-    bottom: 'projects',
-    back: 'socials',
-    front: 'intro',
-    history: [],
-    checkpoints: [],
+    ...onMount(),
     secretLength: secret.length
 }

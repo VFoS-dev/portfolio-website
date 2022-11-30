@@ -151,6 +151,7 @@
 
 .skills-filter svg {
     pointer-events: none;
+    transition: fill 0.5s, stroke 0.5s;
 }
 
 .filtered .skills-filter svg {
