@@ -150,6 +150,9 @@ class Skills extends React.Component {
                 <div className='flex-catagory' ref={this.miscRef} style={{ boxShadow: "0 0 5px #fff, 0 0 15px red", position: "relative" }}>
                     {this.mapSkills("Misc.", [
                         { name: 'Agile Methodology', compentence: 99 },
+                        { name: 'Visual Studio', compentence: 93 },
+                        { name: 'VMware', compentence: 87 },
+                        { name: 'VS Code', compentence: 83 },
                     ], 7, "red")}
                 </div>
             </div>
