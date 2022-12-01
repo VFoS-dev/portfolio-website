@@ -17,7 +17,7 @@ export class ABCStories extends Component {
                     <br />
                     <br />
                     <h5>Video of the Website</h5>
-                    <div className="video" >add video</div>
+                    <video className='video' controls><source src="/images/projects/info/abcstoriesweb.mp4" type="video/mp4" /></video>
                     <br />
                     <h5><a href='https://www.abcstories.org/about' rel="noreferrer" target='_blank'>Website</a> made with: React, Javascript, Express.js, MongoDB</h5>
                 </center>
