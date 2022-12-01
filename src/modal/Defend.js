@@ -8,7 +8,7 @@ export class Defend extends Component {
                     <h1>Defend</h1>
                     <h5>Aug 3 - 18, 2018</h5>
                     <p>Defend was a side project I made towards the end of GIMM 260, and during my first year as a peer mentor. This project was made with the goal in mind of becoming another game template for Professor Ellertson to have available for the incoming freshman.</p>
-                    <div className="video" >add video</div>
+                    <video className='video' controls><source src="/images/projects/info/defend.mp4" type="video/mp4" /></video>
                     <br />
                     <h5>Made with: Adobe Animate, ActionScript 3</h5>
                     <br />

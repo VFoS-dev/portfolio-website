@@ -10,7 +10,7 @@ export class Survive extends Component {
                     <p>Survive was the first individual game I created in GIMM 110 and my first game ever. The assignment was to create a game based off of a very basic template.
                         The template I based mine on was a space shooter with the player's ship locked in the center of the screen.</p>
                     <p>I changed the ship from being stagnant to be able to move with player input subject to gravity, added the ability to change weapon types (one a charged attack and the other a fully automatic attack with reload) by pressing w, and created my own graphics.</p>
-                    <div className="video" >add video</div>
+                    <video className='video' controls><source src="/images/projects/info/survive.mp4" type="video/mp4" /></video>
                     <br />
                     <h5>Made with: Adobe Animate, ActionScript 3</h5>
                     <br />

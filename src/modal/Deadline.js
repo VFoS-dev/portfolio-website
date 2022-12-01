@@ -8,7 +8,7 @@ export class Deadline extends Component {
                     <h1>Deadline</h1>
                     <h5>Sept 6 - 13, 2018</h5>
                     <p>Deadline was a project I made during a challenge for Dev Club. The challenge was to make a game where the player had to compete a task before a countdown timer was up. These challenges were open for a week, with the results displayed to the rest of the club at the end of the week.</p>
-                    <div className="video" >add video</div>
+                    <video className='video' controls><source src="/images/projects/info/deadline.mp4" type="video/mp4" /></video>
                     <br />
                     <h5>Made with: Adobe Animate, ActionScript 3</h5>
                     <br />

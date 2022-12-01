@@ -8,7 +8,7 @@ export class Uno extends Component {
                     <h1>Uno AI</h1>
                     <h5>Nov 21 - Dec 10, 2017</h5>
                     <p>Uno AI was a side project that I created towards the end of GIMM 110. The AI is coded to sort its hand in view, create an array of available options and then choose a random card to play or draw one if no plays are possible. </p>
-                    <div className="video" >add video</div>
+                    <video className='video' controls><source src="/images/projects/info/uno.mp4" type="video/mp4" /></video>
                     <br />
                     <h5>Made with: Adobe Animate, ActionScript 3</h5>
                     <br />
