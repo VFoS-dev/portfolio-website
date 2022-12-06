@@ -59,8 +59,14 @@ class Skills extends React.Component {
             }}>
                 {entries.map((n, index) => (
                     <div key={n.name} className='segment' style={{ '--base-height': `${60 * index}px`, '--sorted-height': `${60 * sorted[n.name]}px` }}>
-                        <h3 className='title' style={color || textColor ? { color: textColor || color } : {}}>{n.name}</h3>
-                        <h6 className='percent' style={color || textColor ? { color: textColor || color } : {}}>{n.compentence}%</h6>
+                        <h3 className='title relative' style={color || textColor ? { color: textColor || color } : {}}>{n.name}
+                            {!!n.linkedin && <div className='linkedinApproved'>
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" data-supported-dps="24x24" fill="#0a66c2" class="mercado-match" height="100%" width="auto" focusable="false">
+                                    <path d="M14.73 10H17l-5.5 8L8 14.5l1.34-1.34L11.21 15zM20 3v16a3 3 0 01-3 3H7a3 3 0 01-3-3V3h5.69l.52-1A2 2 0 0112 1a2 2 0 011.76 1l.52 1zm-2 2h-2.6l.6 1.1V7H8v-.9L8.6 5H6v14a1 1 0 001 1h10a1 1 0 001-1z"></path>
+                                </svg>
+                            </div >}
+                            <h6 className='percent' style={color || textColor ? { color: textColor || color } : {}}>{n.compentence}%</h6>
+                        </h3>
                         <div className="progress" style={{ backgroundColor: "none" }} >
                             <img className='hilt' src="/images/skills/hilt.png" style={{ zIndex: 1 }} alt='' />
                             <div className="progress-bar clear" style={{ width: `calc(${n.compentence}% - 90px)` }}>
@@ -115,6 +121,7 @@ class Skills extends React.Component {
                         { name: 'Bootstrap', compentence: 76 },
                         { name: 'Express.js', compentence: 90 },
                         { name: 'Ionic', compentence: 50 },
+                        { name: 'JQuery', compentence: 83, linkedin: 5 },
                         { name: 'Node.js', compentence: 80 },
                         { name: 'React', compentence: 96 },
                         { name: 'React Native', compentence: 80 },
@@ -129,7 +136,7 @@ class Skills extends React.Component {
                         { name: 'AutoHotKey (AHK)', compentence: 60 },
                         { name: 'C++', compentence: 65 },
                         { name: 'C#', compentence: 82 },
-                        { name: 'Javascript', compentence: 100 },
+                        { name: 'Javascript', compentence: 100, linkedin: 30 },
                         { name: 'Python', compentence: 70 },
                         { name: 'Swift', compentence: 20 },
                     ], 2, "orange")}
@@ -139,10 +146,11 @@ class Skills extends React.Component {
                         <svg stroke="yellow" fill="yellow" stroke-width="0" viewBox="0 0 16 16" width="100%" height="auto" xmlns="http://www.w3.org/2000/svg"><path d="M2 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"></path></svg>
                     </div>
                     {this.mapSkills("Language Derivatives", [
-                        { name: 'CSS', compentence: 93 },
-                        { name: 'HTML', compentence: 90 },
-                        { name: 'JSON', compentence: 100 },
+                        { name: 'CSS', compentence: 93, linkedin: 5 },
+                        { name: 'HTML', compentence: 90, linkedin: 5 },
+                        { name: 'JSON', compentence: 100, linkedin: 30 },
                         { name: 'MarkDown', compentence: 75 },
+                        { name: 'RegEx', compentence: 94 },
                     ], 3, "yellow")}
                 </div>
                 <div className={`flex-catagory ${filters[4] || 'filtered'}`} ref={this.dataRef} style={{ boxShadow: "0 0 5px #fff, 0 0 15px purple", position: "relative" }}>
@@ -199,3 +207,6 @@ const actionCreators = {};
 
 const connectedSkills = connect(mapState, actionCreators)(Skills);
 export { connectedSkills as Skills };
+
+/*
+*/

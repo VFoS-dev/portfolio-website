@@ -174,10 +174,9 @@ a.nav-link {
 }
 
 .navpadding {
-    padding-top: max(80px, 12vh);
+    padding-top: min(121px, max(80px, 12vh));
 }
 
 .navbar {
-    max-height:
-        121px;
+    max-height: 121px;
 }

@@ -158,6 +158,19 @@
     fill: rgb(129, 129, 129) !important;
     stroke: rgb(129, 129, 129) !important;
 }
-.skills-filter:hover svg{
+
+.skills-filter:hover svg {
     opacity: 0.5;
+}
+
+.relative {
+    position: relative;
+}
+
+.linkedinApproved {
+    position: absolute;
+    height: 100%;
+    top: 0px;
+    right: 0px;
+    transform: translateX(100%);
 }
