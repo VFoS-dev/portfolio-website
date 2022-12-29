@@ -136,7 +136,8 @@ class Skills extends React.Component {
                         { name: 'AutoHotKey (AHK)', compentence: 60 },
                         { name: 'C++', compentence: 65 },
                         { name: 'C#', compentence: 82 },
-                        { name: 'Javascript', compentence: 100, linkedin: 30 },
+                        { name: 'JavaScript', compentence: 100, linkedin: 30 },
+                        { name: 'PHP', compentence: 85, linkedin: 5 },
                         { name: 'Python', compentence: 70 },
                         { name: 'Swift', compentence: 20 },
                     ], 2, "orange")}
