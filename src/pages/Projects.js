@@ -18,7 +18,7 @@ class Projects extends React.Component {
             rows: 10,
             refresh: false,
             projects: [
-                { title: 'Project Kuro', date: "Starting: Jan 1, 2023", createdIn: 'Unreal', img: '/images/projects/projectkuro.png' },
+                { title: 'Project Kuro', date: "Jan 1, 2023 - Present", createdIn: 'Unreal', img: '/images/projects/projectkuro.png' },
                 { title: 'Portfolio Website', date: "Oct 26, '22 - Present", createdIn: 'React', img: '/images/projects/portfolioSite.png' },
                 { title: 'MotorPool Services', date: "Aug 25, '22 - Present", createdIn: 'React', img: '/images/projects/motorpool.png' },
                 { title: 'Bronco Beam', date: "Dec 21, '20 - Jul 30, '22", createdIn: 'React Native / React', img: '/images/projects/BroncoBeam.png', imgcss: { borderRadius: '10%' } },
@@ -222,7 +222,7 @@ class Projects extends React.Component {
         const { minesweeper, cells, projects, nbombs, gameStatus, updateModal } = this.state;
         const { clientWidth } = document.documentElement
         return (<Fragment>
-            <ModalController updateModal={updateModal} updatePage={this.props.updatePage}/>
+            <ModalController updateModal={updateModal} updatePage={this.props.updatePage} />
             <div className="projects">
                 <div className='navpadding' />
                 <div className='mineOutline'>

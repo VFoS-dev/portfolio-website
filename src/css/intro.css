@@ -104,3 +104,12 @@
         opacity: 0;
     }
 }
+
+.no_longer_looking {
+    position: absolute;
+    top: 15%;
+    left: 50%;
+    color: red;
+    font-size: 1.5em;
+    transform: translateX(-50%);
+}

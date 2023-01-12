@@ -17,6 +17,7 @@ class Intro extends React.Component {
                         <div class="cube"></div>
                     </div>
                     <div className='center'>
+                        {true && <center className="no_longer_looking">If you get an application that links to this website, I am no longer looking for a job.</center>}
                         <center className="welcome">
                             <h1>Welcome to my portfolio site!</h1>
                             <h2>You can use the links up top or the arrow keys to navigate the cube.</h2>

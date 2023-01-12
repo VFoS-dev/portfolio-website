@@ -56,6 +56,11 @@ class Resume extends React.Component {
                             </p>
                             <br />
                             <h2>Experience: </h2>
+                            <p><strong>Software Engineer - Matraex Inc.</strong></p>
+                            <p><em>January 2023 - Present</em></p>
+                            <ul>
+                                <li>Building Web and Mobile Apps</li>
+                            </ul>
                             <p><strong>Software Developer - GIMM Works</strong></p>
                             <p><em>January 2020 - January 2023</em></p>
                             <ul>
