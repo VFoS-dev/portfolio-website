@@ -17,13 +17,13 @@ class Intro extends React.Component {
                         <div class="cube"></div>
                     </div>
                     <div className='center'>
-                        {true && <center className="no_longer_looking">If you get an application that links to this website, I am no longer looking for a job.</center>}
+                        {false && <center className="no_longer_looking">If you get an application that links to this website, I am no longer looking for a job.</center>}
                         <center className="welcome">
                             <h1>Welcome to my portfolio site!</h1>
                             <h2>You can use the links up top or the arrow keys to navigate the cube.</h2>
                             <h3>Each page references something different and some have minigames.</h3>
                             <h4>You may notice red and green lights up top as you move around the website.</h4>
-                            <h5 >See if you can get them all green to view an easter egg page!</h5>
+                            <h5>See if you can get them all green to view an easter egg page!</h5>
                         </center>
                     </div>
                 </div>

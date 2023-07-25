@@ -2,10 +2,12 @@
     font-family: "go3v2";
     src: url(/public/fonts/go3v2.ttf);
 }
-
+div.face:has(.socials) {
+    --content-color: rgb(124, 72, 61);
+}
 .socials {
     padding: 0px !important;
-    background-color: rgb(138, 90, 75);
+    background-color: var(--content-color);
     background-image: url(/public/images/socials/game/woodPlankBackground.jpg);
     background-repeat: repeat;
     background-position: 50%;

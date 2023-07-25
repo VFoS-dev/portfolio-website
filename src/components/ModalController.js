@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { Deadline, Defend, Uno, Default, Survive, CashnSlash, SwordWhip, Minesweeper, ABCStories, PlanetDestroyer, TheSimpleRing, AllinFavor, BroncoBeam, MotorPool, Portfolio, ProjectKuro, OLogoAni } from '../modal';
+import { Deadline, Defend, Uno, Default, Survive, CashnSlash, SwordWhip, Minesweeper, ABCStories, PlanetDestroyer, TheSimpleRing, AllinFavor, BroncoBeam, MotorPool, Portfolio, ProjectKuro, OLogoAni, Matraex } from '../modal';
 
 export class ModalController extends Component {
     constructor(props) {
@@ -55,7 +55,10 @@ export class ModalController extends Component {
                 return <ProjectKuro />
             case 'original_logo_animation':
                 return <OLogoAni />
+            case 'matraex_inc':
+                return <Matraex />
             default:
+                console.error('ERROR: Modal was not found:', modal);
                 return <Default />
         }
     }

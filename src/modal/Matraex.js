@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 
-export class ABCStories extends Component {
+export class Matraex extends Component {
     render() {
         return (
             <Fragment>

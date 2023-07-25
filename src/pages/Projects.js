@@ -3,11 +3,14 @@ import { connect } from 'react-redux';
 import { ModalController } from '../components/ModalController';
 
 import '../css/projects.css';
+import { ProjectTimer } from '../components';
 
 class Projects extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
+            gamepaused: false,
+            gamerestart: false,
             toMine: false,
             updateModal: false,
             minesweeper: false,
@@ -18,9 +21,10 @@ class Projects extends React.Component {
             rows: 10,
             refresh: false,
             projects: [
+                { title: 'Matraex Inc.', date: "Jan 17, 2023 - Present", createdIn: 'PHP/React', img: '/images/worklogos/Matraex.png', imgcss: { backgroundColor: 'white', backgroundRepeat: 'no-repeat', backgroundPosition: 'center' } },
                 { title: 'Project Kuro', date: "Jan 1, 2023 - Present", createdIn: 'Unreal', img: '/images/projects/projectkuro.png' },
                 { title: 'Portfolio Website', date: "Oct 26, '22 - Present", createdIn: 'React', img: '/images/projects/portfolioSite.png' },
-                { title: 'MotorPool Services', date: "Aug 25, '22 - Present", createdIn: 'React', img: '/images/projects/motorpool.png' },
+                { title: 'MotorPool Services', date: "Aug 25, '22 - Jan 13, '23", createdIn: 'React', img: '/images/projects/motorpool.png' },
                 { title: 'Bronco Beam', date: "Dec 21, '20 - Jul 30, '22", createdIn: 'React Native / React', img: '/images/projects/BroncoBeam.png', imgcss: { borderRadius: '10%' } },
                 { title: 'All in Favor', date: "Sept 4, '21 - Jan 6, '22", createdIn: 'React', img: '/images/projects/AllinFavor.png', imgcss: { borderRadius: '100%', borderBottomLeftRadius: '0%' } },
                 { title: 'The Simple Ring Alpha', date: "Oct 8, '20 - Dec 24, '21", createdIn: 'React w/ Unity WebGL', img: '/images/projects/TheSimpleRing.png' },
@@ -109,7 +113,7 @@ class Projects extends React.Component {
         }))
         win = win === cells.length * cells.length
 
-        if (win || lost) this.setState({ gameStatus: +win || -1 })
+        if (win || lost) this.setState({ gameStatus: +win || -1, gamepaused: !!(+win || -1), })
     }
 
     createGame(index) {
@@ -147,7 +151,7 @@ class Projects extends React.Component {
             })
         })
 
-        this.setState({ cells: this.floodReveal(index, _c), nbombs: nbombs, flags: 0 })
+        this.setState({ cells: this.floodReveal(index, _c), nbombs: nbombs, flags: 0, gamepaused: false })
     }
 
     floodReveal(index, cells) {
@@ -201,11 +205,11 @@ class Projects extends React.Component {
     }
 
     changeState() {
-        const { minesweeper, cells, rows } = this.state;
+        const { minesweeper, cells, rows, gamerestart } = this.state;
         if (minesweeper)
-            if (!cells[0][0]) this.setState({ toMine: false, minesweeper: false, gameStatus: 0 });
-            else this.setState({ cells: [...new Array(rows)].map(n => [...new Array(rows)]), nbombs: 0, flags: 0, time: 0, gameStatus: 0 })
-        else this.setState({ toMine: true })
+            if (!cells[0][0]) this.setState({ toMine: false, minesweeper: false, gamepaused: false, gamerestart: !gamerestart, gameStatus: 0 });
+            else this.setState({ cells: [...new Array(rows)].map(n => [...new Array(rows)]), nbombs: 0, flags: 0, gamepaused: true, gamerestart: !gamerestart, gameStatus: 0 })
+        else this.setState({ toMine: true, gamepaused: true, gamerestart: !gamerestart })
     }
 
     flagCell(e) {
@@ -219,7 +223,7 @@ class Projects extends React.Component {
     }
 
     render() {
-        const { minesweeper, cells, projects, nbombs, gameStatus, updateModal } = this.state;
+        const { minesweeper, cells, projects, nbombs, gameStatus, updateModal, gamerestart, gamepaused } = this.state;
         const { clientWidth } = document.documentElement
         return (<Fragment>
             <ModalController updateModal={updateModal} updatePage={this.props.updatePage} />
@@ -236,9 +240,7 @@ class Projects extends React.Component {
                             <div className={`button${!minesweeper ? "" : { 0: ' play', '-1': ' lose', 1: ' win' }[gameStatus]}`} />
                         </center>
                         <div className='numbs right'>
-                            <div className='numb n0' />
-                            <div className='numb n0' />
-                            <div className='numb n0' />
+                            <ProjectTimer reset={gamerestart} paused={gamepaused} />
                         </div>
                     </div>
                     <div className='mineContainer'>
@@ -254,7 +256,7 @@ class Projects extends React.Component {
                                     {m.map((c, index) => {
                                         return <div id={`${x} ${index}`} key={`${x} ${index}col`}
                                             className={`cell${!c ? ' in' : c.revealed ? ` revealed${c.value < 0 ? ' mine' : ''}` : c.flagged ? ' flag' : ''}`}
-                                            style={{ width: `${100 / cells.length}%`, ...(!!c && c.flagged && !c.revealed ? { backgroundImage: `url(${projects[c.img].img})` } : {}) }}
+                                            style={{ width: `${100 / cells.length}%`, ...(!!c && c.flagged && !c.revealed ? { backgroundImage: `url(${projects[c.img].img})`, ...projects[c.img].imgcss } : {}) }}
                                             onClick={(e) => this.minesweep(e.target.id)}
                                             onContextMenu={(e) => this.flagCell(e)}
                                         >

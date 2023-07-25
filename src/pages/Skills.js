@@ -103,13 +103,13 @@ class Skills extends React.Component {
                     {this.mapSkills("Applications", [
                         { name: 'Adobe Animate', compentence: 95 },
                         { name: 'Blender', compentence: 73 },
-                        { name: 'Insomnia', compentence: 80 },
+                        { name: 'Docker', compentence: 50 },
+                        { name: 'Insomnia', compentence: 85 },
                         { name: 'Krita', compentence: 78 },
-                        { name: 'Maya', compentence: 32 },
                         { name: 'Photoshop', compentence: 60 },
                         { name: 'Substance Painter', compentence: 40 },
                         { name: 'Unity', compentence: 90 },
-                        { name: 'Unreal', compentence: 66 },
+                        { name: 'Unreal', compentence: 79 },
                     ], 0, "blue", '#335cff')}
                 </div>
                 <div className={`flex-catagory ${filters[1] || 'filtered'}`} ref={this.frameRef} style={{ boxShadow: "0 0 5px #fff, 0 0 15px magenta", position: "relative" }}>
@@ -125,6 +125,7 @@ class Skills extends React.Component {
                         { name: 'Node.js', compentence: 80 },
                         { name: 'React', compentence: 96 },
                         { name: 'React Native', compentence: 80 },
+                        { name: 'Redux.js', compentence: 82 },
                     ], 1, "magenta")}
                 </div>
                 <div className={`flex-catagory ${filters[2] || 'filtered'}`} ref={this.codRef} style={{ boxShadow: "0 0 5px #fff, 0 0 15px orange", position: "relative" }}>
@@ -132,14 +133,13 @@ class Skills extends React.Component {
                         <svg stroke="orange" fill="orange" stroke-width="0" viewBox="0 0 16 16" width="100%" height="auto" xmlns="http://www.w3.org/2000/svg"><path d="M2 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"></path></svg>
                     </div>
                     {this.mapSkills("Coding Languages", [
-                        { name: 'ActionScript 3 (AS3)', compentence: 93 },
-                        { name: 'AutoHotKey (AHK)', compentence: 60 },
-                        { name: 'C++', compentence: 65 },
-                        { name: 'C#', compentence: 82 },
+                        { name: 'ActionScript 3 (AS3)', compentence: 70 },
+                        { name: 'AutoHotKey (AHK)', compentence: 82 },
+                        { name: 'C++', compentence: 84 },
+                        { name: 'C#', compentence: 88 },
                         { name: 'JavaScript', compentence: 100, linkedin: 30 },
-                        { name: 'PHP', compentence: 85, linkedin: 5 },
-                        { name: 'Python', compentence: 70 },
-                        { name: 'Swift', compentence: 20 },
+                        { name: 'PHP', compentence: 95, linkedin: 5 },
+                        { name: 'Python', compentence: 76 },
                     ], 2, "orange")}
                 </div>
                 <div className={`flex-catagory ${filters[3] || 'filtered'}`} ref={this.derRef} style={{ boxShadow: "0 0 5px #fff, 0 0 15px yellow", position: "relative" }}>
@@ -160,7 +160,7 @@ class Skills extends React.Component {
                     </div>
                     {this.mapSkills("Databases", [
                         { name: 'MongoDB', compentence: 90 },
-                        { name: 'SQLite', compentence: 83 },
+                        { name: 'SQL', compentence: 87 },
                     ], 4, "#a733ff")}
                 </div>
                 <div className={`flex-catagory ${filters[5] || 'filtered'}`} ref={this.versRef} style={{ boxShadow: "0 0 5px #fff, 0 0 15px green", position: "relative" }}>
@@ -168,8 +168,7 @@ class Skills extends React.Component {
                         <svg stroke="green" fill="green" stroke-width="0" viewBox="0 0 16 16" width="100%" height="auto" xmlns="http://www.w3.org/2000/svg"><path d="M2 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"></path></svg>
                     </div>
                     {this.mapSkills("Version Control", [
-                        { name: 'git', compentence: 80 },
-                        { name: 'github', compentence: 89 },
+                        { name: 'git', compentence: 93 },
                     ], 5, "green")}
                 </div>
                 <div className={`flex-catagory ${filters[6] || 'filtered'}`} ref={this.cloudRef} style={{ boxShadow: "0 0 5px #fff, 0 0 15px white", position: "relative" }}>
@@ -191,9 +190,10 @@ class Skills extends React.Component {
                     </div>
                     {this.mapSkills("Misc.", [
                         { name: 'Agile Methodology', compentence: 99 },
+                        { name: 'Rider', compentence: 75 },
                         { name: 'Visual Studio', compentence: 93 },
                         { name: 'VMware', compentence: 87 },
-                        { name: 'VS Code', compentence: 83 },
+                        { name: 'VS Code', compentence: 97 },
                     ], 7, "red")}
                 </div>
             </div>

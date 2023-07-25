@@ -6,7 +6,7 @@ export class CashnSlash extends Component {
             <Fragment>
                 <center style={{ margin: "4% 0px", padding: '0px 15%' }}>
                     <h1>
-                        <a className='inlineImageButton' target="_blank" href='https://www.gimm.dev/projects/iccu-cash-n-slash'><img src='/images/GIMMWorks.png' /></a>
+                        <a className='inlineImageButton' target="_blank" href='https://www.gimm.dev/projects/iccu-cash-n-slash'><img src='/images/worklogos/GIMMWorks.png' /></a>
                         Cash n' Slash
                     </h1>
                     <h5>Sep 14 - Nov 17, 2020</h5>

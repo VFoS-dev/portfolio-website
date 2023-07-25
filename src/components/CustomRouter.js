@@ -174,5 +174,5 @@ function rotateCube(pos) {
     return dispatch => { dispatch({ type: pos }) }
 }
 
-const connectedCustomRouter = connect(mapState, actionCreators)(CustomRouter);
+var connectedCustomRouter = connect(mapState, actionCreators)(CustomRouter);
 export { connectedCustomRouter as CustomRouter };

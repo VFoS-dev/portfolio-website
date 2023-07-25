@@ -6,7 +6,7 @@ export class BroncoBeam extends Component {
             <Fragment>
                 <center style={{ margin: "4% 0px", padding: '0px 15%' }}>
                     <h1>
-                        <a className='inlineImageButton' target="_blank" href='https://www.gimm.dev/projects/bronco-beam'><img src='/images/GIMMWorks.png' /></a>
+                        <a className='inlineImageButton' target="_blank" href='https://www.gimm.dev/projects/bronco-beam'><img src='/images/worklogos/GIMMWorks.png' /></a>
                         Bronco Beam</h1>
                     <h5>Dec 21, '20 - Jul 30, '22</h5>
                     <p>Bronco BEAM is a multi-year project of GIMM Works that is a location-based app for universities. I was asked to join the team for the V2 revamp. I refactored the server and made a web admin portal so the app is customizable and dynamic for different universities. I also refactored the app's React Native code for V3 and made a best path algorithm for tours.

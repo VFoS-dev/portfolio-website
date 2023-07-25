@@ -1,5 +1,9 @@
+div.face:has(.skills) {
+    --content-color: rgb(36, 36, 36);
+}
+
 .skills {
-    background-color: rgb(36, 36, 36);
+    background-color: var(--content-color);
 }
 
 .flex-catagory.filtered .segment {

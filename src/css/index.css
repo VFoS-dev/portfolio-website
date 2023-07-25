@@ -6,7 +6,6 @@ body {
 ::-webkit-scrollbar {
     width: 15px;
     scrollbar-width: 15px;
-    position: absolute !important;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -20,7 +19,7 @@ body {
 
 ::-webkit-scrollbar-track {
     box-shadow: none !important;
-    background-color: transparent;
+    background-color: var(--content-color, magenta);
 }
 
 .lato {

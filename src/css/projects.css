@@ -1,5 +1,9 @@
+div.face:has(.projects) {
+    --content-color: rgb(92, 92, 92);
+}
+
 .projects {
-    background-color: rgb(92, 92, 92);
+    background-color: var(--content-color);
 }
 
 .overlay {
@@ -32,6 +36,7 @@
 }
 
 ._modal .card {
+    --content-color: rgb(216, 216, 216);
     position: relative;
     cursor: auto;
     width: 80vw;

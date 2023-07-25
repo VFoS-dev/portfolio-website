@@ -1,5 +1,8 @@
+div.face:has(.about) {
+    --content-color: #34d0ff;
+}
 .about {
-    background-color: #34d0ff;
+    background-color: var(--content-color);
     pointer-events: none;
     font-size: 2.5em;
     color: white;
