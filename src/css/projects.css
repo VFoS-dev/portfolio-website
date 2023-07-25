@@ -425,3 +425,8 @@
 .cell div.c-8 {
     color: gray;
 }
+
+.inlineImageButton {
+    display: inline-block;
+    margin: 0px 1vw;
+}

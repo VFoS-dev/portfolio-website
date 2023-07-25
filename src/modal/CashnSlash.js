@@ -5,10 +5,15 @@ export class CashnSlash extends Component {
         return (
             <Fragment>
                 <center style={{ margin: "4% 0px", padding: '0px 15%' }}>
-                    <h1>Cash n' Slash</h1>
+                    <h1>
+                        <a className='inlineImageButton' target="_blank" href='https://www.gimm.dev/projects/iccu-cash-n-slash'><img src='/images/GIMMWorks.png' /></a>
+                        Cash n' Slash
+                    </h1>
                     <h5>Sep 14 - Nov 17, 2020</h5>
                     <p>Cash n' Slash was a VR project made for Idaho Central Credit Union while I worked for GIMM Works. ICCU wanted a VR cash tornado alternative. I worked with a team of other people to create a VR game. I focused on a custom physics system and a VR suitable keyboard.</p>
-                    <div className="video" >add video</div>
+                    <div className="video">
+                        <iframe width="100%" height="100%" src="https://www.youtube.com/embed/htOdUCvf4t0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
                     <br />
                     <h5>Made with: Unity, C#, Blender</h5>
                     <br />
@@ -32,12 +37,12 @@ export class CashnSlash extends Component {
                     <h1>Cash Physics</h1>
                     <br />
                     <p>To allow for the feeling of being in a cash tornado I created these gravity objects that would pull particles to them if they were close enough, instead of them being pulled to the base downwards gravity in the scene.</p>
-                    <img src="/images/projects/info/cashGravity.gif" width="100%" alt=''/>
+                    <img src="/images/projects/info/cashGravity.gif" width="100%" alt='' />
                     <br /><br />
                     <h1>Simple Model Animation</h1>
                     <br />
                     <p>This was a simple low poly building I modeled, with custom animated text objects that later had light emissions to apply a more futuristic feel.</p>
-                    <img src="/images/projects/info/cafe.gif" width="100%" alt=''/>
+                    <img src="/images/projects/info/cafe.gif" width="100%" alt='' />
                 </center>
             </Fragment>
         );
