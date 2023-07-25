@@ -44,7 +44,7 @@ class ProjectTimer extends React.Component {
 
     render() {
         const { reset, paused } = this.props;
-        const { reset: r, paused: p, cantick } = this.state;
+        const { reset: r, paused: p } = this.state;
         if (reset != r) this.setState({ count: 0, reset })
         if (paused != p) this.setState({ paused })
         if (!paused) this.tick()
