@@ -53,10 +53,6 @@ class Projects extends React.Component {
         if (!minesweeper) this.setState({ refresh: !refresh })
     }
 
-    timeout(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
-    }
-
     handleMove(e) {
         var el = e.target;
         if (!el) return

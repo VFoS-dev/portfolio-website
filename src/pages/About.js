@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react';
 import { connect } from 'react-redux';
+import { timeout } from '../utils';
 
 import '../css/about.css';
 
@@ -21,7 +22,7 @@ class About extends React.Component {
     async AddDucks(n) {
         this.setState({ addingDucks: true })
         while (this.state.ducks.length < n) {
-            await this.timeout(500)
+            await timeout(500)
             const { ducks, ducksKeys } = this.state;
             var newduck = this.addDuck()
             if (window.location.pathname !== '/about') break;
@@ -29,7 +30,7 @@ class About extends React.Component {
                 ducks: [...ducks, newduck],
                 ducksKeys: [...ducksKeys, newduck.id]
             })
-            await this.timeout(500)
+            await timeout(500)
         }
         this.setState({ addingDucks: false })
     }
@@ -75,7 +76,7 @@ class About extends React.Component {
     async moveDucks() {
         this.setState({ duckAni: true })
         while (this.state.ducks.length > 0) {
-            await this.timeout(24)
+            await timeout(24)
             if (window.location.pathname !== '/about') break;
             const { ducks } = this.state;
             this.setState({
@@ -109,10 +110,6 @@ class About extends React.Component {
             hitDucks: hitDucks + 1,
             maxDuck: Math.min(25, 2 + Math.floor(hitDucks / 5))
         })
-    }
-
-    timeout(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
     }
 
     visualizeDucks() {

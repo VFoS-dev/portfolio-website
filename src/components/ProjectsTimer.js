@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react';
 import { connect } from 'react-redux';
+import { timeout } from '../utils';
 
 class ProjectTimer extends React.Component {
     constructor(props) {
@@ -14,15 +15,11 @@ class ProjectTimer extends React.Component {
         this.tick = this.tick.bind(this)
     }
 
-    timeout(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
-    }
-
     async tick() {
         if (this.state.clock || this.state.count > 999) return
         this.setState({ clock: true })
         while (!this.state.paused && this.state.count < 999) {
-            await this.timeout(1000)
+            await timeout(1000)
             if (window.location.pathname.substring(0, 9) !== '/projects' || this.state.paused) break;
             const { count } = this.state;
             this.setState({ count: count + 1 })

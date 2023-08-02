@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react';
 import { connect } from 'react-redux';
+import { timeout } from '../utils';
 
 import '../css/socials.css';
 
@@ -109,7 +110,7 @@ class Socials extends React.Component {
     async updateSlash() {
         this.setState({ pathAni: true })
         while (this.state.path.length > 0) {
-            await this.timeout(20)
+            await timeout(20)
             if (window.location.pathname !== '/socials') break;
             const { path } = this.state;
             var p = [...path];
@@ -129,10 +130,6 @@ class Socials extends React.Component {
         }, ..._p]
         if (window.location.pathname !== '/socials') return;
         this.updatePath(p)
-    }
-
-    timeout(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
     }
 
     updatePath(path) {

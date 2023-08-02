@@ -20,10 +20,6 @@ class NavBar extends Component {
         window.addEventListener('popstate', this.listener);
     }
 
-    timeout(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
-    }
-
     listener() {
         this.props.updatePage(this.props.last, window.location.href.split('/').splice(-1)[0].split('?')[0] || "intro");
     }
