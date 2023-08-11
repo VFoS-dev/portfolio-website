@@ -73,7 +73,6 @@ class CustomRouter extends React.Component {
             this.setState({ animate: false });
             return;
         }
-        var extend = false
         if (animate && loc !== 'front' && loc === _loc) {
             var e0 = document.getElementsByClassName(`ani-${loc}`);
             while (e0.length > 0) e0[0].classList.remove(`ani-${loc}`);
@@ -82,12 +81,11 @@ class CustomRouter extends React.Component {
                 document.getElementsByClassName(`prior`)[0].classList.add(`ani-${loc}`);
                 if (loc === "back")
                     document.getElementsByClassName(`skip`)[0].classList.add(`ani-${loc}`);
-            }, 6)
-            extend = true;
+            }, 0)
         }
 
         if (aniTimer) window.clearTimeout(aniTimer);
-        var timer = setTimeout(() => this.setState({ animate: false }), 1000 + 6 * (extend));
+        var timer = setTimeout(() => this.setState({ animate: false }), 1000);
 
         var queue = (_new !== _page) ? _page : false;
 
