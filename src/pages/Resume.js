@@ -9,7 +9,7 @@ class Resume extends React.Component {
         this.time = setInterval(
             () => {
                 const t = document.getElementById('time')
-                if (t) t.innerHTML = this.getTime()
+                if (t) t.textContent = this.getTime()
             }, 1000
         )
     }
@@ -57,9 +57,13 @@ class Resume extends React.Component {
                             <br />
                             <h2>Experience: </h2>
                             <p><strong>Software Engineer - Matraex Inc.</strong></p>
-                            <p><em>January 2023 - Present</em></p>
+                            <p><em>January 2023 - August 2023</em></p>
                             <ul>
-                                <li>Building Web and Mobile Apps</li>
+                                <li>Did full stack development on multiple web/app projects for clients</li>
+                                <li>Create scripts that automate tasks, making development faster and smoother</li>
+                                <li>Worked with the team to improve processes and increase documentation standards</li>
+                                <li>Made flexible tools and reusable features that are used across several projects</li>
+                                <li>Optimized several pages, functions, and API calls</li>
                             </ul>
                             <p><strong>Software Developer - GIMM Works</strong></p>
                             <p><em>January 2020 - January 2023</em></p>
@@ -87,6 +91,8 @@ class Resume extends React.Component {
                             </ul>
                             <br />
                             <h2>Projects:<button className='hyperlink' onClick={() => this.changePage('projects')} >Click Here</button></h2>
+                        </div>
+                        <div className='window-page'>
                             <br />
                             <h2>Skills:<button className='hyperlink' onClick={() => this.changePage('skills')} >Click Here</button></h2>
                             <br />
@@ -95,7 +101,7 @@ class Resume extends React.Component {
                         </div>
                     </div>
                     <hr />
-                </div>
+                </div >
 
                 <div className='taskbar'>
                     <div className='start'><div className='windowIcon' />start</div>

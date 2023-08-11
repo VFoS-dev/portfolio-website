@@ -9,12 +9,12 @@ class Intro extends React.Component {
             <Fragment>
                 <div className="intro">
                     <div className='backdrop'>
-                        <div class="cube"></div>
-                        <div class="cube"></div>
-                        <div class="cube"></div>
-                        <div class="cube"></div>
-                        <div class="cube"></div>
-                        <div class="cube"></div>
+                        <div className="cube"></div>
+                        <div className="cube"></div>
+                        <div className="cube"></div>
+                        <div className="cube"></div>
+                        <div className="cube"></div>
+                        <div className="cube"></div>
                     </div>
                     <div className='center'>
                         {false && <center className="no_longer_looking">If you get an application that links to this website, I am no longer looking for a job.</center>}

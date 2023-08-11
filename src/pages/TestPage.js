@@ -34,8 +34,8 @@ class TestPage extends React.Component {
         const gravity = 3;
         this.setState({ tick: true })
         while (true) {
-            if (window.location.pathname !== '/') break;
             await timeout(33);
+            if (window.location.pathname !== '/') return;
             let { fruits, sliced, splats } = this.state;
             for (let [i, fruit] of fruits.entries()) {
                 const { top, left, velX, velY } = fruit.pos

@@ -16,11 +16,12 @@ class ProjectTimer extends React.Component {
     }
 
     async tick() {
-        if (this.state.clock || this.state.count > 999) return
+        if (this.state.clock) return
         this.setState({ clock: true })
-        while (!this.state.paused && this.state.count < 999) {
+        while (!this.state.paused) {
             await timeout(1000)
-            if (window.location.pathname.substring(0, 9) !== '/projects' || this.state.paused) break;
+            if (window.location.pathname.substring(0, 9) !== '/projects') return;
+            if (this.state.paused) break;
             const { count } = this.state;
             this.setState({ count: count + 1 })
         }

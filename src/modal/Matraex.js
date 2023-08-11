@@ -5,25 +5,59 @@ export class Matraex extends Component {
         return (
             <Fragment>
                 <center style={{ margin: "4% 0px", padding: '0px 15%' }}>
-                    <h1>
-                        <a className='inlineImageButton' target="_blank" href='https://www.gimm.dev/projects/abc-stories'><img src='/images/worklogos/GIMMWorks.png' /></a>
-                        ABC Stories</h1>
-                    <h5>Apr 12 - Dec 23, 2020</h5>
-                    <p>This project was the first project that I got put on after getting hired by GIMM Works. The team was creating an app to help students who were struggling with writing. My job was to create a website that would display statistics about the users' progress to help them and their teachers figure out what they should focus on to improve. This project was later given to Blocksmith to maintain the server and app.<br />however in the future the website functionality may be moved to the app.</p>
-                    <h5>Video of the App</h5>
-                    <div className="video">
-                        <iframe width="100%" height='100%' src="https://www.youtube.com/embed/f6TUAltSobQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                    </div>
-                    <br />
-                    <h5><a href='https://apps.apple.com/us/app/abc-stories/id1539194514' rel="noreferrer" target='_blank'>Application</a> made with: Swift, SQLite</h5>
-                    <br />
-                    <br />
-                    <h5>Video of the Website</h5>
-                    <video className='video' controls><source src="/images/projects/info/abcstoriesweb.mp4" type="video/mp4" /></video>
-                    <br />
-                    <h5><a href='https://www.abcstories.org/about' rel="noreferrer" target='_blank'>Website</a> made with: React, Javascript, Express.js, MongoDB</h5>
+                    Content for this project has not yet been created.
                 </center>
             </Fragment >
         );
     }
 }
+
+/*
+
+Black Sage - blacksagetech.com
+January 17 - February 28
+Stack: React
+- Created responsive visual features with in the app
+- Integrated api calls from black sage
+- Found, documented, and notified vulnerabilities in the app
+- Created a react component that worked well with class and functional hooks
+
+Salestrak - salestrak.io
+January 26 - July 31
+Stack: PHP/SQL/JQuery
+Created a responsive and dynamic front end with vanilla js.
+- Refactored and optimized several pages and API calls.
+- Added several new features to the project.
+- Create many dynamic and reusable features that are used in various places in the app.
+- Created documentation of the project.
+
+Idaho Lottery - idaholottery.com/pages/mobile-apps
+May 19 - June 5
+Stack: React Native
+- Integrated api calls from a partner company.
+- Fixed reported bugs in the app.
+
+Rio Genesis - riogenesis.com
+June 19 - July 17
+Stack: PHP/SQL/React
+- Created a script that would automatically upgrade the code base to PHP8
+- Worked through warnings that were remaining after the upgrade
+
+Venture Idaho - ventureidaho.com
+May 3 - August 11
+Stack: PHP/SQL/JQuery
+- Added, adjusted, and redesigned responsive css styling.
+
+Healthcare Business Ventures - venturesys.org
+August 1 - August 7
+Stack: PHP/SQL
+- Created and modified exporting iif files for Quickbooks.
+
+High Call Rodeo - app.highcallrodeo.com
+July 14 - July 31
+Stack: React/Meteor/Mongodb
+- Audited the codebase of a potential project.
+- Did a gap analyst of where the project currently is and how much more is desired by the client.
+- Wrote documentation of my discoveries.
+
+*/

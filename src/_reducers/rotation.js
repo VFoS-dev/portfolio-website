@@ -3,23 +3,25 @@ var secret = JSON.parse(process.env.secret || '["right","bottom","bottom","botto
 export function rotation(state = origin, action) {
     var history = state.history;
 
-    switch (action.type) {
-        case 'right':
-        case 'left':
-        case 'bottom':
-        case 'top':
-            history.push(action.type);
-            if (history.length > 10) history.shift();
-            break;
-        case 'back':
-            history.push('top');
-            history.push('top');
-            if (history.length > 10) history.shift();
-            if (history.length > 10) history.shift();
-            break;
-        default:
-            break;
-    }
+    if (!state.correct)
+        switch (action.type) {
+            case 'right':
+            case 'left':
+            case 'bottom':
+            case 'top':
+                history.push(action.type);
+                if (history.length > 10) history.shift();
+                break;
+            case 'back':
+                history.push('top');
+                history.push('top');
+                if (history.length > 10) history.shift();
+                if (history.length > 10) history.shift();
+                break;
+            default:
+                break;
+        }
+
     const correct = secret.map((c, index) => (history[index] || false) === c).reduce((a, b) => a + b) === secret.length
     const checkpoints = history.map((c, index) => secret[index] === c)
 
@@ -110,7 +112,7 @@ function onMount() {
         front: 'intro',
         history: [],
         checkpoints: [],
-        correct: []
+        correct: false
     }, { type: pos })
 }
 

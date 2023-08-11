@@ -355,6 +355,7 @@ div.face:has(.projects) {
 .tile-createdIn {
     top: 75%;
     left: 50%;
+    font-size: 1.75rem;
 }
 
 .tile:hover {}

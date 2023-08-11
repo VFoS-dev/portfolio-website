@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { Navbar, Nav, Container, Offcanvas } from 'react-bootstrap';
 import '../css/navbar.css';
 
-
 class NavBar extends Component {
     constructor(props) {
         super(props);
@@ -13,9 +12,11 @@ class NavBar extends Component {
             timeout: null,
             aniInc: true,
         }
+
         // binds
         this.changePage = this.changePage.bind(this);
         this.listener = this.listener.bind(this);
+
         // listeners
         window.addEventListener('popstate', this.listener);
     }

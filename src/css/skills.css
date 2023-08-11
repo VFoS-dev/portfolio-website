@@ -129,6 +129,7 @@ div.face:has(.skills) {
 }
 
 .segment .percent {
+    font-size: 1rem;
     float: right;
     padding-top: 12px;
 }
@@ -177,4 +178,19 @@ div.face:has(.skills) {
     top: 0px;
     right: 0px;
     transform: translateX(100%);
+}
+
+.topPercent {
+    font-size: .9rem;
+    display: none;
+    position: absolute;
+    width: 80px;
+    max-height: 20px;
+    top: 50%;
+    left: 100%;
+    transform: translateY(-50%);
+}
+
+.segment:hover .topPercent {
+    display: block;
 }

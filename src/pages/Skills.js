@@ -61,11 +61,14 @@ class Skills extends React.Component {
                     <div key={n.name} className='segment' style={{ '--base-height': `${60 * index}px`, '--sorted-height': `${60 * sorted[n.name]}px` }}>
                         <h3 className='title relative' style={color || textColor ? { color: textColor || color } : {}}>{n.name}
                             {!!n.linkedin && <div className='linkedinApproved'>
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" data-supported-dps="24x24" fill="#0a66c2" class="mercado-match" height="100%" width="auto" focusable="false">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" data-supported-dps="24x24" fill="#0a66c2" className="mercado-match" height="100%" focusable="false">
                                     <path d="M14.73 10H17l-5.5 8L8 14.5l1.34-1.34L11.21 15zM20 3v16a3 3 0 01-3 3H7a3 3 0 01-3-3V3h5.69l.52-1A2 2 0 0112 1a2 2 0 011.76 1l.52 1zm-2 2h-2.6l.6 1.1V7H8v-.9L8.6 5H6v14a1 1 0 001 1h10a1 1 0 001-1z"></path>
                                 </svg>
+                                <div className='topPercent'>
+                                    top: {n.linkedin}%
+                                </div>
                             </div >}
-                            <h6 className='percent' style={color || textColor ? { color: textColor || color } : {}}>{n.compentence}%</h6>
+                            <div className='percent' style={color || textColor ? { color: textColor || color } : {}}>{n.compentence}%</div>
                         </h3>
                         <div className="progress" style={{ backgroundColor: "none" }} >
                             <img className='hilt' src="/images/skills/hilt.png" style={{ zIndex: 1 }} alt='' />
@@ -90,15 +93,18 @@ class Skills extends React.Component {
 
     render() {
         const { filters } = this.state;
-        if (this.props.scrolled !== this.state.scrolled) setTimeout(() => this.userScrolled(), 0)
-        if (!this.state.updatedRefs) setTimeout(() => this.userScrolled(), 0)
-
+        const { activePage } = this.props
+        if (activePage) { 
+            if (this.props.scrolled !== this.state.scrolled) setTimeout(() => this.userScrolled(), 0)
+            if (!this.state.updatedRefs) setTimeout(() => this.userScrolled(), 0)
+        }
+            
         return (<div className="skills">
             <div className='navpadding' />
             <div className='flex-container'>
                 <div className={`flex-catagory ${filters[0] || 'filtered'}`} ref={this.appRef} style={{ boxShadow: "0 0 5px #fff, 0 0 15px blue", position: "relative" }}>
                     <div className='skills-filter' id="0" onClick={(e) => this.filter(e.target.id)}>
-                        <svg stroke="blue" fill="blue" stroke-width="0" viewBox="0 0 16 16" width="100%" height="auto" xmlns="http://www.w3.org/2000/svg"><path d="M2 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"></path></svg>
+                        <svg stroke="blue" fill="blue" strokeWidth="0" viewBox="0 0 16 16" width="100%" xmlns="http://www.w3.org/2000/svg"><path d="M2 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"></path></svg>
                     </div>
                     {this.mapSkills("Applications", [
                         { name: 'Adobe Animate', compentence: 95 },
@@ -114,7 +120,7 @@ class Skills extends React.Component {
                 </div>
                 <div className={`flex-catagory ${filters[1] || 'filtered'}`} ref={this.frameRef} style={{ boxShadow: "0 0 5px #fff, 0 0 15px magenta", position: "relative" }}>
                     <div className='skills-filter' id="1" onClick={(e) => this.filter(e.target.id)}>
-                        <svg stroke="magenta" fill="magenta" stroke-width="0" viewBox="0 0 16 16" width="100%" height="auto" xmlns="http://www.w3.org/2000/svg"><path d="M2 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"></path></svg>
+                        <svg stroke="magenta" fill="magenta" strokeWidth="0" viewBox="0 0 16 16" width="100%" xmlns="http://www.w3.org/2000/svg"><path d="M2 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"></path></svg>
                     </div>
                     {this.mapSkills("Frameworks", [
                         { name: '.Net', compentence: 65 },
@@ -130,33 +136,33 @@ class Skills extends React.Component {
                 </div>
                 <div className={`flex-catagory ${filters[2] || 'filtered'}`} ref={this.codRef} style={{ boxShadow: "0 0 5px #fff, 0 0 15px orange", position: "relative" }}>
                     <div className='skills-filter' id="2" onClick={(e) => this.filter(e.target.id)}>
-                        <svg stroke="orange" fill="orange" stroke-width="0" viewBox="0 0 16 16" width="100%" height="auto" xmlns="http://www.w3.org/2000/svg"><path d="M2 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"></path></svg>
+                        <svg stroke="orange" fill="orange" strokeWidth="0" viewBox="0 0 16 16" width="100%" xmlns="http://www.w3.org/2000/svg"><path d="M2 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"></path></svg>
                     </div>
                     {this.mapSkills("Coding Languages", [
                         { name: 'ActionScript 3 (AS3)', compentence: 70 },
                         { name: 'AutoHotKey (AHK)', compentence: 82 },
                         { name: 'C++', compentence: 84 },
                         { name: 'C#', compentence: 88 },
-                        { name: 'JavaScript', compentence: 100, linkedin: 30 },
+                        { name: 'JavaScript', compentence: 100, linkedin: 5 },
                         { name: 'PHP', compentence: 95, linkedin: 5 },
                         { name: 'Python', compentence: 76 },
                     ], 2, "orange")}
                 </div>
                 <div className={`flex-catagory ${filters[3] || 'filtered'}`} ref={this.derRef} style={{ boxShadow: "0 0 5px #fff, 0 0 15px yellow", position: "relative" }}>
                     <div className='skills-filter' id="3" onClick={(e) => this.filter(e.target.id)}>
-                        <svg stroke="yellow" fill="yellow" stroke-width="0" viewBox="0 0 16 16" width="100%" height="auto" xmlns="http://www.w3.org/2000/svg"><path d="M2 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"></path></svg>
+                        <svg stroke="yellow" fill="yellow" strokeWidth="0" viewBox="0 0 16 16" width="100%" xmlns="http://www.w3.org/2000/svg"><path d="M2 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"></path></svg>
                     </div>
                     {this.mapSkills("Language Derivatives", [
                         { name: 'CSS', compentence: 93, linkedin: 5 },
                         { name: 'HTML', compentence: 90, linkedin: 5 },
-                        { name: 'JSON', compentence: 100, linkedin: 30 },
+                        { name: 'JSON', compentence: 100, linkedin: 5 },
                         { name: 'MarkDown', compentence: 75 },
                         { name: 'RegEx', compentence: 94 },
                     ], 3, "yellow")}
                 </div>
                 <div className={`flex-catagory ${filters[4] || 'filtered'}`} ref={this.dataRef} style={{ boxShadow: "0 0 5px #fff, 0 0 15px purple", position: "relative" }}>
                     <div className='skills-filter' id="4" onClick={(e) => this.filter(e.target.id)}>
-                        <svg stroke="#a733ff" fill="#a733ff" stroke-width="0" viewBox="0 0 16 16" width="100%" height="auto" xmlns="http://www.w3.org/2000/svg"><path d="M2 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"></path></svg>
+                        <svg stroke="#a733ff" fill="#a733ff" strokeWidth="0" viewBox="0 0 16 16" width="100%" xmlns="http://www.w3.org/2000/svg"><path d="M2 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"></path></svg>
                     </div>
                     {this.mapSkills("Databases", [
                         { name: 'MongoDB', compentence: 90 },
@@ -165,7 +171,7 @@ class Skills extends React.Component {
                 </div>
                 <div className={`flex-catagory ${filters[5] || 'filtered'}`} ref={this.versRef} style={{ boxShadow: "0 0 5px #fff, 0 0 15px green", position: "relative" }}>
                     <div className='skills-filter' id="5" onClick={(e) => this.filter(e.target.id)}>
-                        <svg stroke="green" fill="green" stroke-width="0" viewBox="0 0 16 16" width="100%" height="auto" xmlns="http://www.w3.org/2000/svg"><path d="M2 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"></path></svg>
+                        <svg stroke="green" fill="green" strokeWidth="0" viewBox="0 0 16 16" width="100%" xmlns="http://www.w3.org/2000/svg"><path d="M2 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"></path></svg>
                     </div>
                     {this.mapSkills("Version Control", [
                         { name: 'git', compentence: 93 },
@@ -173,7 +179,7 @@ class Skills extends React.Component {
                 </div>
                 <div className={`flex-catagory ${filters[6] || 'filtered'}`} ref={this.cloudRef} style={{ boxShadow: "0 0 5px #fff, 0 0 15px white", position: "relative" }}>
                     <div className='skills-filter' id="6" onClick={(e) => this.filter(e.target.id)}>
-                        <svg stroke="white" fill="white" stroke-width="0" viewBox="0 0 16 16" width="100%" height="auto" xmlns="http://www.w3.org/2000/svg"><path d="M2 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"></path></svg>
+                        <svg stroke="white" fill="white" strokeWidth="0" viewBox="0 0 16 16" width="100%" xmlns="http://www.w3.org/2000/svg"><path d="M2 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"></path></svg>
                     </div>
                     {this.mapSkills("Cloud Services", [
                         { name: 'AWS', compentence: 93 },
@@ -186,7 +192,7 @@ class Skills extends React.Component {
                 </div>
                 <div className={`flex-catagory ${filters[7] || 'filtered'}`} ref={this.miscRef} style={{ boxShadow: "0 0 5px #fff, 0 0 15px red", position: "relative" }}>
                     <div className='skills-filter' id="7" onClick={(e) => this.filter(e.target.id)}>
-                        <svg stroke="red" fill="red" stroke-width="0" viewBox="0 0 16 16" width="100%" height="auto" xmlns="http://www.w3.org/2000/svg"><path d="M2 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"></path></svg>
+                        <svg stroke="red" fill="red" strokeWidth="0" viewBox="0 0 16 16" width="100%" xmlns="http://www.w3.org/2000/svg"><path d="M2 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"></path></svg>
                     </div>
                     {this.mapSkills("Misc.", [
                         { name: 'Agile Methodology', compentence: 99 },
@@ -208,6 +214,3 @@ const actionCreators = {};
 
 const connectedSkills = connect(mapState, actionCreators)(Skills);
 export { connectedSkills as Skills };
-
-/*
-*/

@@ -12,7 +12,7 @@ export class CashnSlash extends Component {
                     <h5>Sep 14 - Nov 17, 2020</h5>
                     <p>Cash n' Slash was a VR project made for Idaho Central Credit Union while I worked for GIMM Works. ICCU wanted a VR cash tornado alternative. I worked with a team of other people to create a VR game. I focused on a custom physics system and a VR suitable keyboard.</p>
                     <div className="video">
-                        <iframe width="100%" height="100%" src="https://www.youtube.com/embed/htOdUCvf4t0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        <iframe width="100%" height="100%" src="https://www.youtube.com/embed/htOdUCvf4t0" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
                     </div>
                     <br />
                     <h5>Made with: Unity, C#, Blender</h5>

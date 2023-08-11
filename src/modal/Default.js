@@ -4,7 +4,9 @@ export class Default extends Component {
     render() {
         return (
             <Fragment>
-                <center style={{ marginTop: "5%" }}>Content for this project has not yet been created.</center>
+                <center style={{ margin: "4% 0px", padding: '0px 15%' }}>
+                    Content for this project has not yet been created.
+                </center>
             </Fragment>
         );
     }

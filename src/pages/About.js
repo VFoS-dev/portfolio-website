@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import { connect } from 'react-redux';
-import { timeout } from '../utils';
+import { timeout, createKey } from '../utils';
 
 import '../css/about.css';
 
@@ -25,7 +25,7 @@ class About extends React.Component {
             await timeout(500)
             const { ducks, ducksKeys } = this.state;
             var newduck = this.addDuck()
-            if (window.location.pathname !== '/about') break;
+            if (window.location.pathname !== '/about') return;
             this.setState({
                 ducks: [...ducks, newduck],
                 ducksKeys: [...ducksKeys, newduck.id]
@@ -36,6 +36,7 @@ class About extends React.Component {
     }
 
     addDuck() {
+        const { ducksKeys } = this.state
         const rand = Math.floor(Math.random() * 5)
         var right, top, angle = rand - 2;
         const dir = {
@@ -64,20 +65,14 @@ class About extends React.Component {
                 break;
         }
 
-        return { dir: dir, pos: { right, top }, type: type, dead: false, noise: 20 * Math.random(), speed: 0.2 + 0.2 * Math.random(), id: this.createKey() }
-    }
-
-    createKey() {
-        var l = "abcdefghijklmnopqurstuvwyz"
-        var key = [...l].map(a => l[Math.floor(Math.random() * l.length)]).join("")
-        return !this.state.ducksKeys.includes(key) ? key : this.createKey()
+        return { dir: dir, pos: { right, top }, type: type, dead: false, noise: 20 * Math.random(), speed: 0.2 + 0.2 * Math.random(), id: createKey(ducksKeys) }
     }
 
     async moveDucks() {
         this.setState({ duckAni: true })
         while (this.state.ducks.length > 0) {
             await timeout(24)
-            if (window.location.pathname !== '/about') break;
+            if (window.location.pathname !== '/about') return;
             const { ducks } = this.state;
             this.setState({
                 ducks: ducks.map(a => {
@@ -100,7 +95,10 @@ class About extends React.Component {
 
     duckRespawn(id) {
         const { ducks, limited } = this.state
-        this.setState({ ducks: (limited) ? ducks.filter(a => (a.id !== id)) : ducks.map(a => (a.id === id ? this.addDuck() : a)) })
+        if (limited) {
+            let _ducks = ducks.filter(a => (a.id !== id))
+            this.setState({ ducks: _ducks, ducksKeys: _ducks.map(a => a.id) })
+        } else this.setState({ ducks: ducks.map(a => (a.id === id ? this.addDuck() : a)) })
     }
 
     hitDuck(id) {
@@ -122,8 +120,11 @@ class About extends React.Component {
 
     render() {
         const { ducks, duckAni, limited, addingDucks, maxDuck, hitDucks } = this.state;
-        if (ducks.length > 0 && !duckAni) this.moveDucks()
-        if (ducks.length < maxDuck && typeof limited != 'boolean' && !addingDucks) this.AddDucks(maxDuck)
+        const { activePage } = this.props
+        if (activePage) {
+            if (ducks.length > 0 && !duckAni) this.moveDucks()
+            if (ducks.length < maxDuck && typeof limited != 'boolean' && !addingDucks) this.AddDucks(maxDuck)
+        }
 
         return (<Fragment>
             <div className='sticky-overlay' >
@@ -152,10 +153,10 @@ class About extends React.Component {
                     <br />
                     <p id="VFoS">Origin of VFoS:</p>
                     <p className='tab'>
-                        VFoS was created during high school as V~FoS, when I was into the game Super Smash Bros: Melee. 
-                        This tag was inspired by an Anime series I was watching at the time, Kenichi: The Mightiest Disciple. 
-                        The villains of this Anime were part of a gang called The Fists of Ragnarok. 
-                        My favorite villain was The Fifth Fist of Ragnarok, Hibiki Kugenin. He was a pianist who wouldn't give up and tricked his opponents by faking getting hit to do a potent counterattack. 
+                        VFoS was created during high school as V~FoS, when I was into the game Super Smash Bros: Melee.
+                        This tag was inspired by an Anime series I was watching at the time, Kenichi: The Mightiest Disciple.
+                        The villains of this Anime were part of a gang called The Fists of Ragnarok.
+                        My favorite villain was The Fifth Fist of Ragnarok, Hibiki Kugenin. He was a pianist who wouldn't give up and tricked his opponents by faking getting hit to do a potent counterattack.
                         So in the end VFoS is the acronym: Fifth Fist of Smash. Although I have stopped playing Smash the tag has stuck with me because of the memories I have with it.
                     </p>
                 </div>

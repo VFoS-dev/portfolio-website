@@ -6,6 +6,7 @@ import '../css/router.css';
 
 // Components
 import { NavBar } from './NavBar';
+
 // Pages
 import { About, Socials, Skills, Intro, Projects, Resume } from '../pages';
 
@@ -109,23 +110,16 @@ class CustomRouter extends React.Component {
         })
     }
 
-
-    Router(req) { // actual router
+    Router(req, active) { // actual router
         const { scrollPercent, animate } = this.state;
         switch (req) {
             default:
-            case 'intro':
-                return <Intro key="Intro" />
-            case 'projects':
-                return <Projects key="Projects" updatePage={this.updatePage} />
-            case 'resume':
-                return <Resume key="Resume" updatePage={this.updatePage} />
-            case 'skills':
-                return <Skills animating={animate} scrolled={scrollPercent} key="Skills" />
-            case 'socials':
-                return <Socials animating={animate} key="Socials" />
-            case 'about':
-                return <About key="About" />
+            case 'intro': return <Intro key="Intro" activePage={active} />;
+            case 'projects': return <Projects key="Projects" activePage={active} updatePage={this.updatePage} />;
+            case 'resume': return <Resume key="Resume" activePage={active} updatePage={this.updatePage} />;
+            case 'skills': return <Skills key="Skills" activePage={active} animating={animate} scrolled={scrollPercent} />;
+            case 'socials': return <Socials key="Socials" activePage={active} animating={animate} />;
+            case 'about': return <About key="About" activePage={active} />;
         }
     }
 
@@ -144,17 +138,17 @@ class CustomRouter extends React.Component {
             <div className="cube-container" style={{ perspective: `${document.documentElement.clientWidth}px` }} onAnimationEnd={() => this.removeLoading()}>
                 {!!queue && animate && <>
                     <div className={`face prior ani-${loc}`} key={queue}>
-                        {this.Router(queue)}
+                        {this.Router(queue, false)}
                     </div>
                     {loc === "back" &&
                         <div className={`face skip ani-back`} key={rotation.bottom}>
                             {/* using bottom to grab the top because the value of the sides have already swapped */}
-                            {this.Router(rotation.bottom)}
+                            {this.Router(rotation.bottom, false)}
                         </div>
                     }
                 </>}
                 <div id="focused" key={page} className={`face focus${animate && !!queue ? ` ani-${loc}` : ""} `} onScroll={() => this.UpdateNavBar()}>
-                    {this.Router(page)}
+                    {this.Router(page, true)}
                 </div>
             </div>
         </>);

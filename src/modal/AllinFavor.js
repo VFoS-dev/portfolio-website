@@ -14,7 +14,7 @@ export class AllinFavor extends Component {
                         contains no critical user data. The next steps were to add networking. I created all of the game's net code.
                     </p>
                     <div className="video">
-                        <iframe width="100%" height="100%" src="https://www.youtube.com/embed/lfqCeVwhvLk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        <iframe width="100%" height="100%" src="https://www.youtube.com/embed/lfqCeVwhvLk" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
                     </div>
                     <br />
                     <h5><a href='https://www.allinfavor.org' rel="noreferrer" target="_blank">Website</a> made with: React, Javascript, Socket.io, Express.js, MongoDB</h5>

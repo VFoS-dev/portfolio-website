@@ -111,7 +111,7 @@ class Socials extends React.Component {
         this.setState({ pathAni: true })
         while (this.state.path.length > 0) {
             await timeout(20)
-            if (window.location.pathname !== '/socials') break;
+            if (window.location.pathname !== '/socials') return;
             const { path } = this.state;
             var p = [...path];
             p.pop()
@@ -223,7 +223,10 @@ class Socials extends React.Component {
 
     render() {
         const { path, pathAni, options } = this.state
-        if (path.length > 0 && !pathAni) setTimeout(() => this.updateSlash(), 0)
+        const { activePage } = this.props
+        if (activePage) { 
+            if (path.length > 0 && !pathAni) setTimeout(() => this.updateSlash(), 0)
+        }
         return (<Fragment>
             <canvas id='slash' className='sticky-overlay' />
             <div className="socials" onMouseMove={(e) => this.addVector(e)}>

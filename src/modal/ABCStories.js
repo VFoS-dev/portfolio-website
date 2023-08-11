@@ -12,7 +12,7 @@ export class ABCStories extends Component {
                     <p>This project was the first project that I got put on after getting hired by GIMM Works. The team was creating an app to help students who were struggling with writing. My job was to create a website that would display statistics about the users' progress to help them and their teachers figure out what they should focus on to improve. This project was later given to Blocksmith to maintain the server and app.<br />however in the future the website functionality may be moved to the app.</p>
                     <h5>Video of the App</h5>
                     <div className="video">
-                        <iframe width="100%" height='100%' src="https://www.youtube.com/embed/f6TUAltSobQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        <iframe width="100%" height='100%' src="https://www.youtube.com/embed/f6TUAltSobQ" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
                     </div>
                     <br />
                     <h5><a href='https://apps.apple.com/us/app/abc-stories/id1539194514' rel="noreferrer" target='_blank'>Application</a> made with: Swift, SQLite</h5>

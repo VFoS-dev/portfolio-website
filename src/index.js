@@ -11,8 +11,7 @@ import { TestPage } from './pages';
 
 render(
   <Provider store={store}>
-    <TestPage />
-  
+    <CustomRouter />
   </Provider>,
   document.getElementById('root')
 );
