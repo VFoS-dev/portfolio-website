@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { connect } from 'react-redux';
 
 // CSS
@@ -9,6 +9,7 @@ import { NavBar } from './NavBar';
 
 // Pages
 import { About, Socials, Skills, Intro, Projects, Resume } from '../pages';
+import { SecretController } from './SecretController';
 
 class CustomRouter extends React.Component {
     constructor(props) {
@@ -21,16 +22,28 @@ class CustomRouter extends React.Component {
             loc: 'front',
             winloc: '',
             queue: false,
-            scrollPercent: 1
+            scrollPercent: 1,
+            cantRot: false
         };
 
         this.updatePage = this.updatePage.bind(this);
         this.keyRot = this.keyRot.bind(this);
+        this.changeRot = this.changeRot.bind(this);
+
         document.addEventListener('keydown', this.keyRot);
+        window.addEventListener('custom-changeRot', this.changeRot);
+    }
+
+    changeRot(e) {
+        console.log('here', e.detail);
+        this.setState({ cantRot: e.detail })
     }
 
     keyRot(e) {
         const { rotation } = this.props;
+        const { cantRot } = this.state;
+        const [_, __, secret] = window.location.pathname.split('/') || []
+        if (rotation.correct && secret === 'secret' || cantRot) return
 
         var p;
         switch (e.keyCode) {
@@ -64,10 +77,13 @@ class CustomRouter extends React.Component {
     }
 
     updatePage(_page, _new) {
+        const _newpage = _new.split('/')[0];
         const { rotation } = this.props;
         const { loc, animate, aniTimer, animations, update } = this.state;
 
-        const _loc = JSON.stringify(rotation).split(`":"${_new}"`)[0].split('"').slice(-1)[0];
+        const _loc = JSON.stringify(rotation).split(`":"${_newpage}"`)[0].split('"').slice(-1)[0];
+
+        window.dispatchEvent(new CustomEvent("custom-pushState", { loc }));
 
         if (_loc === "front") {
             this.setState({ animate: false });
@@ -87,10 +103,9 @@ class CustomRouter extends React.Component {
         if (aniTimer) window.clearTimeout(aniTimer);
         var timer = setTimeout(() => this.setState({ animate: false }), 1000);
 
-        var queue = (_new !== _page) ? _page : false;
+        var queue = (_newpage !== _page) ? _page : false;
 
         this.props.rotate(_loc);
-
         this.setState({ update: !update, animate: animations, aniTimer: timer, loc: _loc, queue: queue });
     }
 
@@ -123,10 +138,10 @@ class CustomRouter extends React.Component {
     render() {
         const { animate, loc, queue, scrollPercent } = this.state;
         const { rotation } = this.props;
-        const page = window.location.pathname.split('/')[1];
+        const [_, page, secret] = window.location.pathname.split('/');
         if (!!page && rotation.front !== page) this.props.rotate(JSON.stringify(rotation).split(`":"${page} `)[0].split('"').splice(-1)[0]);
-
-        return (<>
+        return (<Fragment>
+            <SecretController />
             <NavBar updatePage={this.updatePage} last={page} scrollPercent={scrollPercent} />
             <div className="cube-container" style={{ perspective: `${document.documentElement.clientWidth}px` }} onAnimationEnd={() => this.removeLoading()}>
                 {!!queue && animate && <>
@@ -144,7 +159,7 @@ class CustomRouter extends React.Component {
                     {this.Router(page, true)}
                 </div>
             </div>
-        </>);
+        </Fragment>);
     }
 }
 

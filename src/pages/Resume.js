@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { EditableFocusRot } from '../utils';
 
 import '../css/resume.css'
 
@@ -30,6 +31,7 @@ class Resume extends React.Component {
             this.props.updatePage(page, _newPage);
         }
     }
+
     render() {
         return (
             <div className="resume" style={{ backgroundImage: 'url(/images/resume/windows_xp_background.jpg)' }}>
@@ -45,7 +47,7 @@ class Resume extends React.Component {
                     </div>
                     <div className="window-options" />
                     <div className="window-body" >
-                        <div className='window-page' suppressContentEditableWarning={true} contentEditable='true'>
+                        <div className='window-page' {...EditableFocusRot()}>
                             <center><h1 style={{ fontSize: '2vw' }}>Want a polished resume? <button className='hyperlink' onClick={() => window.open('/pdf/resume_eye_friendly.pdf', '_blank')} >Click Here</button></h1></center>
                             <h2>Education: </h2>
                             <p className='tab'>
@@ -91,7 +93,7 @@ class Resume extends React.Component {
                             <br />
                             <h2>Projects:<button className='hyperlink' onClick={() => this.changePage('projects')} >Click Here</button></h2>
                         </div>
-                        <div className='window-page' suppressContentEditableWarning={true} contentEditable='true'>
+                        <div className='window-page' {...EditableFocusRot()}>
                             <br />
                             <h2>Skills:<button className='hyperlink' onClick={() => this.changePage('skills')} >Click Here</button></h2>
                             <br />

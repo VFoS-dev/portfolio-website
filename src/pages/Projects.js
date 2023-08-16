@@ -1,6 +1,7 @@
 import React, { Fragment } from 'react';
 import { connect } from 'react-redux';
 import { ModalController } from '../components/ModalController';
+import { projectData } from '../_data';
 
 import '../css/projects.css';
 import { ProjectTimer } from '../components';
@@ -20,31 +21,6 @@ class Projects extends React.Component {
             gameStatus: 0,
             rows: 10,
             refresh: false,
-            projects: [
-                { title: 'Project Kuro', date: "Jan 1, 2023 - Present", createdIn: 'Unreal Engine 5', img: '/images/projects/projectkuro.png' },
-                { title: 'Portfolio Website', date: "Oct 26, '22 - Present", createdIn: 'React', img: '/images/projects/portfolioSite.png' },
-                { title: 'Matraex Inc.', date: "Jan 17 - Aug 11, 2023", createdIn: 'PHP / SQL / JQuery / React', img: '/images/worklogos/Matraex.png', imgcss: { backgroundColor: 'white', backgroundRepeat: 'no-repeat', backgroundPosition: 'center' } },
-                { title: 'Venture Title', date: "May 3 - Aug 11, 2023", createdIn: 'PHP / SQL / JQuery', img: '/images/projects/ventureidaho.png' },
-                { title: 'H.B.V.', date: "Aug 1 - Aug 7, 2023", createdIn: 'PHP / SQL', img: '/images/projects/hbv.png' },
-                { title: 'High Call Rodeo', date: "Jul 14 - Jul 31, 2023", createdIn: 'React / Meteor / Mongodb', img: '/images/projects/highcall.jpg', imgcss: { borderRadius: '10%' } },
-                { title: 'Salestrak', date: "Jan 26 - Jul 31, 2023", createdIn: 'PHP / SQL / JQuery', img: '/images/projects/salestrak.jpg' },
-                { title: 'Rio Genesis', date: "Jun 19 - Jul 17, 2023", createdIn: 'PHP / SQL / React', img: '/images/projects/riogenesis.png' },
-                { title: 'Black Sage Tech', date: "Jan 17 - Feb 28, 2023", createdIn: 'React', img: '/images/projects/blacksage.jpg' },
-                { title: 'MotorPool Services', date: "Aug 25, '22 - Jan 13, '23", createdIn: 'React', img: '/images/projects/motorpool.png' },
-                { title: 'Bronco Beam', date: "Dec 21, '20 - Jul 30, '22", createdIn: 'React Native / Mongodb', img: '/images/projects/BroncoBeam.png', imgcss: { borderRadius: '10%' } },
-                { title: 'All in Favor', date: "Sept 4, '21 - Jan 6, '22", createdIn: 'React', img: '/images/projects/AllinFavor.png', imgcss: { borderRadius: '100%', borderBottomLeftRadius: '0%' } },
-                { title: 'The Simple Ring Alpha', date: "Oct 8, '20 - Dec 24, '21", createdIn: 'React / Unity / Firebase', img: '/images/projects/TheSimpleRing.png' },
-                { title: 'Planet Destroyer', date: "Dec 5, '20 - Apr 15, '21", createdIn: 'Unity VR', img: '/images/projects/PD-v1.7.png' },
-                { title: 'ABC Stories', date: "Apr 12 - Dec 23, 2020", createdIn: 'Swift / React', img: '/images/projects/abcStories.png', imgcss: { borderRadius: '10%' } },
-                { title: 'Minesweeper Solver', date: "Nov 1 - Dec 4, 2020", createdIn: 'Unity', img: '/images/projects/minesweeper.png' },
-                { title: "Cash n' Slash", date: "Sep 14 - Nov 17, 2020", createdIn: 'Unity VR', img: '/images/projects/CashnSlash.png' },
-                { title: 'Swordwhip', date: "Sep 15 - 16, 2020", createdIn: 'Unity', img: '/images/projects/swordwhip.png' },
-                { title: 'Deadline', date: "Sept 6 - 13, 2018", createdIn: 'Flash', img: '/images/projects/deadline.png' },
-                { title: 'Defend', date: "Aug 3 - 18, 2018", createdIn: 'Flash', img: '/images/projects/defend.png' },
-                { title: 'UNO AI', date: "Nov 21 - Dec 10, 2017", createdIn: 'Flash', img: '/images/projects/uno.png' },
-                { title: 'Survive', date: "Sep 18 - Oct 31, 2017", createdIn: 'Flash', img: '/images/projects/survive.png' },
-                { title: 'Original Logo Animation', date: "June 13, 2015", createdIn: 'Blender', img: '/images/projects/OriginalLogoAnimation.png' },
-            ]
         };
 
         this.handleMove = this.handleMove.bind(this);
@@ -121,7 +97,7 @@ class Projects extends React.Component {
     }
 
     createGame(index) {
-        const { cells, projects } = this.state;
+        const { cells } = this.state;
         let _c = [...new Array(cells.length)].map(n => [...new Array(cells.length)]);
 
         for (var j = -1; j <= 1; j++)
@@ -143,7 +119,7 @@ class Projects extends React.Component {
         _c = _c.map((a, index) => {
             let x = index;
             return a.map((b, index) => {
-                if (b === -1) return { value: b, revealed: false, flagged: false, img: Math.floor(projects.length * Math.random()) };
+                if (b === -1) return { value: b, revealed: false, flagged: false, img: Math.floor(projectData.length * Math.random()) };
                 let count = 0;
                 for (var j = -1; j <= 1; j++)
                     for (var k = -1; k <= 1; k++) {
@@ -151,7 +127,7 @@ class Projects extends React.Component {
                         count += parseInt(_c[x + j][index + k]) || 0;
                     }
 
-                return { value: -count || 0, revealed: false, flagged: false, img: Math.floor(projects.length * Math.random()) }
+                return { value: -count || 0, revealed: false, flagged: false, img: Math.floor(projectData.length * Math.random()) }
             })
         })
 
@@ -203,8 +179,7 @@ class Projects extends React.Component {
             this.setState({ cells: this.floodReveal(index, cells) });
             this.checkWin();
         } else {
-            const { projects } = this.state;
-            this.modalShow(projects[c.img].title.replace(/[^a-zA-Z ]/g, "").split(' ').join('_'));
+            this.modalShow(projectData[c.img].title.replace(/[^a-zA-Z ]/g, "").split(' ').join('_'));
         }
     }
 
@@ -227,7 +202,7 @@ class Projects extends React.Component {
     }
 
     render() {
-        const { minesweeper, cells, projects, nbombs, gameStatus, updateModal, gamerestart, gamepaused } = this.state;
+        const { minesweeper, cells, nbombs, gameStatus, updateModal, gamerestart, gamepaused } = this.state;
         const { clientWidth } = document.documentElement;
         return (<Fragment>
             <ModalController updateModal={updateModal} updatePage={this.props.updatePage} />
@@ -237,7 +212,7 @@ class Projects extends React.Component {
                     <div className="mineHeader">
                         <div className='numbs left'>
                             {[...new Array(3)].map((a, index) =>
-                                <div key={index + "num"} className={`numb n${Math.floor((!minesweeper ? projects.length : nbombs - cells.map(a => a.map(c => c ? c.flagged && !c.revealed : 0).reduce((a, b) => a + b)).reduce((a, b) => a + b)) / Math.pow(10, 2 - index)) % 10}`} />
+                                <div key={index + "num"} className={`numb n${Math.floor((!minesweeper ? projectData.length : nbombs - cells.map(a => a.map(c => c ? c.flagged && !c.revealed : 0).reduce((a, b) => a + b)).reduce((a, b) => a + b)) / Math.pow(10, 2 - index)) % 10}`} />
                             )}
                         </div>
                         <center className='button-container' onClick={() => this.changeState()} >
@@ -250,7 +225,7 @@ class Projects extends React.Component {
                     <div className='mineContainer'>
                         {!minesweeper && <div className="tile-center" style={{ width: `${(330 * Math.floor((clientWidth * 0.7 - 30) / 330) / (clientWidth * 0.7 - 30) * 100) || 100}%` }}>
                             <div className='tile-container' >
-                                {projects.map((p, index) => this.mapTile(p, index))}
+                                {projectData.map((p, index) => this.mapTile(p, index))}
                             </div>
                         </div>}
                         {minesweeper && <Fragment>
@@ -260,7 +235,7 @@ class Projects extends React.Component {
                                     {m.map((c, index) => {
                                         return <div id={`${x} ${index}`} key={`${x} ${index}col`}
                                             className={`cell${!c ? ' in' : c.revealed ? ` revealed${c.value < 0 ? ' mine' : ''}` : c.flagged ? ' flag' : ''}`}
-                                            style={{ width: `${100 / cells.length}%`, ...(!!c && c.flagged && !c.revealed ? { backgroundImage: `url(${projects[c.img].img})`, ...projects[c.img].imgcss } : {}) }}
+                                            style={{ width: `${100 / cells.length}%`, ...(!!c && c.flagged && !c.revealed ? { backgroundImage: `url(${projectData[c.img].img})`, ...projectData[c.img].imgcss } : {}) }}
                                             onClick={(e) => this.minesweep(e.target.id)}
                                             onContextMenu={(e) => this.flagCell(e)}
                                         >

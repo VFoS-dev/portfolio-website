@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react';
 import { connect } from 'react-redux';
+import { skillData } from '../_data/SkillsData';
 
 import '../css/skills.css';
 import '../css/stars.css';
@@ -7,31 +8,28 @@ import '../css/stars.css';
 class Skills extends React.Component {
     constructor(props) {
         super(props)
+        let skillCount = skillData.length;
+
         this.state = {
             scrolled: "-1",
             updatedRefs: false,
-            onScreen: [false, false, false, false, false, false, false, false],
-            filters: [true, true, true, true, true, true, true, true]
+            onScreen: new Array(skillCount).fill(false),
+            filters: new Array(skillCount).fill(true),
         }
 
-        this.appRef = React.createRef();
-        this.frameRef = React.createRef();
-        this.codRef = React.createRef();
-        this.derRef = React.createRef();
-        this.dataRef = React.createRef();
-        this.versRef = React.createRef();
-        this.cloudRef = React.createRef();
-        this.miscRef = React.createRef();
+        skillData.forEach((_, i) => {
+            this[`ref${i}`] = React.createRef();
+        })
+        this.generateSkills = this.generateSkills.bind(this);
     }
 
     userScrolled() {
-        const refs = [this.appRef, this.frameRef, this.codRef, this.derRef, this.dataRef, this.versRef, this.cloudRef, this.miscRef];
         const f = document.getElementById("focused");
         this.setState({
             scrolled: this.props.scrolled,
             updatedRefs: true,
-            onScreen: refs.map(r => {
-                const c = r.current
+            onScreen: skillData.map((_, i) => {
+                const { current: c } = this[`ref${i}`]
                 return (f?.scrollTop + document.documentElement.clientHeight > c?.offsetTop + document.documentElement.clientHeight * 1 / 5) || (f?.scrollTop + document.documentElement.clientHeight > f?.scrollHeight - 100);
             })
         })
@@ -80,9 +78,24 @@ class Skills extends React.Component {
                                     } : {}} />
                             </div>
                         </div>
-                    </div>))}
+                    </div>
+                ))}
             </div>
         </Fragment >
+    }
+
+    generateSkills(data, activePage) {
+        const { filters } = this.state;
+        return data.map((d, i) => {
+            if (!activePage && i > 4) return '';
+            const { name, set, color, textColor } = d;
+            return <div key={`skills-cat${i}`} className={`flex-catagory ${filters[i] || 'filtered'}`} ref={this[`ref${i}`]} style={{ boxShadow: `0 0 5px #fff, 0 0 15px ${color}`, position: "relative" }}>
+                <div className='skills-filter' id={i} onClick={(e) => this.filter(e.target.id)}>
+                    <svg stroke={`${color}`} fill={`${color}`} strokeWidth="0" viewBox="0 0 16 16" width="100%" xmlns="http://www.w3.org/2000/svg"><path d="M2 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"></path></svg>
+                </div>
+                {this.mapSkills(name, set, i, color, textColor)}
+            </div>
+        })
     }
 
     filter(index) {
@@ -92,116 +105,16 @@ class Skills extends React.Component {
     }
 
     render() {
-        const { filters } = this.state;
         const { activePage } = this.props;
-        if (activePage) { 
+        if (activePage) {
             if (this.props.scrolled !== this.state.scrolled) setTimeout(() => this.userScrolled(), 0);
             if (!this.state.updatedRefs) setTimeout(() => this.userScrolled(), 0);
         }
-            
+
         return (<div className="skills">
             <div className='navpadding' />
             <div className='flex-container'>
-                <div className={`flex-catagory ${filters[0] || 'filtered'}`} ref={this.appRef} style={{ boxShadow: "0 0 5px #fff, 0 0 15px blue", position: "relative" }}>
-                    <div className='skills-filter' id="0" onClick={(e) => this.filter(e.target.id)}>
-                        <svg stroke="blue" fill="blue" strokeWidth="0" viewBox="0 0 16 16" width="100%" xmlns="http://www.w3.org/2000/svg"><path d="M2 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"></path></svg>
-                    </div>
-                    {this.mapSkills("Applications", [
-                        { name: 'Adobe Animate', compentence: 95 },
-                        { name: 'Blender', compentence: 73 },
-                        { name: 'Docker', compentence: 50 },
-                        { name: 'Insomnia', compentence: 85 },
-                        { name: 'Krita', compentence: 78 },
-                        { name: 'Photoshop', compentence: 60 },
-                        { name: 'Substance Painter', compentence: 40 },
-                        { name: 'Unity', compentence: 90 },
-                        { name: 'Unreal', compentence: 79 },
-                    ], 0, "blue", '#335cff')}
-                </div>
-                <div className={`flex-catagory ${filters[1] || 'filtered'}`} ref={this.frameRef} style={{ boxShadow: "0 0 5px #fff, 0 0 15px magenta", position: "relative" }}>
-                    <div className='skills-filter' id="1" onClick={(e) => this.filter(e.target.id)}>
-                        <svg stroke="magenta" fill="magenta" strokeWidth="0" viewBox="0 0 16 16" width="100%" xmlns="http://www.w3.org/2000/svg"><path d="M2 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"></path></svg>
-                    </div>
-                    {this.mapSkills("Frameworks", [
-                        { name: '.Net', compentence: 65 },
-                        { name: 'Bootstrap', compentence: 76 },
-                        { name: 'Express.js', compentence: 90 },
-                        { name: 'Ionic', compentence: 50 },
-                        { name: 'JQuery', compentence: 83, linkedin: 5 },
-                        { name: 'Node.js', compentence: 80 },
-                        { name: 'React', compentence: 96 },
-                        { name: 'React Native', compentence: 80 },
-                        { name: 'Redux.js', compentence: 82 },
-                    ], 1, "magenta")}
-                </div>
-                <div className={`flex-catagory ${filters[2] || 'filtered'}`} ref={this.codRef} style={{ boxShadow: "0 0 5px #fff, 0 0 15px orange", position: "relative" }}>
-                    <div className='skills-filter' id="2" onClick={(e) => this.filter(e.target.id)}>
-                        <svg stroke="orange" fill="orange" strokeWidth="0" viewBox="0 0 16 16" width="100%" xmlns="http://www.w3.org/2000/svg"><path d="M2 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"></path></svg>
-                    </div>
-                    {this.mapSkills("Coding Languages", [
-                        { name: 'ActionScript 3 (AS3)', compentence: 70 },
-                        { name: 'AutoHotKey (AHK)', compentence: 82 },
-                        { name: 'C++', compentence: 84 },
-                        { name: 'C#', compentence: 88 },
-                        { name: 'JavaScript', compentence: 100, linkedin: 5 },
-                        { name: 'PHP', compentence: 95, linkedin: 5 },
-                        { name: 'Python', compentence: 76 },
-                    ], 2, "orange")}
-                </div>
-                <div className={`flex-catagory ${filters[3] || 'filtered'}`} ref={this.derRef} style={{ boxShadow: "0 0 5px #fff, 0 0 15px yellow", position: "relative" }}>
-                    <div className='skills-filter' id="3" onClick={(e) => this.filter(e.target.id)}>
-                        <svg stroke="yellow" fill="yellow" strokeWidth="0" viewBox="0 0 16 16" width="100%" xmlns="http://www.w3.org/2000/svg"><path d="M2 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"></path></svg>
-                    </div>
-                    {this.mapSkills("Language Derivatives", [
-                        { name: 'CSS', compentence: 93, linkedin: 5 },
-                        { name: 'HTML', compentence: 90, linkedin: 5 },
-                        { name: 'JSON', compentence: 100, linkedin: 5 },
-                        { name: 'MarkDown', compentence: 75 },
-                        { name: 'RegEx', compentence: 94 },
-                    ], 3, "yellow")}
-                </div>
-                <div className={`flex-catagory ${filters[4] || 'filtered'}`} ref={this.dataRef} style={{ boxShadow: "0 0 5px #fff, 0 0 15px purple", position: "relative" }}>
-                    <div className='skills-filter' id="4" onClick={(e) => this.filter(e.target.id)}>
-                        <svg stroke="#a733ff" fill="#a733ff" strokeWidth="0" viewBox="0 0 16 16" width="100%" xmlns="http://www.w3.org/2000/svg"><path d="M2 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"></path></svg>
-                    </div>
-                    {this.mapSkills("Databases", [
-                        { name: 'MongoDB', compentence: 90 },
-                        { name: 'SQL', compentence: 87 },
-                    ], 4, "#a733ff")}
-                </div>
-                <div className={`flex-catagory ${filters[5] || 'filtered'}`} ref={this.versRef} style={{ boxShadow: "0 0 5px #fff, 0 0 15px green", position: "relative" }}>
-                    <div className='skills-filter' id="5" onClick={(e) => this.filter(e.target.id)}>
-                        <svg stroke="green" fill="green" strokeWidth="0" viewBox="0 0 16 16" width="100%" xmlns="http://www.w3.org/2000/svg"><path d="M2 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"></path></svg>
-                    </div>
-                    {this.mapSkills("Version Control", [
-                        { name: 'git', compentence: 93 },
-                    ], 5, "green")}
-                </div>
-                <div className={`flex-catagory ${filters[6] || 'filtered'}`} ref={this.cloudRef} style={{ boxShadow: "0 0 5px #fff, 0 0 15px white", position: "relative" }}>
-                    <div className='skills-filter' id="6" onClick={(e) => this.filter(e.target.id)}>
-                        <svg stroke="white" fill="white" strokeWidth="0" viewBox="0 0 16 16" width="100%" xmlns="http://www.w3.org/2000/svg"><path d="M2 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"></path></svg>
-                    </div>
-                    {this.mapSkills("Cloud Services", [
-                        { name: 'AWS', compentence: 93 },
-                        { name: 'Azure', compentence: 50 },
-                        { name: 'Firebase', compentence: 63 },
-                        { name: 'Google APIs', compentence: 83 },
-                        { name: 'MongoDB Atlas', compentence: 87 },
-                        { name: 'NGINX', compentence: 90 },
-                    ], 6, "white")}
-                </div>
-                <div className={`flex-catagory ${filters[7] || 'filtered'}`} ref={this.miscRef} style={{ boxShadow: "0 0 5px #fff, 0 0 15px red", position: "relative" }}>
-                    <div className='skills-filter' id="7" onClick={(e) => this.filter(e.target.id)}>
-                        <svg stroke="red" fill="red" strokeWidth="0" viewBox="0 0 16 16" width="100%" xmlns="http://www.w3.org/2000/svg"><path d="M2 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"></path></svg>
-                    </div>
-                    {this.mapSkills("Misc.", [
-                        { name: 'Agile Methodology', compentence: 99 },
-                        { name: 'Rider', compentence: 75 },
-                        { name: 'Visual Studio', compentence: 93 },
-                        { name: 'VMware', compentence: 87 },
-                        { name: 'VS Code', compentence: 97 },
-                    ], 7, "red")}
-                </div>
+                {this.generateSkills(skillData, activePage)}
             </div>
         </div>);
     }

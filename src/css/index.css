@@ -21,6 +21,7 @@ body {
     box-shadow: none !important;
     background-color: var(--content-color, magenta);
 }
+
 .lato.nav-link,
 .lato {
     font-family: 'lato', sans-serif !important;
@@ -55,6 +56,10 @@ body {
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
+}
+
+.sticky-overlay.super {
+    z-index: 2000 !important;
 }
 
 .sticky-overlay {

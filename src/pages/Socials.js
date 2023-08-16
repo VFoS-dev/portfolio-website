@@ -111,7 +111,7 @@ class Socials extends React.Component {
         this.setState({ pathAni: true });
         while (this.state.path.length > 0) {
             await timeout(20);
-            if (window.location.pathname !== '/socials') return;
+            if (window.location.pathname.split('/')[1] !== 'socials') return;
             const { path } = this.state;
             var p = [...path];
             p.pop();

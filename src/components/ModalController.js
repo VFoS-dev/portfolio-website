@@ -75,6 +75,7 @@ export class ModalController extends Component {
     render() {
         const { queue } = this.state;
         var modal = window.location.pathname.split('/')[2] || null
+        if (modal == 'secret') return <Fragment></Fragment>;
 
         return <div className={`sticky-overlay _modal ${modal ? "show" : "hide"}`} id='cancel' onClick={(e) => this.remove(e.target.id)} >
             <div className='card' onTransitionEnd={(e) => this.resetScroll(e.target, !modal)}>

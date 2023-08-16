@@ -25,7 +25,7 @@ class About extends React.Component {
             await timeout(500);
             const { ducks, ducksKeys } = this.state;
             var newduck = this.addDuck();
-            if (window.location.pathname !== '/about') return;
+            if (window.location.pathname.split('/')[1] !== 'about') return;
             this.setState({
                 ducks: [...ducks, newduck],
                 ducksKeys: [...ducksKeys, newduck.id]
@@ -72,7 +72,7 @@ class About extends React.Component {
         this.setState({ duckAni: true });
         while (this.state.ducks.length > 0) {
             await timeout(24);
-            if (window.location.pathname !== '/about') return;
+            if (window.location.pathname.split('/')[1] !== 'about') return;
             const { ducks } = this.state;
             this.setState({
                 ducks: ducks.map(a => {

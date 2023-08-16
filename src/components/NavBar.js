@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 
 import { Navbar, Nav, Container, Offcanvas } from 'react-bootstrap';
 import '../css/navbar.css';
+import { getCookie, setCookie } from '../utils';
 
 class NavBar extends Component {
     constructor(props) {
@@ -25,7 +26,7 @@ class NavBar extends Component {
         this.props.updatePage(this.props.last, window.location.href.split('/').splice(-1)[0].split('?')[0] || "intro");
     }
 
-    changePage(nav) {
+    changePage(nav, secret = '') {
         const page = window.location.href.split('/').splice(-1)[0].split('?')[0] || "intro";
         if (nav !== page) {
             const _newPage = nav || "intro";
@@ -76,7 +77,9 @@ class NavBar extends Component {
                             <Nav.Link className={((ref === 'skills') ? "active" : "") + " lato enable"} id='skills' onClick={(e) => this.changePage(e.target.id)}>Skills</Nav.Link>
                             <Nav.Link className={((ref === 'resume') ? "active" : "") + " lato enable"} id='resume' onClick={(e) => this.changePage(e.target.id)}>Resume</Nav.Link>
                             <Nav.Link className={((ref === 'socials') ? "active" : "") + " lato enable"} id='socials' onClick={(e) => this.changePage(e.target.id)}>Socials</Nav.Link>
-                            {correct && <Nav.Link className={((ref === 'secret') ? "active" : "") + " lato enable"} id='intro' onClick={(e) => this.changePage(e.target.id)}>Secret</Nav.Link>}
+                            {correct && <Nav.Link className={((ref === 'secret') ? "active" : "") + " lato enable"} id='secret' onClick={() =>
+                                this.changePage((getCookie('found-secret') ? window.location.pathname.split('/')[1] : 'intro') + '/secret', setCookie('found-secret', true, 365))
+                            }>Secret</Nav.Link>}
                         </Nav>
                     </Offcanvas.Body>
                 </Navbar.Offcanvas>
@@ -86,7 +89,7 @@ class NavBar extends Component {
 }
 
 function mapState(state) {
-    const { checkpoints, correct, secretLength } = state.rotation
+    const { checkpoints, correct, secretLength } = state.rotation;
     return { checkpoints, correct, secretLength };
 }
 
