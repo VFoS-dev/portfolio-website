@@ -5,6 +5,7 @@ import { projectData } from '../_data';
 
 import '../css/projects.css';
 import { ProjectTimer } from '../components';
+import { TileFlex, timeout } from '../utils';
 
 class Projects extends React.Component {
     constructor(props) {
@@ -23,7 +24,6 @@ class Projects extends React.Component {
             refresh: false,
         };
 
-        this.handleMove = this.handleMove.bind(this);
         this.checkWin = this.checkWin.bind(this);
         this.resize = this.resize.bind(this);
 
@@ -38,26 +38,6 @@ class Projects extends React.Component {
         if (!minesweeper) this.setState({ refresh: !refresh });
     }
 
-    handleMove(e) {
-        var el = e.target;
-        if (!el) return;
-
-        if (this.state.toMine) {
-            return el.style.transform = 'perspective(500px) scale(1) rotateX(0) rotateY(0)';
-        }
-        const height = el.clientHeight;
-        const width = el.clientWidth;
-
-        const yRotation = 20 * ((e.nativeEvent.layerX - width / 2) / width);
-        const xRotation = -20 * ((e.nativeEvent.layerY - height / 2) / height);
-
-        el.style.transform = `perspective(500px) scale(1.1) rotateX(${xRotation}deg) rotateY(${yRotation}deg)`;
-    }
-
-    handleMoveOut(e) {
-        if (!e.style.transform) return;
-        e.style.transform = 'perspective(500px) scale(1) rotateX(0) rotateY(0)';
-    }
 
     modalShow(title) {
         const { updateModal } = this.state;
@@ -69,7 +49,7 @@ class Projects extends React.Component {
     mapTile({ title = '', date = '', createdIn = '', img = "", imgcss = {} }, index) {
         const { toMine, rows } = this.state;
         return (
-            <div key={index + "tile"} id={title.replace(/[^a-zA-Z ]/g, "").split(' ').join('_')} className='tile' style={{ backgroundImage: `url(${img})`, ...imgcss, ...(toMine ? { boxShadow: 'none', cursor: 'auto' } : {}) }} onMouseMove={this.handleMove} onMouseOut={(e) => this.handleMoveOut(e.target)} onClick={(e) => this.modalShow(e.target.id)}>
+            <div key={index + "tile"} id={title.replace(/[^a-zA-Z ]/g, "").split(' ').join('_')} className='tile' {...TileFlex(toMine)} style={{ backgroundImage: `url(${img})`, ...imgcss, ...(toMine ? { boxShadow: 'none', cursor: 'auto' } : {}) }} onClick={(e) => this.modalShow(e.target.id)}>
                 <div className={` ${toMine ? 'toMinesweeper' : 'overlay'}`} style={{ backgroundImage: `url(/images/projects/minesweeper/toMinesweeper.png)` }} onAnimationEnd={() => this.setState({
                     minesweeper: true,
                     cells: [...new Array(rows)].map(n => [...new Array(rows)])
@@ -83,27 +63,28 @@ class Projects extends React.Component {
     }
 
     async checkWin() {
+        await timeout(0);
         const { cells } = this.state;
 
         var lost = false, win = 0;
         cells.forEach(_ => _.forEach(c => {
             if (lost) return;
-            if (c.value < 0 && c.revealed) lost = true;
-            if ((c.value >= 0 && c.revealed) || (c.value < 0 && c.flagged)) win++;
+            if (c.proximity < 0 && c.revealed) lost = true;
+            if ((c.proximity >= 0 && c.revealed) || (c.proximity < 0 && c.flagged)) win++;
         }))
         win = win === cells.length * cells.length;
 
         if (win || lost) this.setState({ gameStatus: +win || -1, gamepaused: !!(+win || -1), });
     }
 
-    createGame(index) {
+    createGame([x, y]) {
         const { cells } = this.state;
         let _c = [...new Array(cells.length)].map(n => [...new Array(cells.length)]);
 
         for (var j = -1; j <= 1; j++)
             for (var k = -1; k <= 1; k++) {
-                if ((index[0] + j < 0) || (index[1] + k < 0) || (index[1] + k > _c.length - 1) || (index[0] + j > _c.length - 1)) continue;
-                _c[index[0] + j][index[1] + k] = 'no bomb';
+                if ((x + j < 0) || (y + k < 0) || (y + k > _c.length - 1) || (x + j > _c.length - 1)) continue;
+                _c[x + j][y + k] = 'no bomb';
             }
 
         let c2 = _c.length * _c.length;
@@ -116,53 +97,52 @@ class Projects extends React.Component {
             }
         }
 
-        _c = _c.map((a, index) => {
-            let x = index;
-            return a.map((b, index) => {
-                if (b === -1) return { value: b, revealed: false, flagged: false, img: Math.floor(projectData.length * Math.random()) };
+        _c = _c.map((a, x) => {
+            return a.map((b, y) => {
+                if (b === -1) return { proximity: b, revealed: false, flagged: false, img: Math.floor(projectData.length * Math.random()) };
                 let count = 0;
                 for (var j = -1; j <= 1; j++)
                     for (var k = -1; k <= 1; k++) {
-                        if ((x + j < 0) || (index + k < 0) || (index + k > _c.length - 1) || (x + j > _c.length - 1) || (!j && !k)) continue;
-                        count += parseInt(_c[x + j][index + k]) || 0;
+                        if ((x + j < 0) || (y + k < 0) || (y + k > _c.length - 1) || (x + j > _c.length - 1) || (!j && !k)) continue;
+                        count += parseInt(_c[x + j][y + k]) || 0;
                     }
 
-                return { value: -count || 0, revealed: false, flagged: false, img: Math.floor(projectData.length * Math.random()) }
+                return { proximity: -count || 0, revealed: false, flagged: false, img: Math.floor(projectData.length * Math.random()) }
             })
         })
 
-        this.setState({ cells: this.floodReveal(index, _c), nbombs: nbombs, flags: 0, gamepaused: false });
+        this.setState({ cells: this.floodReveal([x, y], _c), nbombs: nbombs, flags: 0, gamepaused: false });
     }
 
-    floodReveal(index, cells) {
+    floodReveal([x, y], cells) {
         var j, k;
-        if (cells[index[0]][index[1]].revealed && cells[index[0]][index[1]].value > 0) {
+        if (cells[x][y].revealed && cells[x][y].proximity > 0) {
             var flags = 0;
             for (j = -1; j <= 1; j++)
                 for (k = -1; k <= 1; k++) {
-                    if ((index[0] + j < 0) || (index[1] + k < 0) || (index[1] + k > cells.length - 1) || (index[0] + j > cells.length - 1)) continue;
-                    flags += cells[index[0] + j][index[1] + k].revealed ? 0 : cells[index[0] + j][index[1] + k].flagged;
+                    if ((x + j < 0) || (y + k < 0) || (y + k > cells.length - 1) || (x + j > cells.length - 1)) continue;
+                    flags += cells[x + j][y + k].revealed ? 0 : cells[x + j][y + k].flagged;
                 }
-            if (flags >= cells[index[0]][index[1]].value)
+            if (flags >= cells[x][y].proximity)
                 for (j = -1; j <= 1; j++)
                     for (k = -1; k <= 1; k++) {
-                        if ((index[0] + j < 0) || (index[1] + k < 0) || (index[1] + k > cells.length - 1) || (index[0] + j > cells.length - 1)) continue;
-                        cells[index[0] + j][index[1] + k].revealed = !cells[index[0] + j][index[1] + k].flagged;
-                        if (!cells[index[0] + j][index[1] + k].value)
-                            cells = this.floodReveal([index[0] + j, index[1] + k], cells);
+                        if ((x + j < 0) || (y + k < 0) || (y + k > cells.length - 1) || (x + j > cells.length - 1)) continue;
+                        cells[x + j][y + k].revealed = !cells[x + j][y + k].flagged;
+                        if (!cells[x + j][y + k].proximity)
+                            cells = this.floodReveal([x + j, y + k], cells);
                     }
 
             return cells;
         }
 
-        cells[index[0]][index[1]].revealed = true;
+        cells[x][y].revealed = true;
 
         for (j = -1; j <= 1; j++)
             for (k = -1; k <= 1; k++) {
-                if ((index[0] + j < 0) || (index[1] + k < 0) || (index[1] + k > cells.length - 1) || (index[0] + j > cells.length - 1)) continue;
-                if (!cells[index[0]][index[1]].value) {
-                    if (cells[index[0] + j][index[1] + k].revealed) continue;
-                    cells = this.floodReveal([index[0] + j, index[1] + k], cells);
+                if ((x + j < 0) || (y + k < 0) || (y + k > cells.length - 1) || (x + j > cells.length - 1)) continue;
+                if (!cells[x][y].proximity) {
+                    if (cells[x + j][y + k].revealed) continue;
+                    cells = this.floodReveal([x + j, y + k], cells);
                 }
             }
 
@@ -170,13 +150,13 @@ class Projects extends React.Component {
     }
 
     minesweep(id) {
-        var index = id.split(' ').map(i => parseInt(i));
+        var [x, y] = id.split(' ').map(i => parseInt(i));
         const { cells, gameStatus } = this.state;
-        const c = cells[index[0]][index[1]];
+        const c = cells[x][y];
         if (!!gameStatus) return;
-        if (c === undefined) this.createGame(index);
+        if (c === undefined) this.createGame([x, y]);
         else if (!c.flagged) {
-            this.setState({ cells: this.floodReveal(index, cells) });
+            this.setState({ cells: this.floodReveal([x, y], cells) });
             this.checkWin();
         } else {
             this.modalShow(projectData[c.img].title.replace(/[^a-zA-Z ]/g, "").split(' ').join('_'));
@@ -193,17 +173,20 @@ class Projects extends React.Component {
 
     flagCell(e) {
         e.preventDefault();
-        const index = e.target.id.split(' ').map(i => parseInt(i));
+        const [x, y] = e.target.id.split(' ').map(i => parseInt(i));
         let { flags, cells, gameStatus } = this.state;
-        if (!!gameStatus) return;
-        if (!cells[index[0]][index[1]]) return;
-        cells[index[0]][index[1]].flagged = !cells[index[0]][index[1]].flagged;
-        this.setState({ cells: cells, flags: flags + (!cells[index[0]][index[1]].flagged ? -1 : 1) });
+        if (!!gameStatus || !cells[x][y] || cells[x][y].revealed) return;
+        cells[x][y].flagged = !cells[x][y].flagged;
+        this.setState({ cells, flags: flags + (!cells[x][y].flagged ? -1 : 1) });
+        this.checkWin();
     }
 
     render() {
         const { minesweeper, cells, nbombs, gameStatus, updateModal, gamerestart, gamepaused } = this.state;
+        const { activePage } = this.props;
         const { clientWidth } = document.documentElement;
+        const bombsCount = !minesweeper ? projectData.length : Math.max(cells.reduce((t, r) => t + (r?.reduce((st, c) => st + -c?.flagged + (c?.proximity < 0), 0)), 0), 0);
+
         return (<Fragment>
             <ModalController updateModal={updateModal} updatePage={this.props.updatePage} />
             <div className="projects">
@@ -211,39 +194,37 @@ class Projects extends React.Component {
                 <div className='mineOutline'>
                     <div className="mineHeader">
                         <div className='numbs left'>
-                            {[...new Array(3)].map((a, index) =>
-                                <div key={index + "num"} className={`numb n${Math.floor((!minesweeper ? projectData.length : nbombs - cells.map(a => a.map(c => c ? c.flagged && !c.revealed : 0).reduce((a, b) => a + b)).reduce((a, b) => a + b)) / Math.pow(10, 2 - index)) % 10}`} />
-                            )}
+                            <ProjectTimer activePage={false} setCount={bombsCount} />
                         </div>
                         <center className='button-container' onClick={() => this.changeState()} >
                             <div className={`button${!minesweeper ? "" : { 0: ' play', '-1': ' lose', 1: ' win' }[gameStatus]}`} />
                         </center>
                         <div className='numbs right'>
-                            <ProjectTimer reset={gamerestart} paused={gamepaused} />
+                            <ProjectTimer activePage={activePage} reset={gamerestart} paused={gamepaused} />
                         </div>
                     </div>
                     <div className='mineContainer'>
-                        {!minesweeper && <div className="tile-center" style={{ width: `${(330 * Math.floor((clientWidth * 0.7 - 30) / 330) / (clientWidth * 0.7 - 30) * 100) || 100}%` }}>
-                            <div className='tile-container' >
-                                {projectData.map((p, index) => this.mapTile(p, index))}
-                            </div>
-                        </div>}
-                        {minesweeper && <Fragment>
-                            {cells.map((m, index) => {
-                                let x = index
-                                return <div className='row' key={index + "row"}>
-                                    {m.map((c, index) => {
-                                        return <div id={`${x} ${index}`} key={`${x} ${index}col`}
-                                            className={`cell${!c ? ' in' : c.revealed ? ` revealed${c.value < 0 ? ' mine' : ''}` : c.flagged ? ' flag' : ''}`}
-                                            style={{ width: `${100 / cells.length}%`, ...(!!c && c.flagged && !c.revealed ? { backgroundImage: `url(${projectData[c.img].img})`, ...projectData[c.img].imgcss } : {}) }}
+                        {minesweeper ? <Fragment>
+                            {cells.map((m, x) => {
+                                return <div className='row' key={x + "row"}>
+                                    {m.map((c, y) => {
+                                        return <div id={`${x} ${y}`} key={`${x} ${y}col`}
+                                            className={`cell${!c ? ' in' : c.revealed ? ` revealed${c.proximity < 0 ? ' mine' : ''}` : c.flagged ? ' flag' : ''}`}
+                                            style={{ width: `${100 / cells.length}%`, ...(!!c && c.flagged && !c.revealed ? { backgroundImage: `url(${projectData[c.img].img})`, ...projectData[c.img].imgcss, borderRadius: 0 } : {}) }}
                                             onClick={(e) => this.minesweep(e.target.id)}
                                             onContextMenu={(e) => this.flagCell(e)}
                                         >
-                                            <div className={`c-${!!c && c.revealed && c.value > 0 ? c.value : ''}`}>{!c ? "" : (c.revealed && c.value > 0) ? c.value : ''}</div>
+                                            <div className={`c-${!!c && c.revealed && c.proximity > 0 ? c.proximity : ''}`}>{!c ? "" : (c.revealed && c.proximity > 0) ? c.proximity : ''}</div>
                                         </div>
                                     })}
                                 </div>
                             })}
+                        </Fragment> : <Fragment>
+                            <div className="tile-center" style={{ width: `${(330 * Math.floor((clientWidth * 0.7 - 30) / 330) / (clientWidth * 0.7 - 30) * 100) || 100}%` }}>
+                                <div className='tile-container' >
+                                    {projectData.map((p, index) => this.mapTile(p, index))}
+                                </div>
+                            </div>
                         </Fragment>}
                     </div>
                 </div >

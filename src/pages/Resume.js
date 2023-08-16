@@ -19,9 +19,7 @@ class Resume extends React.Component {
         clearInterval(this.time);
     }
 
-    getTime() {
-        return new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
-    }
+    getTime = () => new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
 
     changePage(nav) {
         const page = window.location.href.split('/').splice(-1)[0].split('?')[0] || "intro";
@@ -109,7 +107,7 @@ class Resume extends React.Component {
                     <div className='application'><div className='wordIcon' /><div className='txt'>Jon Kido Resume 20XX Rough Draft - Microsoft Word</div></div>
                     <div id="time">{this.getTime()}</div>
                 </div>
-            </div >
+            </div>
         );
     }
 }

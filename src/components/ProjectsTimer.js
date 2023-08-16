@@ -28,11 +28,12 @@ class ProjectTimer extends React.Component {
         this.setState({ clock: false });
     }
 
-    convertCount() {
+    convertCount(force = null) {
         const { count } = this.state;
+        let _count = force || count;
         let list = [0, 0, 0];
-        if (count < 999)
-            [...`${count}`].forEach((char, i, str) => {
+        if (_count < 999)
+            [...`${_count}`].forEach((char, i, str) => {
                 list[i + (3 - str.length)] = char;
             })
         else list = [9, 9, 9];
@@ -41,13 +42,15 @@ class ProjectTimer extends React.Component {
     }
 
     render() {
-        const { reset, paused } = this.props;
+        const { reset, paused, activePage, setCount } = this.props;
         const { reset: r, paused: p } = this.state;
-        if (reset != r) this.setState({ count: 0, reset });
-        if (paused != p) this.setState({ paused });
-        if (!paused) this.tick();
+        if (activePage) {
+            if (reset != r) this.setState({ count: 0, reset });
+            if (paused != p) this.setState({ paused });
+            if (!paused) this.tick();
+        }
 
-        const [hundredths, tenths, firsts] = this.convertCount();
+        const [hundredths, tenths, firsts] = this.convertCount(setCount);
         return (<Fragment>
             <div className={`numb n${hundredths}`} />
             <div className={`numb n${tenths}`} />

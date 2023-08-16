@@ -34,10 +34,7 @@ class CustomRouter extends React.Component {
         window.addEventListener('custom-changeRot', this.changeRot);
     }
 
-    changeRot(e) {
-        console.log('here', e.detail);
-        this.setState({ cantRot: e.detail })
-    }
+    changeRot = (e) => this.setState({ cantRot: e.detail })
 
     keyRot(e) {
         const { rotation } = this.props;
