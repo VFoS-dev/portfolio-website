@@ -22,7 +22,7 @@ class CustomRouter extends React.Component {
             winloc: '',
             queue: false,
             scrollPercent: 1
-        }
+        };
 
         this.updatePage = this.updatePage.bind(this);
         this.keyRot = this.keyRot.bind(this);
@@ -97,15 +97,12 @@ class CustomRouter extends React.Component {
     async UpdateNavBar() {
         const f = document.getElementById("focused")
 
-        var _scroll;
-        if (document.documentElement.clientHeight < f.scrollHeight) {
-            _scroll = f.scrollTop / Math.min(f.scrollHeight - f.offsetHeight, f.scrollHeight)
-        } else _scroll = 1
+        var _scroll = (document.documentElement.clientHeight < f.scrollHeight) ? f.scrollTop / Math.min(f.scrollHeight - f.offsetHeight, f.scrollHeight) : 1;
 
-        const { scrollPercent } = this.state
+        const { scrollPercent } = this.state;
         if (_scroll !== scrollPercent) this.setState({
             scrollPercent: _scroll
-        })
+        });
     }
 
     Router(req, active) { // actual router
@@ -121,9 +118,7 @@ class CustomRouter extends React.Component {
         }
     }
 
-    removeLoading() {
-        document.getElementById('loading').style = 'display: none;'
-    }
+    removeLoading = () => document.getElementById('loading').style = 'display: none;';
 
     render() {
         const { animate, loc, queue, scrollPercent } = this.state;

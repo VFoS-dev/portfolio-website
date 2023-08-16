@@ -436,3 +436,11 @@ div.face:has(.projects) {
     display: inline-block;
     margin: 0px 1vw;
 }
+
+.made-with a {
+    margin-left: .3rem;
+}
+
+.made-with a:first-child {
+    margin-left: 0rem;
+}

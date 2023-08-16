@@ -29,7 +29,6 @@ class Projects extends React.Component {
                 { title: 'High Call Rodeo', date: "Jul 14 - Jul 31, 2023", createdIn: 'React / Meteor / Mongodb', img: '/images/projects/highcall.jpg', imgcss: { borderRadius: '10%' } },
                 { title: 'Salestrak', date: "Jan 26 - Jul 31, 2023", createdIn: 'PHP / SQL / JQuery', img: '/images/projects/salestrak.jpg' },
                 { title: 'Rio Genesis', date: "Jun 19 - Jul 17, 2023", createdIn: 'PHP / SQL / React', img: '/images/projects/riogenesis.png' },
-                { title: 'Idaho Lottery', date: "May 19 - Jun 5, 2023", createdIn: 'React Native', img: '/images/projects/idaholottery.png', imgcss: { borderRadius: '10%' } },
                 { title: 'Black Sage Tech', date: "Jan 17 - Feb 28, 2023", createdIn: 'React', img: '/images/projects/blacksage.jpg' },
                 { title: 'MotorPool Services', date: "Aug 25, '22 - Jan 13, '23", createdIn: 'React', img: '/images/projects/motorpool.png' },
                 { title: 'Bronco Beam', date: "Dec 21, '20 - Jul 30, '22", createdIn: 'React Native / Mongodb', img: '/images/projects/BroncoBeam.png', imgcss: { borderRadius: '10%' } },
@@ -46,50 +45,49 @@ class Projects extends React.Component {
                 { title: 'Survive', date: "Sep 18 - Oct 31, 2017", createdIn: 'Flash', img: '/images/projects/survive.png' },
                 { title: 'Original Logo Animation', date: "June 13, 2015", createdIn: 'Blender', img: '/images/projects/OriginalLogoAnimation.png' },
             ]
-        }
+        };
 
-        this.handleMove = this.handleMove.bind(this)
-        this.checkWin = this.checkWin.bind(this)
-        this.resize = this.resize.bind(this)
+        this.handleMove = this.handleMove.bind(this);
+        this.checkWin = this.checkWin.bind(this);
+        this.resize = this.resize.bind(this);
 
-        const { activePage } = this.props
-        if (activePage) { 
+        const { activePage } = this.props;
+        if (activePage) {
             window.addEventListener('resize', this.resize);
         }
     }
 
     resize(e) {
         const { refresh, minesweeper } = this.state;
-        if (!minesweeper) this.setState({ refresh: !refresh })
+        if (!minesweeper) this.setState({ refresh: !refresh });
     }
 
     handleMove(e) {
         var el = e.target;
-        if (!el) return
+        if (!el) return;
 
         if (this.state.toMine) {
-            el.style.transform = 'perspective(500px) scale(1) rotateX(0) rotateY(0)'
-            return
+            return el.style.transform = 'perspective(500px) scale(1) rotateX(0) rotateY(0)';
         }
         const height = el.clientHeight;
         const width = el.clientWidth;
 
-        const yRotation = 20 * ((e.nativeEvent.layerX - width / 2) / width)
-        const xRotation = -20 * ((e.nativeEvent.layerY - height / 2) / height)
+        const yRotation = 20 * ((e.nativeEvent.layerX - width / 2) / width);
+        const xRotation = -20 * ((e.nativeEvent.layerY - height / 2) / height);
 
         el.style.transform = `perspective(500px) scale(1.1) rotateX(${xRotation}deg) rotateY(${yRotation}deg)`;
     }
 
     handleMoveOut(e) {
-        if (!e.style.transform) return
+        if (!e.style.transform) return;
         e.style.transform = 'perspective(500px) scale(1) rotateX(0) rotateY(0)';
     }
 
     modalShow(title) {
         const { updateModal } = this.state;
-        var sub = `/${window.location.pathname.split('/')[1]}/${title.toLowerCase()}`
-        window.history.replaceState(sub, 'Title', sub)
-        this.setState({ updateModal: !updateModal })
+        var sub = `/${window.location.pathname.split('/')[1]}/${title.toLowerCase()}`;
+        window.history.replaceState(sub, 'Title', sub);
+        this.setState({ updateModal: !updateModal });
     }
 
     mapTile({ title = '', date = '', createdIn = '', img = "", imgcss = {} }, index) {
@@ -109,31 +107,31 @@ class Projects extends React.Component {
     }
 
     async checkWin() {
-        const { cells } = this.state
+        const { cells } = this.state;
 
-        var lost = false, win = 0
+        var lost = false, win = 0;
         cells.forEach(_ => _.forEach(c => {
             if (lost) return;
             if (c.value < 0 && c.revealed) lost = true;
             if ((c.value >= 0 && c.revealed) || (c.value < 0 && c.flagged)) win++;
         }))
-        win = win === cells.length * cells.length
+        win = win === cells.length * cells.length;
 
-        if (win || lost) this.setState({ gameStatus: +win || -1, gamepaused: !!(+win || -1), })
+        if (win || lost) this.setState({ gameStatus: +win || -1, gamepaused: !!(+win || -1), });
     }
 
     createGame(index) {
         const { cells, projects } = this.state;
-        let _c = [...new Array(cells.length)].map(n => [...new Array(cells.length)])
+        let _c = [...new Array(cells.length)].map(n => [...new Array(cells.length)]);
 
         for (var j = -1; j <= 1; j++)
             for (var k = -1; k <= 1; k++) {
                 if ((index[0] + j < 0) || (index[1] + k < 0) || (index[1] + k > _c.length - 1) || (index[0] + j > _c.length - 1)) continue;
-                _c[index[0] + j][index[1] + k] = 'no bomb'
+                _c[index[0] + j][index[1] + k] = 'no bomb';
             }
 
-        let c2 = _c.length * _c.length
-        let nbombs = Math.round(Math.random() * 0.1 * c2 + 0.1 * c2)
+        let c2 = _c.length * _c.length;
+        let nbombs = Math.round(Math.random() * 0.1 * c2 + 0.1 * c2);
         for (var b = 0; b < nbombs; b) {
             let p = [Math.floor(_c.length * Math.random()), Math.floor(_c.length * Math.random())];
             if (!_c[p[0]][p[1]]) {
@@ -145,29 +143,29 @@ class Projects extends React.Component {
         _c = _c.map((a, index) => {
             let x = index;
             return a.map((b, index) => {
-                if (b === -1) return { value: b, revealed: false, flagged: false, img: Math.floor(projects.length * Math.random()) }
-                let count = 0
+                if (b === -1) return { value: b, revealed: false, flagged: false, img: Math.floor(projects.length * Math.random()) };
+                let count = 0;
                 for (var j = -1; j <= 1; j++)
                     for (var k = -1; k <= 1; k++) {
                         if ((x + j < 0) || (index + k < 0) || (index + k > _c.length - 1) || (x + j > _c.length - 1) || (!j && !k)) continue;
-                        count += parseInt(_c[x + j][index + k]) || 0
+                        count += parseInt(_c[x + j][index + k]) || 0;
                     }
 
                 return { value: -count || 0, revealed: false, flagged: false, img: Math.floor(projects.length * Math.random()) }
             })
         })
 
-        this.setState({ cells: this.floodReveal(index, _c), nbombs: nbombs, flags: 0, gamepaused: false })
+        this.setState({ cells: this.floodReveal(index, _c), nbombs: nbombs, flags: 0, gamepaused: false });
     }
 
     floodReveal(index, cells) {
         var j, k;
         if (cells[index[0]][index[1]].revealed && cells[index[0]][index[1]].value > 0) {
-            var flags = 0
+            var flags = 0;
             for (j = -1; j <= 1; j++)
                 for (k = -1; k <= 1; k++) {
                     if ((index[0] + j < 0) || (index[1] + k < 0) || (index[1] + k > cells.length - 1) || (index[0] + j > cells.length - 1)) continue;
-                    flags += cells[index[0] + j][index[1] + k].revealed ? 0 : cells[index[0] + j][index[1] + k].flagged
+                    flags += cells[index[0] + j][index[1] + k].revealed ? 0 : cells[index[0] + j][index[1] + k].flagged;
                 }
             if (flags >= cells[index[0]][index[1]].value)
                 for (j = -1; j <= 1; j++)
@@ -175,35 +173,35 @@ class Projects extends React.Component {
                         if ((index[0] + j < 0) || (index[1] + k < 0) || (index[1] + k > cells.length - 1) || (index[0] + j > cells.length - 1)) continue;
                         cells[index[0] + j][index[1] + k].revealed = !cells[index[0] + j][index[1] + k].flagged;
                         if (!cells[index[0] + j][index[1] + k].value)
-                            cells = this.floodReveal([index[0] + j, index[1] + k], cells)
+                            cells = this.floodReveal([index[0] + j, index[1] + k], cells);
                     }
 
-            return cells
+            return cells;
         }
 
-        cells[index[0]][index[1]].revealed = true
+        cells[index[0]][index[1]].revealed = true;
 
         for (j = -1; j <= 1; j++)
             for (k = -1; k <= 1; k++) {
                 if ((index[0] + j < 0) || (index[1] + k < 0) || (index[1] + k > cells.length - 1) || (index[0] + j > cells.length - 1)) continue;
                 if (!cells[index[0]][index[1]].value) {
                     if (cells[index[0] + j][index[1] + k].revealed) continue;
-                    cells = this.floodReveal([index[0] + j, index[1] + k], cells)
+                    cells = this.floodReveal([index[0] + j, index[1] + k], cells);
                 }
             }
 
-        return cells
+        return cells;
     }
 
     minesweep(id) {
-        var index = id.split(' ').map(i => parseInt(i))
-        const { cells, gameStatus } = this.state
-        const c = cells[index[0]][index[1]]
+        var index = id.split(' ').map(i => parseInt(i));
+        const { cells, gameStatus } = this.state;
+        const c = cells[index[0]][index[1]];
         if (!!gameStatus) return;
-        if (c === undefined) this.createGame(index)
+        if (c === undefined) this.createGame(index);
         else if (!c.flagged) {
-            this.setState({ cells: this.floodReveal(index, cells) })
-            this.checkWin()
+            this.setState({ cells: this.floodReveal(index, cells) });
+            this.checkWin();
         } else {
             const { projects } = this.state;
             this.modalShow(projects[c.img].title.replace(/[^a-zA-Z ]/g, "").split(' ').join('_'));
@@ -214,23 +212,23 @@ class Projects extends React.Component {
         const { minesweeper, cells, rows, gamerestart } = this.state;
         if (minesweeper)
             if (!cells[0][0]) this.setState({ toMine: false, minesweeper: false, gamepaused: false, gamerestart: !gamerestart, gameStatus: 0 });
-            else this.setState({ cells: [...new Array(rows)].map(n => [...new Array(rows)]), nbombs: 0, flags: 0, gamepaused: true, gamerestart: !gamerestart, gameStatus: 0 })
-        else this.setState({ toMine: true, gamepaused: true, gamerestart: !gamerestart })
+            else this.setState({ cells: [...new Array(rows)].map(n => [...new Array(rows)]), nbombs: 0, flags: 0, gamepaused: true, gamerestart: !gamerestart, gameStatus: 0 });
+        else this.setState({ toMine: true, gamepaused: true, gamerestart: !gamerestart });
     }
 
     flagCell(e) {
-        e.preventDefault()
-        const index = e.target.id.split(' ').map(i => parseInt(i))
-        let { flags, cells, gameStatus } = this.state
+        e.preventDefault();
+        const index = e.target.id.split(' ').map(i => parseInt(i));
+        let { flags, cells, gameStatus } = this.state;
         if (!!gameStatus) return;
         if (!cells[index[0]][index[1]]) return;
         cells[index[0]][index[1]].flagged = !cells[index[0]][index[1]].flagged;
-        this.setState({ cells: cells, flags: flags + (!cells[index[0]][index[1]].flagged ? -1 : 1) })
+        this.setState({ cells: cells, flags: flags + (!cells[index[0]][index[1]].flagged ? -1 : 1) });
     }
 
     render() {
         const { minesweeper, cells, projects, nbombs, gameStatus, updateModal, gamerestart, gamepaused } = this.state;
-        const { clientWidth } = document.documentElement
+        const { clientWidth } = document.documentElement;
         return (<Fragment>
             <ModalController updateModal={updateModal} updatePage={this.props.updatePage} />
             <div className="projects">

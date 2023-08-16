@@ -6,8 +6,8 @@ import '../css/testpage.css';
 
 class TestPage extends React.Component {
     constructor(props) {
-        document.getElementById('loading').style = 'display: none;'
-        super(props)
+        document.getElementById('loading').style = 'display: none;';
+        super(props);
         this.state = {
             setup: false,
             tick: false,
@@ -18,27 +18,25 @@ class TestPage extends React.Component {
                 { id: '1235610', type: 'apple', state: 'alive', pos: { top: 500, left: 900, width: 100, height: 100, velX: -7, velY: -50 } }
             ],
             prevousSlash: {},
-        }
+        };
         this.slicedCheck = this.slicedCheck.bind(this);
         this.updateSlice = this.updateSlice.bind(this);
         this.gametick = this.gametick.bind(this);
     }
 
-    saveSlash(left, top) {
-        this.setState({ prevousSlash: { top, left } })
-    }
+    saveSlash = (left, top) => this.setState({ prevousSlash: { top, left } });
 
     async gametick() {
         const { tick } = this.state;
         if (tick) return;
         const gravity = 3;
-        this.setState({ tick: true })
+        this.setState({ tick: true });
         while (true) {
             await timeout(33);
             if (window.location.pathname !== '/') return;
             let { fruits, sliced, splats } = this.state;
             for (let [i, fruit] of fruits.entries()) {
-                const { top, left, velX, velY } = fruit.pos
+                const { top, left, velX, velY } = fruit.pos;
                 fruits[i] = {
                     ...fruit, pos: {
                         ...fruit.pos,
@@ -46,10 +44,10 @@ class TestPage extends React.Component {
                         left: left + velX,
                         velY: Math.min(42, velY + gravity)
                     }
-                }
+                };
             }
             for (let [i, slice] of sliced.entries()) {
-                const { top, left, velX, velY } = slice.pos
+                const { top, left, velX, velY } = slice.pos;
                 sliced[i] = {
                     ...slice, pos: {
                         ...slice.pos,
@@ -57,38 +55,38 @@ class TestPage extends React.Component {
                         left: left + velX,
                         velY: Math.min(42, velY + gravity)
                     }
-                }
+                };
             }
             for (let [i, splat] of splats.reverse().entries()) {
                 if (splat.tick <= 1) {
-                    splats.splice(i, 1)
+                    splats.splice(i, 1);
                     continue;
                 }
-                splats[i] = { ...splat, tick: splat.tick - 1 }
+                splats[i] = { ...splat, tick: splat.tick - 1 };
             }
 
-            this.setState({ fruits, sliced })
+            this.setState({ fruits, sliced });
         }
-        this.setState({ tick: false })
+        this.setState({ tick: false });
     }
 
     slicedCheck(e) {
-        const { clientX: x1, clientY: y1 } = e
+        const { clientX: x1, clientY: y1 } = e;
         let { prevousSlash, fruits } = this.state;
         const { left: x2, top: y2 } = prevousSlash;
         let update = false;
-        let indexes = []
+        let indexes = [];
 
         for (let [i, fruit] of fruits.entries()) {
             if (fruit.state != 'alive') continue;
-            const { left: Cx, top: Cy } = fruit.pos
+            const { left: Cx, top: Cy } = fruit.pos;
             let distance = distanceSegmentToPoint(
                 { x: x1, y: y1 },
                 { x: x2, y: y2 },
                 { x: Cx, y: Cy }
-            )
+            );
             if (isNaN(distance) || distance > fruit.pos.width / 2) continue;
-            indexes.push(i)
+            indexes.push(i);
             update = true;
             fruit.state = 'splat';
         }
@@ -98,28 +96,28 @@ class TestPage extends React.Component {
             this.updateSlice(fruits, indexes, slope);
         }
 
-        this.saveSlash(x1, y1)
+        this.saveSlash(x1, y1);
     }
 
     updateSlice(fruits, indexes, slope) {
         let rotate = Math.atan(slope) + Math.PI / 2;
         let offsetX = Math.cos(rotate) * 10;
         let offsetY = Math.sin(rotate) * 10;
-        let { splats, sliced } = this.state
+        let { splats, sliced } = this.state;
         indexes.reverse().forEach(i => {
             let splat = fruits.splice(i, 1)[0]
-            let slice1 = { ...splat, id: splat.id + '-r', pos: { ...splat.pos, "--rot": Math.tan(slope), top: splat.pos.top + offsetY, left: splat.pos.left + offsetX, velX: offsetX, velY: offsetY * 2 } }
-            let slice2 = { ...splat, id: splat.id + '-l', pos: { ...splat.pos, "--rot": Math.tan(slope), top: splat.pos.top - offsetY, left: splat.pos.left - offsetX, velX: -offsetX, velY: -offsetY * 2 } }
-            splats.push({ ...splat, tick: 50 })
-            sliced.push(slice1)
-            sliced.push(slice2)
+            let slice1 = { ...splat, id: splat.id + '-r', pos: { ...splat.pos, "--rot": Math.tan(slope), top: splat.pos.top + offsetY, left: splat.pos.left + offsetX, velX: offsetX, velY: offsetY * 2 } };
+            let slice2 = { ...splat, id: splat.id + '-l', pos: { ...splat.pos, "--rot": Math.tan(slope), top: splat.pos.top - offsetY, left: splat.pos.left - offsetX, velX: -offsetX, velY: -offsetY * 2 } };
+            splats.push({ ...splat, tick: 50 });
+            sliced.push(slice1);
+            sliced.push(slice2);
         });
-        this.setState({ fruits, splats, sliced })
+        this.setState({ fruits, splats, sliced });
     }
 
     render() {
         const { tick, fruits, splats, sliced, setup } = this.state;
-        if (!setup) document.addEventListener('mousemove', this.slicedCheck)
+        if (!setup) document.addEventListener('mousemove', this.slicedCheck);
         if (!tick) this.gametick();
 
         return (

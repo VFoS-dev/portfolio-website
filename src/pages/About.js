@@ -15,29 +15,29 @@ class About extends React.Component {
             addingDucks: false,
             maxDuck: 2,
             hitDucks: 0
-        }
-        this.moveDucks = this.moveDucks.bind(this)
+        };
+        this.moveDucks = this.moveDucks.bind(this);
     }
 
     async AddDucks(n) {
-        this.setState({ addingDucks: true })
+        this.setState({ addingDucks: true });
         while (this.state.ducks.length < n) {
-            await timeout(500)
+            await timeout(500);
             const { ducks, ducksKeys } = this.state;
-            var newduck = this.addDuck()
+            var newduck = this.addDuck();
             if (window.location.pathname !== '/about') return;
             this.setState({
                 ducks: [...ducks, newduck],
                 ducksKeys: [...ducksKeys, newduck.id]
-            })
-            await timeout(500)
+            });
+            await timeout(500);
         }
-        this.setState({ addingDucks: false })
+        this.setState({ addingDucks: false });
     }
 
     addDuck() {
-        const { ducksKeys } = this.state
-        const rand = Math.floor(Math.random() * 5)
+        const { ducksKeys } = this.state;
+        const rand = Math.floor(Math.random() * 5);
         var right, top, angle = rand - 2;
         const dir = {
             0: { top: 0, right: 1, ani: 'left' },
@@ -45,11 +45,11 @@ class About extends React.Component {
             2: { top: -1, right: 0, ani: 'up' },
             3: { top: -0.7, right: 0.7, ani: 'up-left' },
             4: { top: 0, right: -1, ani: 'right' },
-        }[rand]
+        }[rand];
 
         const type = {
             0: 'green', 1: 'blue', 2: 'brown',
-        }[Math.floor(3 * Math.random())]
+        }[Math.floor(3 * Math.random())];
 
         switch (rand) {
             case 0:
@@ -65,19 +65,19 @@ class About extends React.Component {
                 break;
         }
 
-        return { dir: dir, pos: { right, top }, type: type, dead: false, noise: 20 * Math.random(), speed: 0.2 + 0.2 * Math.random(), id: createKey(ducksKeys) }
+        return { dir: dir, pos: { right, top }, type: type, dead: false, noise: 20 * Math.random(), speed: 0.2 + 0.2 * Math.random(), id: createKey(ducksKeys) };
     }
 
     async moveDucks() {
-        this.setState({ duckAni: true })
+        this.setState({ duckAni: true });
         while (this.state.ducks.length > 0) {
-            await timeout(24)
+            await timeout(24);
             if (window.location.pathname !== '/about') return;
             const { ducks } = this.state;
             this.setState({
                 ducks: ducks.map(a => {
                     if (a.pos.top < -5 - a.noise || a.pos.right < -5 - a.noise || a.pos.right > 105 + a.noise)
-                        return this.addDuck()
+                        return this.addDuck();
 
                     return {
                         ...a,
@@ -85,29 +85,29 @@ class About extends React.Component {
                             right: a.pos.right + a.speed * a.dir.right,
                             top: a.pos.top + a.speed * a.dir.top
                         },
-                    }
+                    };
                 })
             })
         }
 
-        this.setState({ duckAni: false })
+        this.setState({ duckAni: false });
     }
 
     duckRespawn(id) {
-        const { ducks, limited } = this.state
+        const { ducks, limited } = this.state;
         if (limited) {
-            let _ducks = ducks.filter(a => (a.id !== id))
-            this.setState({ ducks: _ducks, ducksKeys: _ducks.map(a => a.id) })
-        } else this.setState({ ducks: ducks.map(a => (a.id === id ? this.addDuck() : a)) })
+            let _ducks = ducks.filter(a => (a.id !== id));
+            this.setState({ ducks: _ducks, ducksKeys: _ducks.map(a => a.id) });
+        } else this.setState({ ducks: ducks.map(a => (a.id === id ? this.addDuck() : a)) });
     }
 
     hitDuck(id) {
-        const { ducks, hitDucks } = this.state
+        const { ducks, hitDucks } = this.state;
         this.setState({
             ducks: ducks.map(d => ((id === d.id) ? { ...d, dead: true } : d)),
             hitDucks: hitDucks + 1,
             maxDuck: Math.min(25, 2 + Math.floor(hitDucks / 5))
-        })
+        });
     }
 
     visualizeDucks() {
@@ -115,15 +115,15 @@ class About extends React.Component {
         return ducks.map(d => <div id={d.id} key={d.id} className={`bird ${d.dead ? "death" : ""}`} style={{ top: `${d.pos.top}vh`, right: `${d.pos.right}vw` }} onAnimationEnd={(e) => (this.duckRespawn(e.target.id))} onClick={(e) => this.hitDuck(e.target.id)}>
             <div className='crosshair' id={d.id} />
             <div id={d.id} className={`${d.type} ${d.dead ? "hit" : ""} ${d.dir.ani}`} style={{ scale: '3' }} />
-        </div>)
+        </div>);
     }
 
     render() {
         const { ducks, duckAni, limited, addingDucks, maxDuck, hitDucks } = this.state;
-        const { activePage } = this.props
+        const { activePage } = this.props;
         if (activePage) {
-            if (ducks.length > 0 && !duckAni) this.moveDucks()
-            if (ducks.length < maxDuck && typeof limited != 'boolean' && !addingDucks) this.AddDucks(maxDuck)
+            if (ducks.length > 0 && !duckAni) this.moveDucks();
+            if (ducks.length < maxDuck && typeof limited != 'boolean' && !addingDucks) this.AddDucks(maxDuck);
         }
 
         return (<Fragment>

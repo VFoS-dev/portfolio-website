@@ -25,8 +25,8 @@ class Skills extends React.Component {
     }
 
     userScrolled() {
-        const refs = [this.appRef, this.frameRef, this.codRef, this.derRef, this.dataRef, this.versRef, this.cloudRef, this.miscRef]
-        const f = document.getElementById("focused")
+        const refs = [this.appRef, this.frameRef, this.codRef, this.derRef, this.dataRef, this.versRef, this.cloudRef, this.miscRef];
+        const f = document.getElementById("focused");
         this.setState({
             scrolled: this.props.scrolled,
             updatedRefs: true,
@@ -39,7 +39,7 @@ class Skills extends React.Component {
 
     mapSkills(title, entries, refIndex, color, textColor = null) {
         const { onScreen } = this.state;
-        const sorted = JSON.parse(`{${JSON.parse(JSON.stringify(entries)).sort((a, b) => b.compentence - a.compentence).map((a, index) => `"${a.name}":${index}`).join(',')}}`)
+        const sorted = JSON.parse(`{${JSON.parse(JSON.stringify(entries)).sort((a, b) => b.compentence - a.compentence).map((a, index) => `"${a.name}":${index}`).join(',')}}`);
         return <Fragment>
             <div style={{ width: "100%", height: "100%", overflow: 'hidden', position: "absolute", zIndex: 0, borderRadius: "30px", pointerEvents: 'none' }}>
                 <div id='stars' />
@@ -86,17 +86,17 @@ class Skills extends React.Component {
     }
 
     filter(index) {
-        const { filters } = this.state
+        const { filters } = this.state;
         filters[index] = !filters[index];
-        this.setState({ filters: filters })
+        this.setState({ filters: filters });
     }
 
     render() {
         const { filters } = this.state;
-        const { activePage } = this.props
+        const { activePage } = this.props;
         if (activePage) { 
-            if (this.props.scrolled !== this.state.scrolled) setTimeout(() => this.userScrolled(), 0)
-            if (!this.state.updatedRefs) setTimeout(() => this.userScrolled(), 0)
+            if (this.props.scrolled !== this.state.scrolled) setTimeout(() => this.userScrolled(), 0);
+            if (!this.state.updatedRefs) setTimeout(() => this.userScrolled(), 0);
         }
             
         return (<div className="skills">

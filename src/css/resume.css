@@ -16,6 +16,7 @@
 }
 
 .window-page {
+    outline: none;
     font-family: "Times New Roman", Times, serif;
     margin: 30px auto;
     min-height: calc((70vw - 36px) * 0.7 * 1.41421);

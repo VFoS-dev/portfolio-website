@@ -1,63 +1,51 @@
 import React, { Component, Fragment } from 'react';
+import { matraexProjects } from '../_data';
 
 export class Matraex extends Component {
+    createlinks(link) {
+        let links = [], about = false;
+        let label = {
+            website: 'Website',
+            android: 'Google Play',
+            apple: 'App Store',
+        };
+        Object.keys(link).forEach((l, i) => {
+            switch (l) {
+                case 'about': return about = link[l];
+                default: return links.push(<a key={`links-${i}`} href={link[l]} rel='noreferrer' target='_blank'>{label[l]}</a>);
+            }
+        });
+
+        return [links, about];
+    }
+
     render() {
+        const { focus } = this.props;
+        const { name, description, link, dates, stack, keyFeatures } = matraexProjects[focus];
+        const [links, about] = this.createlinks(link);
         return (
             <Fragment>
                 <center style={{ margin: "4% 0px", padding: '0px 15%' }}>
-                    Content for this project has not yet been created.
+                    {focus === 'matraex_inc' ? <Fragment>
+                        Content for this project has not yet been created.
+                    </Fragment> : <Fragment>
+                        <h4>This project is a client project for Matraex Inc.</h4>
+                        <p>which unfortunately means I can't go into great detail</p>
+                        <hr />
+                        <h1>{name}</h1>
+                        <h5>{dates}</h5>
+                        <p>{description}</p>
+                        {!!keyFeatures && <div style={{ textAlign: 'left' }}>
+                            <h5>Noteables:</h5>
+                            <ul>
+                                {keyFeatures.split('-').map((k, i) => (k.replace(/\s+/, '')) ? <li key={`${focus}-${i}`}>{k}</li> : '')}
+                            </ul>
+                        </div>}
+                        <h5 className='made-with'>{links.length ? <Fragment>{links} m</Fragment> : 'M'}ade with: {stack}</h5>
+                        {about && <a href={link['about']} rel="noreferrer" target='_blank'>Learn more</a>}
+                    </Fragment>}
                 </center>
-            </Fragment >
+            </Fragment>
         );
     }
 }
-
-/*
-
-Black Sage - blacksagetech.com
-January 17 - February 28
-Stack: React
-- Created responsive visual features with in the app
-- Integrated api calls from black sage
-- Found, documented, and notified vulnerabilities in the app
-- Created a react component that worked well with class and functional hooks
-
-Salestrak - salestrak.io
-January 26 - July 31
-Stack: PHP/SQL/JQuery
-Created a responsive and dynamic front end with vanilla js.
-- Refactored and optimized several pages and API calls.
-- Added several new features to the project.
-- Create many dynamic and reusable features that are used in various places in the app.
-- Created documentation of the project.
-
-Idaho Lottery - idaholottery.com/pages/mobile-apps
-May 19 - June 5
-Stack: React Native
-- Integrated api calls from a partner company.
-- Fixed reported bugs in the app.
-
-Rio Genesis - riogenesis.com
-June 19 - July 17
-Stack: PHP/SQL/React
-- Created a script that would automatically upgrade the code base to PHP8
-- Worked through warnings that were remaining after the upgrade
-
-Venture Idaho - ventureidaho.com
-May 3 - August 11
-Stack: PHP/SQL/JQuery
-- Added, adjusted, and redesigned responsive css styling.
-
-Healthcare Business Ventures - venturesys.org
-August 1 - August 7
-Stack: PHP/SQL
-- Created and modified exporting iif files for Quickbooks.
-
-High Call Rodeo - app.highcallrodeo.com
-July 14 - July 31
-Stack: React/Meteor/Mongodb
-- Audited the codebase of a potential project.
-- Did a gap analyst of where the project currently is and how much more is desired by the client.
-- Wrote documentation of my discoveries.
-
-*/

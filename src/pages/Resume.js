@@ -8,18 +8,18 @@ class Resume extends React.Component {
         super(props)
         this.time = setInterval(
             () => {
-                const t = document.getElementById('time')
-                if (t) t.textContent = this.getTime()
+                const t = document.getElementById('time');
+                if (t) t.textContent = this.getTime();
             }, 1000
-        )
+        );
     }
 
     componentWillUnmount() {
-        clearInterval(this.time)
+        clearInterval(this.time);
     }
 
     getTime() {
-        return new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
+        return new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
     }
 
     changePage(nav) {
@@ -34,7 +34,6 @@ class Resume extends React.Component {
         return (
             <div className="resume" style={{ backgroundImage: 'url(/images/resume/windows_xp_background.jpg)' }}>
                 <div className='navpadding' />
-
                 <div className="window" style={{ margin: '0px 10vw', width: "80vw" }}>
                     <div className="title-bar">
                         <div className="title-bar-text"><div className='wordIcon title' />Jon Kido Resume 20XX Rough Draft - Microsoft Word</div>
@@ -45,9 +44,9 @@ class Resume extends React.Component {
                         </div>
                     </div>
                     <div className="window-options" />
-                    <div className="window-body">
-                        <div className='window-page'>
-                            <center><h1 style={{ fontSize: '2vw' }}>Want a polished resume? <a href='/pdf/resume_eye_friendly.pdf' target="_blank">Click Here</a></h1></center>
+                    <div className="window-body" >
+                        <div className='window-page' suppressContentEditableWarning={true} contentEditable='true'>
+                            <center><h1 style={{ fontSize: '2vw' }}>Want a polished resume? <button className='hyperlink' onClick={() => window.open('/pdf/resume_eye_friendly.pdf', '_blank')} >Click Here</button></h1></center>
                             <h2>Education: </h2>
                             <p className='tab'>
                                 Boise State University: 2017 - 2022
@@ -92,7 +91,7 @@ class Resume extends React.Component {
                             <br />
                             <h2>Projects:<button className='hyperlink' onClick={() => this.changePage('projects')} >Click Here</button></h2>
                         </div>
-                        <div className='window-page'>
+                        <div className='window-page' suppressContentEditableWarning={true} contentEditable='true'>
                             <br />
                             <h2>Skills:<button className='hyperlink' onClick={() => this.changePage('skills')} >Click Here</button></h2>
                             <br />

@@ -108,33 +108,33 @@ class Socials extends React.Component {
     }
 
     async updateSlash() {
-        this.setState({ pathAni: true })
+        this.setState({ pathAni: true });
         while (this.state.path.length > 0) {
-            await timeout(20)
+            await timeout(20);
             if (window.location.pathname !== '/socials') return;
             const { path } = this.state;
             var p = [...path];
-            p.pop()
-            if (p.length) this.updatePath(p)
+            p.pop();
+            if (p.length) this.updatePath(p);
         }
-        this.setState({ pathAni: false })
+        this.setState({ pathAni: false });
     }
 
     addVector(e) {
-        const { path } = this.state
-        var _p = path
-        if (_p.length > 10) _p.pop()
+        const { path } = this.state;
+        var _p = path;
+        if (_p.length > 10) _p.pop();
         var p = [{
             x: e.pageX,
             y: e.pageY
-        }, ..._p]
+        }, ..._p];
         if (window.location.pathname !== '/socials') return;
-        this.updatePath(p)
+        this.updatePath(p);
     }
 
     updatePath(path) {
-        if (window.location.pathname !== '/socials') return
-        const { size } = this.state
+        if (window.location.pathname !== '/socials') return;
+        const { size } = this.state;
         const colors = [
             '#4d4d4d',
             "#6e6e6e",
@@ -142,12 +142,12 @@ class Socials extends React.Component {
             "#ffffff",
         ];
 
-        var vectors = path
-        const { clientWidth, clientHeight } = document.documentElement
+        var vectors = path;
+        const { clientWidth, clientHeight } = document.documentElement;
 
         var canvas = document.getElementById("slash");
-        canvas.width = clientWidth
-        canvas.height = clientHeight
+        canvas.width = clientWidth;
+        canvas.height = clientHeight;
         var context = canvas.getContext("2d");
         context.clearRect(0, 0, clientWidth, clientHeight);
         context.lineJoin = "round";
@@ -168,7 +168,7 @@ class Socials extends React.Component {
             y += (nVectors.y - v.y) * 0.6;
         });
 
-        _Vectors.reverse()
+        _Vectors.reverse();
 
         colors.forEach((color, index) => {
             context.strokeStyle = color;
@@ -178,16 +178,16 @@ class Socials extends React.Component {
                 context.beginPath();
                 context.lineTo(set.x, set.y);
                 if (vIndex) context.lineTo(sets[vIndex - 1].x, sets[vIndex - 1].y);
-                context.lineWidth = (size + 10 * (colors.length - index) / colors.length) * 2 * (vIndex + 1) / _Vectors.length
+                context.lineWidth = (size + 10 * (colors.length - index) / colors.length) * 2 * (vIndex + 1) / _Vectors.length;
                 context.stroke();
             });
         });
-        this.setState({ path: path })
+        this.setState({ path: path });
     }
 
     openLink(index) {
-        const { options } = this.state
-        window.open(options[index].href, '_blank')
+        const { options } = this.state;
+        window.open(options[index].href, '_blank');
     }
 
     createOptions(op, index) {
@@ -222,10 +222,10 @@ class Socials extends React.Component {
     }
 
     render() {
-        const { path, pathAni, options } = this.state
-        const { activePage } = this.props
+        const { path, pathAni, options } = this.state;
+        const { activePage } = this.props;
         if (activePage) { 
-            if (path.length > 0 && !pathAni) setTimeout(() => this.updateSlash(), 0)
+            if (path.length > 0 && !pathAni) setTimeout(() => this.updateSlash(), 0);
         }
         return (<Fragment>
             <canvas id='slash' className='sticky-overlay' />

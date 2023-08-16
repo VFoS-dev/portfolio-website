@@ -7,54 +7,54 @@ export class ModalController extends Component {
         this.state = {
             queue: null,
             update: false
-        }
+        };
     }
 
     remove(e) {
-        if (e !== 'cancel') return
-        const { update } = this.state
-        var past = window.location.pathname.split('/')
-        var sub = `/${past[1]}`
-        window.history.replaceState(sub, 'Title', sub)
-        this.setState({ queue: past[2] || null, update: !update })
+        if (e !== 'cancel') return;
+        const { update } = this.state;
+        var past = window.location.pathname.split('/');
+        var sub = `/${past[1]}`;
+        window.history.replaceState(sub, 'Title', sub);
+        this.setState({ queue: past[2] || null, update: !update });
     }
 
     route(modal) {
         switch (modal) {
             case null:
-                return <Fragment />
+                return <Fragment />;
             case 'survive':
-                return <Survive />
+                return <Survive />;
             case 'uno_ai':
-                return <Uno />
+                return <Uno />;
             case 'defend':
-                return <Defend />
+                return <Defend />;
             case 'deadline':
-                return <Deadline />
+                return <Deadline />;
             case 'cash_n_slash':
-                return <CashnSlash />
+                return <CashnSlash />;
             case 'swordwhip':
-                return <SwordWhip />
+                return <SwordWhip />;
             case 'minesweeper_solver':
-                return <Minesweeper />
+                return <Minesweeper />;
             case 'abc_stories':
-                return <ABCStories />
+                return <ABCStories />;
             case 'planet_destroyer':
-                return <PlanetDestroyer />
+                return <PlanetDestroyer />;
             case 'the_simple_ring_alpha':
-                return <TheSimpleRing />
+                return <TheSimpleRing />;
             case 'all_in_favor':
-                return <AllinFavor />
+                return <AllinFavor />;
             case 'bronco_beam':
-                return <BroncoBeam />
+                return <BroncoBeam />;
             case 'motorpool_services':
-                return <MotorPool />
+                return <MotorPool />;
             case 'portfolio_website':
-                return <Portfolio />
+                return <Portfolio />;
             case 'project_kuro':
-                return <ProjectKuro />
+                return <ProjectKuro />;
             case 'original_logo_animation':
-                return <OLogoAni />
+                return <OLogoAni />;
             case 'matraex_inc':
             case 'high_call_rodeo':
             case 'hbv':
@@ -63,16 +63,14 @@ export class ModalController extends Component {
             case 'idaho_lottery':
             case 'rio_genesis':
             case 'black_sage_tech':
-                return <Matraex focus={modal} />
+                return <Matraex focus={modal} />;
             default:
                 console.error('ERROR: Modal was not found:', modal);
-                return <Default />
+                return <Default />;
         }
     }
 
-    resetScroll(e, hide) {
-        if (hide) e.scroll(0, 0)
-    }
+    resetScroll = (e, hide) => (hide) ? e.scroll(0, 0) : null;
 
     render() {
         const { queue } = this.state;
