@@ -1,34 +1,8 @@
-import React, { Component, Fragment } from 'react';
-import { connect } from 'react-redux';
+# Testing markdown
 
-class SecretController extends Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            update: false
-        };
-        this.listener = this.listener.bind(this);
+```js
 
-        // listeners
-        window.addEventListener('custom-pushState', this.listener);
-    }
-
-    listener() {
-        const [_, __, secret] = window.location.pathname.split('/') || []
-        const { update } = this.state;
-        if (secret == 'secret') this.setState({ update: !update })
-    }
-
-    remove(e) {
-        var [_, page, secret] = window.location.pathname.split('/');
-        if (e !== 'cancel' || !page) return;
-        const { update } = this.state;
-        var sub = `/${page}`;
-        window.history.replaceState(sub, 'Title', sub);
-        this.setState({ update: !update });
-    }
-
-    render() {
+    function render() {
         const { correct } = this.props;
         var [_, page, secret] = window.location.pathname.split('/') || []
         if (!correct || secret != 'secret') {
@@ -47,14 +21,4 @@ class SecretController extends Component {
             </div>
         </div>
     }
-}
-
-function mapState(state) {
-    const { correct } = state.rotation;
-    return { correct };
-}
-
-const actionCreators = {};
-
-const ConnectedSecretController = connect(mapState, actionCreators)(SecretController);
-export { ConnectedSecretController as SecretController };
+```

@@ -17,7 +17,6 @@ class Projects extends React.Component {
             updateModal: false,
             minesweeper: false,
             cells: [],
-            nbombs: 0,
             flags: 0,
             gameStatus: 0,
             rows: 10,
@@ -111,7 +110,7 @@ class Projects extends React.Component {
             })
         })
 
-        this.setState({ cells: this.floodReveal([x, y], _c), nbombs: nbombs, flags: 0, gamepaused: false });
+        this.setState({ cells: this.floodReveal([x, y], _c), flags: 0, gamepaused: false });
     }
 
     floodReveal([x, y], cells) {
@@ -167,7 +166,7 @@ class Projects extends React.Component {
         const { minesweeper, cells, rows, gamerestart } = this.state;
         if (minesweeper)
             if (!cells[0][0]) this.setState({ toMine: false, minesweeper: false, gamepaused: false, gamerestart: !gamerestart, gameStatus: 0 });
-            else this.setState({ cells: [...new Array(rows)].map(n => [...new Array(rows)]), nbombs: 0, flags: 0, gamepaused: true, gamerestart: !gamerestart, gameStatus: 0 });
+            else this.setState({ cells: [...new Array(rows)].map(n => [...new Array(rows)]), flags: 0, gamepaused: true, gamerestart: !gamerestart, gameStatus: 0 });
         else this.setState({ toMine: true, gamepaused: true, gamerestart: !gamerestart });
     }
 
@@ -182,10 +181,10 @@ class Projects extends React.Component {
     }
 
     render() {
-        const { minesweeper, cells, nbombs, gameStatus, updateModal, gamerestart, gamepaused } = this.state;
+        const { minesweeper, cells, gameStatus, updateModal, gamerestart, gamepaused } = this.state;
         const { activePage } = this.props;
         const { clientWidth } = document.documentElement;
-        const bombsCount = !minesweeper ? projectData.length : Math.max(cells.reduce((t, r) => t + (r?.reduce((st, c) => st + -c?.flagged + (c?.proximity < 0), 0)), 0), 0);
+        const bombCount = !minesweeper ? projectData.length : Math.max(cells.reduce((t, r) => t + (r?.reduce((st, c) => st + -c?.flagged + (c?.proximity < 0), 0)), 0), 0);
 
         return (<Fragment>
             <ModalController updateModal={updateModal} updatePage={this.props.updatePage} />
@@ -194,7 +193,7 @@ class Projects extends React.Component {
                 <div className='mineOutline'>
                     <div className="mineHeader">
                         <div className='numbs left'>
-                            <ProjectTimer activePage={false} setCount={bombsCount} />
+                            <ProjectTimer activePage={false} setCount={bombCount} />
                         </div>
                         <center className='button-container' onClick={() => this.changeState()} >
                             <div className={`button${!minesweeper ? "" : { 0: ' play', '-1': ' lose', 1: ' win' }[gameStatus]}`} />
