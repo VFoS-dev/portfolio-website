@@ -37,19 +37,56 @@ export function TileFlex(forceReset = false, perspective = '500px') {
     }
 }
 
-export function dragParentElement(e) {
-    document.onmousemove = elementDrag;
-    document.onmouseup = closeDragElement;
+export function onDoubleClick(callback) {
+    let first = 0;
 
-    let x = e.clientX, y = e.clientY, parent = e.target.parentElement;
-    function elementDrag(e) {
-        e.preventDefault();
-        parent.style.top = `${(parent.offsetTop - (y - (y = e.clientY)))}px`;
-        parent.style.left = `${(parent.offsetLeft - (x - (x = e.clientX)))}px`;
+    function click() {
+        let time = new Date()
+        if (time - first < 1000) callback()
+        first = time;
     }
 
-    function closeDragElement() {
-        document.onmouseup = null;
-        document.onmousemove = null;
+    return {
+        onDoubleClick: callback,
+        onTouchStart: click,
+    }
+}
+
+export function dragParentElement() {
+    function mouseDragSetup(e) {
+        let x = e.clientX, y = e.clientY, parent = e.target.parentElement;
+
+        function elementDrag(e) {
+            parent.style.top = `${(parent.offsetTop - (y - (y = e.clientY)))}px`;
+            parent.style.left = `${(parent.offsetLeft - (x - (x = e.clientX)))}px`;
+        }
+
+        function closeDragElement() {
+            document.onmousemove = document.onmouseup = null;
+        }
+
+        document.onmousemove = elementDrag;
+        document.onmouseup = closeDragElement;
+    }
+
+    function touchDragSetup(e) {
+        let x = e.targetTouches[0].clientX, y = e.targetTouches[0].clientY, parent = e.target.parentElement;
+
+        function elementDrag(e) {
+            parent.style.top = `${(parent.offsetTop - (y - (y = e.targetTouches[0].clientY)))}px`;
+            parent.style.left = `${(parent.offsetLeft - (x - (x = e.targetTouches[0].clientX)))}px`;
+        }
+
+        function closeDragElement() {
+            document.ontouchmove = document.ontouchend = null;
+        }
+
+        document.ontouchmove = elementDrag;
+        document.ontouchend = closeDragElement;
+    }
+
+    return {
+        onMouseDown: mouseDragSetup,
+        onTouchStart: touchDragSetup,
     }
 }

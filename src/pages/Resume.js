@@ -1,6 +1,6 @@
-import React, { createRef } from 'react';
+import React, { } from 'react';
 import { connect } from 'react-redux';
-import { EditableFocusRot, createKey, dragParentElement } from '../utils';
+import { EditableFocusRot, createKey, dragParentElement, onDoubleClick } from '../utils';
 
 import '../css/resume.css'
 
@@ -24,9 +24,27 @@ class Resume extends React.Component {
                 if (t) t.textContent = this.getTime();
             }, 1000
         );
+
+        this.newWindow = this.newWindow.bind(this);
     }
 
     componentWillUnmount = () => clearInterval(this.time);
+
+    newWindow() {
+        let { windows } = this.state;
+        let keys = []
+        windows.forEach(w => {
+            w.focused = false;
+            keys.push(w.key);
+        })
+        windows.push({
+            focused: true,
+            minimized: false,
+            fullscreened: false,
+            key: createKey(keys)
+        })
+        this.setState({ windows });
+    }
 
     set(info, value = null) {
         const [id, index] = info.split('-');
@@ -46,7 +64,7 @@ class Resume extends React.Component {
                 break;
         }
 
-        return this.setState({ windows });
+        this.setState({ windows });
     }
 
     getTime = () => new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
@@ -65,10 +83,14 @@ class Resume extends React.Component {
         return (
             <div className="resume" style={{ backgroundImage: 'url(/images/resume/windows_xp_background.jpg)' }}>
                 <div className='navpadding' />
+                <div className='windows-icon center-start' {...onDoubleClick(this.newWindow)}>
+                    <img src='/images/resume/wordicon_destop.svg' {...dragParentElement()} />
+                    <p>Jon Kido Resume 20XX Rough Draft</p>
+                </div>
                 {windows.map(({ minimized, fullscreened, focused, key, }, i) => {
                     let state = `${focused ? ' focused' : ''}${fullscreened ? ' fullscreened' : ''}${minimized ? ' minimized' : ''}`
                     return <div key={`windows-${key}`} className={`window${state}`} onMouseDown={() => this.set(`focused-${i}`, true)}>
-                        <div className="title-bar" onMouseDown={dragParentElement}>
+                        <div className="title-bar" {...dragParentElement()}>
                             <div className="title-bar-text"><div className='wordIcon title' />Jon Kido Resume 20XX Rough Draft - Microsoft Word</div>
                             <div className="title-bar-controls">
                                 <button aria-label="Minimize" id={`minimized-${i}`} onClick={(e) => this.set(e.target.id)}></button>
