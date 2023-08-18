@@ -1,6 +1,7 @@
 import React, { Fragment } from 'react';
 import { connect } from 'react-redux';
 import { timeout } from '../utils';
+import { socialsData } from '../_data';
 
 import '../css/socials.css';
 
@@ -11,101 +12,17 @@ class Socials extends React.Component {
             path: [],
             pathAni: false,
             size: 4,
-            options: [
-                {
-                    name: 'Coming Soon',
-                    gif: '/images/socials//game/pineapple.gif',
-                    startRot: Math.random() * 360,
-                    styles: {
-                        outerLine: 'white',
-                        innerLine: 'white',
-                        textBorder: 'black',
-                        textColor: 'white'
-                    }
-                },
-                {
-                    id: '',
-                    name: 'Github',
-                    gif: '/images/socials/github.gif',
-                    startRot: Math.random() * 360,
-                    href: 'https://github.com/VFoS-dev',
-                    styles: {
-                        foreignShadow: <foreignObject x="2" y="2" width="164" height="164" mask="url(#donut)">
-                            <div className="rainbowGradient" />
-                        </foreignObject>,
-                        foreign: <foreignObject x="2" y="2" width="164" height="164" mask="url(#donut)">
-                            <div className="rainbowGradient" />
-                        </foreignObject>,
-                        outerLine: 'white',
-                        innerLine: 'white',
-                        textBorder: 'black',
-                        textColor: 'white'
-                    }
-                },
-                {
-                    id: 'pattern1',
-                    name: 'Linkedin',
-                    gif: '/images/socials/linkedin.gif',
-                    startRot: Math.random() * 360,
-                    href: 'https://www.linkedin.com/in/jon-kido-vfos/',
-                    styles: {
-                        fill: <linearGradient
-                            id="pattern1"
-                            gradientTransform="rotate(30)">
-                            <stop offset="0%" stopColor="rgba(255,0,0,0.5)" />
-                            <stop offset="20%" stopColor="rgba(255,0,0,0.5)" />
-                            <stop offset="95%" stopColor="rgba(0,0,255,0.5)" />
-                            <stop offset="100%" stopColor="rgba(0,0,255,0.5)" />
-                        </linearGradient>,
-                        outerLine: '#4b61db',
-                        innerLine: '#db4b4b',
-                        text: {
-                            upperBorder: '#700000',
-                            upperColor: 'yellow',
-                            lowerBorder: '#002d8f',
-                            lowerColor: '#dce6fc',
-                        }
-                    }
-                },
-                {
-                    id: 'pattern3',
-                    name: 'YouTube',
-                    gif: '/images/socials/youtube.gif',
-                    startRot: Math.random() * 360,
-                    href: 'https://www.youtube.com/channel/UCbHIwUTtZwRiiPTyl_3ncLQ/',
-                    styles: {
-                        fill: <pattern id="pattern3" width="25" height="1" patternUnits="userSpaceOnUse" patternTransform="rotate(45 50 50)">
-                            <rect fill='rgba(0, 86, 255, 0.5)' width='25px' height='10px' />
-                            <line stroke='rgba(61, 127, 255, 0.5)' strokeWidth="25px" y2="10" />
-                        </pattern>,
-                        outerLine: '#3469d1',
-                        innerLine: '#3469d1',
-                        textBorder: '#002d8f',
-                        textColor: '#dce6fc'
-                    }
-                },
-                {
-                    id: '',
-                    name: 'LeetCode',
-                    gif: '/images/socials/leetcode.gif',
-                    startRot: Math.random() * 360,
-                    href: 'https://leetcode.com/VFoS/',
-                    styles: {
-                        foreign: <foreignObject x="2" y="2" width="164" height="164" mask="url(#donut)">
-                            <div className="gradient" />
-                        </foreignObject>,
-                        outerLine: 'rgba(255,100,100,0.5)',
-                        innerLine: 'rgba(255,100,100,0.5)',
-                        textBorder: '#700000',
-                        textColor: 'yellow'
-                    }
-                },
-            ]
         }
 
         this.addVector = this.addVector.bind(this);
-        this.updateSlash = this.updateSlash.bind(this);
+
+        const { activePage } = this.props;
+        if (activePage) {
+            document.onmousemove = this.addVector
+        }
     }
+
+    componentWillUnmount = () => document.onmousemove = null;
 
     async updateSlash() {
         this.setState({ pathAni: true });
@@ -121,6 +38,7 @@ class Socials extends React.Component {
     }
 
     addVector(e) {
+        if (window.location.pathname.split('/')[1] !== 'socials') return;
         const { path } = this.state;
         var _p = path;
         if (_p.length > 10) _p.pop();
@@ -128,7 +46,6 @@ class Socials extends React.Component {
             x: e.pageX,
             y: e.pageY
         }, ..._p];
-        if (window.location.pathname.split('/')[1] !== 'socials') return;
         this.updatePath(p);
     }
 
@@ -185,10 +102,7 @@ class Socials extends React.Component {
         this.setState({ path: path });
     }
 
-    openLink(index) {
-        const { options } = this.state;
-        window.open(options[index].href, '_blank');
-    }
+    openLink = (index) => window.open(socialsData[index].href, '_blank');
 
     createOptions(op, index) {
         return <div className='grow' key={'options' + index}>
@@ -216,23 +130,24 @@ class Socials extends React.Component {
                     </svg>
                 </div>
                 {op.href && <div className='hoverEvent' id={index} onClick={e => this.openLink(e.target.id, true)} />}
-                {op.gif && <img className='gif' src={op.gif} alt=''/>}
+                {op.gif && <img className='gif' src={op.gif} alt='' />}
             </div>
         </div>
     }
 
     render() {
-        const { path, pathAni, options } = this.state;
+        const { path, pathAni } = this.state;
         const { activePage } = this.props;
-        if (activePage) { 
-            if (path.length > 0 && !pathAni) setTimeout(() => this.updateSlash(), 0);
-        }
+
+        if (activePage && path.length > 0 && !pathAni)
+            setTimeout(() => this.updateSlash(), 0);
+
         return (<Fragment>
             <canvas id='slash' className='sticky-overlay' />
-            <div className="socials" onMouseMove={(e) => this.addVector(e)}>
+            <div className="socials">
                 <div className='navpadding' />
                 <div className='links'>
-                    {options.map((a, index) => this.createOptions(a, index))}
+                    {socialsData.map((a, index) => this.createOptions(a, index))}
                 </div>
             </div>
         </Fragment>);

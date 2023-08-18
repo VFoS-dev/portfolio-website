@@ -5,7 +5,7 @@ import { projectData } from '../_data';
 
 import '../css/projects.css';
 import { ProjectTimer } from '../components';
-import { TileFlex, timeout } from '../utils';
+import { TileFlex, TileFlexTouchSupport, timeout } from '../utils';
 
 class Projects extends React.Component {
     constructor(props) {
@@ -191,7 +191,7 @@ class Projects extends React.Component {
     }
 
     render() {
-        const { minesweeper, cells, gameStatus, updateModal, gamerestart, gamepaused } = this.state;
+        const { minesweeper, cells, gameStatus, updateModal, gamerestart, gamepaused, toMine } = this.state;
         const { activePage } = this.props;
         const bombCount = !minesweeper ? projectData.length : Math.max(cells.reduce((t, r) => t + (r?.reduce((st, c) => st + -c?.flagged + (c?.proximity < 0), 0)), 0), 0);
 
@@ -229,7 +229,7 @@ class Projects extends React.Component {
                             })}
                         </Fragment> : <Fragment>
                             <div className="tile-center" style={{ ...this.getTileAdjustment() }}>
-                                <div className='tile-container'>
+                                <div className='tile-container' {...TileFlexTouchSupport(toMine)}>
                                     {projectData.map((p, index) => this.mapTile(p, index))}
                                 </div>
                             </div>
