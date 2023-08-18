@@ -111,15 +111,13 @@ div.face:has(.projects) {
 .cell {
     position: relative;
     aspect-ratio: 1/1;
-    width: calc(70vw / 10);
-    height: calc(70vw / 10);
     display: flex;
     justify-content: space-around;
     overflow: hidden;
     background-color: rgb(212, 212, 212);
     border: 9px outset rgb(219, 219, 219);
     text-align: center;
-    vertical-align: middle;
+    align-items: center;
     cursor: pointer;
 }
 
@@ -359,8 +357,6 @@ div.face:has(.projects) {
     font-size: 125%;
 }
 
-.tile:hover {}
-
 .tile:hover {
     z-index: 10;
     box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.6);
@@ -370,6 +366,7 @@ div.face:has(.projects) {
 .flag {
     width: 100%;
     height: 100%;
+    background-color: darkgray;
     background-size: contain !important;
 }
 
@@ -389,15 +386,11 @@ div.face:has(.projects) {
 }
 
 .cell div {
-    position: absolute;
     font-family: 'VT323', latin !important;
-    font-size: 6.5vw;
-    transform: translateY(-50%);
-}
-
-.cell div {
-    height: 50%;
+    line-height: calc(10vw - 30px);
+    font-size: 6vw;
     pointer-events: none;
+    place-content: center;
 }
 
 .cell div.c-1 {

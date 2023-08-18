@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, createRef } from 'react';
 import { connect } from 'react-redux';
 import { skillData } from '../_data/SkillsData';
 
@@ -18,7 +18,7 @@ class Skills extends React.Component {
         }
 
         skillData.forEach((_, i) => {
-            this[`ref${i}`] = React.createRef();
+            this[`ref${i}`] = createRef();
         })
         this.generateSkills = this.generateSkills.bind(this);
     }

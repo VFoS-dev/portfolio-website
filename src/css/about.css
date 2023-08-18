@@ -10,7 +10,7 @@ div.face:has(.about) {
 }
 
 .about .info {
-    margin: 2% 15% 10%;
+    margin: 0 12% 200px;
 }
 
 .info .tab {

@@ -1,3 +1,7 @@
+.face:has(.resume) {
+    overflow: hidden;
+}
+
 .resume {
     background-image: linear-gradient(lightblue, lightgreen);
     background-size: cover;
@@ -16,45 +20,43 @@
 }
 
 .window-page {
+    display: flex;
+    flex-direction: column;
     outline: none;
     font-family: "Times New Roman", Times, serif;
     margin: 30px auto;
-    min-height: calc((70vw - 36px) * 0.7 * 1.41421);
     border: black 2px solid;
     box-shadow: black 5px 5px 0px;
-    padding: 5vw;
-    width: 70%;
+    padding: 5rem;
+    width: min(1000px, 95%);
+    min-height: 1375px;
     background-color: white;
-
     -webkit-touch-callout: text;
     -webkit-user-select: text;
-    -khtml-user-select: text;
-    -moz-user-select: text;
-    -ms-user-select: text;
     user-select: text;
 }
 
 .window-page h1 {
-    font-size: 3vw;
+    font-size: 2rem;
     margin: 0px;
 }
 
 .window-page li {
-    font-size: 1vw;
+    font-size: 1rem;
 }
 
 .window-page ul {
-    margin-bottom: 0.5vw;
-    padding-left: 2vw;
+    margin-bottom: 0.5rem;
+    padding-left: 2.25rem;
 }
 
 .window-page h2 {
-    font-size: 2vw;
+    font-size: 2.25rem;
     margin: 0px;
 }
 
 .window-page p {
-    font-size: 1vw;
+    font-size: 1rem;
     margin: 0px;
 }
 
@@ -76,12 +78,13 @@
 .resume .window-options {
     background-image: url(/public/images/resume/options.jpg);
     background-repeat: no-repeat;
-    height: 80px;
-    background-size: contain;
+    min-height: 80px;
+    background-size: auto 80px;
     margin: 5px;
 }
 
 .resume .taskbar {
+    z-index: 2;
     pointer-events: none;
     background-color: #265fdb;
     border-top: #578cfdad 3px solid;
@@ -90,6 +93,7 @@
     position: absolute;
     bottom: 0px;
     height: 30px;
+    display: flex;
 }
 
 .resume .taskbar .start .windowIcon {
@@ -103,13 +107,22 @@
     background-size: contain;
 }
 
+.resume .taskbar .applications {
+    display: flex;
+    flex-grow: 1;
+    overflow: hidden;
+}
+
+.resume .taskbar .application.focused {
+    background-color: #2d51c7;
+}
+
 .resume .taskbar .application {
+    pointer-events: all;
     border-radius: 3px;
-    position: absolute;
     top: 0px;
     left: 90px;
     width: 150px;
-    background-color: #2d51c7;
     box-shadow: inset rgba(0, 0, 0, 0.2) 0 0 5px;
     height: 25px;
     color: white;
@@ -143,11 +156,9 @@
 }
 
 .resume .taskbar #time {
-    position: absolute;
     font-size: 1em;
-    top: 0px;
-    right: 0px;
-    margin-right: 15px;
+    margin: 0 10px;
+    width: 75px;
     color: white;
 }
 
@@ -177,15 +188,39 @@
     color: #fff;
     text-indent: 25px;
     letter-spacing: 0;
-    margin-right: 24px;
+    margin-right: 3px;
     padding-left: 3px;
 }
 
+.window.minimized {
+    display: none;
+}
+
+.window.fullscreened {
+    width: 100vw !important;
+    height: calc(100dvh - 30px) !important;
+    top: 0px !important;
+    left: 0px !important;
+}
+
+.window.focused {
+    z-index: 1;
+}
+
 .window {
+    z-index: 0;
+    overflow: hidden;
+    resize: both;
     box-shadow: inset -1px -1px #00138c, inset 1px 1px #0831d9, inset -2px -2px #001ea0, inset 2px 2px #166aee, inset -3px -3px #003bda, inset 3px 3px #0855dd;
+    position: absolute;
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
     -webkit-font-smoothing: antialiased;
+    min-width: 150px;
+    min-height: 150px;
+    height: 80vh;
+    width: 90vw;
+    left: 5vw;
     font-size: 11px;
     background: #ece9d8;
 }
@@ -230,7 +265,7 @@
     margin: 8px;
     background: #afada1;
     border: rgb(221, 221, 221) 3px inset;
-    height: calc(90vh - (12vh + 135px));
+    height: calc(100% - 125px);
     overflow: scroll;
     padding: 0px !important;
 }

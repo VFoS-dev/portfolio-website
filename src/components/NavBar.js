@@ -23,11 +23,12 @@ class NavBar extends Component {
     }
 
     listener() {
-        this.props.updatePage(this.props.last, window.location.href.split('/').splice(-1)[0].split('?')[0] || "intro");
+        const [_, page, secret] = window.location.pathname.split('/');
+        this.props.updatePage(this.props.last, page);
     }
 
     changePage(nav, secret = '') {
-        const page = window.location.href.split('/').splice(-1)[0].split('?')[0] || "intro";
+        const [_, page, _secret] = window.location.pathname.split('/');
         if (nav !== page) {
             const _newPage = nav || "intro";
             window.history.pushState(`/${_newPage}`, 'Title', `/${_newPage}`);
@@ -78,7 +79,7 @@ class NavBar extends Component {
                             <Nav.Link className={((ref === 'resume') ? "active" : "") + " lato enable"} id='resume' onClick={(e) => this.changePage(e.target.id)}>Resume</Nav.Link>
                             <Nav.Link className={((ref === 'socials') ? "active" : "") + " lato enable"} id='socials' onClick={(e) => this.changePage(e.target.id)}>Socials</Nav.Link>
                             {correct && <Nav.Link className={((ref === 'secret') ? "active" : "") + " lato enable"} id='secret' onClick={() =>
-                                this.changePage((getCookie('found-secret') ? window.location.pathname.split('/')[1] : 'intro') + '/secret', setCookie('found-secret', true, 365))
+                                this.changePage((getCookie('secret-found') ? window.location.pathname.split('/')[1] : 'intro') + '/secret', setCookie('secret-found', true, 365))
                             }>Secret</Nav.Link>}
                         </Nav>
                     </Offcanvas.Body>

@@ -39,7 +39,7 @@ class CustomRouter extends React.Component {
     keyRot(e) {
         const { rotation } = this.props;
         const { cantRot } = this.state;
-        const [_, __, secret] = window.location.pathname.split('/') || []
+        const [_, page, secret] = window.location.pathname.split('/') || []
         if (rotation.correct && secret === 'secret' || cantRot) return
 
         var p;
@@ -61,7 +61,6 @@ class CustomRouter extends React.Component {
         }
 
         const _newPage = rotation[p] || "intro";
-        const page = window.location.href.split('/').splice(-1)[0].split('?')[0] || "intro";
 
         window.history.pushState(`/${_newPage}`, 'Title', `/${_newPage}`);
 

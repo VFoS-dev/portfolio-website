@@ -19,7 +19,7 @@ class Projects extends React.Component {
             cells: [],
             flags: 0,
             gameStatus: 0,
-            rows: 10,
+            rows: 15,
             refresh: false,
         };
 
@@ -36,7 +36,6 @@ class Projects extends React.Component {
         const { refresh, minesweeper } = this.state;
         if (!minesweeper) this.setState({ refresh: !refresh });
     }
-
 
     modalShow(title) {
         const { updateModal } = this.state;

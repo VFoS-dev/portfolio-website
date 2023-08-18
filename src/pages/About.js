@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import { connect } from 'react-redux';
-import { timeout, createKey } from '../utils';
+import { timeout, createKey, getCookie, setCookie } from '../utils';
 
 import '../css/about.css';
 
@@ -8,6 +8,7 @@ class About extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
+            highscore: getCookie('about-score') || 0,
             ducks: [],
             ducksKeys: [],
             duckAni: false,
@@ -17,6 +18,13 @@ class About extends React.Component {
             hitDucks: 0
         };
         this.moveDucks = this.moveDucks.bind(this);
+    }
+
+    componentWillUnmount() {
+        const { activePage } = this.props;
+        const { hitDucks } = this.state;
+        if (!activePage) return;
+        if (hitDucks > (parseInt(getCookie('about-score')) || 0)) setCookie('about-score', hitDucks, 365)
     }
 
     async AddDucks(n) {
@@ -119,7 +127,7 @@ class About extends React.Component {
     }
 
     render() {
-        const { ducks, duckAni, limited, addingDucks, maxDuck, hitDucks } = this.state;
+        const { ducks, duckAni, limited, addingDucks, maxDuck, hitDucks, highscore } = this.state;
         const { activePage } = this.props;
         if (activePage) {
             if (ducks.length > 0 && !duckAni) this.moveDucks();
@@ -131,6 +139,7 @@ class About extends React.Component {
                 {this.visualizeDucks()}
                 <div className='grass' />
                 {hitDucks > 0 && <div className='score'>
+                    {!!highscore && <Fragment>highscore: {highscore}<br/></Fragment>}
                     score: {hitDucks} <br />
                     ducks: {ducks.filter(a => !a.dead).length}/{maxDuck} {maxDuck < 25 && `x(${(hitDucks - 1) % 5}/5)`}
                 </div>}
