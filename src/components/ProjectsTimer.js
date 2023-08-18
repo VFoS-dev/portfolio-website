@@ -16,6 +16,8 @@ class ProjectTimer extends React.Component {
     }
 
     async tick() {
+        await timeout(0);
+        if (window.location.pathname.split('/')[1] !== 'projects') return;
         if (this.state.clock) return;
         this.setState({ clock: true });
         while (!this.state.paused) {
@@ -45,9 +47,11 @@ class ProjectTimer extends React.Component {
         const { reset, paused, activePage, setCount } = this.props;
         const { reset: r, paused: p } = this.state;
         if (activePage) {
-            if (reset != r) this.setState({ count: 0, reset });
-            if (paused != p) this.setState({ paused });
+            let changes = {};
+            if (reset != r) changes = { ...changes, count: 0, reset };
+            if (paused != p) changes = { ...changes, paused };
             if (!paused) this.tick();
+            setTimeout(() => { this.setState(changes); }, 0);
         }
 
         const [hundredths, tenths, firsts] = this.convertCount(setCount);

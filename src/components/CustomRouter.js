@@ -89,8 +89,8 @@ class CustomRouter extends React.Component {
             var e0 = document.getElementsByClassName(`ani-${loc}`);
             while (e0.length > 0) e0[0].classList.remove(`ani-${loc}`);
             setTimeout(() => {
-                document.getElementsByClassName(`focus`)[0].classList.add(`ani-${loc}`);
-                document.getElementsByClassName(`prior`)[0].classList.add(`ani-${loc}`);
+                document.getElementsByClassName(`focus`)[0]?.classList.add(`ani-${loc}`);
+                document.getElementsByClassName(`prior`)[0]?.classList.add(`ani-${loc}`);
                 if (loc === "back")
                     document.getElementsByClassName(`skip`)[0].classList.add(`ani-${loc}`);
             }, 0)

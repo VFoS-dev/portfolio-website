@@ -27,9 +27,9 @@ class TestPage extends React.Component {
     saveSlash = (left, top) => this.setState({ prevousSlash: { top, left } });
 
     async gametick() {
-        const { tick } = this.state;
-        if (tick) return;
+        if (this.state.tick) return;
         const gravity = 3;
+        await timeout(0);
         this.setState({ tick: true });
         while (true) {
             await timeout(33);

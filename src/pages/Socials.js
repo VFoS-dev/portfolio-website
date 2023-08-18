@@ -25,6 +25,8 @@ class Socials extends React.Component {
     componentWillUnmount = () => document.onmousemove = null;
 
     async updateSlash() {
+        await timeout(0);
+        if (window.location.pathname.split('/')[1] !== 'socials') return;
         this.setState({ pathAni: true });
         while (this.state.path.length > 0) {
             await timeout(20);
@@ -140,7 +142,7 @@ class Socials extends React.Component {
         const { activePage } = this.props;
 
         if (activePage && path.length > 0 && !pathAni)
-            setTimeout(() => this.updateSlash(), 0);
+            this.updateSlash()
 
         return (<Fragment>
             <canvas id='slash' className='sticky-overlay' />

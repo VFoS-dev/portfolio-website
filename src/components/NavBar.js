@@ -24,6 +24,7 @@ class NavBar extends Component {
 
     listener() {
         const [_, page, secret] = window.location.pathname.split('/');
+        window.dispatchEvent(new CustomEvent("custom-pushState"));
         this.props.updatePage(this.props.last, page);
     }
 

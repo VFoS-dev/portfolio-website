@@ -28,6 +28,8 @@ class About extends React.Component {
     }
 
     async AddDucks(n) {
+        await timeout(0);
+        if (window.location.pathname.split('/')[1] !== 'about') return;
         this.setState({ addingDucks: true });
         while (this.state.ducks.length < n) {
             await timeout(500);
@@ -77,6 +79,8 @@ class About extends React.Component {
     }
 
     async moveDucks() {
+        await timeout(0);
+        if (window.location.pathname.split('/')[1] !== 'about') return;
         this.setState({ duckAni: true });
         while (this.state.ducks.length > 0) {
             await timeout(24);
@@ -139,7 +143,7 @@ class About extends React.Component {
                 {this.visualizeDucks()}
                 <div className='grass' />
                 {hitDucks > 0 && <div className='score'>
-                    {!!highscore && <Fragment>highscore: {highscore}<br/></Fragment>}
+                    {!!highscore && <Fragment>highscore: {highscore}<br /></Fragment>}
                     score: {hitDucks} <br />
                     ducks: {ducks.filter(a => !a.dead).length}/{maxDuck} {maxDuck < 25 && `x(${(hitDucks - 1) % 5}/5)`}
                 </div>}

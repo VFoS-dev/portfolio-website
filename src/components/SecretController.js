@@ -5,7 +5,8 @@ class SecretController extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            update: false
+            update: false,
+            shown: false,
         };
         this.listener = this.listener.bind(this);
 
@@ -14,9 +15,10 @@ class SecretController extends Component {
     }
 
     listener() {
-        const [_, __, secret] = window.location.pathname.split('/') || []
-        const { update } = this.state;
-        if (secret == 'secret') this.setState({ update: !update })
+        const [_, page, secret] = window.location.pathname.split('/');
+        const { update, shown } = this.state;
+        if (shown && secret != 'secret' || secret == 'secret')
+            this.setState({ update: !update, shown: !!secret });
     }
 
     remove(e) {
