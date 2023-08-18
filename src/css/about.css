@@ -1,7 +1,7 @@
-div.face:has(.about) {
+div.face.about {
     --content-color: #34d0ff;
 }
-.about {
+.face .about {
     background-color: var(--content-color);
     pointer-events: none;
     font-size: 2.5em;

@@ -52,9 +52,10 @@ export function onDoubleClick(callback) {
     }
 }
 
-export function dragParentElement() {
+export function dragParentElement(thisInstead = false) {
     function mouseDragSetup(e) {
-        let x = e.clientX, y = e.clientY, parent = e.target.parentElement;
+        let x = e.clientX, y = e.clientY, parent = thisInstead ? e.target : e.target.parentElement;
+        console.log(e.target, e.target.parentElement);
 
         function elementDrag(e) {
             parent.style.top = `${(parent.offsetTop - (y - (y = e.clientY)))}px`;
@@ -70,7 +71,7 @@ export function dragParentElement() {
     }
 
     function touchDragSetup(e) {
-        let x = e.targetTouches[0].clientX, y = e.targetTouches[0].clientY, parent = e.target.parentElement;
+        let x = e.targetTouches[0].clientX, y = e.targetTouches[0].clientY, parent = thisInstead ? e.target : e.target.parentElement;
 
         function elementDrag(e) {
             parent.style.top = `${(parent.offsetTop - (y - (y = e.targetTouches[0].clientY)))}px`;

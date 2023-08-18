@@ -1,8 +1,8 @@
-div.face:has(.projects) {
+div.face.projects {
     --content-color: rgb(92, 92, 92);
 }
 
-.projects {
+.face .projects {
     background-color: var(--content-color);
 }
 

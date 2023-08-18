@@ -7,8 +7,9 @@ import '../css/stars.css';
 
 class Skills extends React.Component {
     constructor(props) {
-        super(props)
-        let skillCount = skillData.length;
+        super(props);
+        const { activePage } = this.props;
+        let skillCount = activePage ? skillData.length : 4;
 
         this.state = {
             scrolled: "-1",
@@ -17,9 +18,12 @@ class Skills extends React.Component {
             filters: new Array(skillCount).fill(true),
         }
 
-        skillData.forEach((_, i) => {
-            this[`ref${i}`] = createRef();
-        })
+        if (activePage) {
+            skillData.forEach((_, i) => {
+                this[`ref${i}`] = createRef();
+            })
+        }
+
         this.generateSkills = this.generateSkills.bind(this);
     }
 
@@ -37,7 +41,11 @@ class Skills extends React.Component {
 
     mapSkills(title, entries, refIndex, color, textColor = null) {
         const { onScreen } = this.state;
-        const sorted = JSON.parse(`{${JSON.parse(JSON.stringify(entries)).sort((a, b) => b.compentence - a.compentence).map((a, index) => `"${a.name}":${index}`).join(',')}}`);
+        const { activePage } = this.props;
+
+        const sorted = (!activePage) ? entries
+            : JSON.parse(`{${JSON.parse(JSON.stringify(entries)).sort((a, b) => b.compentence - a.compentence).map((a, index) => `"${a.name}":${index}`).join(',')}}`);
+
         return <Fragment>
             <div style={{ width: "100%", height: "100%", overflow: 'hidden', position: "absolute", zIndex: 0, borderRadius: "30px", pointerEvents: 'none' }}>
                 <div id='stars' />
@@ -55,31 +63,33 @@ class Skills extends React.Component {
                 height: `calc(60px * ${entries.length})`,
                 position: 'relative'
             }}>
-                {entries.map((n, index) => (
-                    <div key={n.name} className='segment' style={{ '--base-height': `${60 * index}px`, '--sorted-height': `${60 * sorted[n.name]}px` }}>
-                        <h3 className='title relative' style={color || textColor ? { color: textColor || color } : {}}>{n.name}
-                            {!!n.linkedin && <div className='linkedinApproved'>
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" data-supported-dps="24x24" fill="#0a66c2" className="mercado-match" height="100%" focusable="false">
-                                    <path d="M14.73 10H17l-5.5 8L8 14.5l1.34-1.34L11.21 15zM20 3v16a3 3 0 01-3 3H7a3 3 0 01-3-3V3h5.69l.52-1A2 2 0 0112 1a2 2 0 011.76 1l.52 1zm-2 2h-2.6l.6 1.1V7H8v-.9L8.6 5H6v14a1 1 0 001 1h10a1 1 0 001-1z"></path>
-                                </svg>
-                                <div className='topPercent'>
-                                    top: {n.linkedin}%
+                {entries.map((n, index) => {
+                    return (
+                        <div key={n.name} className='segment' style={{ '--base-height': `${60 * index}px`, '--sorted-height': `${60 * sorted[n.name]}px` }}>
+                            <h3 className='title relative' style={color || textColor ? { color: textColor || color } : {}}>{n.name}
+                                {!!n.linkedin && <div className='linkedinApproved'>
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" data-supported-dps="24x24" fill="#0a66c2" className="mercado-match" height="100%" focusable="false">
+                                        <path d="M14.73 10H17l-5.5 8L8 14.5l1.34-1.34L11.21 15zM20 3v16a3 3 0 01-3 3H7a3 3 0 01-3-3V3h5.69l.52-1A2 2 0 0112 1a2 2 0 011.76 1l.52 1zm-2 2h-2.6l.6 1.1V7H8v-.9L8.6 5H6v14a1 1 0 001 1h10a1 1 0 001-1z"></path>
+                                    </svg>
+                                    <div className='topPercent'>
+                                        top: {n.linkedin}%
+                                    </div>
+                                </div >}
+                                <div className='percent' style={color || textColor ? { color: textColor || color } : {}}>{n.compentence}%</div>
+                            </h3>
+                            <div className="progress" style={{ backgroundColor: "none" }} >
+                                <img className='hilt' src="/images/skills/hilt.png" style={{ zIndex: 1 }} alt='' />
+                                <div className="progress-bar clear" style={{ width: `calc(${n.compentence}% - 90px)` }}>
+                                    <div className={`light${onScreen[refIndex] ? ' in' : ''}`}
+                                        style={color ? {
+                                            boxShadow: `0 0 5px #fff, 0 0 12px #fff, 0 0 15px ${color}, 0 0 35px ${color}`,
+                                            width: `${onScreen[refIndex] * 100}%`
+                                        } : {}} />
                                 </div>
-                            </div >}
-                            <div className='percent' style={color || textColor ? { color: textColor || color } : {}}>{n.compentence}%</div>
-                        </h3>
-                        <div className="progress" style={{ backgroundColor: "none" }} >
-                            <img className='hilt' src="/images/skills/hilt.png" style={{ zIndex: 1 }} alt='' />
-                            <div className="progress-bar clear" style={{ width: `calc(${n.compentence}% - 90px)` }}>
-                                <div className={`light${onScreen[refIndex] ? ' in' : ''}`}
-                                    style={color ? {
-                                        boxShadow: `0 0 5px #fff, 0 0 12px #fff, 0 0 15px ${color}, 0 0 35px ${color}`,
-                                        width: `${onScreen[refIndex] * 100}%`
-                                    } : {}} />
                             </div>
                         </div>
-                    </div>
-                ))}
+                    )
+                })}
             </div>
         </Fragment >
     }

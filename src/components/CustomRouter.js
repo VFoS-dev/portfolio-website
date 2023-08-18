@@ -141,17 +141,17 @@ class CustomRouter extends React.Component {
             <NavBar updatePage={this.updatePage} last={page} scrollPercent={scrollPercent} />
             <div className="cube-container" style={{ perspective: `${document.documentElement.clientWidth}px` }} onAnimationEnd={() => this.removeLoading()}>
                 {!!queue && animate && <>
-                    <div className={`face prior ani-${loc}`} key={queue}>
+                    <div className={`face prior ani-${loc} ${queue}`} key={queue}>
                         {this.Router(queue, false)}
                     </div>
                     {loc === "back" &&
-                        <div className={`face skip ani-back`} key={rotation.bottom}>
+                        <div className={`face skip ani-back ${rotation.bottom}`} key={rotation.bottom}>
                             {/* using bottom to grab the top because the value of the sides have already swapped */}
                             {this.Router(rotation.bottom, false)}
                         </div>
                     }
                 </>}
-                <div id="focused" key={page} className={`face focus${animate && !!queue ? ` ani-${loc}` : ""} `} onScroll={() => this.UpdateNavBar()}>
+                <div id="focused" key={page} className={`face focus${animate && !!queue ? ` ani-${loc}` : ""} ${page}`} onScroll={() => this.UpdateNavBar()}>
                     {this.Router(page, true)}
                 </div>
             </div>

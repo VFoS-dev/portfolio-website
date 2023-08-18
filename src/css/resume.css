@@ -1,8 +1,8 @@
-.face:has(.resume) {
+.face.resume {
     overflow: hidden;
 }
 
-.resume {
+.face .resume {
     background-image: linear-gradient(lightblue, lightgreen);
     background-size: cover;
     background-position: 50%;
@@ -27,7 +27,7 @@
     margin: 30px auto;
     border: black 2px solid;
     box-shadow: black 5px 5px 0px;
-    padding: min(5%,5rem);
+    padding: min(5%, 5rem);
     width: min(1000px, 95%);
     min-height: 1375px;
     background-color: white;
@@ -65,10 +65,14 @@
     left: calc(50vw - 27px);
 }
 
-.windows-icon:has(img:hover) {
+.windows-icon:hover {
     background-color: rgba(255, 255, 255, 0.6);
     border-radius: 2px;
     border: solid rgba(73, 73, 73, 0.353) 1px;
+}
+
+.windows-icon * {
+    pointer-events: none;
 }
 
 .windows-icon {
@@ -261,6 +265,11 @@
     left: 5vw;
     font-size: 11px;
     background: #ece9d8;
+}
+
+.window-body {
+    scrollbar-color: #f1f0e7 #dddccd !important;
+    scrollbar-width: unset !important;
 }
 
 .title-bar-controls {

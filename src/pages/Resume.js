@@ -83,8 +83,8 @@ class Resume extends React.Component {
         return (
             <div className="resume" style={{ backgroundImage: 'url(/images/resume/windows_xp_background.jpg)' }}>
                 <div className='navpadding' />
-                <div className='windows-icon center-start' {...onDoubleClick(this.newWindow)}>
-                    <img src='/images/resume/wordicon_destop.svg' {...dragParentElement()} />
+                <div className='windows-icon center-start' {...onDoubleClick(this.newWindow)} {...dragParentElement(true)}>
+                    <img src='/images/resume/wordicon_destop.svg'/>
                     <p>Jon Kido Resume 20XX Rough Draft</p>
                 </div>
                 {windows.map(({ minimized, fullscreened, focused, key, }, i) => {

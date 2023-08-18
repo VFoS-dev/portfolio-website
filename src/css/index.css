@@ -3,9 +3,13 @@ body {
     overflow: overlay;
 }
 
+* {
+    scrollbar-color: rgba(0, 0, 0, 0.5) var(--content-color, magenta);
+    scrollbar-width: thin;
+}
+
 ::-webkit-scrollbar {
     width: 15px;
-    scrollbar-width: 15px;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -66,7 +70,7 @@ body {
     z-index: 1;
     position: fixed;
     width: 100vw;
-    height: 100vh;
+    height: 100dvh;
     pointer-events: none;
     overflow: hidden;
     padding: 0px !important;

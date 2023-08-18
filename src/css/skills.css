@@ -1,8 +1,8 @@
-div.face:has(.skills) {
+div.face.skills {
     --content-color: rgb(36, 36, 36);
 }
 
-.skills {
+.face .skills {
     background-color: var(--content-color);
 }
 

@@ -1,8 +1,8 @@
-div.face:has(.intro) {
+div.face.intro {
     --content-color: rgb(24, 24, 24);
 }
 
-.intro {
+.face .intro {
     background-color: var(--content-color);
     padding: 0px !important;
     overflow: hidden;
