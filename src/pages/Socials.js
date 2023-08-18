@@ -128,12 +128,12 @@ class Socials extends React.Component {
             x: e.pageX,
             y: e.pageY
         }, ..._p];
-        if (window.location.pathname !== '/socials') return;
+        if (window.location.pathname.split('/')[1] !== 'socials') return;
         this.updatePath(p);
     }
 
     updatePath(path) {
-        if (window.location.pathname !== '/socials') return;
+        if (window.location.pathname.split('/')[1] !== 'socials') return;
         const { size } = this.state;
         const colors = [
             '#4d4d4d',

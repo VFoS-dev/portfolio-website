@@ -125,11 +125,12 @@ div.face:has(.projects) {
 
 .mineContainer {
     align-items: center;
-    width: 70vw;
+    width: calc(90vw - 30px);
     margin: auto;
     overflow-y: auto;
     overflow: visible;
     border: 10px inset #fff;
+    margin-bottom: 15px;
 }
 
 .cell.revealed {
@@ -169,7 +170,6 @@ div.face:has(.projects) {
 .mineHeader {
     border: 10px inset #fff;
     margin: 15px;
-    margin-top: 10px;
     padding: 10px;
     display: flex;
     justify-content: space-between;
@@ -271,10 +271,11 @@ div.face:has(.projects) {
 }
 
 .tile-center {
-    margin: auto;
+    text-align: -webkit-center;
 }
 
 .tile-container {
+    width: var(--width);
     flex-wrap: wrap;
     justify-content: flex-start;
     display: flex;
@@ -283,8 +284,8 @@ div.face:has(.projects) {
 .tile {
     display: inline-flex;
     background-color: grey;
-    width: 320px;
-    height: 320px;
+    width: var(--correction, 320px);
+    height: var(--correction, 320px);
     aspect-ratio: 1/1;
     background-size: contain !important;
     transition: box-shadow 0.1s, transform 0.1s;
@@ -332,7 +333,7 @@ div.face:has(.projects) {
 .tile-title,
 .tile-date,
 .tile-createdIn {
-    font-size: 2em;
+    font-size: 150%;
     font-weight: 400;
     white-space: nowrap;
     pointer-events: none;
@@ -355,7 +356,7 @@ div.face:has(.projects) {
 .tile-createdIn {
     top: 75%;
     left: 50%;
-    font-size: 1.75rem;
+    font-size: 125%;
 }
 
 .tile:hover {}
@@ -375,9 +376,8 @@ div.face:has(.projects) {
 .mineOutline {
     box-sizing: unset;
     align-items: center;
-    width: calc(70vw + 30px);
+    width: 90vw;
     background-color: lightgray;
-    padding: 15px;
     margin: auto;
     border: 10px outset #fff;
 }

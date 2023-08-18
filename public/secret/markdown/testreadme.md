@@ -1,7 +1,6 @@
 # Testing markdown
 
 ```js
-
     function render() {
         const { correct } = this.props;
         var [_, page, secret] = window.location.pathname.split('/') || []

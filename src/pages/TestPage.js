@@ -33,7 +33,7 @@ class TestPage extends React.Component {
         this.setState({ tick: true });
         while (true) {
             await timeout(33);
-            if (window.location.pathname !== '/') return;
+            if (window.location.pathname.split('/')[1] !== '') return;
             let { fruits, sliced, splats } = this.state;
             for (let [i, fruit] of fruits.entries()) {
                 const { top, left, velX, velY } = fruit.pos;

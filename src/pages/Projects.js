@@ -180,10 +180,20 @@ class Projects extends React.Component {
         this.checkWin();
     }
 
+    getTileAdjustment(size = 320) {
+        let offset = (document.documentElement.clientWidth * .9 - 60) / size // (vw - total padding) / base width of image
+        let count = Math.ceil(offset)
+        let correction = Math.ceil(offset / count * size - count) - 5
+        let width = count * 10 + count * correction
+        return {
+            "--correction": correction + "px",
+            "--width": width + "px",
+        }
+    }
+
     render() {
         const { minesweeper, cells, gameStatus, updateModal, gamerestart, gamepaused } = this.state;
         const { activePage } = this.props;
-        const { clientWidth } = document.documentElement;
         const bombCount = !minesweeper ? projectData.length : Math.max(cells.reduce((t, r) => t + (r?.reduce((st, c) => st + -c?.flagged + (c?.proximity < 0), 0)), 0), 0);
 
         return (<Fragment>
@@ -219,8 +229,8 @@ class Projects extends React.Component {
                                 </div>
                             })}
                         </Fragment> : <Fragment>
-                            <div className="tile-center" style={{ width: `${(330 * Math.floor((clientWidth * 0.7 - 30) / 330) / (clientWidth * 0.7 - 30) * 100) || 100}%` }}>
-                                <div className='tile-container' >
+                            <div className="tile-center" style={{ ...this.getTileAdjustment() }}>
+                                <div className='tile-container'>
                                     {projectData.map((p, index) => this.mapTile(p, index))}
                                 </div>
                             </div>
