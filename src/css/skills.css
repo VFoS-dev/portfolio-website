@@ -3,6 +3,7 @@ div.face.skills {
 }
 
 .face .skills {
+    padding-top: 0;
     background-color: var(--content-color);
 }
 
@@ -149,6 +150,7 @@ div.face.skills {
 .skills-filter {
     cursor: pointer;
     position: absolute;
+    z-index: 1;
     pointer-events: all;
     width: calc(2rem + 2vw);
     margin: 18px;

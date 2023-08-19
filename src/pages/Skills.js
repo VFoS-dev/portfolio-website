@@ -47,12 +47,7 @@ class Skills extends React.Component {
             : JSON.parse(`{${JSON.parse(JSON.stringify(entries)).sort((a, b) => b.compentence - a.compentence).map((a, index) => `"${a.name}":${index}`).join(',')}}`);
 
         return <Fragment>
-            <div style={{ width: "100%", height: "100%", overflow: 'hidden', position: "absolute", zIndex: 0, borderRadius: "30px", pointerEvents: 'none' }}>
-                <div id='stars' />
-                <div id='stars2' />
-                <div id='stars3' />
-            </div>
-            <center>
+            <center style={{position:'relative', zIndex:1, pointerEvents:'none'}}>
                 <h1 style={{
                     paddingTop: '18px', ...(color || textColor ? { color: textColor || color } : {})
                 }}>{title}</h1>
@@ -101,7 +96,7 @@ class Skills extends React.Component {
             const { name, set, color, textColor } = d;
             return <div key={`skills-cat${i}`} className={`flex-catagory ${filters[i] || 'filtered'}`} ref={this[`ref${i}`]} style={{ boxShadow: `0 0 5px #fff, 0 0 15px ${color}`, position: "relative" }}>
                 <div className='skills-filter' id={i} onClick={(e) => this.filter(e.target.id)}>
-                    <svg stroke={`${color}`} fill={`${color}`} strokeWidth="0" viewBox="0 0 16 16" width="100%" xmlns="http://www.w3.org/2000/svg"><path d="M2 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"></path></svg>
+                    <svg style={{pointerEvents:'none'}} stroke={`${color}`} fill={`${color}`} strokeWidth="0" viewBox="0 0 16 16" width="100%" xmlns="http://www.w3.org/2000/svg"><path d="M2 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"></path></svg>
                 </div>
                 {this.mapSkills(name, set, i, color, textColor)}
             </div>
@@ -122,10 +117,16 @@ class Skills extends React.Component {
         }
 
         return (<div className="skills">
+            <div style={{ width: "100vw", position: "sticky", top:0, zIndex: 0, pointerEvents: 'none' }}>
+                <div id='stars' />
+                <div id='stars2' />
+                <div id='stars3' />
+            </div>
             <div className='navpadding' />
             <div className='flex-container'>
                 {this.generateSkills(skillData, activePage)}
             </div>
+            
         </div>);
     }
 }
