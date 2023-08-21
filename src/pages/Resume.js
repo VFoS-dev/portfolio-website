@@ -81,7 +81,7 @@ class Resume extends React.Component {
     render() {
         const { windows, } = this.state;
         return (
-            <div className="resume" style={{ backgroundImage: 'url(/images/resume/windows_xp_background.jpg)' }}>
+            <div className="resume" style={{ backgroundImage: 'url(/images/resume/windows_xp_background.webp)' }}>
                 <div className='navpadding' />
                 <div className='windows-icon center-start' {...onDoubleClick(this.newWindow)} {...dragParentElement(true)}>
                     <img src='/images/resume/wordicon_destop.svg'/>

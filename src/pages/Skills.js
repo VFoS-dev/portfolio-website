@@ -117,11 +117,6 @@ class Skills extends React.Component {
         }
 
         return (<div className="skills">
-            <div style={{ width: "100vw", position: "sticky", top:0, zIndex: 0, pointerEvents: 'none' }}>
-                <div id='stars' />
-                <div id='stars2' />
-                <div id='stars3' />
-            </div>
             <div className='navpadding' />
             <div className='flex-container'>
                 {this.generateSkills(skillData, activePage)}

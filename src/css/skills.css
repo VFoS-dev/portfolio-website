@@ -56,10 +56,7 @@ div.face.skills {
     transition: width 2s;
 }
 
-.focus.ani-back .skills .progress-bar .light.in,
-.focus.ani-bottom .skills .progress-bar .light.in,
-.focus.ani-right .skills .progress-bar .light.in,
-.focus.ani-left .skills .progress-bar .light.in {
+.focus:is(.ani-back,.ani-bottom,.ani-right,.ani-left) .skills .progress-bar .light.in{
     animation: light-in 1s ease forwards;
 }
 

@@ -95,7 +95,6 @@ export function onDoubleClick(callback = () => { }) {
     let first = 0;
 
     function click() {
-        console.log('here');
         let time = new Date()
         if (time - first < 1000) callback()
         first = time;

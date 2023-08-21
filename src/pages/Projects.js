@@ -48,7 +48,7 @@ class Projects extends React.Component {
         const { toMine, rows } = this.state;
         return (
             <div key={index + "tile"} id={title.replace(/[^a-zA-Z ]/g, "").split(' ').join('_')} className='tile' {...TileFlex(toMine)} style={{ backgroundImage: `url(${img})`, ...imgcss, ...(toMine ? { boxShadow: 'none', cursor: 'auto' } : {}) }} onClick={(e) => this.modalShow(e.target.id)}>
-                <div className={` ${toMine ? 'toMinesweeper' : 'overlay'}`} style={{ backgroundImage: `url(/images/projects/minesweeper/toMinesweeper.png)` }} onAnimationEnd={() => this.setState({
+                <div className={` ${toMine ? 'toMinesweeper' : 'overlay'}`} style={{ backgroundImage: `url(/images/projects/minesweeper/toMinesweeper.webp)` }} onAnimationEnd={() => this.setState({
                     minesweeper: true,
                     cells: [...new Array(rows)].map(n => [...new Array(rows)])
                 })} />

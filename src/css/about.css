@@ -100,7 +100,7 @@ div.face.about {
     width: calc((375px - 60px) / 9);
     height: calc((375px - 60px) / 9);
     aspect-ratio: 1/1;
-    background: url(/public/images/about/sprite_sheet.png);
+    background: url(/public/images/about/sprite_sheet.webp);
     background-position-y: -120px;
     animation: blueDuck 0.4s steps(3) infinite;
 }
@@ -160,7 +160,7 @@ div.face.about {
 .bird .green {
     width: calc((375px - 60px) / 9);
     aspect-ratio: 1/1;
-    background: url(/public/images/about/sprite_sheet.png);
+    background: url(/public/images/about/sprite_sheet.webp);
     background-position-y: -120px;
     background-position-x: calc(-1* 375px / 3);
     animation: greenDuck 0.4s steps(3) infinite;
@@ -212,7 +212,7 @@ div.face.about {
 .bird .brown {
     width: calc((375px - 60px) / 9);
     aspect-ratio: 1/1;
-    background: url(/public/images/about/sprite_sheet.png);
+    background: url(/public/images/about/sprite_sheet.webp);
     background-position-y: -120px;
     background-position-x: calc(-1 * (375px + 12px) * 2 / 3);
     animation: brownDuck 0.4s steps(3) infinite;
@@ -269,7 +269,7 @@ div.face.about {
     width: 100%;
     bottom: 0px;
     z-index: 1;
-    background: url(/public/images/about/grass.png);
+    background: url(/public/images/about/grass.webp);
     background-repeat: repeat, no-repeat;
 }
 
@@ -286,7 +286,7 @@ div.face.about {
     scale: 2;
     z-index: 0;
     aspect-ratio: 1/1;
-    background: url(/public/images/about/sprite_sheet.png);
+    background: url(/public/images/about/sprite_sheet.webp);
     background-position-y: -60px;
     background-position-x: 180px;
     animation: heheDoggo 0.5s steps(2) infinite;
