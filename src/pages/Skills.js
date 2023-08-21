@@ -1,22 +1,26 @@
 import React, { Fragment, createRef } from 'react';
 import { connect } from 'react-redux';
 import { skillData } from '../_data/SkillsData';
+import { timeout, starfieldSetup, createKey } from '../utils';
 
 import '../css/skills.css';
-import '../css/stars.css';
 
 class Skills extends React.Component {
     constructor(props) {
         super(props);
         const { activePage } = this.props;
         let skillCount = activePage ? skillData.length : 4;
-
         this.state = {
+            key: createKey(),
             scrolled: "-1",
+            starfield: false,
             updatedRefs: false,
             onScreen: new Array(skillCount).fill(false),
             filters: new Array(skillCount).fill(true),
+            getStars: () => { }
         }
+
+        this.canvas = createRef()
 
         if (activePage) {
             skillData.forEach((_, i) => {
@@ -27,8 +31,11 @@ class Skills extends React.Component {
         this.generateSkills = this.generateSkills.bind(this);
     }
 
-    userScrolled() {
+    async userScrolled() {
+        await timeout(0);
+        if (window.location.pathname.split('/')[1] !== 'skills') return;
         const f = document.getElementById("focused");
+
         this.setState({
             scrolled: this.props.scrolled,
             updatedRefs: true,
@@ -39,6 +46,21 @@ class Skills extends React.Component {
         })
     }
 
+    componentWillUnmount() {
+        const { activePage } = this.props;
+        if (!activePage) return;
+        const { getStars } = this.state;
+        localStorage.setItem("skills-stars", JSON.stringify(getStars()));
+    }
+
+    async setupStarfild() {
+        await timeout(0);
+        const { activePage } = this.props;
+        let stars = activePage ? [] : JSON.parse(localStorage.getItem("skills-stars"));
+        const { getStars } = starfieldSetup(this.canvas.current, stars);
+        this.setState({ starfield: true, getStars });
+    }
+
     mapSkills(title, entries, refIndex, color, textColor = null) {
         const { onScreen } = this.state;
         const { activePage } = this.props;
@@ -47,7 +69,7 @@ class Skills extends React.Component {
             : JSON.parse(`{${JSON.parse(JSON.stringify(entries)).sort((a, b) => b.compentence - a.compentence).map((a, index) => `"${a.name}":${index}`).join(',')}}`);
 
         return <Fragment>
-            <center style={{position:'relative', zIndex:1, pointerEvents:'none'}}>
+            <center style={{ position: 'relative', zIndex: 1, pointerEvents: 'none' }}>
                 <h1 style={{
                     paddingTop: '18px', ...(color || textColor ? { color: textColor || color } : {})
                 }}>{title}</h1>
@@ -96,7 +118,7 @@ class Skills extends React.Component {
             const { name, set, color, textColor } = d;
             return <div key={`skills-cat${i}`} className={`flex-catagory ${filters[i] || 'filtered'}`} ref={this[`ref${i}`]} style={{ boxShadow: `0 0 5px #fff, 0 0 15px ${color}`, position: "relative" }}>
                 <div className='skills-filter' id={i} onClick={(e) => this.filter(e.target.id)}>
-                    <svg style={{pointerEvents:'none'}} stroke={`${color}`} fill={`${color}`} strokeWidth="0" viewBox="0 0 16 16" width="100%" xmlns="http://www.w3.org/2000/svg"><path d="M2 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"></path></svg>
+                    <svg style={{ pointerEvents: 'none' }} stroke={`${color}`} fill={`${color}`} strokeWidth="0" viewBox="0 0 16 16" width="100%" xmlns="http://www.w3.org/2000/svg"><path d="M2 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"></path></svg>
                 </div>
                 {this.mapSkills(name, set, i, color, textColor)}
             </div>
@@ -111,17 +133,19 @@ class Skills extends React.Component {
 
     render() {
         const { activePage } = this.props;
-        if (activePage) {
-            if (this.props.scrolled !== this.state.scrolled) setTimeout(() => this.userScrolled(), 0);
-            if (!this.state.updatedRefs) setTimeout(() => this.userScrolled(), 0);
-        }
+        const { starfield, key } = this.state;
+        if (activePage)
+            if (this.props.scrolled !== this.state.scrolled || !this.state.updatedRefs) this.userScrolled();
+        if (!starfield) this.setupStarfild()
 
         return (<div className="skills">
+            <div className='starfield-container'>
+                <canvas key={`starfield-${key}`} className='starfield' ref={this.canvas} />
+            </div>
             <div className='navpadding' />
             <div className='flex-container'>
                 {this.generateSkills(skillData, activePage)}
             </div>
-            
         </div>);
     }
 }
@@ -129,6 +153,7 @@ class Skills extends React.Component {
 function mapState(state) {
     return {};
 }
+
 const actionCreators = {};
 
 const connectedSkills = connect(mapState, actionCreators)(Skills);

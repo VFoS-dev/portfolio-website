@@ -3,7 +3,7 @@ div.face.skills {
 }
 
 .face .skills {
-    padding-top: 0;
+    padding: 0;
     background-color: var(--content-color);
 }
 
@@ -56,7 +56,7 @@ div.face.skills {
     transition: width 2s;
 }
 
-.focus:is(.ani-back,.ani-bottom,.ani-right,.ani-left) .skills .progress-bar .light.in{
+.focus:is(.ani-back, .ani-bottom, .ani-right, .ani-left) .skills .progress-bar .light.in {
     animation: light-in 1s ease forwards;
 }
 
@@ -192,4 +192,18 @@ div.face.skills {
 
 .segment:hover .topPercent {
     display: block;
+}
+
+.starfield-container {
+    position: sticky;
+    top: 0;
+    width: 100vw;
+    height: 0;
+}
+
+.starfield {
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
 }
