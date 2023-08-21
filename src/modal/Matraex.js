@@ -26,12 +26,11 @@ export class Matraex extends Component {
         return (
             <Fragment>
                 <center style={{ margin: "4% 0px", padding: '0px 15%' }}>
-                    {focus === 'matraex_inc' ? <Fragment>
-                        Content for this project has not yet been created.
-                    </Fragment> : <Fragment>
+                    {focus !== 'matraex_inc' && <Fragment>
                         <h4>This project is a client project for Matraex Inc.</h4>
                         <p>which unfortunately means I can't go into great detail</p>
                         <hr />
+                    </Fragment>}
                         <h1>{name}</h1>
                         <h5>{dates}</h5>
                         <p>{description}</p>
@@ -43,7 +42,7 @@ export class Matraex extends Component {
                         </div>}
                         <h5 className='made-with'>{links.length ? <Fragment>{links} m</Fragment> : 'M'}ade with: {stack}</h5>
                         {about && <a href={link['about']} rel="noreferrer" target='_blank'>Learn more</a>}
-                    </Fragment>}
+                    
                 </center>
             </Fragment>
         );
