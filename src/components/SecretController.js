@@ -76,6 +76,17 @@ class SecretController extends Component {
         </Fragment>
     }
 
+    about(page) {
+        var { markdown } = SecretData[page]
+        return <Fragment>
+            <Tabs defaultActiveKey='code'>
+                <Tab eventKey="code" title="Code">
+                    <zero-md src={markdown}></zero-md>
+                </Tab>
+            </Tabs>
+        </Fragment>
+    }
+
     render() {
         const { correct } = this.props;
         var [_, page, secret] = window.location.pathname.split('/') || []
@@ -84,14 +95,13 @@ class SecretController extends Component {
                 setTimeout(() => this.remove('cancel'), 0)
             return <Fragment></Fragment>;
         }
-        console.log(page);
+
         return <div className={`sticky-overlay _modal show super`} id='cancel' onClick={(e) => this.remove(e.target.id)}>
             <div className={`card secret ${page}`}>
                 {typeof this[page] == 'function' ? this[page](page) : <Fragment>
                     Congrats on finding the secret however it is currently under construction
                 </Fragment>}
             </div>
-
         </div>
     }
 }

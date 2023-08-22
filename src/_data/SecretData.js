@@ -1,4 +1,7 @@
 export const SecretData = {
+    about: {
+        markdown: '/secret/markdown/about.md',
+    },
     projects: {
         markdown: '/secret/markdown/projects.md',
         images: [
@@ -10,7 +13,7 @@ export const SecretData = {
             },
             {
                 img: '/secret/photoshop/Adrielrex.png',
-                label: 'Adri-nosaurus Rex', 
+                label: 'Adri-nosaurus Rex',
                 name: 'Adriel Claflin',
                 socials: {}
             },
