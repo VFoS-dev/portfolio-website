@@ -41,7 +41,7 @@ class Skills extends React.Component {
             updatedRefs: true,
             onScreen: skillData.map((_, i) => {
                 const { current: c } = this[`ref${i}`]
-                return (f?.scrollTop + document.documentElement.clientHeight > c?.offsetTop + document.documentElement.clientHeight * 1 / 5) || (f?.scrollTop + document.documentElement.clientHeight > f?.scrollHeight - 100);
+                return (f?.scrollTop + document.documentElement.clientHeight > c?.offsetTop + document.documentElement.clientHeight * 1 / 4) || (f?.scrollTop + document.documentElement.clientHeight > f?.scrollHeight - 100);
             })
         })
     }
@@ -53,7 +53,7 @@ class Skills extends React.Component {
         localStorage.setItem("skills-stars", JSON.stringify(getStars()));
     }
 
-    async setupStarfild() {
+    async setupStarfield() {
         await timeout(0);
         const { activePage } = this.props;
         let stars = activePage ? [] : JSON.parse(localStorage.getItem("skills-stars"));
@@ -136,7 +136,7 @@ class Skills extends React.Component {
         const { starfield, key } = this.state;
         if (activePage)
             if (this.props.scrolled !== this.state.scrolled || !this.state.updatedRefs) this.userScrolled();
-        if (!starfield) this.setupStarfild()
+        if (!starfield) this.setupStarfield()
 
         return (<div className="skills">
             <div className='starfield-container'>
