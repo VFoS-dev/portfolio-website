@@ -91,24 +91,25 @@ export function TileFlex(forceReset = false, perspective = '500px') {
     }
 }
 
-export function onDoubleClick(callback = () => { }) {
+export function onDoubleClick(callback = () => { }, params = []) {
     let first = 0;
 
     function click() {
         let time = new Date()
-        if (time - first < 1000) callback()
+        if (time - first < 1000) callback(...params)
         first = time;
     }
 
     return {
-        onDoubleClick: callback,
+        onDoubleClick: () => callback(...params),
         onTouchEnd: click,
     }
 }
 
-export function dragParentElement(thisInstead = false) {
+export function dragParentElement(thisInstead = false, absoluteParent = false) {
     function mouseDragSetup(e) {
         let x = e.clientX, y = e.clientY, parent = thisInstead ? e.target : e.target.parentElement;
+        if (absoluteParent) parent.style.position = 'absolute';
 
         function elementDrag(e) {
             parent.style.top = `${(parent.offsetTop - (y - (y = e.clientY)))}px`;
@@ -125,6 +126,7 @@ export function dragParentElement(thisInstead = false) {
 
     function touchDragSetup(e) {
         let x = e.targetTouches[0].clientX, y = e.targetTouches[0].clientY, parent = thisInstead ? e.target : e.target.parentElement;
+        if (absoluteParent) parent.style.position = 'absolute';
 
         function elementDrag(e) {
             parent.style.top = `${(parent.offsetTop - (y - (y = e.targetTouches[0].clientY)))}px`;

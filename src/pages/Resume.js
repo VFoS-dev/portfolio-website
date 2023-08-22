@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { EditableFocusRot, createKey, dragParentElement, onDoubleClick } from '../utils';
 
 import '../css/resume.css'
+import { resumeData } from '../_data';
 
 class Resume extends React.Component {
     constructor(props) {
@@ -10,6 +11,7 @@ class Resume extends React.Component {
         this.state = {
             windows: [
                 {
+                    flavored: false,
                     focused: true,
                     minimized: false,
                     fullscreened: false,
@@ -30,7 +32,7 @@ class Resume extends React.Component {
 
     componentWillUnmount = () => clearInterval(this.time);
 
-    newWindow() {
+    newWindow(flavored = false) {
         let { windows } = this.state;
         let keys = []
         windows.forEach(w => {
@@ -38,6 +40,7 @@ class Resume extends React.Component {
             keys.push(w.key);
         })
         windows.push({
+            flavored,
             focused: true,
             minimized: false,
             fullscreened: false,
@@ -83,11 +86,21 @@ class Resume extends React.Component {
         return (
             <div className="resume" style={{ backgroundImage: 'url(/images/resume/windows_xp_background.webp)' }}>
                 <div className='navpadding' />
-                <div className='windows-icon center-start' {...onDoubleClick(this.newWindow)} {...dragParentElement(true)}>
-                    <img src='/images/resume/wordicon_destop.svg'/>
-                    <p>Jon Kido Resume 20XX Rough Draft</p>
+                <div className='center-start windows-icon-offset' >
+                    <div className='start'>
+                        <div className='windows-icon' style={{ position: 'relative' }} {...onDoubleClick(this.newWindow, [false])} {...dragParentElement(true, true)}>
+                            <img src='/images/resume/wordicon_destop.svg' />
+                            <p>Jon Kido Resume 20XX Rough Draft</p>
+                        </div>
+                    </div>
+                    <div className='start'>
+                        <div className='windows-icon' style={{ position: 'relative' }} {...onDoubleClick(this.newWindow, [true])} {...dragParentElement(true, true)}>
+                            <img src='/images/resume/wordicon_destop.svg' />
+                            <p>Flavored Resume 20XX Rough Draft</p>
+                        </div>
+                    </div>
                 </div>
-                {windows.map(({ minimized, fullscreened, focused, key, }, i) => {
+                {windows.map(({ minimized, fullscreened, focused, key, flavored }, i) => {
                     let state = `${focused ? ' focused' : ''}${fullscreened ? ' fullscreened' : ''}${minimized ? ' minimized' : ''}`
                     return <div key={`windows-${key}`} className={`window${state}`} onMouseDown={() => this.set(`focused-${i}`, true)}>
                         <div className="title-bar" {...dragParentElement()}>
@@ -109,40 +122,7 @@ class Resume extends React.Component {
                                     <br />Minors: <strong>MATH</strong> (Applied Mathematics), <strong>ITM</strong> (Information Technology Management)
                                 </p>
                                 <br />
-                                <h2>Experience: </h2>
-                                <p><strong>Software Engineer - Matraex Inc.</strong></p>
-                                <p><em>January 2023 - August 2023</em></p>
-                                <ul>
-                                    <li>Did full stack development on multiple web/app projects for clients</li>
-                                    <li>Create scripts that automate tasks, making development faster and smoother</li>
-                                    <li>Worked with the team to improve processes and increase documentation standards</li>
-                                    <li>Made flexible tools and reusable features that are used across several projects</li>
-                                    <li>Optimized several pages, functions, and API calls</li>
-                                </ul>
-                                <p><strong>Software Developer - GIMM Works</strong></p>
-                                <p><em>January 2020 - January 2023</em></p>
-                                <ul>
-                                    <li>Worked with other student developers on unique software projects for clients</li>
-                                    <li>Led back-end dev on several projects</li>
-                                    <li>Did full stack development and 3D modeling for multiple projects</li>
-                                    <li>Helped other teams implement security features on their projects</li>
-                                    <li>Mentored two new hires to help them learn React</li>
-                                </ul>
-                                <p><strong>Independent Contractor, App Development - The Simple Ring</strong></p>
-                                <p><em>September 2020 - December 2021</em></p>
-                                <ul>
-                                    <li>Worked for the founders of The Simple Ring on a consumer-based mobile app</li>
-                                    <li>Wrote the back-end data storage structure, designed and implemented the front-end UI, and integrated Firebase into the app</li>
-                                    <li>Prompted improvements in code quality and structure that affected both the front-end and the back-end</li>
-                                </ul>
-                                <p><strong>GIMM Senior Peer Mentor - Boise State GIMM Program</strong></p>
-                                <p><em>July 2018 - December 2019</em></p>
-                                <ul>
-                                    <li>Helped current GIMM students with debugging and gave advice about their code</li>
-                                    <li>Assisted other peer mentors when they got stuck</li>
-                                    <li>Presented previous projects of the department to prospective students and clients</li>
-                                    <li>Managed checking out equipment to other students</li>
-                                </ul>
+                                {resumeData(flavored)}
                                 <br />
                                 <h2>Projects:<button className='hyperlink' onClick={() => this.changePage('projects')} >Click Here</button></h2>
                                 <br />
@@ -153,7 +133,8 @@ class Resume extends React.Component {
                             </div>
                         </div>
                     </div>
-                })}
+                })
+                }
 
                 <div className='taskbar'>
                     <div className='start'><div className='windowIcon' />start</div>
@@ -162,7 +143,7 @@ class Resume extends React.Component {
                     </div>
                     <div id="time">{this.getTime()}</div>
                 </div>
-            </div>
+            </div >
         );
     }
 }

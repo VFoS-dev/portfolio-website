@@ -60,9 +60,22 @@
     margin: 0px;
 }
 
-.windows-icon.center-start {
-    top: calc(50vh - 27px);
-    left: calc(50vw - 27px);
+.center-start .start {
+    width: 70px;
+}
+
+.center-start {
+    position: absolute;
+    top: 50vh;
+    left: 50vw;
+}
+
+.center-start.windows-icon-offset {
+    justify-content: space-between;
+    width: 150px;
+    height: 80px;
+    display: flex;
+    transform: translate(-50%, -50%);
 }
 
 .windows-icon:hover {
