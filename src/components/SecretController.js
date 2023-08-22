@@ -50,61 +50,43 @@ class SecretController extends Component {
         </Fragment>
     }
 
-    projects(page) {
-        var { markdown, images } = SecretData[page]
-        return <Fragment>
-            <Tabs defaultActiveKey='photoshop'>
-                <Tab eventKey="photoshop" title="Photoshop">
-                    <div id='photoshop'>
-                        <h1>Welcome to the Projects Secret</h1>
-                        <p>Here you will find the intentionally "bad" photoshops images that I have created of friends</p>
-                        <div className='photoshop-images'>
-                            {images.map(({ img, label, name, socials, }) => {
-                                return <div key={`photoshop-${name}`} style={{ '--background': `url(${img})` }} onClick={() => window.open(img, '_blank')}>
-                                    <div id='photoshop-label'>{label}</div>
-                                    <div className='gap' />
-                                    <div id='photoshop-name'>{name}</div>
-                                </div>
-                            })}
-                        </div>
+    markdown = (markdown) => <zero-md src={markdown}></zero-md>;
+
+    photoshop = (info = []) => (<Fragment>
+        <div id='photoshop'>
+            <h1>Welcome to the Projects Secret</h1>
+            <p>Here you will find the intentionally "bad" photoshops images that I have created of friends</p>
+            <div className='photoshop-images'>
+                {info.map(({ img, label, name, socials, }) => {
+                    return <div key={`photoshop-${name}`} style={{ '--background': `url(${img})` }} onClick={() => window.open(img, '_blank')}>
+                        <div id='photoshop-label'>{label}</div>
+                        <div className='gap' />
+                        <div id='photoshop-name'>{name}</div>
                     </div>
-                </Tab>
-                <Tab eventKey="code" title="Code">
-                    <zero-md src={markdown}></zero-md>
-                </Tab>
-            </Tabs>
-        </Fragment>
+                })}
+            </div>
+        </div>
+    </Fragment>);
+
+    handleInternals(type, data) {
+        if (!data) return ''
+        let labels = {
+            photoshop: 'Exclusive',
+            markdown: 'Code',
+        };
+        if (typeof this[type] === 'function')
+            return <Tab eventKey={type} title={labels[type]}>{this[type](data)}</Tab>;
+
+        console.error(`ERROR: view not created for spliceData->handleInternals('${type}', *)`);
     }
 
-    resume(page) {
-        var { markdown } = SecretData[page]
+    spliceData(page) {
+        var dataSet = SecretData[page]
+        let order = ['photoshop', 'markdown',];
+        const defaultActive = dataSet?.default;
         return <Fragment>
-            <Tabs defaultActiveKey='code'>
-                <Tab eventKey="code" title="Code">
-                    <zero-md src={markdown}></zero-md>
-                </Tab>
-            </Tabs>
-        </Fragment>
-    }
-
-    skills(page) {
-        var { markdown } = SecretData[page]
-        return <Fragment>
-            <Tabs defaultActiveKey='code'>
-                <Tab eventKey="code" title="Code">
-                    <zero-md src={markdown}></zero-md>
-                </Tab>
-            </Tabs>
-        </Fragment>
-    }
-
-    about(page) {
-        var { markdown } = SecretData[page]
-        return <Fragment>
-            <Tabs defaultActiveKey='code'>
-                <Tab eventKey="code" title="Code">
-                    <zero-md src={markdown}></zero-md>
-                </Tab>
+            <Tabs defaultActiveKey={defaultActive}>
+                {order.map(o => this.handleInternals(o, dataSet[o]))}
             </Tabs>
         </Fragment>
     }
@@ -118,9 +100,16 @@ class SecretController extends Component {
             return <Fragment></Fragment>;
         }
 
+        let content;
+        if (typeof this[page] === 'function') {
+            content = this[page](page)
+        } else if (SecretData[page]) {
+            content = this.spliceData(page)
+        }
+
         return <div className={`sticky-overlay _modal show super`} id='cancel' onClick={(e) => this.remove(e.target.id)}>
             <div className={`card secret ${page}`}>
-                {typeof this[page] == 'function' ? this[page](page) : <Fragment>
+                {content || <Fragment>
                     Congrats on finding the secret however it is currently under construction
                 </Fragment>}
             </div>
