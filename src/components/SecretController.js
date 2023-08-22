@@ -34,6 +34,22 @@ class SecretController extends Component {
         this.setState({ update: !update });
     }
 
+    intro(page) {
+        return <Fragment>
+            <h1>Congratulations!</h1>
+            <div class='email'>
+                Dear Amazing Explorer,<br id='n2' />
+                I am thrilled to inform you that your curiosity and tenacity have paid off! You've discovered a hidden treasure - the secret page! But wait, the adventure doesn't end here. This website is brimming with more secrets waiting to be unveiled. Each webpage holds a unique surprise, a hidden gem that will make your journey even more exhilarating.<br id='n2' />
+                So, put on your virtual hiking boots and continue your expedition through this digital cube. Who knows what marvels you'll unearth next? Remember, every click, every link, and every corner you explore might lead you to another thrilling discovery.<br id='n2' />
+                If you ever wonder what other interactive features are on the page, just click on the secret - there's a unique secret on each page, waiting to be revealed!<br id='n2' />
+                Thank you for being a part of this quest for hidden wonders. Your curiosity lights up this virtual realm, and we can't wait to see what mysteries you'll unravel next.<br id='n2' />
+                Happy exploring!<br id='n2' />
+                Best regards,<br />
+                Jon Kido
+            </div>
+        </Fragment>
+    }
+
     projects(page) {
         var { markdown, images } = SecretData[page]
         return <Fragment>
@@ -68,9 +84,9 @@ class SecretController extends Component {
                 setTimeout(() => this.remove('cancel'), 0)
             return <Fragment></Fragment>;
         }
-
+        console.log(page);
         return <div className={`sticky-overlay _modal show super`} id='cancel' onClick={(e) => this.remove(e.target.id)}>
-            <div className={`card ${page}`}>
+            <div className={`card secret ${page}`}>
                 {typeof this[page] == 'function' ? this[page](page) : <Fragment>
                     Congrats on finding the secret however it is currently under construction
                 </Fragment>}
