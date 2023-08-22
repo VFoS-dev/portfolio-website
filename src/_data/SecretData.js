@@ -1,4 +1,7 @@
 export const SecretData = {
+    resume: {
+        markdown: '/secret/markdown/resume.md',
+    },
     skills: {
         markdown: '/secret/markdown/skills.md',
     },

@@ -76,6 +76,17 @@ class SecretController extends Component {
         </Fragment>
     }
 
+    resume(page) {
+        var { markdown } = SecretData[page]
+        return <Fragment>
+            <Tabs defaultActiveKey='code'>
+                <Tab eventKey="code" title="Code">
+                    <zero-md src={markdown}></zero-md>
+                </Tab>
+            </Tabs>
+        </Fragment>
+    }
+
     skills(page) {
         var { markdown } = SecretData[page]
         return <Fragment>
