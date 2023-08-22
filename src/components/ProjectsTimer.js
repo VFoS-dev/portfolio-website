@@ -22,11 +22,12 @@ class ProjectTimer extends React.Component {
         this.setState({ clock: true });
         while (!this.state.paused) {
             await timeout(1000);
-            if (window.location.pathname.split('/')[1] !== 'projects') return;
             if (this.state.paused) break;
             const { count } = this.state;
+            if (window.location.pathname.split('/')[1] !== 'projects') return;
             this.setState({ count: count + 1 });
         }
+        if (window.location.pathname.split('/')[1] !== 'projects') return;
         this.setState({ clock: false });
     }
 

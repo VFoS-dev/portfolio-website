@@ -17,7 +17,6 @@ class Projects extends React.Component {
             updateModal: false,
             minesweeper: false,
             cells: [],
-            flags: 0,
             gameStatus: 0,
             rows: 15,
             refresh: false,
@@ -65,11 +64,16 @@ class Projects extends React.Component {
         const { cells } = this.state;
 
         var lost = false, win = 0;
-        cells.forEach(_ => _.forEach(c => {
-            if (lost) return;
-            if (c.proximity < 0 && c.revealed) lost = true;
-            if ((c.proximity >= 0 && c.revealed) || (c.proximity < 0 && c.flagged)) win++;
-        }))
+        for (const row of cells) {
+            for (const c of row) {
+                if (c.proximity < 0 && c.revealed) {
+                    lost = true; 
+                    break;
+                }
+                if ((c.proximity >= 0 && c.revealed) || (c.proximity < 0 && c.flagged)) win++;
+                else break;
+            }
+        }
         win = win === cells.length * cells.length;
 
         if (win || lost) this.setState({ gameStatus: +win || -1, gamepaused: !!(+win || -1), });
@@ -95,21 +99,26 @@ class Projects extends React.Component {
             }
         }
 
-        _c = _c.map((a, x) => {
-            return a.map((b, y) => {
-                if (b === -1) return { proximity: b, revealed: false, flagged: false, img: Math.floor(projectData.length * Math.random()) };
-                let count = 0;
-                for (var j = -1; j <= 1; j++)
-                    for (var k = -1; k <= 1; k++) {
-                        if ((x + j < 0) || (y + k < 0) || (y + k > _c.length - 1) || (x + j > _c.length - 1) || (!j && !k)) continue;
-                        count += parseInt(_c[x + j][y + k]) || 0;
-                    }
+        function getProximity(x, y, cells) {
+            if (cells[x][y] === -1) return -1;
+            let count = 0;
+            for (var j = -1; j <= 1; j++) {
+                for (var k = -1; k <= 1; k++) {
+                    if ((x + j < 0) || (y + k < 0) || (y + k > cells.length - 1) || (x + j > cells.length - 1) || (!j && !k)) continue;
+                    count -= parseInt(cells[x + j][y + k]) || 0;
+                }
+            }
+            return count;
+        }
 
-                return { proximity: -count || 0, revealed: false, flagged: false, img: Math.floor(projectData.length * Math.random()) }
-            })
-        })
+        _c = _c.map((row, x) => row.map((b, y) => ({
+            proximity: getProximity(x, y, _c),
+            revealed: false,
+            flagged: false,
+            img: Math.floor(projectData.length * Math.random())
+        })))
 
-        this.setState({ cells: this.floodReveal([x, y], _c), flags: 0, gamepaused: false });
+        this.setState({ cells: this.floodReveal([x, y], _c), gamepaused: false });
     }
 
     floodReveal([x, y], cells) {
@@ -165,17 +174,17 @@ class Projects extends React.Component {
         const { minesweeper, cells, rows, gamerestart } = this.state;
         if (minesweeper)
             if (!cells[0][0]) this.setState({ toMine: false, minesweeper: false, gamepaused: false, gamerestart: !gamerestart, gameStatus: 0 });
-            else this.setState({ cells: [...new Array(rows)].map(n => [...new Array(rows)]), flags: 0, gamepaused: true, gamerestart: !gamerestart, gameStatus: 0 });
+            else this.setState({ cells: [...new Array(rows)].map(n => [...new Array(rows)]), gamepaused: true, gamerestart: !gamerestart, gameStatus: 0 });
         else this.setState({ toMine: true, gamepaused: true, gamerestart: !gamerestart });
     }
 
     flagCell(e) {
         e.preventDefault();
         const [x, y] = e.target.id.split(' ').map(i => parseInt(i));
-        let { flags, cells, gameStatus } = this.state;
+        let { cells, gameStatus } = this.state;
         if (!!gameStatus || !cells[x][y] || cells[x][y].revealed) return;
         cells[x][y].flagged = !cells[x][y].flagged;
-        this.setState({ cells, flags: flags + (!cells[x][y].flagged ? -1 : 1) });
+        this.setState({ cells });
         this.checkWin();
     }
 

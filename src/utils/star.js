@@ -1,4 +1,5 @@
 export function starfieldSetup(canvas, _stars = []) {
+    console.log(_stars);
     // constants
     const COLOR_SPACE = "#242424";
     const COLOR_STARS = "white";

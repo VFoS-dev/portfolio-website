@@ -28,7 +28,7 @@ export const SecretData = {
             },
             {
                 img: '/secret/photoshop/CaseyTheTurtle.png',
-                label: 'CaseyTheTurtle',
+                label: 'Casey The Turtle',
                 name: 'Casey Kawamura',
                 socials: {}
             },

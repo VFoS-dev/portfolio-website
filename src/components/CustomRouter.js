@@ -37,11 +37,6 @@ class CustomRouter extends React.Component {
     changeRot = (e) => this.setState({ cantRot: e.detail })
 
     keyRot(e) {
-        const { rotation } = this.props;
-        const { cantRot } = this.state;
-        const [_, page, secret] = window.location.pathname.split('/') || []
-        if (rotation.correct && secret === 'secret' || cantRot) return
-
         var p;
         switch (e.keyCode) {
             case 38: // up
@@ -59,6 +54,11 @@ class CustomRouter extends React.Component {
             default:
                 return;
         }
+
+        const { rotation } = this.props;
+        const { cantRot } = this.state;
+        const [_, page, secret] = window.location.pathname.split('/') || []
+        if (rotation.correct && secret === 'secret' || cantRot) return
 
         const _newPage = rotation[p] || "intro";
 
