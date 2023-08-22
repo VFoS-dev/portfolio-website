@@ -67,16 +67,16 @@ class Projects extends React.Component {
         for (const row of cells) {
             for (const c of row) {
                 if (c.proximity < 0 && c.revealed) {
-                    lost = true; 
+                    lost = true;
                     break;
                 }
                 if ((c.proximity >= 0 && c.revealed) || (c.proximity < 0 && c.flagged)) win++;
-                else break;
             }
         }
         win = win === cells.length * cells.length;
 
-        if (win || lost) this.setState({ gameStatus: +win || -1, gamepaused: !!(+win || -1), });
+        if (win) this.setState({ gameStatus: 1, gamepaused: true, });
+        if (lost) this.setState({ gameStatus: -1, gamepaused: true, });
     }
 
     createGame([x, y]) {
@@ -226,7 +226,7 @@ class Projects extends React.Component {
                                 return <div className='row' key={x + "row"}>
                                     {m.map((c, y) => {
                                         return <div id={`${x} ${y}`} key={`${x} ${y}col`}
-                                            className={`cell${!c ? ' in' : c.revealed ? ` revealed${c.proximity < 0 ? ' mine' : ''}` : c.flagged ? ' flag' : ''}`}
+                                            className={`cell${!c ? ' in' : (c.revealed || (gameStatus === -1 && c.proximity < 0 && !c.flagged)) ? ` revealed${c.proximity < 0 ? ' mine' : ''}` : c.flagged ? ' flag' : ''}`}
                                             style={{ width: `${100 / cells.length}%`, ...(!!c && c.flagged && !c.revealed ? { backgroundImage: `url(${projectData[c.img].img})`, ...projectData[c.img].imgcss, borderRadius: 0 } : {}) }}
                                             onClick={(e) => this.minesweep(e.target.id)}
                                             onContextMenu={(e) => this.flagCell(e)}
