@@ -16,81 +16,11 @@ div.face.socials {
     background-blend-mode: multiply;
 }
 
-.socials .options {
-    pointer-events: none;
-    width: 200px;
-    height: 200px;
-    position: relative;
-    margin: auto;
-    margin-top: 105px;
-    margin-bottom: 105px;
-}
-
-.socials .options .gif {
-    position: absolute;
-    left: 0px;
-    top: 0px;
-}
-
-.socials .links {
-    min-height: 80vh;
-    width: max(80%, 410px) !important;
-    margin: auto;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-evenly;
-    padding-bottom: 60px;
-}
-
-.socials .links .grow {
-    min-width: 410px;
-    flex: 1 0 30%;
-}
-
-.socials .options .inner {
-    z-index: 1;
-}
-
-.socials .options .outer {
-    z-index: 0;
-}
-
-.socials .options .hoverEvent {
-    pointer-events: all;
-    cursor: pointer;
-    width: 102%;
-    height: 102%;
-    border-radius: 100%;
-    position: absolute;
-}
-
-.socials .options .fnFont {
+.fnFont {
     fill: white;
     stroke: black;
     font-family: go3v2, sans-serif;
     letter-spacing: 0.15rem;
-}
-
-.socials .options img {
-    width: 200px;
-    height: 200px;
-}
-
-.socials .options .svg {
-    transform: translate(-21%, -21%);
-    width: 175%;
-    height: 175%;
-    position: absolute;
-}
-
-.socials .options .svg .rot {
-    animation: rotSVG 20s forwards infinite linear;
-}
-
-.svg .shadow {
-    position: absolute;
-    left: -20px;
-    top: 30px;
 }
 
 .mix {
@@ -119,4 +49,59 @@ div.gradient {
     height: 100%;
     border-radius: 50%;
     background-image: conic-gradient(rgba(255, 47, 33, 0.5) 0% 5%, rgba(140, 9, 0, 0.5) 5% 10%, rgba(255, 47, 33, 0.5) 10% 15%, rgba(140, 9, 0, 0.5) 15% 20%, rgba(255, 47, 33, 0.5) 20% 25%, rgba(140, 9, 0, 0.5) 25% 30%, rgba(255, 47, 33, 0.5) 30% 35%, rgba(140, 9, 0, 0.5) 35% 40%, rgba(255, 47, 33, 0.5) 40% 45%, rgba(140, 9, 0, 0.5) 45% 50%, rgba(255, 47, 33, 0.5) 50% 55%, rgba(140, 9, 0, 0.5) 55% 60%, rgba(255, 47, 33, 0.5) 60% 65%, rgba(140, 9, 0, 0.5) 65% 70%, rgba(255, 47, 33, 0.5) 70% 75%, rgba(140, 9, 0, 0.5) 75% 80%, rgba(255, 47, 33, 0.5) 80% 85%, rgba(140, 9, 0, 0.5) 85% 90%, rgba(255, 47, 33, 0.5) 90% 95%, rgba(140, 9, 0, 0.5) 95% 100%);
+}
+
+.links {
+    overflow: hidden;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    gap: 5%;
+}
+
+.option {
+    --size: min(25vmax, 44vh, 44vw);
+    width: var(--size);
+    height: var(--size);
+    transform: translate(-2%, 7.5%);
+}
+
+.option-group {
+    overflow: hidden;
+    transform: translate(2%, -7.5%);
+    position: relative;
+    width: var(--size);
+    height: var(--size);
+}
+
+.option-group .circle .text {
+    z-index: 1;
+}
+
+.option-group .circle>* {
+    pointer-events: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transform-origin: center;
+}
+
+.option-group .circle {
+    pointer-events: none;
+    transform-origin: center;
+    position: absolute;
+    animation: rotSVG 20s forwards infinite linear;
+    width: 100%;
+    top: 50%;
+    scale: 1.5;
+}
+
+.option-group .gif {
+    position: absolute;
+    width: 50%;
+    height: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }

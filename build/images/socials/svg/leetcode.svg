@@ -1,0 +1,22 @@
+<svg viewBox="0 0 168 168" xmlns="http://www.w3.org/2000/svg">
+    <style>
+        .gradient {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background-image: conic-gradient(rgba(255, 47, 33, 0.5) 0% 5%, rgba(140, 9, 0, 0.5) 5% 10%, rgba(255, 47, 33, 0.5) 10% 15%, rgba(140, 9, 0, 0.5) 15% 20%, rgba(255, 47, 33, 0.5) 20% 25%, rgba(140, 9, 0, 0.5) 25% 30%, rgba(255, 47, 33, 0.5) 30% 35%, rgba(140, 9, 0, 0.5) 35% 40%, rgba(255, 47, 33, 0.5) 40% 45%, rgba(140, 9, 0, 0.5) 45% 50%, rgba(255, 47, 33, 0.5) 50% 55%, rgba(140, 9, 0, 0.5) 55% 60%, rgba(255, 47, 33, 0.5) 60% 65%, rgba(140, 9, 0, 0.5) 65% 70%, rgba(255, 47, 33, 0.5) 70% 75%, rgba(140, 9, 0, 0.5) 75% 80%, rgba(255, 47, 33, 0.5) 80% 85%, rgba(140, 9, 0, 0.5) 85% 90%, rgba(255, 47, 33, 0.5) 90% 95%, rgba(140, 9, 0, 0.5) 95% 100%);
+        }
+    </style>
+    <foreignObject x="2" y="2" width="164" height="164" mask="url(#donut)">
+        <div xmlns="http://www.w3.org/1999/xhtml" class="gradient"></div>
+    </foreignObject>
+    <circle id="visual" mask="url(#donut)" fill="url(#)" stroke="rgba(255,100,100,0.5)" stroke-width="1.4" r="82"
+        cx="84" cy="84"></circle>
+    <circle fill="none" stroke="rgba(255,100,100,0.5)" stroke-width="1.4" transform="matrix(1 0 0 1 28 28)"
+        r="55.9095409898556" cx="55.9095409898556" cy="55.9095409898556"></circle>
+    <mask id="donut">
+        <rect fill="white" width="168px" height="168px"></rect>
+        <circle fill="black" transform="matrix(1 0 0 1 28 28)" r="55.9095409898556" cx="55.9095409898556"
+            cy="55.9095409898556"></circle>
+    </mask>
+</svg>

@@ -1,0 +1,6 @@
+<mask id="donut">
+    <rect fill="white" width="168px" height="168px"></rect>
+    <circle fill="black" transform="matrix(1 0 0 1 28 28)" r="55.9095409898556" cx="55.9095409898556"
+        cy="55.9095409898556"></circle>
+</mask>
+<!-- xmlns="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/2000/svg" -->

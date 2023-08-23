@@ -1,0 +1,21 @@
+<svg viewBox="0 0 168 168" xmlns="http://www.w3.org/2000/svg">
+    <style>
+        .rainbowGradient {
+            width: 100%;
+            height: 100%;
+            border-radius: 100%;
+            background-image: conic-gradient(from 270deg, #ff4800 0%, #dfd902 35%, #20dc68 50%, #0092f4 65%, #da54d8 85%, #ff4800 100%);
+        }
+    </style>
+    <foreignObject x="2" y="2" width="164" height="164" mask="url(#donut)">
+        <div xmlns="http://www.w3.org/1999/xhtml" class="rainbowGradient" />
+    </foreignObject>
+    <circle id="visual" mask="url(#donut)" fill="url(#)" stroke="white" stroke-width="1.4" r="82" cx="84" cy="84" />
+    <circle fill="none" stroke="white" stroke-width="1.4" transform="matrix(1 0 0 1 28 28)" r="55.9095409898556"
+        cx="55.9095409898556" cy="55.9095409898556" />
+    <mask id="donut">
+        <rect fill="white" width="168px" height="168px" />
+        <circle fill="black" transform="matrix(1 0 0 1 28 28)" r="55.9095409898556" cx="55.9095409898556"
+            cy="55.9095409898556" />
+    </mask>
+</svg>

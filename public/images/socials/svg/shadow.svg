@@ -1,0 +1,8 @@
+<svg class="shadow" viewBox="-25 -25 225 225" filter="blur(15px)" xmlns="http://www.w3.org/2000/svg">
+    <circle mask="url(#donut)" fill="rgba(10,10,10,1)" r="82" cx="84" cy="84"></circle>
+    <mask id="donut">
+        <rect fill="white" width="168px" height="168px"></rect>
+        <circle fill="black" transform="matrix(1 0 0 1 28 28)" r="55.9095409898556" cx="55.9095409898556"
+            cy="55.9095409898556"></circle>
+    </mask>
+</svg>
