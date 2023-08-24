@@ -1,12 +1,114 @@
 import { distanceSegmentToPoint } from "../utils";
 
 const data = {
-    gapple: {
+    GApple: {
         base: "/images/socials/game/GAppleW.png",
         top: "/images/socials/game/GAppleB.png",
         bottom: "/images/socials/game/GAppleT.png",
         splat: "/images/socials/game/splat.png",
-    }
+    },
+    RApple: {
+        base: "/images/socials/game/RAppleW.png",
+        top: "/images/socials/game/RAppleB.png",
+        bottom: "/images/socials/game/RAppleT.png",
+        splat: "/images/socials/game/splat.png",
+    },
+    Banana: {
+        base: "/images/socials/game/BananaW.png",
+        top: "/images/socials/game/BananaB.png",
+        bottom: "/images/socials/game/BananaT.png",
+        splat: "/images/socials/game/splat.png",
+    },
+    Coconut: {
+        base: "/images/socials/game/CoconutW.png",
+        top: "/images/socials/game/CoconutB.png",
+        bottom: "/images/socials/game/CoconutT.png",
+        splat: "/images/socials/game/splat.png",
+    },
+    Honeydew: {
+        base: "/images/socials/game/HoneydewW.png",
+        top: "/images/socials/game/HoneydewB.png",
+        bottom: "/images/socials/game/HoneydewT.png",
+        splat: "/images/socials/game/splat.png",
+    },
+    Kiwi: {
+        base: "/images/socials/game/KiwiW.png",
+        top: "/images/socials/game/KiwiB.png",
+        bottom: "/images/socials/game/KiwiT.png",
+        splat: "/images/socials/game/splat.png",
+    },
+    Lemon: {
+        base: "/images/socials/game/LemonW.png",
+        top: "/images/socials/game/LemonB.png",
+        bottom: "/images/socials/game/LemonT.png",
+        splat: "/images/socials/game/splat.png",
+    },
+    Lime: {
+        base: "/images/socials/game/LimeW.png",
+        top: "/images/socials/game/LimeB.png",
+        bottom: "/images/socials/game/LimeT.png",
+        splat: "/images/socials/game/splat.png",
+    },
+    Orange: {
+        base: "/images/socials/game/OrangeW.png",
+        top: "/images/socials/game/OrangeB.png",
+        bottom: "/images/socials/game/OrangeT.png",
+        splat: "/images/socials/game/splat.png",
+    },
+    Pear: {
+        base: "/images/socials/game/PearW.png",
+        top: "/images/socials/game/PearB.png",
+        bottom: "/images/socials/game/PearT.png",
+        splat: "/images/socials/game/splat.png",
+    },
+    GPepper: {
+        base: "/images/socials/game/GPepperW.png",
+        top: "/images/socials/game/GPepperB.png",
+        bottom: "/images/socials/game/GPepperT.png",
+        splat: "/images/socials/game/splat.png",
+    },
+    PPepper: {
+        base: "/images/socials/game/PPepperW.png",
+        top: "/images/socials/game/PPepperB.png",
+        bottom: "/images/socials/game/PPepperT.png",
+        splat: "/images/socials/game/splat.png",
+    },
+    RPepper: {
+        base: "/images/socials/game/RPepperW.png",
+        top: "/images/socials/game/RPepperB.png",
+        bottom: "/images/socials/game/RPepperT.png",
+        splat: "/images/socials/game/splat.png",
+    },
+    Pineapple: {
+        base: "/images/socials/game/PineappleW.png",
+        top: "/images/socials/game/PineappleB.png",
+        bottom: "/images/socials/game/PineappleT.png",
+        splat: "/images/socials/game/splat.png",
+    },
+    Plum: {
+        base: "/images/socials/game/PlumW.png",
+        top: "/images/socials/game/PlumB.png",
+        bottom: "/images/socials/game/PlumT.png",
+        splat: "/images/socials/game/splat.png",
+    },
+    Strawberry: {
+        base: "/images/socials/game/StrawberryW.png",
+        top: "/images/socials/game/StrawberryB.png",
+        bottom: "/images/socials/game/StrawberryT.png",
+        splat: "/images/socials/game/splat.png",
+    },
+    Tomato: {
+        base: "/images/socials/game/TomatoW.png",
+        top: "/images/socials/game/TomatoB.png",
+        bottom: "/images/socials/game/TomatoT.png",
+        splat: "/images/socials/game/splat.png",
+    },
+    Watermelon: {
+        base: "/images/socials/game/WatermelonW.png",
+        top: "/images/socials/game/WatermelonB.png",
+        bottom: "/images/socials/game/WatermelonT.png",
+        splat: "/images/socials/game/splat.png",
+    },
 }
 
 const DIAMETER = 100;
@@ -26,7 +128,7 @@ function generateElements() {
 }
 
 export function fruitNinja(activePage = false) {
-    const GRAVITY = 1, SIZE = 4, TAIL_MAX = 5;
+    const GRAVITY = 1, SIZE = 4, TAIL_MAX = 5, RANDOM_DELAY = 1250;
 
     // visuals
     let canvas,
@@ -234,7 +336,7 @@ export function fruitNinja(activePage = false) {
     }
 
     function delaySpawnCount(time, count = 0) {
-        if (!queue.length) queue.push(Math.random() * 990 + 10);
+        if (!queue.length) queue.push(Math.random() * RANDOM_DELAY + 10);
         queue[0] -= time;
         if (queue[0] <= 0) {
             time = -queue.shift();
