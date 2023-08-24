@@ -2,7 +2,7 @@ import React, { Fragment, createRef } from 'react';
 import { connect } from 'react-redux';
 import { timeout } from '../utils';
 import { socialsData, social_Data } from '../_data';
-import { fruitNinja } from '../games/fruitninja';
+import { fruitNinja } from '../canvas-games';
 
 import '../css/socials.css';
 
@@ -27,9 +27,9 @@ class Socials extends React.Component {
     gameStart = () => this.state.gameStart();
 
     async setup() {
-        await timeout(0)
+        await timeout(0);
         this.setState({ started: true });
-        this.state.setup(this.canvas.current)
+        this.state.setup(this.canvas.current);
     }
 
     openLink(index) {
@@ -44,7 +44,7 @@ class Socials extends React.Component {
         const { started, toGame } = this.state;
         const { activePage } = this.props;
 
-        if (activePage && !started) this.setup()
+        if (activePage && !started) this.setup();
 
         return (<Fragment>
             <canvas id='slash' className='sticky-overlay' ref={this.canvas} />
