@@ -1,126 +1,16 @@
+import { fruitData } from "../_data";
 import { distanceSegmentToPoint } from "../utils";
-
-const data = {
-    GApple: {
-        base: "/images/socials/game/GAppleW.png",
-        top: "/images/socials/game/GAppleB.png",
-        bottom: "/images/socials/game/GAppleT.png",
-        splat: "/images/socials/game/splat.png",
-    },
-    RApple: {
-        base: "/images/socials/game/RAppleW.png",
-        top: "/images/socials/game/RAppleB.png",
-        bottom: "/images/socials/game/RAppleT.png",
-        splat: "/images/socials/game/splat.png",
-    },
-    Banana: {
-        base: "/images/socials/game/BananaW.png",
-        top: "/images/socials/game/BananaB.png",
-        bottom: "/images/socials/game/BananaT.png",
-        splat: "/images/socials/game/splat.png",
-    },
-    Coconut: {
-        base: "/images/socials/game/CoconutW.png",
-        top: "/images/socials/game/CoconutB.png",
-        bottom: "/images/socials/game/CoconutT.png",
-        splat: "/images/socials/game/splat.png",
-    },
-    Honeydew: {
-        base: "/images/socials/game/HoneydewW.png",
-        top: "/images/socials/game/HoneydewB.png",
-        bottom: "/images/socials/game/HoneydewT.png",
-        splat: "/images/socials/game/splat.png",
-    },
-    Kiwi: {
-        base: "/images/socials/game/KiwiW.png",
-        top: "/images/socials/game/KiwiB.png",
-        bottom: "/images/socials/game/KiwiT.png",
-        splat: "/images/socials/game/splat.png",
-    },
-    Lemon: {
-        base: "/images/socials/game/LemonW.png",
-        top: "/images/socials/game/LemonB.png",
-        bottom: "/images/socials/game/LemonT.png",
-        splat: "/images/socials/game/splat.png",
-    },
-    Lime: {
-        base: "/images/socials/game/LimeW.png",
-        top: "/images/socials/game/LimeB.png",
-        bottom: "/images/socials/game/LimeT.png",
-        splat: "/images/socials/game/splat.png",
-    },
-    Orange: {
-        base: "/images/socials/game/OrangeW.png",
-        top: "/images/socials/game/OrangeB.png",
-        bottom: "/images/socials/game/OrangeT.png",
-        splat: "/images/socials/game/splat.png",
-    },
-    Pear: {
-        base: "/images/socials/game/PearW.png",
-        top: "/images/socials/game/PearB.png",
-        bottom: "/images/socials/game/PearT.png",
-        splat: "/images/socials/game/splat.png",
-    },
-    GPepper: {
-        base: "/images/socials/game/GPepperW.png",
-        top: "/images/socials/game/GPepperB.png",
-        bottom: "/images/socials/game/GPepperT.png",
-        splat: "/images/socials/game/splat.png",
-    },
-    PPepper: {
-        base: "/images/socials/game/PPepperW.png",
-        top: "/images/socials/game/PPepperB.png",
-        bottom: "/images/socials/game/PPepperT.png",
-        splat: "/images/socials/game/splat.png",
-    },
-    RPepper: {
-        base: "/images/socials/game/RPepperW.png",
-        top: "/images/socials/game/RPepperB.png",
-        bottom: "/images/socials/game/RPepperT.png",
-        splat: "/images/socials/game/splat.png",
-    },
-    Pineapple: {
-        base: "/images/socials/game/PineappleW.png",
-        top: "/images/socials/game/PineappleB.png",
-        bottom: "/images/socials/game/PineappleT.png",
-        splat: "/images/socials/game/splat.png",
-    },
-    Plum: {
-        base: "/images/socials/game/PlumW.png",
-        top: "/images/socials/game/PlumB.png",
-        bottom: "/images/socials/game/PlumT.png",
-        splat: "/images/socials/game/splat.png",
-    },
-    Strawberry: {
-        base: "/images/socials/game/StrawberryW.png",
-        top: "/images/socials/game/StrawberryB.png",
-        bottom: "/images/socials/game/StrawberryT.png",
-        splat: "/images/socials/game/splat.png",
-    },
-    Tomato: {
-        base: "/images/socials/game/TomatoW.png",
-        top: "/images/socials/game/TomatoB.png",
-        bottom: "/images/socials/game/TomatoT.png",
-        splat: "/images/socials/game/splat.png",
-    },
-    Watermelon: {
-        base: "/images/socials/game/WatermelonW.png",
-        top: "/images/socials/game/WatermelonB.png",
-        bottom: "/images/socials/game/WatermelonT.png",
-        splat: "/images/socials/game/splat.png",
-    },
-}
 
 const DIAMETER = 100;
 
 function generateElements() {
     let img = {}
-    Object.keys(data).forEach(d => {
-        for (const t of Object.keys(data[d])) {
+    Object.keys(fruitData).forEach(d => {
+        for (const t of Object.keys(fruitData[d])) {
             let name = t !== 'base' ? `${d}-${t}` : d;
             var test = document.createElement('img');
             test.id = 'canvas-img';
-            test.src = data[d][t];
+            test.src = fruitData[d][t];
             img[name] = test;
         }
     })
@@ -154,7 +44,8 @@ export function fruitNinja(activePage = false) {
         canvas = _canvas
         ctx = canvas.getContext("2d");
         if (activePage) {
-            document.onmousemove = addVector
+            document.onmousemove = addVector;
+            document.ontouchmove = addVectorTouch;
             requestAnimationFrame(gameTick);
         }
     }
@@ -162,6 +53,7 @@ export function fruitNinja(activePage = false) {
     function dismount() {
         if (activePage) {
             document.onmousemove = null;
+            document.ontouchmove = null;
             exiting = true;
         }
     }
@@ -171,7 +63,7 @@ export function fruitNinja(activePage = false) {
             left = Math.random() * canvas.width,
             side = canvas.width / 2 >= left,
             maxY = canvas.height / 60,
-            chances = Object.keys(data)
+            chances = Object.keys(fruitData)
 
         fruits.push({
             type: chances[Math.floor(Math.random() * chances.length)].split('-')[0],
@@ -246,7 +138,6 @@ export function fruitNinja(activePage = false) {
         }
 
         if (update) {
-            console.log('here');
             let slope = (y1 - y2) / (x1 - x2);
             updateSlice(fruits, indexes, slope);
         }
@@ -281,6 +172,12 @@ export function fruitNinja(activePage = false) {
                 velY: -offsetY * 2,
             });
         });
+    }
+
+    function addVectorTouch(e) {
+        if (path.length > TAIL_MAX) path.shift();
+        path = [{ x: e.targetTouches[0].clientX, y: e.targetTouches[0].clientY }, ...path];
+        if (path.length > 1) slicedCheck()
     }
 
     function addVector(e) {
@@ -377,6 +274,7 @@ export function fruitNinja(activePage = false) {
 
     return {
         setup,
+        gameEnd,
         gameStart,
         dismount,
     }
