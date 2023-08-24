@@ -25,7 +25,7 @@ export function fruitNinja(activePage = false) {
         ctx,
         path = [],
         exiting = false,
-        imgSet = generateElements();
+        imgSet;
 
     // game data
     let gameState = false,
@@ -37,7 +37,11 @@ export function fruitNinja(activePage = false) {
         fruits = [],
         queue = [];
 
-    const gameStart = () => gameState = true;
+    function gameStart() {
+        imgSet = generateElements()
+        gameState = true
+    }
+
     const gameEnd = () => gameState = false;
 
     function setup(_canvas) {

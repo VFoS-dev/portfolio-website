@@ -1,19 +1,20 @@
 {
   "files": {
-    "main.css": "/static/css/main.f08d2b04.css",
-    "main.js": "/static/js/main.20e609e6.js",
+    "main.css": "/static/css/main.db8df86e.css",
+    "main.js": "/static/js/main.c2e818eb.js",
     "static/media/xpIcon.png": "/static/media/xpIcon.a4d349842a5b6a9f0a80.png",
     "static/media/options.jpg": "/static/media/options.ee27e8589f4ec1afcbfb.jpg",
     "static/media/go3v2.ttf": "/static/media/go3v2.59287eb584ab9acf3e25.ttf",
     "static/media/grass.webp": "/static/media/grass.38033ab491492963d094.webp",
     "static/media/sprite_sheet.webp": "/static/media/sprite_sheet.3cd5413c96666e73293e.webp",
     "index.html": "/index.html",
+    "static/media/woodplankbackground.webp": "/static/media/woodplankbackground.bd6c4f4bc864842fffba.webp",
     "static/media/crosshair.svg": "/static/media/crosshair.d5d1561b02aa864564a4.svg",
-    "main.f08d2b04.css.map": "/static/css/main.f08d2b04.css.map",
-    "main.20e609e6.js.map": "/static/js/main.20e609e6.js.map"
+    "main.db8df86e.css.map": "/static/css/main.db8df86e.css.map",
+    "main.c2e818eb.js.map": "/static/js/main.c2e818eb.js.map"
   },
   "entrypoints": [
-    "static/css/main.f08d2b04.css",
-    "static/js/main.20e609e6.js"
+    "static/css/main.db8df86e.css",
+    "static/js/main.c2e818eb.js"
   ]
 }

@@ -11,7 +11,7 @@ div.face.socials {
     cursor: none;
     padding: 0px !important;
     background-color: var(--content-color);
-    background-image: url(/public/images/socials/game/woodPlankBackground.jpg);
+    background-image: url(/public/images/socials/game/woodplankbackground.webp);
     background-repeat: repeat;
     background-position: 50%;
     background-blend-mode: multiply;
