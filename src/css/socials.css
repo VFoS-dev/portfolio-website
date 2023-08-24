@@ -8,6 +8,7 @@ div.face.socials {
 }
 
 .face .socials {
+    cursor: none;
     padding: 0px !important;
     background-color: var(--content-color);
     background-image: url(/public/images/socials/game/woodPlankBackground.jpg);
@@ -98,10 +99,49 @@ div.gradient {
 }
 
 .option-group .gif {
+    cursor: pointer;
     position: absolute;
     width: 50%;
     height: 50%;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+}
+
+.links.toGame {
+    animation: disappear .125s linear forwards;
+}
+
+.links.fromGame {
+    animation: reappear .125s linear forwards;
+}
+
+@keyframes disappear {
+    from {
+        opacity: 1;
+        pointer-events: none;
+    }
+
+    to {
+        opacity: 0;
+        display: none;
+        pointer-events: none;
+    }
+}
+
+
+@keyframes reappear {
+    from {
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    50% {
+        pointer-events: all;
+    }
+
+    to {
+        opacity: 1;
+        pointer-events: all;
+    }
 }

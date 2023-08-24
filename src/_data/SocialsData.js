@@ -5,10 +5,10 @@
 
 export const social_Data = [
     {
-        name: 'Coming Soon',
+        name: 'Endless Mode',
         href: 'game-start',
-        gif: '/images/socials/game/pineapple.gif',
-        ring: '/images/socials/svg/soon.svg',
+        gif: '/images/socials/pineapple.gif',
+        ring: '/images/socials/svg/endless.svg',
         shadow: '/images/socials/svg/shadow.svg',
         upper: { fill: 'white', stroke: 'black' },
         lower: { fill: 'white', stroke: 'black' },
