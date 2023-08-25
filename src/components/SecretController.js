@@ -19,18 +19,17 @@ class SecretController extends Component {
     }
 
     listener() {
-        const [_, page, secret] = window.location.pathname.split('/');
+        const [, , secret] = window.location.pathname.split('/');
         const { update, shown } = this.state;
         if (shown && secret != 'secret' || secret == 'secret')
             this.setState({ update: !update, shown: !!secret });
     }
 
     remove(e) {
-        var [_, page, secret] = window.location.pathname.split('/');
+        const [, page,] = window.location.pathname.split('/');
         if (e !== 'cancel' || !page) return;
         const { update } = this.state;
-        var sub = `/${page}`;
-        window.history.replaceState(sub, 'Title', sub);
+        window.history.replaceState(`/${page}`, 'Title', `/${page}`);
         this.setState({ update: !update });
     }
 
@@ -93,7 +92,7 @@ class SecretController extends Component {
 
     render() {
         const { correct } = this.props;
-        var [_, page, secret] = window.location.pathname.split('/') || []
+        const [, page, secret] = window.location.pathname.split('/')
         if (!correct || secret != 'secret') {
             if (secret == 'secret')
                 setTimeout(() => this.remove('cancel'), 0)

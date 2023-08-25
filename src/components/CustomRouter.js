@@ -1,16 +1,17 @@
 import React, { Fragment } from 'react';
 import { connect } from 'react-redux';
+import { checkAchievement, rotateCube } from '../_actions/user.actions';
 
 // CSS
 import '../css/router.css';
 
 // Components
 import { NavBar } from './NavBar';
+import { SecretController } from './SecretController';
+import { AchievementNotification } from './AchievementNotification';
 
 // Pages
 import { About, Socials, Skills, Intro, Projects, Resume } from '../pages';
-import { SecretController } from './SecretController';
-import { AchievementNotification } from './AchievementNotification';
 
 class CustomRouter extends React.Component {
     constructor(props) {
@@ -58,7 +59,7 @@ class CustomRouter extends React.Component {
 
         const { rotation } = this.props;
         const { cantRot } = this.state;
-        const [_, page, secret] = window.location.pathname.split('/') || []
+        const [, page, secret = null] = window.location.pathname.split('/') || []
         if (rotation.correct && secret === 'secret' || cantRot) return
 
         const _newPage = rotation[p] || "intro";
@@ -135,7 +136,7 @@ class CustomRouter extends React.Component {
     render() {
         const { animate, loc, queue, scrollPercent } = this.state;
         const { rotation } = this.props;
-        const [_, page, secret] = window.location.pathname.split('/');
+        const [, page,] = window.location.pathname.split('/');
         if (!!page && rotation.front !== page) this.props.rotate(JSON.stringify(rotation).split(`":"${page} `)[0].split('"').splice(-1)[0]);
         return (<Fragment>
             <SecretController />
@@ -167,12 +168,8 @@ function mapState(state) {
 }
 
 const actionCreators = {
-    rotate: rotateCube
+    rotate: rotateCube,
 };
-
-function rotateCube(pos) {
-    return dispatch => { dispatch({ type: pos }) }
-}
 
 var connectedCustomRouter = connect(mapState, actionCreators)(CustomRouter);
 export { connectedCustomRouter as CustomRouter };

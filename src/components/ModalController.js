@@ -13,10 +13,10 @@ export class ModalController extends Component {
     remove(e) {
         if (e !== 'cancel') return;
         const { update } = this.state;
-        var past = window.location.pathname.split('/');
-        var sub = `/${past[1]}`;
+        const [, page, secret = null] = window.location.pathname.split('/');
+        var sub = `/${page}`;
         window.history.replaceState(sub, 'Title', sub);
-        this.setState({ queue: past[2] || null, update: !update });
+        this.setState({ queue: secret || null, update: !update });
     }
 
     route(modal) {
@@ -74,7 +74,7 @@ export class ModalController extends Component {
 
     render() {
         const { queue } = this.state;
-        var modal = window.location.pathname.split('/')[2] || null
+        const [, , modal] = window.location.pathname.split('/')
         if (modal == 'secret') return <Fragment></Fragment>;
 
         return <div className={`sticky-overlay _modal ${modal ? "show" : "hide"}`} id='cancel' onClick={(e) => this.remove(e.target.id)} >

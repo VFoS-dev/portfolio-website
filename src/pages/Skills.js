@@ -48,7 +48,11 @@ class Skills extends React.Component {
 
     componentWillUnmount() {
         const { activePage } = this.props;
-        if (!activePage) return;
+        if (!activePage) {
+            return setTimeout(() =>
+                localStorage.removeItem('skills-stars')
+                , 1000);
+        }
         const { getStars } = this.state;
         localStorage.setItem("skills-stars", JSON.stringify(getStars()));
     }

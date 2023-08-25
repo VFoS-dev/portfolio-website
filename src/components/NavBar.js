@@ -23,13 +23,13 @@ class NavBar extends Component {
     }
 
     listener() {
-        const [_, page, secret] = window.location.pathname.split('/');
+        const [, page,] = window.location.pathname.split('/');
         window.dispatchEvent(new CustomEvent("custom-pushState"));
         this.props.updatePage(this.props.last, page);
     }
 
-    changePage(nav, secret = '') {
-        const [_, page, _secret] = window.location.pathname.split('/');
+    changePage(nav) {
+        const [, page,] = window.location.pathname.split('/');
         if (nav !== page) {
             const _newPage = nav || "intro";
             window.history.pushState(`/${_newPage}`, 'Title', `/${_newPage}`);
@@ -44,7 +44,7 @@ class NavBar extends Component {
     }
 
     render() { // | intro | about | projects | resume | education | contact | secret |
-        const [_, ref, secret] = window.location.pathname.split('/');
+        const [, ref, secret] = window.location.pathname.split('/');
         const { nav } = this.state;
         const { secretLength, checkpoints, correct } = this.props;
 
@@ -80,7 +80,7 @@ class NavBar extends Component {
                             <Nav.Link className={((ref === 'resume') ? "active" : "") + " lato enable"} id='resume' onClick={(e) => this.changePage(e.target.id)}>Resume</Nav.Link>
                             <Nav.Link className={((ref === 'socials') ? "active" : "") + " lato enable"} id='socials' onClick={(e) => this.changePage(e.target.id)}>Socials</Nav.Link>
                             {correct && <Nav.Link className={((secret === 'secret') ? "active" : "") + " lato enable"} id='secret' onClick={() =>
-                                this.changePage((getCookie('secret-found') ? window.location.pathname.split('/')[1] : 'intro') + '/secret', setCookie('secret-found', true, 365))
+                                this.changePage((getCookie('secret-found') ? ref : 'intro') + '/secret', setCookie('secret-found', true, 365))
                             }>Secret</Nav.Link>}
                         </Nav>
                     </Offcanvas.Body>

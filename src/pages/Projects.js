@@ -38,7 +38,8 @@ class Projects extends React.Component {
 
     modalShow(title) {
         const { updateModal } = this.state;
-        var sub = `/${window.location.pathname.split('/')[1]}/${title.toLowerCase()}`;
+        const [, page,] = window.location.pathname.split('/');
+        var sub = `/${page}/${title.toLowerCase()}`;
         window.history.replaceState(sub, 'Title', sub);
         this.setState({ updateModal: !updateModal });
     }
