@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { Navbar, Nav, Container, Offcanvas } from 'react-bootstrap';
 import '../css/navbar.css';
 import { getCookie, setCookie } from '../utils';
+import { STORE_SECRET_FOUND } from '../_actions/storage';
 
 class NavBar extends Component {
     constructor(props) {
@@ -46,9 +47,8 @@ class NavBar extends Component {
     render() { // | intro | about | projects | resume | education | contact | secret |
         const [, ref, secret] = window.location.pathname.split('/');
         const { nav } = this.state;
-        const { secretLength, checkpoints, correct } = this.props;
+        const { secretLength, checkpoints, correct, focused: { current: f = null } = {} } = this.props;
 
-        const f = document.getElementById('focused')
         const _scrollPercent = f ? (document.documentElement.clientHeight >= f.scrollHeight) ? 1 : (f.scrollHeight === 0) ? 0 : f.scrollTop / Math.min(f.scrollHeight - f.offsetHeight, f.scrollHeight) : 1;
 
         return (<Navbar key='lg' bg="dark" expand='lg' className="navbar navbar-expand-lg fixed-top bg-transparent disable" expanded={nav} onToggle={() => this.setState({ nav: !nav })}>
@@ -80,7 +80,7 @@ class NavBar extends Component {
                             <Nav.Link className={((ref === 'resume') ? "active" : "") + " lato enable"} id='resume' onClick={(e) => this.changePage(e.target.id)}>Resume</Nav.Link>
                             <Nav.Link className={((ref === 'socials') ? "active" : "") + " lato enable"} id='socials' onClick={(e) => this.changePage(e.target.id)}>Socials</Nav.Link>
                             {correct && <Nav.Link className={((secret === 'secret') ? "active" : "") + " lato enable"} id='secret' onClick={() =>
-                                this.changePage((getCookie('secret-found') ? ref : 'intro') + '/secret', setCookie('secret-found', true, 365))
+                                this.changePage((getCookie(STORE_SECRET_FOUND) ? ref : 'intro') + '/secret', setCookie(STORE_SECRET_FOUND, true, 30))
                             }>Secret</Nav.Link>}
                         </Nav>
                     </Offcanvas.Body>

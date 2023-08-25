@@ -2,6 +2,7 @@ import React, { Fragment, createRef } from 'react';
 import { connect } from 'react-redux';
 import { skillData } from '../_data/SkillsData';
 import { timeout, starfieldSetup, createKey } from '../utils';
+import { STORE_STARS } from '../_actions/storage';
 
 import '../css/skills.css';
 
@@ -34,7 +35,7 @@ class Skills extends React.Component {
     async userScrolled() {
         await timeout(0);
         if (window.location.pathname.split('/')[1] !== 'skills') return;
-        const f = document.getElementById("focused");
+        const { focused: { current: f = null } = {} } = this.props;
 
         this.setState({
             scrolled: this.props.scrolled,
@@ -50,17 +51,17 @@ class Skills extends React.Component {
         const { activePage } = this.props;
         if (!activePage) {
             return setTimeout(() =>
-                localStorage.removeItem('skills-stars')
+                localStorage.removeItem(STORE_STARS)
                 , 1000);
         }
         const { getStars } = this.state;
-        localStorage.setItem("skills-stars", JSON.stringify(getStars()));
+        localStorage.setItem(STORE_STARS, JSON.stringify(getStars()));
     }
 
     async setupStarfield() {
         await timeout(0);
         const { activePage } = this.props;
-        let stars = activePage ? [] : JSON.parse(localStorage.getItem("skills-stars"));
+        let stars = activePage ? [] : JSON.parse(localStorage.getItem(STORE_STARS));
         const { getStars } = starfieldSetup(this.canvas.current, stars);
         this.setState({ starfield: true, getStars });
     }

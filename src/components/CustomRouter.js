@@ -1,6 +1,6 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, createRef } from 'react';
 import { connect } from 'react-redux';
-import { checkAchievement, rotateCube } from '../_actions/user.actions';
+import { rotateCube } from '../_actions/user.actions';
 
 // CSS
 import '../css/router.css';
@@ -27,6 +27,9 @@ class CustomRouter extends React.Component {
             scrollPercent: 1,
             cantRot: false
         };
+        this.focus = createRef();
+        this.prior = createRef();
+        this.skip = createRef();
 
         this.updatePage = this.updatePage.bind(this);
         this.keyRot = this.keyRot.bind(this);
@@ -38,24 +41,14 @@ class CustomRouter extends React.Component {
 
     changeRot = (e) => this.setState({ cantRot: e.detail })
 
-    keyRot(e) {
-        var p;
-        switch (e.keyCode) {
-            case 38: // up
-                p = "top";
-                break;
-            case 40: // down
-                p = "bottom";
-                break;
-            case 37: // left
-                p = "left";
-                break;
-            case 39: // right
-                p = "right";
-                break;
-            default:
-                return;
-        }
+    keyRot({ keyCode }) {
+        var p = {
+            38: 'top',
+            40: 'bottom',
+            37: 'left',
+            39: 'right',
+        }[keyCode];
+        if (!p) return;
 
         const { rotation } = this.props;
         const { cantRot } = this.state;
@@ -88,14 +81,15 @@ class CustomRouter extends React.Component {
             return;
         }
         if (animate && loc !== 'front' && loc === _loc) {
-            var e0 = document.getElementsByClassName(`ani-${loc}`);
-            while (e0.length > 0) e0[0].classList.remove(`ani-${loc}`);
+            this.focus.current?.classList.remove(`ani-${loc}`);
+            this.prior.current?.classList.remove(`ani-${loc}`);
+            this.skip.current?.classList.remove(`ani-${loc}`);
             setTimeout(() => {
-                document.getElementsByClassName(`focus`)[0].classList.add(`ani-${loc}`);
-                document.getElementsByClassName(`prior`)[0].classList.add(`ani-${loc}`);
+                this.focus.current?.classList.add(`ani-${loc}`);
+                this.prior.current?.classList.add(`ani-${loc}`);
                 if (loc === "back")
-                    document.getElementsByClassName(`skip`)[0].classList.add(`ani-${loc}`);
-            }, 10)
+                    this.skip.current?.classList.add(`ani-${loc}`);
+            }, 100)
         }
 
         if (aniTimer) window.clearTimeout(aniTimer);
@@ -108,7 +102,7 @@ class CustomRouter extends React.Component {
     }
 
     async UpdateNavBar() {
-        const f = document.getElementById("focused")
+        const { current: f } = this.focus;
 
         var _scroll = (document.documentElement.clientHeight < f.scrollHeight) ? f.scrollTop / Math.min(f.scrollHeight - f.offsetHeight, f.scrollHeight) : 1;
 
@@ -122,16 +116,16 @@ class CustomRouter extends React.Component {
         const { scrollPercent, animate } = this.state;
         switch (req) {
             default:
-            case 'intro': return <Intro key="Intro" activePage={active} />;
-            case 'projects': return <Projects key="Projects" activePage={active} updatePage={this.updatePage} />;
-            case 'resume': return <Resume key="Resume" activePage={active} updatePage={this.updatePage} />;
-            case 'skills': return <Skills key="Skills" activePage={active} animating={animate} scrolled={scrollPercent} />;
-            case 'socials': return <Socials key="Socials" activePage={active} animating={animate} />;
-            case 'about': return <About key="About" activePage={active} />;
+            case 'intro': return <Intro key="Intro" activePage={active} focused={this.focus} />;
+            case 'projects': return <Projects key="Projects" activePage={active} updatePage={this.updatePage} focused={this.focus} />;
+            case 'resume': return <Resume key="Resume" activePage={active} updatePage={this.updatePage} focused={this.focus} />;
+            case 'skills': return <Skills key="Skills" activePage={active} animating={animate} scrolled={scrollPercent} focused={this.focus} />;
+            case 'socials': return <Socials key="Socials" activePage={active} animating={animate} focused={this.focus} />;
+            case 'about': return <About key="About" activePage={active} focused={this.focus} />;
         }
     }
 
-    removeLoading = () => document.getElementById('loading').style = 'display: none;';
+    removeLoading = () => document.getElementById('loading').style.display = 'none';
 
     render() {
         const { animate, loc, queue, scrollPercent } = this.state;
@@ -139,22 +133,22 @@ class CustomRouter extends React.Component {
         const [, page,] = window.location.pathname.split('/');
         if (!!page && rotation.front !== page) this.props.rotate(JSON.stringify(rotation).split(`":"${page} `)[0].split('"').splice(-1)[0]);
         return (<Fragment>
-            <SecretController />
-            <AchievementNotification />
-            <NavBar updatePage={this.updatePage} last={page} scrollPercent={scrollPercent} />
+            <SecretController focused={this.focus} />
+            <AchievementNotification focused={this.focus} />
+            <NavBar updatePage={this.updatePage} last={page} scrollPercent={scrollPercent} focused={this.focus} />
             <div className="cube-container" style={{ perspective: `${document.documentElement.clientWidth}px` }} onAnimationEnd={() => this.removeLoading()}>
                 {!!queue && animate && <>
-                    <div className={`face prior ani-${loc} ${queue}`} key={queue}>
+                    <div ref={this.prior} className={`face prior ani-${loc} ${queue}`} key={queue}>
                         {this.Router(queue, false)}
                     </div>
                     {loc === "back" &&
-                        <div className={`face skip ani-back ${rotation.bottom}`} key={rotation.bottom}>
+                        <div ref={this.skip} className={`face skip ani-back ${rotation.bottom}`} key={rotation.bottom}>
                             {/* using bottom to grab the top because the value of the sides have already swapped */}
                             {this.Router(rotation.bottom, false)}
                         </div>
                     }
                 </>}
-                <div id="focused" key={page} className={`face focus${animate && !!queue ? ` ani-${loc}` : ""} ${page}`} onScroll={() => this.UpdateNavBar()}>
+                <div ref={this.focus} id="focused" key={page} className={`face focus${animate && !!queue ? ` ani-${loc}` : ""} ${page}`} onScroll={() => this.UpdateNavBar()}>
                     {this.Router(page, true)}
                 </div>
             </div>

@@ -22,7 +22,7 @@ export function TileFlexTouchSupport(forceReset = false, perspective = '500px') 
         } else if (classList.includes('tile-container')) {
             parent = e.target;
         }
-        scroll = document.querySelector('#focused.face');
+        scroll = document.getElementById('focused');
         document.ontouchmove = handleMove;
         document.ontouchend = handleMoveOut;
     }

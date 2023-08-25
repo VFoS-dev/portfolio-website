@@ -1,25 +1,25 @@
-import { ACHIEVEMENT_CHECK, ACHIEVEMENT_QUEUE_UPDATE, ACHIEVEMENT_REMOVE_QUEUE, CUBE_ROT } from "../_constants/const"
+import * as consts from "./const"
 
 export function rotateCube(pos) {
     return dispatch => {
-        dispatch({ pos, type: CUBE_ROT })
+        dispatch({ pos, type: consts.CUBE_ROT })
     }
 }
 
-export function checkAchievement(aName, value) {
+export function checkAchievement(name, value) {
     return dispatch => {
-        dispatch({ aName, value, type: ACHIEVEMENT_CHECK })
+        dispatch({ name, value, type: consts.ACHIEVEMENT_CHECK })
     }
 }
 
 export function updateAchievementQueue(aniState) {
     return dispatch => {
-        dispatch({ aniState, type: ACHIEVEMENT_QUEUE_UPDATE })
+        dispatch({ aniState, type: consts.ACHIEVEMENT_QUEUE_UPDATE })
     }
 }
 
-export function removeAchievementQueue(aniState) {
+export function removeAchievementQueue() {
     return dispatch => {
-        dispatch({ type: ACHIEVEMENT_REMOVE_QUEUE })
+        dispatch({ type: consts.ACHIEVEMENT_REMOVE_QUEUE })
     }
 }

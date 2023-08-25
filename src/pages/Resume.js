@@ -1,4 +1,4 @@
-import React, { } from 'react';
+import React, { createRef } from 'react';
 import { connect } from 'react-redux';
 import { EditableFocusRot, createKey, dragParentElement, onDoubleClick } from '../utils';
 
@@ -20,14 +20,16 @@ class Resume extends React.Component {
             ]
         }
 
-        this.time = setInterval(
-            () => {
-                const t = document.getElementById('time');
-                if (t) t.textContent = this.getTime();
-            }, 1000
-        );
+        this.timeEle = createRef();
+        this.time = setInterval(() => this.updateTime(), 1000);
 
         this.newWindow = this.newWindow.bind(this);
+        this.updateTime = this.updateTime.bind(this);
+    }
+
+    updateTime() {
+        const { current: time } = this.timeEle
+        if (time) time.textContent = this.getTime();
     }
 
     componentWillUnmount = () => clearInterval(this.time);
@@ -141,7 +143,7 @@ class Resume extends React.Component {
                     <div className='applications'>
                         {windows.map(({ key, focused }, i) => <div key={key} className={`application${focused ? ' focused' : ''}`} onMouseDown={() => this.set(`focused-${i}`, true)}><div className='wordIcon' /><div className='txt'>Jon Kido Resume 20XX Rough Draft - Microsoft Word</div></div>)}
                     </div>
-                    <div id="time">{this.getTime()}</div>
+                    <div ref={this.timeEle} id="time">{this.getTime()}</div>
                 </div>
             </div >
         );

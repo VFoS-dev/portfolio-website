@@ -1,4 +1,4 @@
-import { CUBE_ROT } from "../_constants/const";
+import { CUBE_ROT } from "../_actions/const";
 
 var secret = process.env.secret ? JSON.parse(process.env.secret) : [
     "right",

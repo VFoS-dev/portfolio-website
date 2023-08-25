@@ -1,6 +1,7 @@
 import React, { Fragment } from 'react';
 import { connect } from 'react-redux';
 import { timeout, createKey, getCookie, setCookie } from '../utils';
+import { STORE_DUCK_HUNT } from '../_actions/storage';
 
 import '../css/about.css';
 
@@ -8,7 +9,7 @@ class About extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            highscore: getCookie('about-score') || 0,
+            highscore: getCookie(STORE_DUCK_HUNT) || 0,
             ducks: [],
             ducksKeys: [],
             duckAni: false,
@@ -24,7 +25,7 @@ class About extends React.Component {
         const { activePage } = this.props;
         const { hitDucks } = this.state;
         if (!activePage) return;
-        if (hitDucks > (parseInt(getCookie('about-score')) || 0)) setCookie('about-score', hitDucks, 365)
+        if (hitDucks > (parseInt(getCookie(STORE_DUCK_HUNT)) || 0)) setCookie(STORE_DUCK_HUNT, hitDucks, 365)
     }
 
     async AddDucks(n) {
