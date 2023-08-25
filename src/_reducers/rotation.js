@@ -22,8 +22,8 @@ export function rotation(state = origin, action) {
                 break;
         }
 
-    const correct = secret.map((c, index) => (history[index] || false) === c).reduce((a, b) => a + b) === secret.length
-    const checkpoints = history.map((c, index) => secret[index] === c)
+    const correct = secret.map((c, index) => (history[index] || false) === c).reduce((a, b) => a + b) === secret.length;
+    const checkpoints = history.map((c, index) => secret[index] === c);
 
     switch (action.type) {
         case 'right':

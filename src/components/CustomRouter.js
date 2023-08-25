@@ -10,6 +10,7 @@ import { NavBar } from './NavBar';
 // Pages
 import { About, Socials, Skills, Intro, Projects, Resume } from '../pages';
 import { SecretController } from './SecretController';
+import { AchievementNotification } from './AchievementNotification';
 
 class CustomRouter extends React.Component {
     constructor(props) {
@@ -89,11 +90,11 @@ class CustomRouter extends React.Component {
             var e0 = document.getElementsByClassName(`ani-${loc}`);
             while (e0.length > 0) e0[0].classList.remove(`ani-${loc}`);
             setTimeout(() => {
-                document.getElementsByClassName(`focus`)[0]?.classList.add(`ani-${loc}`);
-                document.getElementsByClassName(`prior`)[0]?.classList.add(`ani-${loc}`);
+                document.getElementsByClassName(`focus`)[0].classList.add(`ani-${loc}`);
+                document.getElementsByClassName(`prior`)[0].classList.add(`ani-${loc}`);
                 if (loc === "back")
                     document.getElementsByClassName(`skip`)[0].classList.add(`ani-${loc}`);
-            }, 0)
+            }, 10)
         }
 
         if (aniTimer) window.clearTimeout(aniTimer);
@@ -138,6 +139,7 @@ class CustomRouter extends React.Component {
         if (!!page && rotation.front !== page) this.props.rotate(JSON.stringify(rotation).split(`":"${page} `)[0].split('"').splice(-1)[0]);
         return (<Fragment>
             <SecretController />
+            <AchievementNotification />
             <NavBar updatePage={this.updatePage} last={page} scrollPercent={scrollPercent} />
             <div className="cube-container" style={{ perspective: `${document.documentElement.clientWidth}px` }} onAnimationEnd={() => this.removeLoading()}>
                 {!!queue && animate && <>
