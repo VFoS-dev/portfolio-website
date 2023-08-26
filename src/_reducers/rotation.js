@@ -1,4 +1,4 @@
-import { CUBE_ROT } from "../_actions/const";
+import { CUBE_ROT, CUBE_RESET } from "../_actions/const";
 
 var secret = process.env.secret ? JSON.parse(process.env.secret) : [
     "right",
@@ -14,6 +14,7 @@ var secret = process.env.secret ? JSON.parse(process.env.secret) : [
 ];
 
 export function rotation(state = origin, { type, pos }) {
+    if (type == CUBE_RESET) return { ...onMount(true), history: [] };
     if (type != CUBE_ROT) return state;
 
     let { history, back, front, left, right, bottom, top } = state;
@@ -50,7 +51,7 @@ export function rotation(state = origin, { type, pos }) {
     }
 }
 
-function onMount() {
+function onMount(reset = false) {
     const [, view = 'intro',] = window.location.pathname.split('/')
 
     const pos = {
@@ -60,7 +61,7 @@ function onMount() {
         projects: 'bottom',
         socials: 'back',
         intro: 'front',
-    }[view.toLowerCase()]
+    }[reset ? 'intro' : view.toLowerCase()]
 
     return rotation(defState, { type: CUBE_ROT, pos })
 }
@@ -74,10 +75,8 @@ const defState = {
     front: 'intro',
     history: [],
     checkpoints: [],
-    correct: false
+    correct: false,
+    secretLength: secret.length,
 }
 
-const origin = {
-    ...onMount(),
-    secretLength: secret.length
-}
+const origin = { ...onMount(), }

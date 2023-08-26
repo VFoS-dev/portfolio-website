@@ -5,12 +5,13 @@ import { socialsData, social_Data } from '../_data';
 import { fruitNinja } from '../canvas-games';
 
 import '../css/socials.css';
+import { checkAchievement } from '../_actions/user.actions';
 
 class Socials extends React.Component {
     constructor(props) {
         super(props);
-        const { activePage } = this.props;
-        const { setup, dismount, gameStart } = fruitNinja(activePage);
+        const { activePage, checkAchievement } = this.props;
+        const { setup, dismount, gameStart } = fruitNinja(activePage, checkAchievement);
 
         this.state = {
             started: false,
@@ -33,10 +34,14 @@ class Socials extends React.Component {
     }
 
     openLink(index) {
-        const { href } = social_Data[index];
+        const { href, name } = social_Data[index];
         switch (href) {
-            case 'game-start': return this.setState({ toGame: true });
-            default: return window.open(href, '_blank');
+            case 'game-start':
+                this.props.checkAchievement('fruitinit')
+                return this.setState({ toGame: true });
+            default:
+                this.props.checkAchievement(`social${name}`)
+                return window.open(href, '_blank');
         }
     }
 
@@ -82,7 +87,9 @@ function mapState(state) {
     return {};
 }
 
-const actionCreators = {};
+const actionCreators = {
+    checkAchievement
+};
 
 const connectedSocials = connect(mapState, actionCreators)(Socials);
 export { connectedSocials as Socials };

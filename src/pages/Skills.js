@@ -48,22 +48,9 @@ class Skills extends React.Component {
         })
     }
 
-    componentWillUnmount() {
-        const { activePage } = this.props;
-        if (!activePage) {
-            return setTimeout(() =>
-                localStorage.removeItem(STORE_STARS)
-                , 1000);
-        }
-        const { getStars } = this.state;
-        localStorage.setItem(STORE_STARS, JSON.stringify(getStars()));
-    }
-
     async setupStarfield() {
         await timeout(0);
-        const { activePage } = this.props;
-        let stars = activePage ? [] : JSON.parse(localStorage.getItem(STORE_STARS));
-        const { getStars } = starfieldSetup(this.canvas.current, stars);
+        const { getStars } = starfieldSetup(this.canvas.current);
         this.setState({ starfield: true, getStars });
     }
 

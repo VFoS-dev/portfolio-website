@@ -1,7 +1,9 @@
 import React, { Component, Fragment } from 'react';
 import { Deadline, Defend, Uno, Default, Survive, CashnSlash, SwordWhip, Minesweeper, ABCStories, PlanetDestroyer, TheSimpleRing, AllinFavor, BroncoBeam, MotorPool, Portfolio, ProjectKuro, OLogoAni, Matraex } from '../modal';
+import { checkAchievement } from '../_actions/user.actions';
+import { connect } from 'react-redux';
 
-export class ModalController extends Component {
+class ModalController extends Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -77,6 +79,11 @@ export class ModalController extends Component {
         const [, , modal] = window.location.pathname.split('/')
         if (modal == 'secret') return <Fragment></Fragment>;
 
+        if (modal) {
+            this.props.checkAchievement('projectStart')
+            this.props.checkAchievement('projectAll', modal)
+        }
+
         return <div className={`sticky-overlay _modal ${modal ? "show" : "hide"}`} id='cancel' onClick={(e) => this.remove(e.target.id)} >
             <div className='card' onTransitionEnd={(e) => this.resetScroll(e.target, !modal)}>
                 <div style={{ position: 'absolute', top: 0, right: 0 }} className='pointer' id='cancel' onClick={(e) => this.remove(e.target.id)}>
@@ -87,3 +94,14 @@ export class ModalController extends Component {
         </div>
     }
 }
+
+function mapState(state) {
+    return {};
+}
+
+const actionCreators = {
+    checkAchievement
+};
+
+const connectedModalController = connect(mapState, actionCreators)(ModalController);
+export { connectedModalController as ModalController };

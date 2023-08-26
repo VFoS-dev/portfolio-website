@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
-import { removeAchievementQueue, updateAchievementQueue } from '../_actions/user.actions';
+import { checkAchievement, removeAchievementQueue, updateAchievementQueue } from '../_actions/user.actions';
 
 import '../css/achievement.css';
 
@@ -32,8 +32,10 @@ class AchievementNotification extends Component {
     }
 
     render() {
-        const { queue: [{ name, aniState, percent: p, description } = {}] } = this.props.achievements;
+        const { queue: [{ name, aniState, percent: p, description, achievementName } = {}] } = this.props.achievements;
         const achievement = this.achievementType(p);
+
+        this.props.checkAchievement('completed', achievementName)
 
         return <div id='achievement-window'>
             <div className='screen'>
@@ -67,6 +69,7 @@ function mapState(state) {
 const actionCreators = {
     achieveSetState: updateAchievementQueue,
     achieveFinish: removeAchievementQueue,
+    checkAchievement
 };
 
 const ConnectedAchievementNotification = connect(mapState, actionCreators)(AchievementNotification);

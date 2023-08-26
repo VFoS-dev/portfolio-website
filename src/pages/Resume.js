@@ -91,6 +91,11 @@ class Resume extends React.Component {
         }
     }
 
+    openResume() {
+        this.props.checkAchievement('realresume');
+        window.open('/pdf/resume_eye_friendly.pdf', '_blank');
+    }
+
     render() {
         const { windows, } = this.state;
         return (
@@ -113,7 +118,7 @@ class Resume extends React.Component {
                 {windows.map(({ minimized, fullscreened, focused, key, flavored }, i) => {
                     let state = `${focused ? ' focused' : ''}${fullscreened ? ' fullscreened' : ''}${minimized ? ' minimized' : ''}`
                     return <div key={`windows-${key}`} className={`window${state}`} onMouseDown={() => this.set(`focused-${i}`, true)}>
-                        <div className="title-bar" {...dragParentElement()}>
+                        <div className="title-bar" {...dragParentElement(false, false, this.props.checkAchievement, 'xplorer')}>
                             <div className="title-bar-text"><div className='wordIcon title' />Jon Kido Resume 20XX Rough Draft - Microsoft Word</div>
                             <div className="title-bar-controls">
                                 <button aria-label="Minimize" id={`minimized-${i}`} onClick={(e) => this.set(e.target.id)}></button>
@@ -124,7 +129,7 @@ class Resume extends React.Component {
                         <div className="window-options" />
                         <div className="window-body">
                             <div className='window-page' {...EditableFocusRot()} onKeyUp={() => this.props.checkAchievement('editResume')}>
-                                <center><h1>Want a polished resume? <button className='hyperlink' onClick={() => window.open('/pdf/resume_eye_friendly.pdf', '_blank')} >Click Here</button></h1></center>
+                                <center><h1>Want a polished resume? <button className='hyperlink' onClick={() => this.openResume()} >Click Here</button></h1></center>
                                 <h2>Education: </h2>
                                 <p className='tab'>
                                     Boise State University: 2017 - 2022
@@ -147,7 +152,7 @@ class Resume extends React.Component {
                 }
 
                 <div className='taskbar'>
-                    <div className='start'><div className='windowIcon' />start</div>
+                    <div className='start' onClick={()=>this.props.checkAchievement('windowStart')}><div className='windowIcon' />start</div>
                     <div className='applications'>
                         {windows.map(({ key, focused }, i) => <div key={key} className={`application${focused ? ' focused' : ''}`} onMouseDown={() => this.set(`focused-${i}`, true)}><div className='wordIcon' /><div className='txt'>Jon Kido Resume 20XX Rough Draft - Microsoft Word</div></div>)}
                     </div>

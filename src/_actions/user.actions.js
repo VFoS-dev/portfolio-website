@@ -6,8 +6,13 @@ export function rotateCube(pos) {
     }
 }
 
+export function resetCube(pos) {
+    return dispatch => {
+        dispatch({ pos, type: consts.CUBE_RESET })
+    }
+}
+
 export function checkAchievement(name, value) {
-    console.log(name, value);
     return dispatch => {
         dispatch({ name, value, type: consts.ACHIEVEMENT_CHECK })
     }

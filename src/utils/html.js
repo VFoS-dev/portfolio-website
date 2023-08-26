@@ -106,12 +106,13 @@ export function onDoubleClick(callback = () => { }, params = []) {
     }
 }
 
-export function dragParentElement(thisInstead = false, absoluteParent = false) {
+export function dragParentElement(thisInstead = false, absoluteParent = false, checkAchievement = () => { }, achievementName = '') {
     function mouseDragSetup(e) {
         let x = e.clientX, y = e.clientY, parent = thisInstead ? e.target : e.target.parentElement;
         if (absoluteParent) parent.style.position = 'absolute';
 
         function elementDrag(e) {
+            checkAchievement(achievementName)
             parent.style.top = `${(parent.offsetTop - (y - (y = e.clientY)))}px`;
             parent.style.left = `${(parent.offsetLeft - (x - (x = e.clientX)))}px`;
         }
@@ -129,6 +130,7 @@ export function dragParentElement(thisInstead = false, absoluteParent = false) {
         if (absoluteParent) parent.style.position = 'absolute';
 
         function elementDrag(e) {
+            checkAchievement(achievementName)
             parent.style.top = `${(parent.offsetTop - (y - (y = e.targetTouches[0].clientY)))}px`;
             parent.style.left = `${(parent.offsetLeft - (x - (x = e.targetTouches[0].clientX)))}px`;
         }

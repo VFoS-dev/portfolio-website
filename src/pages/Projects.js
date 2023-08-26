@@ -181,10 +181,13 @@ class Projects extends React.Component {
 
     changeState() {
         const { minesweeper, cells, rows, gamerestart } = this.state;
-        if (minesweeper)
+        if (minesweeper) {
             if (!cells[0][0]) this.setState({ toMine: false, minesweeper: false, gamepaused: false, gamerestart: !gamerestart, gameStatus: 0 });
             else this.setState({ cells: [...new Array(rows)].map(n => [...new Array(rows)]), gamepaused: true, gamerestart: !gamerestart, gameStatus: 0 });
-        else this.setState({ toMine: true, gamepaused: true, gamerestart: !gamerestart });
+        } else {
+            this.props.checkAchievement('mineStart')
+            this.setState({ toMine: true, gamepaused: true, gamerestart: !gamerestart });
+        }
     }
 
     flagCell(e) {

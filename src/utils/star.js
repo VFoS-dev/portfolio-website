@@ -1,4 +1,4 @@
-export function starfieldSetup(canvas, _stars = []) {
+export function starfieldSetup(canvas) {
     // constants
     const COLOR_SPACE = "#242424";
     const COLOR_STARS = "white";
@@ -8,27 +8,26 @@ export function starfieldSetup(canvas, _stars = []) {
 
     // set up the canvas and context
     var ctx = canvas.getContext("2d");
-    canvas.height = document.documentElement.clientHeight;
-    canvas.width = document.documentElement.clientWidth;
-
+    const { clientHeight, clientWidth } = document.documentElement;
+    canvas.height = clientHeight;
+    canvas.width = clientWidth;
     // set up the stars
-    var stars = _stars;
+    var stars = [];
     var starSpeed = STAR_SPEED * canvas.width;
     var yv = -starSpeed;
-    if (!stars.length)
-        for (let i = 0; i < STAR_NUM; i++) {
-            let speedMult = Math.random() * 1.5 + 0.5;
-            stars[i] = {
-                r: Math.random() * STAR_SIZE * canvas.width / 2,
-                x: Math.floor(Math.random() * canvas.width),
-                y: Math.floor(Math.random() * canvas.height),
-                xv: 0,
-                yv: yv * speedMult
-            }
-        }
+    for (let i = 0; i < STAR_NUM; i++) {
+        let speedMult = Math.random() * 1.5 + 0.5;
+        stars.push({
+            r: Math.random() * STAR_SIZE * canvas.width / 2,
+            x: Math.floor(Math.random() * clientWidth),
+            y: Math.floor(Math.random() * clientHeight),
+            xv: 0,
+            yv: yv * speedMult
+        })
+    }
 
     // set up the animation loop
-    var timeDelta, timeLast = 0;
+    var timeDelta = 0, timeLast = 0;
 
     const getStars = () => stars;
 
@@ -36,6 +35,7 @@ export function starfieldSetup(canvas, _stars = []) {
         // calculate the time difference
         timeDelta = timeNow - timeLast;
         timeLast = timeNow;
+        if (isNaN(timeDelta)) timeDelta = 1;
 
         // space background
         ctx.fillStyle = COLOR_SPACE;
@@ -49,8 +49,7 @@ export function starfieldSetup(canvas, _stars = []) {
             ctx.fill();
 
             // update the star's x position
-            stars[i].x += stars[i].xv * timeDelta * 0.001;
-
+            // stars[i].x += stars[i].xv * timeDelta * 0.001;
             // reposition the star to the other side if it goes off screen
             if (stars[i].x < 0 - stars[i].r) {
                 stars[i].x = canvas.width + stars[i].r;

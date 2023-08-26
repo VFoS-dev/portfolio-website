@@ -103,6 +103,7 @@ class SecretController extends Component {
         this.props.checkAchievement('secretStart')
         this.props.checkAchievement('secretPage', `${page}/${secret}`)
         this.props.checkAchievement('secretAll', `${page}/${secret}`)
+        this.props.checkAchievement('secretphotoshop', `${page}/${secret}`)
 
         let content;
         if (typeof this[page] === 'function') {

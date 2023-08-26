@@ -116,6 +116,7 @@
 }
 
 .resume .taskbar .start {
+    pointer-events: all;
     background-color: #52be27;
     width: 90px;
     text-align: center;

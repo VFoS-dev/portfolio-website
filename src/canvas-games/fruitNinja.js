@@ -17,7 +17,7 @@ function generateElements() {
     return img;
 }
 
-export function fruitNinja(activePage = false) {
+export function fruitNinja(activePage = false, checkAchievement = () => { }) {
     const GRAVITY = 1, SIZE = 4, TAIL_MAX = 5, RANDOM_DELAY = 1250;
 
     // visuals
@@ -29,6 +29,8 @@ export function fruitNinja(activePage = false) {
 
     // game data
     let gameState = false,
+        fruitMissed = 0,
+        fruitSliced = 0,
         prevTime,
         deltaTime,
         tick = true,
@@ -69,6 +71,11 @@ export function fruitNinja(activePage = false) {
             maxY = canvas.height / 60,
             chances = Object.keys(fruitData)
 
+        fruitSliced++
+        checkAchievement('fruitCheck1', fruitSliced)
+        checkAchievement('fruitCheck2', fruitSliced)
+        checkAchievement('fruitCheck3', fruitSliced)
+
         fruits.push({
             type: chances[Math.floor(Math.random() * chances.length)].split('-')[0],
             top: canvas.height + diameter,
@@ -88,6 +95,8 @@ export function fruitNinja(activePage = false) {
             if (velY > 0 && top - diameter > canvas.height) {
                 fruits.splice(i, 1);
                 // loose health here
+                fruitMissed++
+                checkAchievement('fruitEscape', fruitMissed)
                 continue;
             }
             fruits[i] = {
@@ -137,6 +146,9 @@ export function fruitNinja(activePage = false) {
             );
 
             if (isNaN(distance) || distance > fruit.diameter) continue;
+
+            checkAchievement('fruitcomplete', fruit.type);
+
             indexes.push(i);
             update = true;
         }
@@ -233,6 +245,7 @@ export function fruitNinja(activePage = false) {
 
     function populateFruit() {
         let count = delaySpawnCount(deltaTime);
+        checkAchievement('fruitCatapult', count);
         for (const _ of new Array(count)) generateFruit()
     }
 
