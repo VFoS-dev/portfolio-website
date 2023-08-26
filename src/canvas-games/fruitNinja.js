@@ -238,6 +238,7 @@ export function fruitNinja(activePage = false) {
 
     function delaySpawnCount(time, count = 0) {
         if (!queue.length) queue.push(Math.random() * RANDOM_DELAY + 10);
+        if (count >= 50) return 50;
         queue[0] -= time;
         if (queue[0] <= 0) {
             time = -queue.shift();

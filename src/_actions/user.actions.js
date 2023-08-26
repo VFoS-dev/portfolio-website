@@ -7,6 +7,7 @@ export function rotateCube(pos) {
 }
 
 export function checkAchievement(name, value) {
+    console.log(name, value);
     return dispatch => {
         dispatch({ name, value, type: consts.ACHIEVEMENT_CHECK })
     }

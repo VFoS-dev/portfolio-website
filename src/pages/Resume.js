@@ -4,6 +4,7 @@ import { EditableFocusRot, createKey, dragParentElement, onDoubleClick } from '.
 
 import '../css/resume.css'
 import { resumeData } from '../_data';
+import { checkAchievement } from '../_actions/user.actions';
 
 class Resume extends React.Component {
     constructor(props) {
@@ -49,6 +50,7 @@ class Resume extends React.Component {
             key: createKey(keys)
         })
         this.setState({ windows });
+        if (flavored) this.props.checkAchievement('flavResume')
     }
 
     set(info, value = null) {
@@ -57,6 +59,7 @@ class Resume extends React.Component {
         switch (id) {
             case 'closed':
                 windows.splice(index, 1);
+                this.props.checkAchievement('exitWindow')
                 break;
             case 'focused':
                 windows[index].minimized = false;
@@ -64,6 +67,11 @@ class Resume extends React.Component {
                 break;
             case 'minimized':
                 windows[index].focused = false;
+                this.props.checkAchievement('xplorer')
+                windows[index][id] = value === null ? !windows[index][id] : value;
+                break;
+            case 'fullscreened':
+                this.props.checkAchievement('maximize')
             default:
                 windows[index][id] = value === null ? !windows[index][id] : value;
                 break;
@@ -115,7 +123,7 @@ class Resume extends React.Component {
                         </div>
                         <div className="window-options" />
                         <div className="window-body">
-                            <div className='window-page' {...EditableFocusRot()}>
+                            <div className='window-page' {...EditableFocusRot()} onKeyUp={() => this.props.checkAchievement('editResume')}>
                                 <center><h1>Want a polished resume? <button className='hyperlink' onClick={() => window.open('/pdf/resume_eye_friendly.pdf', '_blank')} >Click Here</button></h1></center>
                                 <h2>Education: </h2>
                                 <p className='tab'>
@@ -154,7 +162,9 @@ function mapState(state) {
     return {};
 }
 
-const actionCreators = {};
+const actionCreators = {
+    checkAchievement
+};
 
 const connectedResume = connect(mapState, actionCreators)(Resume);
 export { connectedResume as Resume };

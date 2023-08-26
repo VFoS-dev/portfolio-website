@@ -4,6 +4,9 @@ import { timeout, createKey, getCookie, setCookie } from '../utils';
 import { STORE_DUCK_HUNT } from '../_actions/storage';
 
 import '../css/about.css';
+import { checkAchievement } from '../_actions/user.actions';
+
+let birdEscape = 0;
 
 class About extends React.Component {
     constructor(props) {
@@ -19,6 +22,7 @@ class About extends React.Component {
             hitDucks: 0
         };
         this.moveDucks = this.moveDucks.bind(this);
+        if (this.props.activePage) birdEscape = 0;
     }
 
     componentWillUnmount() {
@@ -89,9 +93,11 @@ class About extends React.Component {
             const { ducks } = this.state;
             this.setState({
                 ducks: ducks.map(a => {
-                    if (a.pos.top < -5 - a.noise || a.pos.right < -5 - a.noise || a.pos.right > 105 + a.noise)
+                    if (a.pos.top < -5 - a.noise || a.pos.right < -5 - a.noise || a.pos.right > 105 + a.noise) {
+                        birdEscape++
+                        if (!this.state.hitDucks) this.props.checkAchievement('birdEscape', birdEscape)
                         return this.addDuck();
-
+                    }
                     return {
                         ...a,
                         pos: a.dead ? a.pos : {
@@ -110,16 +116,23 @@ class About extends React.Component {
         const { ducks, limited } = this.state;
         if (limited) {
             let _ducks = ducks.filter(a => (a.id !== id));
+            if (!_ducks.length) this.props.checkAchievement('birdGone');
             this.setState({ ducks: _ducks, ducksKeys: _ducks.map(a => a.id) });
         } else this.setState({ ducks: ducks.map(a => (a.id === id ? this.addDuck() : a)) });
     }
 
     hitDuck(id) {
-        const { ducks, hitDucks } = this.state;
+        const { ducks, hitDucks: hit } = this.state;
+        const hitDucks = hit + 1;
+        const maxDuck = Math.min(25, 2 + Math.floor(hitDucks / 5))
+        this.props.checkAchievement('birdShot')
+        this.props.checkAchievement('birdMax', maxDuck)
+        this.props.checkAchievement('birdCheck1', hitDucks)
+        this.props.checkAchievement('birdCheck2', hitDucks)
+        this.props.checkAchievement('birdCheck3', hitDucks)
         this.setState({
+            hitDucks, maxDuck,
             ducks: ducks.map(d => ((id === d.id) ? { ...d, dead: true } : d)),
-            hitDucks: hitDucks + 1,
-            maxDuck: Math.min(25, 2 + Math.floor(hitDucks / 5))
         });
     }
 
@@ -183,7 +196,9 @@ function mapState(state) {
     return {};
 }
 
-const actionCreators = {};
+const actionCreators = {
+    checkAchievement
+};
 
 const connectedAbout = connect(mapState, actionCreators)(About);
 export { connectedAbout as About };

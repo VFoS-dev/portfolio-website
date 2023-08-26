@@ -1,6 +1,7 @@
 import React, { Fragment } from 'react';
 import { connect } from 'react-redux';
 import { timeout } from '../utils';
+import { checkAchievement } from '../_actions/user.actions';
 
 class ProjectTimer extends React.Component {
     constructor(props) {
@@ -39,20 +40,27 @@ class ProjectTimer extends React.Component {
             [...`${_count}`].forEach((char, i, str) => {
                 list[i + (3 - str.length)] = char;
             })
-        else list = [9, 9, 9];
-
+        else {
+            list = [9, 9, 9];
+            this.props.checkAchievement('mineTime', count)
+        }
         return list;
     }
 
     render() {
-        const { reset, paused, activePage, setCount } = this.props;
-        const { reset: r, paused: p } = this.state;
+        const { reset, paused, activePage, setCount, gameState } = this.props;
+        const { reset: r, paused: p, count } = this.state;
         if (activePage) {
             let changes = {};
             if (reset != r) changes = { ...changes, count: 0, reset };
             if (paused != p) changes = { ...changes, paused };
             if (!paused) this.tick();
-            setTimeout(() => { this.setState(changes); }, 0);
+            if (Object.keys(changes).length) setTimeout(() => { this.setState(changes); }, 0);
+
+            if (gameState === 1) {
+                this.props.checkAchievement('mineRunner', count)
+            }
+
         }
 
         const [hundredths, tenths, firsts] = this.convertCount(setCount);
@@ -68,7 +76,9 @@ function mapState(state) {
     return {};
 }
 
-const actionCreators = {};
+const actionCreators = {
+    checkAchievement
+};
 
 const connectedProjectTimer = connect(mapState, actionCreators)(ProjectTimer);
 export { connectedProjectTimer as ProjectTimer };

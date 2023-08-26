@@ -4,6 +4,7 @@ import { SecretData } from '../_data';
 import { Tab, Tabs } from 'react-bootstrap';
 
 import '../css/secret.css';
+import { checkAchievement } from '../_actions/user.actions';
 
 class SecretController extends Component {
     constructor(props) {
@@ -99,6 +100,10 @@ class SecretController extends Component {
             return <Fragment></Fragment>;
         }
 
+        this.props.checkAchievement('secretStart')
+        this.props.checkAchievement('secretPage', `${page}/${secret}`)
+        this.props.checkAchievement('secretAll', `${page}/${secret}`)
+
         let content;
         if (typeof this[page] === 'function') {
             content = this[page](page)
@@ -121,7 +126,9 @@ function mapState(state) {
     return { correct };
 }
 
-const actionCreators = {};
+const actionCreators = {
+    checkAchievement
+};
 
 const ConnectedSecretController = connect(mapState, actionCreators)(SecretController);
 export { ConnectedSecretController as SecretController };

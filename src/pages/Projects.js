@@ -6,6 +6,7 @@ import { projectData } from '../_data';
 import '../css/projects.css';
 import { ProjectTimer } from '../components';
 import { TileFlex, TileFlexTouchSupport, timeout } from '../utils';
+import { checkAchievement } from '../_actions/user.actions';
 
 class Projects extends React.Component {
     constructor(props) {
@@ -76,8 +77,14 @@ class Projects extends React.Component {
         }
         win = win === cells.length * cells.length;
 
-        if (win) this.setState({ gameStatus: 1, gamepaused: true, });
-        if (lost) this.setState({ gameStatus: -1, gamepaused: true, });
+        if (win) {
+            this.setState({ gameStatus: 1, gamepaused: true, });
+            this.props.checkAchievement('winMinesweeper')
+        }
+        if (lost) {
+            this.setState({ gameStatus: -1, gamepaused: true, });
+            this.props.checkAchievement('mineBoom')
+        }
     }
 
     createGame([x, y]) {
@@ -167,6 +174,7 @@ class Projects extends React.Component {
             this.setState({ cells: this.floodReveal([x, y], cells) });
             this.checkWin();
         } else {
+            this.props.checkAchievement('mineFlag')
             this.modalShow(projectData[c.img].title.replace(/[^a-zA-Z ]/g, "").split(' ').join('_'));
         }
     }
@@ -218,7 +226,7 @@ class Projects extends React.Component {
                             <div className={`button${!minesweeper ? "" : { 0: ' play', '-1': ' lose', 1: ' win' }[gameStatus]}`} />
                         </center>
                         <div className='numbs right'>
-                            <ProjectTimer activePage={activePage} reset={gamerestart} paused={gamepaused} />
+                            <ProjectTimer activePage={activePage} reset={gamerestart} paused={gamepaused} gameState={gameStatus} />
                         </div>
                     </div>
                     <div className='mineContainer'>
@@ -255,7 +263,9 @@ function mapState(state) {
     return {};
 }
 
-const actionCreators = {};
+const actionCreators = {
+    checkAchievement
+};
 
 const connectedProjects = connect(mapState, actionCreators)(Projects);
 export { connectedProjects as Projects };

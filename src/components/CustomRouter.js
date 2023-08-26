@@ -1,6 +1,6 @@
 import React, { Fragment, createRef } from 'react';
 import { connect } from 'react-redux';
-import { rotateCube } from '../_actions/user.actions';
+import { checkAchievement, rotateCube } from '../_actions/user.actions';
 
 // CSS
 import '../css/router.css';
@@ -99,6 +99,9 @@ class CustomRouter extends React.Component {
 
         this.props.rotate(_loc);
         this.setState({ update: !update, animate: animations, aniTimer: timer, loc: _loc, queue: queue });
+        this.props.checkAchievement('firstStep');
+        this.props.checkAchievement('allPages', _newpage);
+        this.props.checkAchievement('doubleRotate', _loc);
     }
 
     async UpdateNavBar() {
@@ -163,6 +166,7 @@ function mapState(state) {
 
 const actionCreators = {
     rotate: rotateCube,
+    checkAchievement
 };
 
 var connectedCustomRouter = connect(mapState, actionCreators)(CustomRouter);

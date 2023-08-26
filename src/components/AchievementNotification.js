@@ -21,16 +21,19 @@ class AchievementNotification extends Component {
             achieveFinish();
     }
 
-    achievementType(percent = 100) {
-        let p = parseInt(percent);
-        if (percent < 15) return ['Rare achievement', `${p.toFixed(0)}%`];
-        if (p < 10) p = p.toFixed(1);
-        return ['Achievement', `${p}%`];
+    achievementType(percent) {
+        let p;
+        if (percent) {
+            p = parseInt(percent);
+            if (percent < 15) return `Rare achievement unlocked - ${p.toFixed(0)}%`;
+            if (p < 10) p = p.toFixed(1);
+        }
+        return `Achievement unlocked${p ? ` - ${p}%` : ''}`
     }
 
     render() {
         const { queue: [{ name, aniState, percent: p, description } = {}] } = this.props.achievements;
-        const [achievement, percent] = this.achievementType(p);
+        const achievement = this.achievementType(p);
 
         return <div id='achievement-window'>
             <div className='screen'>
@@ -40,7 +43,7 @@ class AchievementNotification extends Component {
                     </div>
                     <div className='content'>
                         <div className='first'>
-                            {achievement} unlocked - {percent}<br />
+                            {achievement}<br />
                             {name || 'Unamed Achievement'}
                         </div>
                         {description && <div className='second'>

@@ -5,6 +5,7 @@ import { timeout, starfieldSetup, createKey } from '../utils';
 import { STORE_STARS } from '../_actions/storage';
 
 import '../css/skills.css';
+import { checkAchievement } from '../_actions/user.actions';
 
 class Skills extends React.Component {
     constructor(props) {
@@ -134,6 +135,7 @@ class Skills extends React.Component {
         const { filters } = this.state;
         filters[index] = !filters[index];
         this.setState({ filters: filters });
+        this.props.checkAchievement('skillSort')
     }
 
     render() {
@@ -159,7 +161,9 @@ function mapState(state) {
     return {};
 }
 
-const actionCreators = {};
+const actionCreators = {
+    checkAchievement
+};
 
 const connectedSkills = connect(mapState, actionCreators)(Skills);
 export { connectedSkills as Skills };
