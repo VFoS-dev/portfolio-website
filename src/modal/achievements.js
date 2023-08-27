@@ -8,7 +8,7 @@ export class AchievementModal extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            show: true,
+            show: false,
             update: false,
         }
 
@@ -23,7 +23,8 @@ export class AchievementModal extends Component {
     }
 
     handleAchievementStatus(achieved) {
-        let res = []
+        let res = [];
+        let ser = [];
         for (const id of Object.keys(achieved).sort((a, b) => achievementsData[a].name.localeCompare(achievementsData[b].name))) {
             let completed = achieved[id] instanceof Date;
             if (!(completed || achievementsData[id].visible)) continue;
@@ -34,21 +35,31 @@ export class AchievementModal extends Component {
                 date = achieved[id].toLocaleDateString('nu', { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric' })
                 secondaryInfo = fullDescription
             } else {
-                secondaryInfo = 'In Progress';
+                secondaryInfo = `In Progress - ${data.length - achieved[id].length}/${data.length}`;
             }
-
-            res.push(<div key={`${id}-achievement`} className={`achieved ${completed ? 'completed' : 'inprogress'}`} >
-                <div>
-                    <div className='name'>{name}</div> <div>{description}</div>
-                </div>
-                <div>
-                    <div className='howto'>{secondaryInfo}</div> <div className='date'>{date}</div>
-                </div>
-
-            </div>);
+            if (completed) {
+                res.push(<div key={`${id}-achievement`} className={`achieved completed`} >
+                    <div>
+                        <div className='name'>{name}</div> <div>{description}</div>
+                    </div>
+                    <div>
+                        <div className='howto'>{secondaryInfo}</div> <div className='date'>{date}</div>
+                    </div>
+                </div>);
+            } else {
+                ser.push(<div key={`${id}-achievement`} className={`achieved inprogress`} >
+                    <div>
+                        <div className='name'>{name}</div>
+                        <div>{description}</div>
+                        <div className='gap'></div>
+                        <div className='howto'>{secondaryInfo}</div>
+                    </div>
+                </div>);
+            }
         }
-        return res;
+        return [ser, res].flat();
     }
+
     clear() {
         const { update } = this.state;
         clearAchievements();
@@ -63,13 +74,13 @@ export class AchievementModal extends Component {
 
         let completed = Object.keys(achieved).filter(a => achieved[a] instanceof Date).length;
         let total = Object.keys(achievementsData).length;
-        console.log(completed, total);
         return (
             <Fragment>
                 <div className='achievement-modal'>
                     <div className='achieve-header'>
+                        <div className='exit'>press ESC to close</div>
                         <div className='head'>Achievement Menu</div>
-                        <div className='info'><div>{total} achievements</div> <div>{(completed / total).toFixed(2)}% completed</div></div>
+                        <div className='info'><div>{completed}/{total} achievements</div> <div>{(completed / total * 100).toFixed(2)}% completed</div></div>
                     </div>
                     <div className='achievement-list'>
                         {this.handleAchievementStatus(achieved)}

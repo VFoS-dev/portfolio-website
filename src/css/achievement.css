@@ -281,6 +281,10 @@
     background-color: grey;
 }
 
+.achieved.inprogress {
+    background-color: rgb(68, 68, 68);
+}
+
 .achieved>div {
     display: flex;
     gap: 2rem;
@@ -329,4 +333,8 @@
     display: flex;
     flex-direction: row;
     gap: .5rem;
+}
+
+.achieve-header .exit{
+    float: right;
 }

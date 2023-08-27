@@ -58,6 +58,10 @@ export function achievements(state = init, { type, ...action }) {
 const validateState = (ani, def) => ['', 'notify', 'close'].includes(ani) ? ani : def;
 
 function checkAchievement(name, value) {
+    if (!achievementsData[name]) {
+        console.error('achievement not found', name);
+        return {}
+    }
     if (progress[name] instanceof Date) return { didUpdate: false };
 
     const { validate, data, ...achiData } = achievementsData[name];

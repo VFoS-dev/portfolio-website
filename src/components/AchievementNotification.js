@@ -36,8 +36,13 @@ class AchievementNotification extends Component {
         const { queue: [{ name, aniState, percent: p, description, achievementName } = {}] } = this.props.achievements;
         const achievement = this.achievementType(p);
 
+        this.props.checkAchievement('completedAbout', achievementName)
+        this.props.checkAchievement('completedIntro', achievementName)
+        this.props.checkAchievement('completedProjects', achievementName)
+        this.props.checkAchievement('completedSkills', achievementName)
+        this.props.checkAchievement('completedResume', achievementName)
+        this.props.checkAchievement('completedSocials', achievementName)
         this.props.checkAchievement('completed', achievementName)
-        console.log('here');
         return <div id='achievement-window'>
             <div className='screen'>
                 <AchievementModal />
