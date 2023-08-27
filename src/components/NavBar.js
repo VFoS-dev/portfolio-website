@@ -3,9 +3,8 @@ import { connect } from 'react-redux';
 
 import { Navbar, Nav, Container, Offcanvas } from 'react-bootstrap';
 import '../css/navbar.css';
-import { getCookie, setCookie } from '../utils';
-import { STORE_SECRET_FOUND } from '../_actions/storage';
 import { checkAchievement, resetCube } from '../_actions/user.actions';
+import { hasAchievement } from '../_reducers/achievements';
 
 class NavBar extends Component {
     constructor(props) {
@@ -96,7 +95,7 @@ class NavBar extends Component {
                             <Nav.Link className={((ref === 'resume') ? "active" : "") + " lato enable"} id='resume' onClick={(e) => this.changePage(e.target.id)}>Resume</Nav.Link>
                             <Nav.Link className={((ref === 'socials') ? "active" : "") + " lato enable"} id='socials' onClick={(e) => this.changePage(e.target.id)}>Socials</Nav.Link>
                             {correct && <Nav.Link className={((secret === 'secret') ? "active" : "") + " lato enable"} id='secret' onClick={() =>
-                                this.changePage((getCookie(STORE_SECRET_FOUND) ? ref : 'intro') + '/secret', setCookie(STORE_SECRET_FOUND, true, 30))
+                                this.changePage((hasAchievement('secretStart') ? ref : 'intro') + '/secret')
                             }>Secret</Nav.Link>}
                         </Nav>
                     </Offcanvas.Body>

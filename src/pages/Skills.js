@@ -2,7 +2,6 @@ import React, { Fragment, createRef } from 'react';
 import { connect } from 'react-redux';
 import { skillData } from '../_data/SkillsData';
 import { timeout, starfieldSetup, createKey } from '../utils';
-import { STORE_STARS } from '../_actions/storage';
 
 import '../css/skills.css';
 import { checkAchievement } from '../_actions/user.actions';

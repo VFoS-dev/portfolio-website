@@ -67,11 +67,8 @@ class Resume extends React.Component {
                 break;
             case 'minimized':
                 windows[index].focused = false;
-                this.props.checkAchievement('xplorer')
-                windows[index][id] = value === null ? !windows[index][id] : value;
-                break;
             case 'fullscreened':
-                this.props.checkAchievement('maximize')
+                this.props.checkAchievement('xplorer')
             default:
                 windows[index][id] = value === null ? !windows[index][id] : value;
                 break;

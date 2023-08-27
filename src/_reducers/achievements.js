@@ -6,10 +6,23 @@ const init = {
     queue: []
 };
 
+export function getAchievements() {
+    return progress;
+}
+
+export function hasAchievement(id) {
+    return progress[id] instanceof Date;
+}
+
+export function clearAchievements() {
+    progress = {};
+    localStorage.removeItem(STORE_ACHIEVEMENTS);
+}
+
 // set up saved achievements
-let progress = JSON.parse(localStorage.getItem(STORE_ACHIEVEMENTS)) || { dbKey: crypto.randomUUID().toString() }
+let progress = JSON.parse(localStorage.getItem(STORE_ACHIEVEMENTS)) || {}
 for (const ac of Object.keys(progress))
-    if (ac != 'dbKey' && typeof progress[ac] === 'string')
+    if (typeof progress[ac] === 'string')
         progress[ac] = new Date(progress[ac]);
 
 export function achievements(state = init, { type, ...action }) {

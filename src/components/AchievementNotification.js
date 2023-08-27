@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { checkAchievement, removeAchievementQueue, updateAchievementQueue } from '../_actions/user.actions';
+import { AchievementModal } from '../modal/';
 
 import '../css/achievement.css';
 
@@ -36,9 +37,10 @@ class AchievementNotification extends Component {
         const achievement = this.achievementType(p);
 
         this.props.checkAchievement('completed', achievementName)
-
+        console.log('here');
         return <div id='achievement-window'>
             <div className='screen'>
+                <AchievementModal />
                 <div id='popup' className={`achievement ${aniState}`} onAnimationEnd={this.nextAnimation}>
                     <div className='logo-container'>
                         <div className='logo' />
