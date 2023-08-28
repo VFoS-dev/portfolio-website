@@ -1,7 +1,7 @@
 import React, { Fragment, createRef } from 'react';
 import { connect } from 'react-redux';
 import { skillData } from '../_data/SkillsData';
-import { timeout, starfieldSetup, createKey } from '../utils';
+import { timeout, starfield, createKey } from '../utils';
 
 import '../css/skills.css';
 import { checkAchievement } from '../_actions/user.actions';
@@ -11,14 +11,15 @@ class Skills extends React.Component {
         super(props);
         const { activePage } = this.props;
         let skillCount = activePage ? skillData.length : 4;
+        const { getStars, disableStars, setUp } = starfield(activePage);
         this.state = {
+            getStars, disableStars, setUp,
             key: createKey(),
             scrolled: "-1",
             starfield: false,
             updatedRefs: false,
             onScreen: new Array(skillCount).fill(false),
             filters: new Array(skillCount).fill(true),
-            getStars: () => { }
         }
 
         this.canvas = createRef()
@@ -31,6 +32,8 @@ class Skills extends React.Component {
 
         this.generateSkills = this.generateSkills.bind(this);
     }
+
+    componentWillUnmount = () => this.state.disableStars()
 
     async userScrolled() {
         await timeout(0);
@@ -49,8 +52,8 @@ class Skills extends React.Component {
 
     async setupStarfield() {
         await timeout(0);
-        const { getStars } = starfieldSetup(this.canvas.current);
-        this.setState({ starfield: true, getStars });
+        this.state.setUp(this.canvas.current)
+        this.setState({ starfield: true });
     }
 
     mapSkills(title, entries, refIndex, color, textColor = null) {
