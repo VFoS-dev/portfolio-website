@@ -1,5 +1,5 @@
 div.face.intro {
-    --content-color: rgb(24, 24, 24);
+    --content-color: rgb(2, 2, 18);
 }
 
 .face .intro {
@@ -11,109 +11,94 @@ div.face.intro {
     max-height: 100vh;
 }
 
-.intro .center {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
+#snake {
+    position: sticky;
+    top: 0;
+    width: 100vw;
+    height: min(100vh, 100dvh);
 }
 
-.intro .welcome {
-    background: -webkit-linear-gradient(rgb(255, 157, 0), rgb(255, 217, 155));
-    -webkit-background-clip: text !important;
-    background-clip: text !important;
-    -webkit-text-fill-color: transparent !important;
-}
-
-.backdrop {
-    mix-blend-mode: hard-light;
-    filter: blur(7px);
-}
-
-.cube:nth-child(2n) {
-    border-color: #d2b252;
-    box-shadow: inset 2px -2px rgb(0, 0, 0), inset -2px 2px rgb(255, 255, 255), inset 5px 5px gold, 0px 0px 10px rgba(255, 255, 255, 0.208);
-}
-
-.cube {
-    border: inset 2px #e0bf3c;
-    box-shadow: inset 2px -2px rgb(51, 51, 51), inset -2px 2px rgb(228, 228, 228), inset 5px 5px rgb(188, 168, 52), 0px 0px 10px rgba(255, 255, 255, 0.208);
+.welcome {
     position: absolute;
-    top: 80vh;
-    left: 45vw;
-    width: 10px;
-    height: 10px;
-    transform-origin: top left;
-    transform: scale(0) rotate(0deg) translate(-50%, -50%);
-    -webkit-animation: cube 12s ease-in forwards infinite;
-    animation: cube 12s ease-out forwards infinite;
+    top: 30%;
+    left: 10%;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
 }
 
 
-.cube:nth-child(2) {
-    -webkit-animation-delay: 2s;
-    animation-delay: 2s;
-    left: 25vw;
-    top: 40vh;
+.welcome {
+    color: #FFF;
+    font-family: Handjet;
+    font-size: 40px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
 }
 
-.cube:nth-child(3) {
-    -webkit-animation-delay: 4s;
-    animation-delay: 4s;
-    left: 75vw;
-    top: 50vh;
+.welcome h1 {
+    color: #FFF;
+    font-family: Handjet;
+    font-size: 120px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
 }
 
-.cube:nth-child(4) {
-    -webkit-animation-delay: 6s;
-    animation-delay: 6s;
-    left: 90vw;
-    top: 10vh;
+.welcome .name {
+    background: linear-gradient(180deg, #F5BF00 0%, #ED4B05 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-family: Handjet;
+    font-size: 120px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
 }
 
-.cube:nth-child(5) {
-    -webkit-animation-delay: 8s;
-    animation-delay: 8s;
-    left: 10vw;
-    top: 85vh;
+.welcome .cred {
+    color: #FF0076;
+    font-family: Handjet;
+    font-size: 56px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
 }
 
-.cube:nth-child(6) {
-    -webkit-animation-delay: 10s;
-    animation-delay: 10s;
-    left: 50vw;
-    top: 10vh;
-}
-
-@-webkit-keyframes cube {
-    from {
-        transform: scale(0) rotate(0deg) translate(-50%, -50%);
-        opacity: 1;
-    }
-
-    to {
-        transform: scale(20) rotate(960deg) translate(-50%, -50%);
-        opacity: 0;
-    }
-}
-
-@keyframes cube {
-    from {
-        transform: scale(0) rotate(0deg) translate(-50%, -50%);
-        opacity: 1;
-    }
-
-    to {
-        transform: scale(20) rotate(960deg) translate(-50%, -50%);
-        opacity: 0;
-    }
-}
-
-.no_longer_looking {
+.welcome .wave {
+    display: inline-block;
     position: absolute;
-    top: 15%;
-    left: 50%;
-    color: red;
-    font-size: 1.5em;
-    transform: translateX(-50%);
+    aspect-ratio: 1/1;
+    height: 3rem;
+    margin-left: 1.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background-image: url(/public/images/intro/wave.webp);
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+.light-bottom,
+.light-top {
+    filter: blur(5px);
+    position: absolute;
+    height: 345px;
+    width: 765px;
+    background-repeat: no-repeat;
+}
+
+.light-top {
+    top: -5px;
+    left: -5px;
+    background-image: url(/public/images/intro/glow-top.svg);
+}
+
+.light-bottom {
+    bottom: -5px;
+    right: -5px;
+    background-image: url(/public/images/intro/glow-bottom.svg);
 }

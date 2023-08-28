@@ -25,7 +25,8 @@ class CustomRouter extends React.Component {
             winloc: '',
             queue: false,
             scrollPercent: 1,
-            cantRot: false
+            cantRot: false,
+            fixedRefs: false,
         };
         this.focus = createRef();
         this.prior = createRef();
@@ -130,10 +131,12 @@ class CustomRouter extends React.Component {
     removeLoading = () => document.getElementById('loading').style.display = 'none';
 
     render() {
-        const { animate, loc, queue, scrollPercent } = this.state;
+        const { animate, loc, queue, scrollPercent, fixedRefs } = this.state;
         const { rotation } = this.props;
         const [, page,] = window.location.pathname.split('/');
         if (!!page && rotation.front !== page) this.props.rotate(JSON.stringify(rotation).split(`":"${page} `)[0].split('"').splice(-1)[0]);
+        if (!fixedRefs) setTimeout(() => this.setState({ fixedRefs: true }), 0)
+
         return (<Fragment>
             <SecretController focused={this.focus} />
             <AchievementNotification focused={this.focus} />

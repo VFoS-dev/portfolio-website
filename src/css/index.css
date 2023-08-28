@@ -66,6 +66,11 @@ body {
     z-index: 2000 !important;
 }
 
+.sticky-underlay {
+    z-index: unset !important;
+}
+
+.sticky-underlay,
 .sticky-overlay {
     z-index: 1;
     position: fixed;
