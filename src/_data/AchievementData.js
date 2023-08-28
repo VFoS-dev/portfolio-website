@@ -83,7 +83,7 @@ export const achievementsData = {
         fullDescription: "As a reward you will recieve one free license of Windows XP (you can ask ChatGPT)",
         description: "Found all resume page achievements",
         validate: "otherAchievements",
-        data: ['windowStart', 'exitWindow', 'xplorer', 'editResume', 'flavResume'],
+        data: ['windowStart', 'exitWindow', 'xplorer', 'editResume', 'flavResume', 'realresume'],
     },
     windowStart: {
         name: "404 start menu not found",
@@ -178,14 +178,7 @@ export const achievementsData = {
         fullDescription: "Time to go play solitaire",
         description: "Found all project page achievements",
         validate: "otherAchievements",
-        data: ['mineTime', 'mineFlag', 'projectAll', 'projectStart', 'winMinesweeper', 'mineRunner', 'mineBoom', 'mineStart'],
-    },
-    mineTime: {
-        name: "Can't stop thinking",
-        fullDescription: "Maybe you should take a break from Minesweeper now",
-        validate: "ifmore",
-        data: 998,
-        description: "Reached 999 on minesweeper ",
+        data: ['mineFlag', 'projectAll', 'projectStart', 'winMinesweeper', 'mineRunner', 'mineBoom', 'mineStart'],
     },
     mineFlag: {
         name: "Quick ad from our sponsor",
@@ -207,8 +200,8 @@ export const achievementsData = {
         description: "Visited one project",
     },
     winMinesweeper: {
-        name: "Nerd",
-        fullDescription: "Or geek, who knows?",
+        name: "Bomb squad",
+        fullDescription: "We now know who to call",
         validate: "ifnot",
         description: "Won minesweeper",
     },
@@ -220,8 +213,8 @@ export const achievementsData = {
         description: "Won minesweeper within a minute",
     },
     mineBoom: {
-        name: "Mission failed, we'll get 'em next time",
-        fullDescription: "Minesweeper is hard",
+        name: "Kaboom",
+        fullDescription: "Mission failed, we'll get 'em next time",
         validate: "ifnot",
         description: "Failed minesweeper",
     },
@@ -253,7 +246,7 @@ export const achievementsData = {
         fullDescription: "Are you tired of slicing fruit yet?",
         description: "Found all social page achievements",
         validate: "otherAchievements",
-        data: ['realresume', 'socialYouTube', 'socialGithub', 'socialLinkedin', 'socialLeetCode', 'fruitinit', 'fruitcomplete', 'fruitCheck1', 'fruitEscape', 'fruitCheck2', 'fruitCheck3', 'fruitCatapult'],
+        data: ['socialYouTube', 'socialGithub', 'socialLinkedin', 'socialLeetCode', 'fruitinit', 'fruitcomplete', 'fruitCheck1', 'fruitEscape', 'fruitCheck2', 'fruitCheck3', 'fruitCatapult'],
     },
     realresume: {
         name: "Ooh fancy",

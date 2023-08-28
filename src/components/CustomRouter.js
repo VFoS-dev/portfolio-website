@@ -100,7 +100,6 @@ class CustomRouter extends React.Component {
         this.props.rotate(_loc);
         this.setState({ update: !update, animate: animations, aniTimer: timer, loc: _loc, queue: queue });
         this.props.checkAchievement('firstStep');
-        this.props.checkAchievement('allPages', _newpage);
         this.props.checkAchievement('doubleRotate', _loc);
     }
 

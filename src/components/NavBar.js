@@ -64,6 +64,7 @@ class NavBar extends Component {
         const _scrollPercent = f ? (document.documentElement.clientHeight >= f.scrollHeight) ? 1 : (f.scrollHeight === 0) ? 0 : f.scrollTop / Math.min(f.scrollHeight - f.offsetHeight, f.scrollHeight) : 1;
 
         this.props.checkAchievement('secretfail', checkpoints);
+        this.props.checkAchievement('allPages', ref || 'intro');
         if (history.length == 10) this.props.checkAchievement('secretfailall', checkpoints);
 
         return (<Navbar key='lg' bg="dark" expand='lg' className="navbar navbar-expand-lg fixed-top bg-transparent disable" expanded={nav} onToggle={() => this.setState({ nav: !nav })}>
