@@ -40,6 +40,9 @@ export function rotation(state = origin, { type, pos }) {
     const correct = secret.map((c, index) => (history[index] || false) === c).reduce((a, b) => a + b) === secret.length;
     const checkpoints = history.map((c, index) => secret[index] === c);
 
+    rots.hLength = history.length;
+    rots.checkpoints = checkpoints;
+
     switch (pos) {
         case 'right': return { ...state, checkpoints, correct, history, right: back, left: front, back: left, front: right, };
         case 'bottom': return { ...state, checkpoints, correct, history, bottom: back, top: front, front: bottom, back: top, };
@@ -65,6 +68,12 @@ function onMount(reset = false) {
 
     return rotation(defState, { type: CUBE_ROT, pos })
 }
+
+export let rots = {
+    hLength: 0,
+    checkpoints: [],
+    secretLength: secret.length,
+};
 
 const defState = {
     top: 'resume',

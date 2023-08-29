@@ -11,6 +11,16 @@ div.face.intro {
     max-height: 100vh;
 }
 
+.intro :is(.welcome, .light-top, .light-bottom) {
+    transition: opacity .5s;
+}
+
+.intro.game-active :is(.welcome, .light-top, .light-bottom) {
+    opacity: 0;
+    pointer-events: none;
+    cursor: unset;
+}
+
 #snake {
     position: sticky;
     top: 0;
@@ -19,30 +29,28 @@ div.face.intro {
 }
 
 .welcome {
+    font-family: Handjet;
+    color: #FFF;
     position: absolute;
+    font-style: normal;
     top: 30%;
     left: 10%;
     display: inline-flex;
     flex-direction: column;
     align-items: flex-start;
     gap: 16px;
+    color: #FFF;
 }
 
-
-.welcome {
-    color: #FFF;
-    font-family: Handjet;
+.welcome h3 {
     font-size: 40px;
-    font-style: normal;
     font-weight: 700;
     line-height: normal;
 }
 
 .welcome h1 {
     color: #FFF;
-    font-family: Handjet;
     font-size: 120px;
-    font-style: normal;
     font-weight: 700;
     line-height: normal;
 }
@@ -52,16 +60,13 @@ div.face.intro {
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    font-family: Handjet;
     font-size: 120px;
-    font-style: normal;
     font-weight: 700;
     line-height: normal;
 }
 
 .welcome .cred {
     color: #FF0076;
-    font-family: Handjet;
     font-size: 56px;
     font-style: normal;
     font-weight: 700;
@@ -86,19 +91,92 @@ div.face.intro {
 .light-top {
     filter: blur(5px);
     position: absolute;
-    height: 345px;
-    width: 765px;
     background-repeat: no-repeat;
 }
 
 .light-top {
-    top: -5px;
-    left: -5px;
+    height: 332px;
+    width: 833px;
+    top: -2px;
+    left: -2px;
     background-image: url(/public/images/intro/glow-top.svg);
 }
 
 .light-bottom {
-    bottom: -5px;
-    right: -5px;
+    height: 345px;
+    width: 765px;
+    bottom: -2px;
+    right: -2px;
     background-image: url(/public/images/intro/glow-bottom.svg);
+}
+
+.welcome .button-container {
+    margin-top: 15px;
+    display: flex;
+    align-items: flex-start;
+    gap: 32px;
+}
+
+.intro .button {
+    align-items: center;
+    background: linear-gradient(180deg, var(--gradient-top, #A7A297) 0%, var(--gradient-bottom, #65593E) 100%);
+    border: 2px solid var(--border-inner, #CDC0A2);
+    border-radius: 8px;
+    box-shadow: 0px 0px 8px 8px rgba(0, 0, 0, 0.2) inset, 0px 0px 0px 1px var(--border-outer, #65593E);
+    color: var(--color, white);
+    display: flex;
+    flex-direction: column;
+    font-size: 23px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    overflow: hidden;
+    padding: 15px 24px;
+    perspective: 25px;
+    position: relative;
+    text-shadow: 0px 0px 8px rgba(0, 0, 0, 0.5);
+    transition: filter .25s;
+}
+
+.intro .button::after,
+.intro .button::before {
+    content: '';
+    position: absolute;
+    width: 40%;
+    height: 15px;
+    background-color: var(--decor-fill, #6f685a);
+    border-radius: 3px;
+    border: 2px solid var(--decor-border, #CDC0A2);
+}
+
+.intro .button::before {
+    top: 0;
+    transform: translateY(-50%) rotateX(-45deg);
+}
+
+.intro .button::after {
+    bottom: 0;
+    transform: translateY(50%) rotateX(45deg);
+}
+
+.intro .button:hover {
+    filter: brightness(.6);
+}
+
+.intro .button.orange {
+    --border-outer: #B65208;
+    --border-inner: #773402;
+    --gradient-top: #FCB601;
+    --gradient-bottom: #AB6A09;
+    --decor-fill: #773402;
+    --decor-border: #B65208;
+}
+
+.intro .button.grey {
+    --border-outer: #CDC0A2;
+    --border-inner: #CDC0A2;
+    --gradient-top: #A7A297;
+    --gradient-bottom: #65593E;
+    --decor-fill: #6f695a;
+    --decor-border: #CDC0A2;
 }
