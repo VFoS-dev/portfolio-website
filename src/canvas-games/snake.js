@@ -36,7 +36,8 @@ export function snakeGame(activePage = false, endGame = () => { }, checkAchievem
     }
 
     const noRotate = (bool) => window.dispatchEvent(new CustomEvent("custom-changeRot", { detail: bool }));
-    const hideNavbar = (bool) => window.dispatchEvent(new CustomEvent("custom-hideNavbar", { detail: bool }))
+    const hideNavbar = (bool) => window.dispatchEvent(new CustomEvent("custom-hideNavbar", { detail: bool }));
+    const getColor = (color) => colors[color] ?? colors.unset;
 
     function generateBoard({ type = null } = {}) {
         const { clientHeight, clientWidth } = document.documentElement;
@@ -57,13 +58,14 @@ export function snakeGame(activePage = false, endGame = () => { }, checkAchievem
         sizeRemY = (size[`${size.y}Count`] * cellSize - size[`${size.y}`]) / 2;
 
         let originSize = `${gamefield?.length},${gamefield[0]?.length}`;
-        gamefield = [];
 
+        gamefield = [];
         for (let x = 0; x < size[`${size.x}Count`]; x++)
             gamefield.push(new Array(size[`${size.y}Count`]).fill('unset'));
+
         if (originSize != `${gamefield.length},${gamefield[0].length}`)
             cycle = generateHamiltonianCycle(size[`${size.x}Count`], size[`${size.y}Count`]);
-        update = []
+        update = [];
         fullreDraw();
         if (snake) gameLost(type);
     }
@@ -80,7 +82,7 @@ export function snakeGame(activePage = false, endGame = () => { }, checkAchievem
                 // fill initial cell
                 ctx.beginPath();
                 ctx.arc(x, y, halfSize / 3, 0, 2 * Math.PI);
-                ctx.fillStyle = colors[color];
+                ctx.fillStyle = getColor(color);
                 ctx.fill();
             });
         });
@@ -99,8 +101,8 @@ export function snakeGame(activePage = false, endGame = () => { }, checkAchievem
             // fill in gradient
             if (color != 'unset' && color != 'white') {
                 const gradient = ctx.createRadialGradient(x, y, halfSize / 3, x, y, halfSize);
-                gradient.addColorStop(0, colors[color] + '7E');
-                gradient.addColorStop(1, colors[color] + '00');
+                gradient.addColorStop(0, getColor(color) + '7E');
+                gradient.addColorStop(1, getColor(color) + '00');
                 ctx.fillStyle = gradient;
                 ctx.fillRect(x - cellSize, y - cellSize, x + cellSize, y + cellSize);
             }
@@ -108,7 +110,7 @@ export function snakeGame(activePage = false, endGame = () => { }, checkAchievem
             // fill initial cell
             ctx.beginPath();
             ctx.arc(x, y, halfSize / 3, 0, 2 * Math.PI);
-            ctx.fillStyle = colors[color];
+            ctx.fillStyle = getColor(color);
             ctx.fill();
         }
         update = [];

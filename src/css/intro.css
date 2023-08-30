@@ -38,24 +38,25 @@ div.face.intro {
     color: #FFF;
     position: absolute;
     font-style: normal;
-    top: 30%;
+    top: 53%;
+    transform: translateY(-50%);
     left: 10%;
     display: inline-flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 16px;
+    gap: clamp(5px, 1vh, 16px);
     color: #FFF;
 }
 
 .welcome h3 {
-    font-size: 40px;
+    font-size: clamp(10px, 5vh, 40px);
     font-weight: 700;
     line-height: normal;
 }
 
 .welcome h1 {
     color: #FFF;
-    font-size: 120px;
+    font-size: clamp(30px, 15vh, 120px);
     font-weight: 700;
     line-height: normal;
 }
@@ -65,14 +66,14 @@ div.face.intro {
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    font-size: 120px;
+    font-size: clamp(30px, 15vh, 120px);
     font-weight: 700;
     line-height: normal;
 }
 
 .welcome .cred {
     color: #f32222;
-    font-size: 56px;
+    font-size: clamp(14px, 7vh, 56px);
     font-style: normal;
     font-weight: 700;
     line-height: normal;
@@ -82,7 +83,7 @@ div.face.intro {
     display: inline-block;
     position: absolute;
     aspect-ratio: 1/1;
-    height: 3rem;
+    height: clamp(12px, 6vh, 56px);
     margin-left: 1.5rem;
     top: 50%;
     transform: translateY(-50%);
@@ -131,7 +132,7 @@ div.face.intro {
     color: var(--color, white);
     display: flex;
     flex-direction: column;
-    font-size: 23px;
+    font-size: clamp(15px, 2.875vh, 23px);
     font-style: normal;
     font-weight: 600;
     line-height: normal;
