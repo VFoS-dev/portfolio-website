@@ -1,5 +1,16 @@
 import { rots } from "../_reducers/rotation";
 
+export const setKey = (key) => touchKey = key;
+
+let keyCodes = {
+    38: 'top', 87: "top",
+    37: 'left', 65: "left",
+    40: 'bottom', 83: "bottom",
+    39: 'right', 68: "right",
+};
+
+let touchKey;
+
 export function snakeGame(activePage = false, endGame = () => { }, checkAchievement = () => { }) {
     const CELLS = 34,
         COLORS = {
@@ -23,7 +34,6 @@ export function snakeGame(activePage = false, endGame = () => { }, checkAchievem
 
         if (activePage) {
             document.addEventListener('keydown', keyPress);
-            window.addEventListener('custom-keydown', keyPressEle)
             window.addEventListener('resize', generateBoard);
             gameStart(false);
         }
@@ -32,7 +42,6 @@ export function snakeGame(activePage = false, endGame = () => { }, checkAchievem
     const noRotate = (bool) => window.dispatchEvent(new CustomEvent("custom-changeRot", { detail: bool }));
     const hideNavbar = (bool) => window.dispatchEvent(new CustomEvent("custom-hideNavbar", { detail: bool }));
     const getColor = (color) => COLORS[color] ?? COLORS.unset;
-    const keyPressEle = ({ detail }) => keyPress(detail);
 
     function generateBoard({ type = null } = {}) {
         const { clientHeight, clientWidth } = document.documentElement;
@@ -129,12 +138,7 @@ export function snakeGame(activePage = false, endGame = () => { }, checkAchievem
     }
 
     function keyPress({ keyCode }) {
-        let k = {
-            38: 'top', 87: "top",
-            37: 'left', 65: "left",
-            40: 'bottom', 83: "bottom",
-            39: 'right', 68: "right",
-        }[keyCode];
+        let k = keyCodes[keyCode];
         if (!k) return;
         const { head: { x, y }, segments, player } = snake;
         if (!player) return;
@@ -144,7 +148,8 @@ export function snakeGame(activePage = false, endGame = () => { }, checkAchievem
     }
 
     function gameStart(_player = true) {
-        const { hLength, checkpoints, secretLength } = rots
+        touchKey = null;
+        const { hLength, checkpoints, secretLength } = rots;
         player = _player
         pastTime = 0;
         exiting = false;
@@ -161,7 +166,6 @@ export function snakeGame(activePage = false, endGame = () => { }, checkAchievem
             hideNavbar(true);
             [... new Array(9)].forEach((a, i) => segments.push(newSegment(x, y, i + 1)))
             document.addEventListener('keydown', keyPress);
-            window.addEventListener('custom-keydown', keyPressEle)
             if (!hLength) checkAchievement('snakeStar');
             if (secretLength === hLength) {
                 checkAchievement('snakeLights')
@@ -208,7 +212,6 @@ export function snakeGame(activePage = false, endGame = () => { }, checkAchievem
     function updateMovement() {
         currentStep = step;
         const { dir, segments, head } = snake;
-
         snake.segments = segments.map(({ x, y, color }, i) => {
             update.push({ x, y });
             gamefield[x][y] = 'unset';
@@ -264,7 +267,6 @@ export function snakeGame(activePage = false, endGame = () => { }, checkAchievem
             hideNavbar(false);
             exiting = true;
             document.removeEventListener('keydown', keyPress);
-            window.removeEventListener('custom-keydown', keyPressEle)
             endGame();
             resetTimer = setTimeout(() => gameStart(false), !e * 3000 + 1000)
         } else {
@@ -280,6 +282,11 @@ export function snakeGame(activePage = false, endGame = () => { }, checkAchievem
         pastTime = time;
         currentStep -= deltaTime;
 
+        if (touchKey) {
+            keyPress({ keyCode: touchKey })
+            touchKey = null;
+        }
+
         if (currentStep <= 0 && snake) {
             updateAi()
             updateMovement(currentStep);
@@ -294,7 +301,6 @@ export function snakeGame(activePage = false, endGame = () => { }, checkAchievem
         noRotate(false);
         hideNavbar(false);
         document.removeEventListener('keydown', keyPress);
-        window.removeEventListener('custom-keydown', keyPressEle)
         exiting = true;
     }
 

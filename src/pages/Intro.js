@@ -4,9 +4,8 @@ import { createRef } from 'react';
 import { checkAchievement } from '../_actions/user.actions';
 
 import '../css/intro.css';
-import { snakeGame } from '../canvas-games/snake';
+import { snakeGame, setKey } from '../canvas-games/snake';
 import { timeout } from '../utils/game';
-import { SendKeyCode } from '../utils/events';
 
 class Intro extends React.Component {
     constructor(props) {
@@ -46,7 +45,7 @@ class Intro extends React.Component {
 
     vKeyboard({ target: { id } }) {
         if (!id) return;
-        SendKeyCode(id);
+        setKey(id);
     }
 
     render() {
