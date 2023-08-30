@@ -12,11 +12,13 @@ export function snakeGame(activePage = false, endGame = () => { }, checkAchievem
             white: '#ffffff',
         },
         gamefield = [],
+        sizeRemX,
+        sizeRemY,
         cellSize,
         ctx,
         step = 500,
         currentStep = step,
-        snake = [],
+        snake,
         update = [],
         exiting = false,
         deltaTime = 0,
@@ -25,28 +27,46 @@ export function snakeGame(activePage = false, endGame = () => { }, checkAchievem
 
     function setup(_canvas) {
         document.addEventListener('keydown', keyPress);
+        window.addEventListener('resize', generateBoard);
         canvas = _canvas;
-        const { clientHeight, clientWidth } = document.documentElement;
 
-        canvas.height = clientHeight;
-        canvas.width = clientWidth;
-        ctx = canvas.getContext('2d');
+        generateBoard()
 
-        cellSize = clientWidth / CELLS;
-        let vertical = Math.floor(clientHeight / cellSize);
-
-        for (let x = 0; x < CELLS; x++)
-            gamefield.push(new Array(vertical).fill('unset'));
-
-        // Example dimensions
-        cycle = generateHamiltonianCycle(CELLS, vertical);
-
-        fullreDraw();
         gameStart(false);
     }
 
     const noRotate = (bool) => window.dispatchEvent(new CustomEvent("custom-changeRot", { detail: bool }));
     const hideNavbar = (bool) => window.dispatchEvent(new CustomEvent("custom-hideNavbar", { detail: bool }))
+
+    function generateBoard({ type = null } = {}) {
+        const { clientHeight, clientWidth } = document.documentElement;
+        let size = (clientHeight > clientWidth) ?
+            { longer: clientHeight, shorter: clientWidth, x: 'shorter', y: 'longer', longerCount: 0, shorterCount: 0 } :
+            { longer: clientWidth, shorter: clientHeight, x: 'longer', y: 'shorter', longerCount: 0, shorterCount: 0 }
+
+        canvas.height = clientHeight;
+        canvas.width = clientWidth;
+        ctx = canvas.getContext('2d');
+
+        cellSize = size.longer / CELLS;
+        size.longerCount = CELLS;
+        size.shorterCount = Math.floor(size.shorter / cellSize);
+        if (size.shorterCount % 2) size.shorterCount--;
+
+        sizeRemX = (size[`${size.x}Count`] * cellSize - size[`${size.x}`]) / 2;
+        sizeRemY = (size[`${size.y}Count`] * cellSize - size[`${size.y}`]) / 2;
+
+        let originSize = `${gamefield?.length},${gamefield[0]?.length}`;
+        gamefield = [];
+
+        for (let x = 0; x < size[`${size.x}Count`]; x++)
+            gamefield.push(new Array(size[`${size.y}Count`]).fill('unset'));
+        if (originSize != `${gamefield.length},${gamefield[0].length}`)
+            cycle = generateHamiltonianCycle(size[`${size.x}Count`], size[`${size.y}Count`]);
+        update = []
+        fullreDraw();
+        if (snake) gameLost(type);
+    }
 
     function fullreDraw() {
         let halfSize = cellSize / 2;
@@ -54,8 +74,8 @@ export function snakeGame(activePage = false, endGame = () => { }, checkAchievem
         ctx.clearRect(0, 0, clientWidth, clientHeight);
         gamefield.forEach((col, ix) => {
             col.forEach((color, iy) => {
-                let x = ix * cellSize + halfSize;
-                let y = iy * cellSize + halfSize;
+                let x = ix * cellSize + halfSize - sizeRemX;
+                let y = iy * cellSize + halfSize - sizeRemY;
 
                 // fill initial cell
                 ctx.beginPath();
@@ -69,11 +89,11 @@ export function snakeGame(activePage = false, endGame = () => { }, checkAchievem
     function draw() {
         let halfSize = cellSize / 2;
         for (const { x: ix, y: iy } of update) {
-            let x = ix * cellSize + halfSize;
-            let y = iy * cellSize + halfSize;
+            let x = ix * cellSize + halfSize - sizeRemX;
+            let y = iy * cellSize + halfSize - sizeRemY;
 
             // clear
-            ctx.clearRect(ix * cellSize, iy * cellSize, cellSize, cellSize);
+            ctx.clearRect(x - halfSize, y - halfSize, cellSize, cellSize);
             let color = gamefield[ix][iy];
 
             // fill in gradient
@@ -174,9 +194,9 @@ export function snakeGame(activePage = false, endGame = () => { }, checkAchievem
 
     function updateAi() {
         if (player) return;
-
-        let counts = countAvailable(snake, aFruit, gamefield);
-        let closest = checkPath(snake.head, aFruit, gamefield, ({ fruitIndex, dirIndex, closeIndex, dir }) => counts[dir] >= snake.segments.length && fruitIndex >= dirIndex && (closeIndex < dirIndex || !closeIndex));
+        let counts, closest
+        counts = countAvailable(snake, aFruit, gamefield);
+        closest = checkPath(snake.head, aFruit, gamefield, ({ fruitIndex, dirIndex, closeIndex, dir }) => counts[dir] >= snake.segments.length && fruitIndex >= dirIndex && (closeIndex < dirIndex || !closeIndex));
         if (!closest.index) {
             closest = checkPath(snake.head, aFruit, gamefield, ({ dirIndex, closeIndex }) => closeIndex < dirIndex);
         }
@@ -229,22 +249,30 @@ export function snakeGame(activePage = false, endGame = () => { }, checkAchievem
 
     }
 
-    function gameLost() {
-        const { head, segments } = snake;
-        [head, ...segments].forEach(({ x, y }) => {
-            gamefield[x][y] = 'unset'
-            update.push({ x, y })
-        })
+    let resetTimer;
+    function gameLost(e) {
+        if (snake) {
+            const { head, segments } = snake;
+            [head, ...segments].forEach(({ x, y }) => {
+                gamefield[x][y] = 'unset'
+                update.push({ x, y })
+            })
+            snake = null;
+        }
+
+        if (resetTimer) resetTimer = clearTimeout(resetTimer)
+
         if (player) {
             noRotate(false);
             hideNavbar(false);
             exiting = true;
             document.removeEventListener('keydown', keyPress);
             endGame();
+            resetTimer = setTimeout(() => gameStart(false), !e * 3000 + 1000)
         } else {
-            checkAchievement('snakeAI')
+            if (e != 'resize') checkAchievement('snakeAI')
             cycle = generateHamiltonianCycle(gamefield.length, gamefield[0].length);
-            gameStart(false)
+            resetTimer = setTimeout(() => gameStart(false), !!e * 1000)
         }
     }
 
@@ -253,7 +281,7 @@ export function snakeGame(activePage = false, endGame = () => { }, checkAchievem
         pastTime = time;
         currentStep -= deltaTime;
 
-        if (currentStep <= 0) {
+        if (currentStep <= 0 && snake) {
             updateAi()
             updateMovement(currentStep);
         }
