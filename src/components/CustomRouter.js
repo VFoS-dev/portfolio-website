@@ -44,10 +44,10 @@ class CustomRouter extends React.Component {
 
     keyRot({ keyCode }) {
         var p = {
-            38: 'top',
-            40: 'bottom',
-            37: 'left',
-            39: 'right',
+            38: 'top', 87: "top",
+            37: 'left', 65: "left",
+            40: 'bottom', 83: "bottom",
+            39: 'right', 68: "right",
         }[keyCode];
         if (!p) return;
 

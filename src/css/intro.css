@@ -16,7 +16,7 @@ div.face.intro {
     max-height: 100vh;
 }
 
-.intro :is(.welcome, .light-top, .light-bottom) {
+.intro :is(.welcome, .light-top, .light-bottom, .WASD) {
     transition: opacity .5s;
 }
 
@@ -185,4 +185,46 @@ div.face.intro {
     --gradient-bottom: #65593E;
     --decor-fill: #6f695a;
     --decor-border: #CDC0A2;
+}
+
+
+@media (pointer:coarse) {
+    .intro.game-active .WASD {
+        opacity: 1;
+        pointer-events: all;
+    }
+}
+
+.WASD>div,
+.WASD {
+    display: flex;
+    gap: 5px;
+}
+
+.WASD {
+    opacity: 0;
+    pointer-events: none;
+    cursor: unset;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    color: white;
+    flex-direction: column;
+}
+
+.WASD>div {
+    flex-direction: row;
+    justify-content: center;
+}
+
+.WASD .key {
+    opacity: 0.5;
+    --keySize: 15vmin;
+    height: var(--keySize);
+    width: var(--keySize);
+    line-height: var(--keySize);
+    font-size: calc(var(--keySize) / 2);
+    text-align: center;
+    vertical-align: center;
+    border: 1px white solid;
 }

@@ -1,29 +1,21 @@
 import { rots } from "../_reducers/rotation";
 
 export function snakeGame(activePage = false, endGame = () => { }, checkAchievement = () => { }) {
-    const CELLS = 34;
-    let canvas,
-        colors = {
+    const CELLS = 34,
+        COLORS = {
             unset: '#151024',
             gold: '#f8df01',
             food: '#28d7eb',
             green: '#09ff00',
             red: '#f32222',
             white: '#ffffff',
-        },
-        gamefield = [],
-        sizeRemX,
-        sizeRemY,
-        cellSize,
-        ctx,
+        };
+    let canvas, sizeRemX, sizeRemY, cellSize, aFruit, player, ctx, snake,
+        gamefield = [], update = [],
         step = 500,
         currentStep = step,
-        snake,
-        update = [],
         exiting = false,
-        deltaTime = 0,
-        pastTime = 0,
-        aFruit, player;
+        deltaTime = 0, pastTime = 0;
 
     function setup(_canvas) {
         canvas = _canvas;
@@ -31,6 +23,7 @@ export function snakeGame(activePage = false, endGame = () => { }, checkAchievem
 
         if (activePage) {
             document.addEventListener('keydown', keyPress);
+            window.addEventListener('custom-keydown', keyPressEle)
             window.addEventListener('resize', generateBoard);
             gameStart(false);
         }
@@ -38,7 +31,8 @@ export function snakeGame(activePage = false, endGame = () => { }, checkAchievem
 
     const noRotate = (bool) => window.dispatchEvent(new CustomEvent("custom-changeRot", { detail: bool }));
     const hideNavbar = (bool) => window.dispatchEvent(new CustomEvent("custom-hideNavbar", { detail: bool }));
-    const getColor = (color) => colors[color] ?? colors.unset;
+    const getColor = (color) => COLORS[color] ?? COLORS.unset;
+    const keyPressEle = ({ detail }) => keyPress(detail);
 
     function generateBoard({ type = null } = {}) {
         const { clientHeight, clientWidth } = document.documentElement;
@@ -167,6 +161,7 @@ export function snakeGame(activePage = false, endGame = () => { }, checkAchievem
             hideNavbar(true);
             [... new Array(9)].forEach((a, i) => segments.push(newSegment(x, y, i + 1)))
             document.addEventListener('keydown', keyPress);
+            window.addEventListener('custom-keydown', keyPressEle)
             if (!hLength) checkAchievement('snakeStar');
             if (secretLength === hLength) {
                 checkAchievement('snakeLights')
@@ -269,12 +264,14 @@ export function snakeGame(activePage = false, endGame = () => { }, checkAchievem
             hideNavbar(false);
             exiting = true;
             document.removeEventListener('keydown', keyPress);
+            window.removeEventListener('custom-keydown', keyPressEle)
             endGame();
             resetTimer = setTimeout(() => gameStart(false), !e * 3000 + 1000)
         } else {
             if (e != 'resize') checkAchievement('snakeAI')
             cycle = generateHamiltonianCycle(gamefield.length, gamefield[0].length);
-            resetTimer = setTimeout(() => gameStart(false), !!e * 1000)
+            resetTimer = setTimeout(() => gameStart(false), !!e * 1000);
+            endGame();
         }
     }
 
@@ -297,6 +294,7 @@ export function snakeGame(activePage = false, endGame = () => { }, checkAchievem
         noRotate(false);
         hideNavbar(false);
         document.removeEventListener('keydown', keyPress);
+        window.removeEventListener('custom-keydown', keyPressEle)
         exiting = true;
     }
 

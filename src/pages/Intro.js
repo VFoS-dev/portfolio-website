@@ -6,6 +6,7 @@ import { checkAchievement } from '../_actions/user.actions';
 import '../css/intro.css';
 import { snakeGame } from '../canvas-games/snake';
 import { timeout } from '../utils/game';
+import { SendKeyCode } from '../utils/events';
 
 class Intro extends React.Component {
     constructor(props) {
@@ -43,6 +44,11 @@ class Intro extends React.Component {
         window.open('/pdf/resume_eye_friendly.pdf', '_blank');
     }
 
+    vKeyboard({ target: { id } }) {
+        if (!id) return;
+        SendKeyCode(id);
+    }
+
     render() {
         const { setupSnake, gameState } = this.state;
         if (!setupSnake) this.linkSnake();
@@ -62,6 +68,16 @@ class Intro extends React.Component {
                         <div className='button-container'>
                             <button className='button orange' onClick={() => this.toSnake()}>Play Snake</button>
                             <button className='button grey' onClick={() => this.toResume()}>View Resume</button>
+                        </div>
+                    </div>
+                    <div className='WASD' onClick={this.vKeyboard}>
+                        <div>
+                            <div className='key' id='87'>↑</div>
+                        </div>
+                        <div>
+                            <div className='key' id='65'>←</div>
+                            <div className='key' id='83'>↓</div>
+                            <div className='key' id='68'>→</div>
                         </div>
                     </div>
                 </div>
