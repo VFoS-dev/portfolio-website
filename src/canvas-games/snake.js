@@ -156,7 +156,7 @@ export function snakeGame(activePage = false, endGame = () => { }, checkAchievem
         exiting = false;
         gamefield = gamefield.map(a => a.map(b => 'unset'));
         fullreDraw();
-        step = 500 * player + !player * 100;
+        step = 200 * player + 100;
 
         let x = Math.floor(gamefield.length / 4);
         let y = Math.floor(gamefield[x].length / 2);
@@ -237,7 +237,7 @@ export function snakeGame(activePage = false, endGame = () => { }, checkAchievem
                 snake.segments.push(newSegment(x, y, snake.segments.length + 1));
                 gamefield[tx][ty] = color;
                 update.push({ x, y });
-                step = Math.max(150 * player + !player * 50, step * 10 / 11);
+                step = Math.max(75 * player + 50, step - 5);
                 populateFood(1);
                 break;
             default:
@@ -249,7 +249,6 @@ export function snakeGame(activePage = false, endGame = () => { }, checkAchievem
         update.push({ x: tx, y: ty, });
         if (!segments.length) gamefield[x][y] = 'unset';
         gamefield[tx][ty] = color;
-
     }
 
     let resetTimer;
