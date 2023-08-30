@@ -266,9 +266,9 @@ div.face.about {
     height: 90px;
     max-height: 10vh;
     background-color: aliceblue;
-    width: 100%;
-    bottom: 0px;
-    z-index: 1;
+    width: 100vw;
+    bottom: 0;
+    z-index: 2;
     background: url(/public/images/about/grass.webp);
     background-repeat: repeat, no-repeat;
 }

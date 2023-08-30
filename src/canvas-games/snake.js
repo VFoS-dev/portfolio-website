@@ -26,13 +26,14 @@ export function snakeGame(activePage = false, endGame = () => { }, checkAchievem
         aFruit, player;
 
     function setup(_canvas) {
-        document.addEventListener('keydown', keyPress);
-        window.addEventListener('resize', generateBoard);
         canvas = _canvas;
-
         generateBoard()
 
-        gameStart(false);
+        if (activePage) {
+            document.addEventListener('keydown', keyPress);
+            window.addEventListener('resize', generateBoard);
+            gameStart(false);
+        }
     }
 
     const noRotate = (bool) => window.dispatchEvent(new CustomEvent("custom-changeRot", { detail: bool }));
@@ -51,7 +52,7 @@ export function snakeGame(activePage = false, endGame = () => { }, checkAchievem
 
         cellSize = size.longer / CELLS;
         size.longerCount = CELLS;
-        size.shorterCount = Math.floor(size.shorter / cellSize);
+        size.shorterCount = Math.max(2, Math.floor(size.shorter / cellSize));
         if (size.shorterCount % 2) size.shorterCount--;
 
         sizeRemX = (size[`${size.x}Count`] * cellSize - size[`${size.x}`]) / 2;
@@ -236,7 +237,7 @@ export function snakeGame(activePage = false, endGame = () => { }, checkAchievem
                 snake.segments.push(newSegment(x, y, snake.segments.length + 1));
                 gamefield[tx][ty] = color;
                 update.push({ x, y });
-                step = Math.max(100 * player + !player * 50, step * 10 / 11);
+                step = Math.max(150 * player + !player * 50, step * 10 / 11);
                 populateFood(1);
                 break;
             default:

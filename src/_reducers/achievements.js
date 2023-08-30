@@ -6,13 +6,9 @@ const init = {
     queue: []
 };
 
-export function getAchievements() {
-    return progress;
-}
-
-export function hasAchievement(id) {
-    return progress[id] instanceof Date;
-}
+const validateState = (ani, def) => ['', 'notify', 'close'].includes(ani) ? ani : def;
+export const getAchievements = () => progress;
+export const hasAchievement = (id) => progress[id] instanceof Date;
 
 export function clearAchievements() {
     progress = {};
@@ -55,14 +51,12 @@ export function achievements(state = init, { type, ...action }) {
     return state;
 }
 
-const validateState = (ani, def) => ['', 'notify', 'close'].includes(ani) ? ani : def;
-
 function checkAchievement(name, value) {
+    if (progress[name] instanceof Date) return {};
     if (!achievementsData[name]) {
         console.error('achievement not found', name);
         return {}
     }
-    if (progress[name] instanceof Date) return { didUpdate: false };
 
     const { validate, data, ...achiData } = achievementsData[name];
 

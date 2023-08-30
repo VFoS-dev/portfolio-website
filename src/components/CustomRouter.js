@@ -40,7 +40,7 @@ class CustomRouter extends React.Component {
         window.addEventListener('custom-changeRot', this.changeRot);
     }
 
-    changeRot = (e) => this.setState({ cantRot: e.detail })
+    changeRot = (e) => this.setState({ cantRot: e.detail });
 
     keyRot({ keyCode }) {
         var p = {
@@ -82,14 +82,14 @@ class CustomRouter extends React.Component {
             return;
         }
         if (animate && loc !== 'front' && loc === _loc) {
-            this.focus.current?.classList.remove(`ani-${loc}`);
-            this.prior.current?.classList.remove(`ani-${loc}`);
-            this.skip.current?.classList.remove(`ani-${loc}`);
+            this.focus.current.classList.remove(`ani-${loc}`);
+            this.prior.current.classList.remove(`ani-${loc}`);
+            this.skip.current.classList.remove(`ani-${loc}`);
             setTimeout(() => {
-                this.focus.current?.classList.add(`ani-${loc}`);
-                this.prior.current?.classList.add(`ani-${loc}`);
+                this.focus.current.classList.add(`ani-${loc}`);
+                this.prior.current.classList.add(`ani-${loc}`);
                 if (loc === "back")
-                    this.skip.current?.classList.add(`ani-${loc}`);
+                    this.skip.current.classList.add(`ani-${loc}`);
             }, 100)
         }
 
@@ -137,23 +137,19 @@ class CustomRouter extends React.Component {
         if (!!page && rotation.front !== page) this.props.rotate(JSON.stringify(rotation).split(`":"${page} `)[0].split('"').splice(-1)[0]);
         if (!fixedRefs) setTimeout(() => this.setState({ fixedRefs: true }), 0)
 
+        let secondPages = queue && animate;
         return (<Fragment>
             <SecretController focused={this.focus} />
             <AchievementNotification focused={this.focus} />
             <NavBar updatePage={this.updatePage} last={page} scrollPercent={scrollPercent} focused={this.focus} />
             <div className="cube-container" style={{ perspective: `${document.documentElement.clientWidth}px` }} onAnimationEnd={() => this.removeLoading()}>
-                {!!queue && animate && <>
-                    <div ref={this.prior} className={`face prior ani-${loc} ${queue}`} key={queue}>
-                        {this.Router(queue, false)}
-                    </div>
-                    {loc === "back" &&
-                        <div ref={this.skip} className={`face skip ani-back ${rotation.bottom}`} key={rotation.bottom}>
-                            {/* using bottom to grab the top because the value of the sides have already swapped */}
-                            {this.Router(rotation.bottom, false)}
-                        </div>
-                    }
-                </>}
-                <div ref={this.focus} id="focused" key={page} className={`face focus${animate && !!queue ? ` ani-${loc}` : ""} ${page}`} onScroll={() => this.UpdateNavBar()}>
+                <div ref={this.prior} className={`face prior ani-${loc} ${queue}`} key={'prior'} style={secondPages ? {} : { display: 'none' }}>
+                    {secondPages && this.Router(queue, false)}
+                </div>
+                <div ref={this.skip} className={`face skip ani-back ${rotation.bottom}`} key={'skip'} style={secondPages && loc === "back" ? {} : { display: 'none' }}>
+                    {secondPages && loc === "back" && this.Router(rotation.bottom, false)}
+                </div>
+                <div ref={this.focus} id="focused" key={'focus'} className={`face focus${animate && !!queue ? ` ani-${loc}` : ""} ${page}`} onScroll={() => this.UpdateNavBar()}>
                     {this.Router(page, true)}
                 </div>
             </div>

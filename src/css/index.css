@@ -75,7 +75,7 @@ body {
     z-index: 1;
     position: fixed;
     width: 100vw;
-    height: 100dvh;
+    height: min(100vh, 100dvh);
     pointer-events: none;
     overflow: hidden;
     padding: 0px !important;

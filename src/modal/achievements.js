@@ -16,6 +16,8 @@ export class AchievementModal extends Component {
         document.addEventListener('keydown', this.keyHandle);
     }
 
+    componentWillUnmount = () => document.removeEventListener('keydown', this.keyHandle);
+
     keyHandle({ keyCode }) {
         if (keyCode != 27) return; // escape
         const { show } = this.state;
@@ -23,48 +25,48 @@ export class AchievementModal extends Component {
     }
 
     handleAchievementStatus(achieved) {
-        let res = [];
-        let ser = [];
-        for (const id of Object.keys(achieved).sort((a, b) => achievementsData[a].name.localeCompare(achievementsData[b].name))) {
+        let res = [], ser = [];
+        let sortedAchievements = Object.keys(achieved).sort((a, b) => achievementsData[a].name.localeCompare(achievementsData[b].name));
+
+        for (const id of sortedAchievements) {
             let completed = achieved[id] instanceof Date;
-            if (!(completed || achievementsData[id].visible)) continue;
+            if (!completed && !achievementsData[id].visible) continue;
             let { name, description, data, fullDescription } = achievementsData[id];
-            let date = '', secondaryInfo;
 
             if (completed) {
-                date = achieved[id].toLocaleDateString('nu', { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric' })
-                secondaryInfo = fullDescription
-            } else {
-                secondaryInfo = `In Progress - ${data.length - achieved[id].length}/${data.length}`;
-            }
-            if (completed) {
-                res.push(<div key={`${id}-achievement`} className={`achieved completed`} >
+                let date = achieved[id].toLocaleDateString('nu', { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric' });
+
+                res.push(<div key={`${id}-achievement`} className={`achieved completed`}>
                     <div>
-                        <div className='name'>{name}</div> <div>{description}</div>
+                        <div className='name'>{name}</div>
+                        <div>{description}</div>
                     </div>
                     <div>
-                        <div className='howto'>{secondaryInfo}</div> <div className='date'>{date}</div>
+                        <div className='howto'>{fullDescription}</div>
+                        <div className='date'>{date}</div>
                     </div>
                 </div>);
             } else {
-                ser.push(<div key={`${id}-achievement`} className={`achieved inprogress`} >
+
+                ser.push(<div key={`${id}-achievement`} className={`achieved inprogress`}>
                     <div>
                         <div className='name'>{name}</div>
                         <div>{description}</div>
                         <div className='gap'></div>
-                        <div className='howto'>{secondaryInfo}</div>
+                        <div className='howto'>In Progress - {data.length - achieved[id].length}/{data.length}</div>
                     </div>
                 </div>);
             }
         }
+
         return [ser, res].flat();
     }
 
     clear() {
         const { update } = this.state;
         clearAchievements();
-        setCookie(STORE_DUCK_HUNT, 1, -1)
-        this.setState({ update: !update })
+        setCookie(STORE_DUCK_HUNT, 1, -1);
+        this.setState({ update: !update });
     }
 
     render() {
