@@ -1,3 +1,8 @@
+@font-face {
+    font-family: "Handjet";
+    src: url(/public/fonts/Handjet.ttf);
+}
+
 div.face.intro {
     --content-color: rgb(2, 2, 18);
 }
