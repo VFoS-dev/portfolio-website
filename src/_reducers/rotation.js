@@ -14,7 +14,10 @@ var secret = process.env.secret ? JSON.parse(process.env.secret) : [
 ];
 
 export function rotation(state = origin, { type, pos }) {
-    if (type == CUBE_RESET) return { ...onMount(true), history: [] };
+    if (type == CUBE_RESET) {
+        setTimeout(() => rots = { ...rots, hLength: 0, checkpoints: [], }, 0)
+        return { ...onMount(true), history: [] };
+    }
     if (type != CUBE_ROT) return state;
 
     let { history, back, front, left, right, bottom, top } = state;

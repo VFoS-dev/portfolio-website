@@ -45,6 +45,19 @@
     box-shadow: none;
 }
 
+nav {
+    opacity: 1;
+    transition: opacity .25s;
+}
+
+nav.faded {
+    opacity: 0 !important;
+}
+
+nav.faded * {
+    pointer-events: none !important;
+}
+
 .navShadow {
     width: 100vw;
     z-index: 0;

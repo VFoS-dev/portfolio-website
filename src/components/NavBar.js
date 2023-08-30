@@ -13,16 +13,21 @@ class NavBar extends Component {
             nav: false,
             timeout: null,
             aniInc: true,
+            hidden: false,
         }
 
         // binds
         this.changePage = this.changePage.bind(this);
         this.listener = this.listener.bind(this);
         this.reset = this.reset.bind(this);
+        this.toggleNavbar = this.toggleNavbar.bind(this);
 
         // listeners
         window.addEventListener('popstate', this.listener);
+        window.addEventListener('custom-hideNavbar', this.toggleNavbar)
     }
+
+    toggleNavbar = (e) => this.setState({ hidden: e.detail ?? !this.state.hidden })
 
     listener() {
         const [, page,] = window.location.pathname.split('/');
@@ -57,7 +62,7 @@ class NavBar extends Component {
 
     render() { // | intro | about | projects | resume | education | contact |
         const [, ref, secret] = window.location.pathname.split('/');
-        const { nav } = this.state;
+        const { nav, hidden } = this.state;
         const { history, secretLength, checkpoints, correct } = this.props;
         const f = document.getElementById('focused')
 
@@ -67,7 +72,7 @@ class NavBar extends Component {
         this.props.checkAchievement('allPages', ref || 'intro');
         if (history.length == 10) this.props.checkAchievement('secretfailall', checkpoints);
 
-        return (<Navbar key='lg' bg="dark" expand='lg' className="navbar navbar-expand-lg fixed-top bg-transparent disable" expanded={nav} onToggle={() => this.setState({ nav: !nav })}>
+        return (<Navbar key='lg' bg="dark" expand='lg' className={`navbar navbar-expand-lg fixed-top bg-transparent disable${hidden ? ' faded' : ''}`} expanded={nav} onToggle={() => this.setState({ nav: !nav })}>
             <Navbar.Brand className="brand pointer enable z-2" style={{ position: 'relative' }} onClick={(e) => this.changePage(e.target.id)}>
                 <div className='navImage' style={{ '--frame': `${Math.round((_scrollPercent) * 16)}`, backgroundImage: `url(/images/nav/logosprite.webp)` }} onMouseOut={() => this.setState({ animateLogo: false })} onMouseEnter={() => this.setState({ animateLogo: true })} />
                 <div className='disable checkpoint-container' onClick={this.reset}>

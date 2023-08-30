@@ -45,6 +45,9 @@ export function snakeGame(activePage = false, endGame = () => { }, checkAchievem
         gameStart(false);
     }
 
+    const noRotate = (bool) => window.dispatchEvent(new CustomEvent("custom-changeRot", { detail: bool }));
+    const hideNavbar = (bool) => window.dispatchEvent(new CustomEvent("custom-hideNavbar", { detail: bool }))
+
     function fullreDraw() {
         let halfSize = cellSize / 2;
         const { clientHeight, clientWidth } = document.documentElement;
@@ -110,10 +113,10 @@ export function snakeGame(activePage = false, endGame = () => { }, checkAchievem
 
     function keyPress({ keyCode }) {
         let k = {
-            87: "top",
-            65: "left",
-            83: "bottom",
-            68: "right",
+            38: 'top', 87: "top",
+            37: 'left', 65: "left",
+            40: 'bottom', 83: "bottom",
+            39: 'right', 68: "right",
         }[keyCode];
         if (!k) return;
         const { head: { x, y }, segments, player } = snake;
@@ -121,7 +124,6 @@ export function snakeGame(activePage = false, endGame = () => { }, checkAchievem
         const { dx, dy } = move[k];
         const { x: sx, y: sy } = segments.length ? segments[0] : {};
         if (!(sx == x + dx && sy == y + dy)) snake.dir = k;
-
     }
 
     function gameStart(_player = true) {
@@ -138,6 +140,8 @@ export function snakeGame(activePage = false, endGame = () => { }, checkAchievem
         update.push({ x, y });
         let segments = [];
         if (player) {
+            noRotate(true);
+            hideNavbar(true);
             [... new Array(9)].forEach((a, i) => segments.push(newSegment(x, y, i + 1)))
             document.addEventListener('keydown', keyPress);
             if (!hLength) checkAchievement('snakeStar');
@@ -232,6 +236,8 @@ export function snakeGame(activePage = false, endGame = () => { }, checkAchievem
             update.push({ x, y })
         })
         if (player) {
+            noRotate(false);
+            hideNavbar(false);
             exiting = true;
             document.removeEventListener('keydown', keyPress);
             endGame();
@@ -258,6 +264,8 @@ export function snakeGame(activePage = false, endGame = () => { }, checkAchievem
     }
 
     function dismount() {
+        noRotate(false);
+        hideNavbar(false);
         document.removeEventListener('keydown', keyPress);
         exiting = true;
     }

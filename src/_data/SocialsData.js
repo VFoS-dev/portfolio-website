@@ -1,8 +1,3 @@
-
-
-
-
-
 export const social_Data = [
     {
         name: 'Endless Mode',
