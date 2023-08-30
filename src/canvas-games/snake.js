@@ -125,6 +125,7 @@ export function snakeGame(activePage = false, endGame = () => { }, checkAchievem
     }
 
     function gameStart(_player = true) {
+        const { hLength, checkpoints, secretLength } = rots
         player = _player
         pastTime = 0;
         exiting = false;
@@ -135,8 +136,17 @@ export function snakeGame(activePage = false, endGame = () => { }, checkAchievem
         let x = Math.floor(gamefield.length / 4);
         let y = Math.floor(gamefield[x].length / 2);
         update.push({ x, y });
-        let segments = []
-        snake = { dir: 'right', segments, head: { x, y, color: 'gold' }, player };
+        let segments = [];
+        if (player) {
+            [... new Array(9)].forEach((a, i) => segments.push(newSegment(x, y, i + 1)))
+            document.addEventListener('keydown', keyPress);
+            if (!hLength) checkAchievement('snakeStar');
+            if (secretLength === hLength) {
+                checkAchievement('snakeLights')
+                if (!checkpoints.includes(false)) checkAchievement('snakeGolden')
+            }
+        }
+        snake = { dir: 'right', segments, head: newSegment(x, y, 0), player };
         gamefield[x][y] = 'gold';
         populateFood(player * 5 + !player);
 
@@ -145,16 +155,15 @@ export function snakeGame(activePage = false, endGame = () => { }, checkAchievem
 
     function newSegment(x, y, length) {
         const { hLength, checkpoints, secretLength } = rots
-        if (!hLength || (length >= hLength && secretLength > hLength)) {
-            return { x, y, color: 'white' };
-        }
-        if (secretLength === hLength && !checkpoints.includes(false)) {
+        if (secretLength === hLength && !checkpoints.includes(false) || !hLength && !length) {
             return { x, y, color: 'gold' };
+        }
+        if ((length >= hLength && secretLength > hLength)) {
+            return { x, y, color: 'white' };
         }
         if (checkpoints[length % hLength]) {
             return { x, y, color: 'green' };
-        }
-        else {
+        } else {
             return { x, y, color: 'red' };
         }
     }
@@ -168,9 +177,7 @@ export function snakeGame(activePage = false, endGame = () => { }, checkAchievem
             closest = checkPath(snake.head, aFruit, gamefield, ({ dirIndex, closeIndex }) => closeIndex < dirIndex);
         }
 
-        console.log(counts[closest.dir], snake.segments.length);
         if (counts[closest.dir] < snake.segments.length + 1) {
-            console.log(counts[closest.dir], snake.segments.length, closest.dir, counts, 'here');
             closest.dir = counts.max.dir ?? closest.dir;
         }
         snake.dir = closest.dir;
@@ -200,13 +207,14 @@ export function snakeGame(activePage = false, endGame = () => { }, checkAchievem
         switch (gamefield[tx][ty]) {
             case 'unset': break;
             case 'food':
-                snake.segments.push(newSegment(x, y, snake.segments.length));
+                snake.segments.push(newSegment(x, y, snake.segments.length + 1));
                 gamefield[tx][ty] = color;
                 update.push({ x, y });
                 step = Math.max(100 * player + !player * 50, step * 10 / 11);
                 populateFood(1);
                 break;
             default:
+                if (player) checkAchievement('snakeOuroboros')
                 return gameLost();
         }
 
@@ -228,7 +236,7 @@ export function snakeGame(activePage = false, endGame = () => { }, checkAchievem
             document.removeEventListener('keydown', keyPress);
             endGame();
         } else {
-            console.log('dege');
+            checkAchievement('snakeAI')
             cycle = generateHamiltonianCycle(gamefield.length, gamefield[0].length);
             gameStart(false)
         }
@@ -351,7 +359,6 @@ function countAvailable(snake, fruit, gamefield) {
         dir[m] = countRecursive(x, y, gamefield, fruit, mustHave, set).size - 1;
         if (dir.max.count < dir[m]) dir.max = { count: dir[m], dir: m };
     })
-    console.log(dir, segments.length);
     return dir;
 }
 

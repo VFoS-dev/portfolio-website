@@ -76,6 +76,44 @@ export const achievementsData = {
         description: "Unlocked all achievements",
     },
     // intro achievements
+    completedIntro: {
+        visible: true,
+        name: "Snake",
+        fullDescription: "You are a narrow Fellow in the Grass",
+        description: "Found all homepage achievements",
+        validate: "otherAchievements",
+        data: ['snakeStar', 'snakeLights', 'snakeGolden', 'snakeAI', 'snakeOuroboros'],
+    },
+    snakeStar: {
+        name: "A star is born",
+        fullDescription: "Couldn't wait to play the snake game? Me neither.",
+        validate: "ifnot",
+        description: "Play a game with only 1 yellow light",
+    },
+    snakeLights: {
+        name: "Lights, camera, action!",
+        fullDescription: "The spotlight is on you now",
+        validate: "ifnot",
+        description: "Play a game with all lights",
+    },
+    snakeGolden: {
+        name: "The prestigious",
+        fullDescription: "The snake game is a good way to celebrate your victory",
+        validate: "ifnot",
+        description: "Play a game with all yellow lights",
+    },
+    snakeAI: {
+        name: "AI is taking over!.. or not",
+        fullDescription: "AI takeovers don't happen on the first try",
+        validate: "ifnot",
+        description: "Watch the snake algorithm fail",
+    },
+    snakeOuroboros: {
+        name: "Ouroboros",
+        fullDescription: "The eternal cycle of life and death",
+        validate: "ifnot",
+        description: "Failed snake by eating itself",
+    },
     // resume achievements
     completedResume: {
         visible: true,
