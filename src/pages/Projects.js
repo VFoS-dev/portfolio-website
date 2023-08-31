@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 import { connect } from 'react-redux';
 import { ModalController } from '../components/ModalController';
-import { projectData } from '../_data';
+import { projectData, projectsOrder } from '../_data';
 
 import '../css/projects.css';
 import { ProjectTimer } from '../components';
@@ -45,7 +45,7 @@ class Projects extends React.Component {
         this.setState({ updateModal: !updateModal });
     }
 
-    mapTile({ title = '', date = '', createdIn = '', img = "", imgcss = {} }, index) {
+    mapTile({ title = '', shortenedDate: date = '', createdIn = '', img = "", imgcss = {} }, index) {
         const { toMine, rows } = this.state;
         return (
             <div key={index + "tile"} id={title.replace(/[^a-zA-Z ]/g, "").split(' ').join('_')} className='tile' {...TileFlex(toMine)} style={{ backgroundImage: `url(${img})`, ...imgcss, ...(toMine ? { boxShadow: 'none', cursor: 'auto' } : {}) }} onClick={(e) => this.modalShow(e.target.id)}>
@@ -123,7 +123,7 @@ class Projects extends React.Component {
             proximity: getProximity(x, y, _c),
             revealed: false,
             flagged: false,
-            img: Math.floor(projectData.length * Math.random())
+            imgLink: projectsOrder[Math.floor(projectsOrder.length * Math.random())]
         })))
 
         this.setState({ cells: this.floodReveal([x, y], _c), gamepaused: false });
@@ -167,15 +167,15 @@ class Projects extends React.Component {
     minesweep(id) {
         var [x, y] = id.split(' ').map(i => parseInt(i));
         const { cells, gameStatus } = this.state;
-        const c = cells[x][y];
+        const cell = cells[x][y];
         if (!!gameStatus) return;
-        if (c === undefined) this.createGame([x, y]);
-        else if (!c.flagged) {
+        if (cell === undefined) this.createGame([x, y]);
+        else if (!cell.flagged) {
             this.setState({ cells: this.floodReveal([x, y], cells) });
             this.checkWin();
         } else {
             this.props.checkAchievement('mineFlag')
-            this.modalShow(projectData[c.img].title.replace(/[^a-zA-Z ]/g, "").split(' ').join('_'));
+            this.modalShow(cell.imgLink);
         }
     }
 
@@ -214,7 +214,7 @@ class Projects extends React.Component {
     render() {
         const { minesweeper, cells, gameStatus, updateModal, gamerestart, gamepaused, toMine } = this.state;
         const { activePage } = this.props;
-        const bombCount = !minesweeper ? projectData.length : Math.max(cells.reduce((t, r) => t + (r?.reduce((st, c) => st + -c?.flagged + (c?.proximity < 0), 0)), 0), 0);
+        const bombCount = !minesweeper ? projectsOrder.length : Math.max(cells.reduce((t, r) => t + (r?.reduce((st, c) => st + -c?.flagged + (c?.proximity < 0), 0)), 0), 0);
 
         return (<Fragment>
             <ModalController updateModal={updateModal} updatePage={this.props.updatePage} />
@@ -236,14 +236,17 @@ class Projects extends React.Component {
                         {minesweeper ? <Fragment>
                             {cells.map((m, x) => {
                                 return <div className='row' key={x + "row"}>
-                                    {m.map((c, y) => {
+                                    {m.map((cell, y) => {
+                                        const { imgLink, revealed, proximity, flagged, } = (cell ?? {});
+                                        const { img, imgcss } = (projectData[imgLink] ?? {});
+
                                         return <div id={`${x} ${y}`} key={`${x} ${y}col`}
-                                            className={`cell${!c ? ' in' : (c.revealed || (gameStatus === -1 && c.proximity < 0 && !c.flagged)) ? ` revealed${c.proximity < 0 ? ' mine' : ''}` : c.flagged ? ' flag' : ''}`}
-                                            style={{ width: `${100 / cells.length}%`, ...(!!c && c.flagged && !c.revealed ? { backgroundImage: `url(${projectData[c.img].img})`, ...projectData[c.img].imgcss, borderRadius: 0 } : {}) }}
+                                            className={`cell${!cell ? ' in' : (revealed || (gameStatus === -1 && proximity < 0 && !flagged)) ? ` revealed${proximity < 0 ? ' mine' : ''}` : flagged ? ' flag' : ''}`}
+                                            style={{ width: `${100 / cells.length}%`, ...(!!cell && flagged && !revealed ? { backgroundImage: `url(${img})`, ...imgcss, borderRadius: 0 } : {}) }}
                                             onClick={(e) => this.minesweep(e.target.id)}
                                             onContextMenu={(e) => this.flagCell(e)}
                                         >
-                                            <div className={`c-${!!c && c.revealed && c.proximity > 0 ? c.proximity : ''}`}>{!c ? "" : (c.revealed && c.proximity > 0) ? c.proximity : ''}</div>
+                                            <div className={`c-${!!cell && revealed && proximity > 0 ? proximity : ''}`}>{!cell ? "" : (revealed && proximity > 0) ? proximity : ''}</div>
                                         </div>
                                     })}
                                 </div>
@@ -251,7 +254,7 @@ class Projects extends React.Component {
                         </Fragment> : <Fragment>
                             <div className="tile-center" style={{ ...this.getTileAdjustment() }}>
                                 <div className='tile-container' {...TileFlexTouchSupport(toMine)}>
-                                    {projectData.map((p, index) => this.mapTile(p, index))}
+                                    {projectsOrder.map((p, index) => this.mapTile(projectData[p], index))}
                                 </div>
                             </div>
                         </Fragment>}

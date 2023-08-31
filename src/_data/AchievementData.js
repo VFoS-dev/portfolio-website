@@ -1,5 +1,5 @@
 import { fruitData } from "./FruitData";
-import { projectData } from "./ProjectsData";
+import { projectsOrder } from "./ProjectsData";
 
 export const achievementsData = {
     // general achievements
@@ -228,7 +228,7 @@ export const achievementsData = {
         name: "Historian",
         fullDescription: "Now you've seen all my projects",
         validate: "ifall",
-        data: projectData.map(p => p.title.replace(/[^a-zA-Z ]/g, "").split(' ').join('_').toLocaleLowerCase()),
+        data: projectsOrder,
         description: "Visited all projects",
     },
     projectStart: {
