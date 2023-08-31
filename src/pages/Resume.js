@@ -88,6 +88,10 @@ class Resume extends React.Component {
         }
     }
 
+    createResume() {
+        window.open('/resume?create=1', '_blank');
+    }
+
     openResume() {
         this.props.checkAchievement('realresume');
         window.open('/pdf/resume_eye_friendly.pdf', '_blank');
@@ -143,13 +147,16 @@ class Resume extends React.Component {
                                 <h2>Contact Information:<button className='hyperlink' onClick={() => this.changePage('socials')} >Click Here</button></h2>
                                 <p>Email: jonkido@vfos.dev</p>
                             </div>
+                            <div className='window-page' {...EditableFocusRot()} onKeyUp={() => this.props.checkAchievement('editResume')}>
+                                <center><h1>Want to create a custom resume? <button className='hyperlink' onClick={() => this.createResume()} >Click Here</button></h1></center>
+                            </div>
                         </div>
                     </div>
                 })
                 }
 
                 <div className='taskbar'>
-                    <div className='start' onClick={()=>this.props.checkAchievement('windowStart')}><div className='windowIcon' />start</div>
+                    <div className='start' onClick={() => this.props.checkAchievement('windowStart')}><div className='windowIcon' />start</div>
                     <div className='applications'>
                         {windows.map(({ key, focused }, i) => <div key={key} className={`application${focused ? ' focused' : ''}`} onMouseDown={() => this.set(`focused-${i}`, true)}><div className='wordIcon' /><div className='txt'>Jon Kido Resume 20XX Rough Draft - Microsoft Word</div></div>)}
                     </div>

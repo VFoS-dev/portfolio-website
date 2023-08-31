@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { Default, ProjectModal } from '../modal';
+import { ProjectModal } from '../modal';
 import { checkAchievement } from '../_actions/user.actions';
 import { connect } from 'react-redux';
 import { projectData } from '../_data';
