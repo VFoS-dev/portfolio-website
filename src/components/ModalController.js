@@ -1,7 +1,8 @@
 import React, { Component, Fragment } from 'react';
-import { Deadline, Defend, Uno, Default, Survive, CashnSlash, SwordWhip, Minesweeper, ABCStories, PlanetDestroyer, TheSimpleRing, AllinFavor, BroncoBeam, MotorPool, Portfolio, ProjectKuro, OLogoAni, Matraex } from '../modal';
+import { Default, Matraex } from '../modal';
 import { checkAchievement } from '../_actions/user.actions';
 import { connect } from 'react-redux';
+import { projectData } from '../_data';
 
 class ModalController extends Component {
     constructor(props) {
@@ -22,54 +23,12 @@ class ModalController extends Component {
     }
 
     route(modal) {
-        switch (modal) {
-            case null:
-                return <Fragment />;
-            case 'survive':
-                return <Survive />;
-            case 'uno_ai':
-                return <Uno />;
-            case 'defend':
-                return <Defend />;
-            case 'deadline':
-                return <Deadline />;
-            case 'cash_n_slash':
-                return <CashnSlash />;
-            case 'swordwhip':
-                return <SwordWhip />;
-            case 'minesweeper_solver':
-                return <Minesweeper />;
-            case 'abc_stories':
-                return <ABCStories />;
-            case 'planet_destroyer':
-                return <PlanetDestroyer />;
-            case 'the_simple_ring_alpha':
-                return <TheSimpleRing />;
-            case 'all_in_favor':
-                return <AllinFavor />;
-            case 'bronco_beam':
-                return <BroncoBeam />;
-            case 'motorpool_services':
-                return <MotorPool />;
-            case 'portfolio_website':
-                return <Portfolio />;
-            case 'project_kuro':
-                return <ProjectKuro />;
-            case 'original_logo_animation':
-                return <OLogoAni />;
-            case 'matraex_inc':
-            case 'high_call_rodeo':
-            case 'hbv':
-            case 'venture_title':
-            case 'salestrak':
-            case 'idaho_lottery':
-            case 'rio_genesis':
-            case 'black_sage_tech':
-                return <Matraex focus={modal} />;
-            default:
-                console.error('ERROR: Modal was not found:', modal);
-                return <Default />;
-        }
+        if (!modal) return <Fragment />;
+
+        if (projectData[modal]) return <Matraex focus={modal} />;
+
+        console.error('ERROR: Modal was not found:', modal);
+        return <Default />;
     }
 
     resetScroll = (e, hide) => (hide) ? e.scroll(0, 0) : null;
