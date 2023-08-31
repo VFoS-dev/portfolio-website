@@ -194,3 +194,12 @@ a.nav-link {
 .navbar {
     max-height: 121px;
 }
+
+.container-fluid .mobile-only {
+    display: none;
+}
+
+.navbutton {
+    border: unset;
+    margin: 5px;
+}

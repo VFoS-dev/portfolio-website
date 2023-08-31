@@ -60,6 +60,8 @@ class NavBar extends Component {
         }, 10)
     }
 
+    toggleAchievements = () => window.dispatchEvent(new CustomEvent('custom-toggle-menu'));
+
     render() { // | intro | about | projects | resume | education | contact |
         const [, ref, secret] = window.location.pathname.split('/');
         const { nav, hidden } = this.state;
@@ -95,16 +97,19 @@ class NavBar extends Component {
                     </Offcanvas.Header>
                     <Offcanvas.Body>
                         <Nav className="mr-auto">
-                            <Nav.Link className={((ref === 'about') ? "active" : "") + " lato enable"} id='about' onClick={(e) => this.changePage(e.target.id)}>About</Nav.Link>
                             <Nav.Link className={((ref === 'projects') ? "active" : "") + " lato enable"} id='projects' onClick={(e) => this.changePage(e.target.id)}>Projects</Nav.Link>
                             <Nav.Link className={((ref === 'skills') ? "active" : "") + " lato enable"} id='skills' onClick={(e) => this.changePage(e.target.id)}>Skills</Nav.Link>
                             <Nav.Link className={((ref === 'resume') ? "active" : "") + " lato enable"} id='resume' onClick={(e) => this.changePage(e.target.id)}>Resume</Nav.Link>
+                            <Nav.Link className={((ref === 'about') ? "active" : "") + " lato enable"} id='about' onClick={(e) => this.changePage(e.target.id)}>About</Nav.Link>
                             <Nav.Link className={((ref === 'socials') ? "active" : "") + " lato enable"} id='socials' onClick={(e) => this.changePage(e.target.id)}>Socials</Nav.Link>
                             {correct && <Nav.Link className={((secret === 'secret') ? "active" : "") + " lato enable"} id='secret' onClick={() =>
                                 this.changePage((hasAchievement('secretStart') ? ref : 'intro') + '/secret')
                             }>Secret</Nav.Link>}
                         </Nav>
                     </Offcanvas.Body>
+                    <div className='mobile-only'>
+                        <button className="lato enable navbutton" onClick={this.toggleAchievements}>Achievements</button>
+                    </div>
                 </Navbar.Offcanvas>
             </Container>
         </Navbar>);

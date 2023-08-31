@@ -1,16 +1,14 @@
 import { CUBE_ROT, CUBE_RESET } from "../_actions/const";
 
 var secret = process.env.secret ? JSON.parse(process.env.secret) : [
-    "right",
-    "bottom",
-    "bottom",
-    "bottom",
-    "right",
+    //         snake       - 1976 
+    "left", // starwars    - 1977
     "top",
+    "top",   // duck hunt   - 1984 
+    "left",  // minesweeper - 1989 
+    "bottom",  // windows xp  - 2001
     "top",
-    "top",
-    "right",
-    "right"
+    "top", // fruit ninja - 2010
 ];
 
 export function rotation(state = origin, { type, pos }) {
@@ -82,8 +80,8 @@ const defState = {
     top: 'resume',
     left: 'skills',
     right: 'about',
-    bottom: 'projects',
-    back: 'socials',
+    back: 'projects',
+    bottom: 'socials',
     front: 'intro',
     history: [],
     checkpoints: [],

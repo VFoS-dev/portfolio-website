@@ -13,13 +13,18 @@ export class AchievementModal extends Component {
         }
 
         this.keyHandle = this.keyHandle.bind(this);
+        this.toggleMenu = this.toggleMenu.bind(this);
+
         document.addEventListener('keydown', this.keyHandle);
+        window.addEventListener('custom-toggle-menu', this.toggleMenu);
     }
 
     componentWillUnmount = () => document.removeEventListener('keydown', this.keyHandle);
 
-    keyHandle({ keyCode }) {
-        if (keyCode != 27) return; // escape
+    toggleMenu = () => this.keyHandle({}, true)
+
+    keyHandle({ keyCode }, bypass = false) {
+        if (keyCode != 27 && !bypass) return; // escape
         const { show } = this.state;
         this.setState({ show: !show })
     }

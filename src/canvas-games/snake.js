@@ -130,7 +130,7 @@ export function snakeGame(activePage = false, endGame = () => { }, checkAchievem
             }
             let index = Math.floor(Math.random() * available.length)
             let { x, y } = available[index];
-            if (!player) aFruit = [x, y];
+            aFruit = [x, y];
             update.push({ x, y })
             available.splice(index, 1)
             gamefield[x][y] = 'food';
