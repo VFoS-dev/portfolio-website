@@ -11,6 +11,10 @@ export const SecretData = {
         default:'markdown',
         markdown: '/secret/markdown/about.md',
     },
+    socials: {
+        default:'markdown',
+        markdown: '/secret/markdown/socials.md',
+    },
     projects: {
         default:'photoshop',
         markdown: '/secret/markdown/projects.md',
