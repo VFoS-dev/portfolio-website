@@ -27,21 +27,27 @@ export const projectsOrder = [
 export const projectData = {
     project_kuro: {
         title: 'Project Kuro',
-        shortenedDate: "Jan 1, 2023 - Present",
+        startDate: 'January 1, 2023',
+        endDate: 'Present',
         createdIn: 'Unreal Engine 5',
         img: '/images/projects/projectkuro.webp',
         description: ` I have been planning this project for a long time. It was inspired by many tabletop RPG games I played with my friends. I plan to convert some of the stories that arose from my turn-by-turn tabletop games into a realtime third-person game.`,
-        dates: 'Jan 1, 2023 - Present',
         stack: 'Unreal Engine 5, C++, Blender, Krita, Substance Painter',
     },
     portfolio_website: {
         title: 'Portfolio Website',
-        shortenedDate: "Oct 26, '22 - Present",
+        startDate: 'October 26, 2022',
+        endDate: 'Present',
         createdIn: 'React',
         img: '/images/projects/portfolioSite.webp',
         description: `This project was originally a class project, you are currently looked at the 3rd and probably final update.`,
-        dates: 'October 26, 2022 - Present',
         stack: 'React, Javascript, Blender, Krita, Markdown, HTML5 canvas',
+        content: [
+            '/',
+        ],
+        link: {
+            website: '/'
+        },
         keyFeatures: `
         - Created custom navigation that parses the url to 'rotate' to the selected page
         - Simulated a CSS cube. To save RAM & CPU usage, pages aren't rendered in the HTML if they aren't being used
@@ -52,7 +58,8 @@ export const projectData = {
     },
     matraex_inc: {
         title: 'Matraex Inc.',
-        shortenedDate: "Jan 17 - Aug 11, 2023",
+        startDate: 'January 17, 2023',
+        endDate: 'August 11, 2023',
         createdIn: 'PHP / SQL / JQuery / React',
         img: '/images/projects/Matraex.webp',
         imgcss: {
@@ -64,7 +71,6 @@ export const projectData = {
         link: {
             about: 'https://www.matraex.com/',
         },
-        dates: 'January 17, 2023 - August 11, 2023',
         stack: 'React, React Native, SQL, PHP, JQuery, Meteor, Mongodb',
         keyFeatures: `
         - Created scripts to automate tasks, making development faster and smoother
@@ -76,7 +82,8 @@ export const projectData = {
     },
     venture_title: {
         title: 'Venture Title',
-        shortenedDate: "May 3 - Aug 11, 2023",
+        startDate: 'May 3, 2023',
+        endDate: 'August 11, 2023',
         createdIn: 'PHP / SQL / JQuery',
         img: '/images/projects/ventureidaho.webp',
         parent: 'matraex_inc',
@@ -84,7 +91,6 @@ export const projectData = {
         link: {
             website: 'https://ventureidaho.com',
         },
-        dates: 'May 3, 2023 - August 11, 2023',
         stack: 'PHP, SQL, JQuery',
         keyFeatures: `
         - Added, adjusted, and redesigned responsive css styling
@@ -92,7 +98,8 @@ export const projectData = {
     },
     hbv: {
         title: 'H.B.V.',
-        shortenedDate: "Aug 1 - Aug 7, 2023",
+        startDate: 'August 1, 2023',
+        endDate: 'August 7, 2023',
         createdIn: 'PHP / SQL',
         img: '/images/projects/hbv.webp',
         parent: 'matraex_inc',
@@ -101,7 +108,6 @@ export const projectData = {
         link: {
             website: 'https://venturesys.org',
         },
-        dates: 'August 1, 2023 - August 7, 2023',
         stack: 'PHP, SQL',
         keyFeatures: `
         - Implemented export of iif files for Quickbooks
@@ -109,7 +115,8 @@ export const projectData = {
     },
     high_call_rodeo: {
         title: 'High Call Rodeo',
-        shortenedDate: "Jul 14 - Jul 31, 2023",
+        startDate: 'July 14, 2023',
+        endDate: 'July 31, 2023',
         createdIn: 'React / Meteor / Mongodb',
         img: '/images/projects/highcall.webp',
         imgcss: {
@@ -120,7 +127,6 @@ export const projectData = {
         link: {
             website: 'https://app.highcallrodeo.com',
         },
-        dates: 'July 14, 2023 - July 31, 2023',
         stack: 'React, Meteor, Mongodb',
         keyFeatures: `
         - Audited the client's original codebase prior to beginning work
@@ -130,7 +136,8 @@ export const projectData = {
     },
     salestrak: {
         title: 'Sales Trak',
-        shortenedDate: "Jan 26 - Jul 31, 2023",
+        startDate: 'January 26, 2023',
+        endDate: 'July 31, 2023',
         createdIn: 'PHP / SQL / JQuery',
         img: '/images/projects/salestrak.webp',
         parent: 'matraex_inc',
@@ -139,7 +146,6 @@ export const projectData = {
             website: 'https://salestrak.io',
             about: 'https://bartlettroofs.com/',
         },
-        dates: 'January 26, 2023 - July 31, 2023',
         stack: 'PHP, SQL, JQuery',
         keyFeatures: `
         - Refactored and optimized several pages and API calls
@@ -151,7 +157,8 @@ export const projectData = {
     },
     rio_genesis: {
         title: 'Rio Genesis',
-        shortenedDate: "Jun 19 - Jul 17, 2023",
+        startDate: 'June 19, 2023',
+        endDate: 'July 17, 2023',
         createdIn: 'PHP / SQL / React',
         img: '/images/projects/riogenesis.webp',
         parent: 'matraex_inc',
@@ -159,7 +166,6 @@ export const projectData = {
         link: {
             website: 'https://riogenesis.com',
         },
-        dates: 'June 19, 2023 - July 17, 2023',
         stack: 'PHP, SQL, React',
         keyFeatures: `
         - Created a script that would automatically upgrade the codebase to PHP8
@@ -168,7 +174,8 @@ export const projectData = {
     },
     black_sage_tech: {
         title: 'Black Sage Tech',
-        shortenedDate: "Jan 17 - Feb 28, 2023",
+        startDate: 'January 17, 2023',
+        endDate: 'February 28, 2023',
         createdIn: 'React',
         img: '/images/projects/blacksage.webp',
         parent: 'matraex_inc',
@@ -176,7 +183,6 @@ export const projectData = {
         link: {
             about: 'https://blacksagetech.com',
         },
-        dates: 'January 17, 2023 - February 28, 2023',
         stack: 'React',
         keyFeatures: `
         - Created responsive visual features within the app
@@ -186,7 +192,8 @@ export const projectData = {
     },
     motorpool_services: {
         title: 'MotorPool Services',
-        shortenedDate: "Aug 25, '22 - Jan 13, '23",
+        startDate: 'August 25, 2022',
+        endDate: 'January 13, 2023',
         createdIn: 'React',
         img: '/images/projects/motorpool.webp',
         parent: 'gimmworks',
@@ -194,7 +201,6 @@ export const projectData = {
         link: {
             website: 'https://motorpooldrivercertification.com',
         },
-        dates: 'August 25, 2022 - Janurary 13, 2023',
         stack: 'React, Javascript, Express.js, MongoDB, Stripe',
         keyFeatures: `
         - Created the test functionality
@@ -205,7 +211,8 @@ export const projectData = {
     },
     bronco_beam: {
         title: 'Bronco Beam',
-        shortenedDate: "Dec 21, '20 - Jul 30, '22",
+        startDate: 'December 21, 2020',
+        endDate: 'July 30, 2022',
         createdIn: 'React Native / Mongodb',
         img: '/images/projects/BroncoBeam.webp',
         imgcss: {
@@ -214,13 +221,14 @@ export const projectData = {
         parent: 'gimmworks',
         fullName: 'Bronco Beam (BEAM Tours)',
         description: `Bronco BEAM is a multi-year project of GIMM Works that is a location-based app for universities. I was asked to join the team for the V2 revamp. I refactored the server and made a web admin portal so the app is customizable and dynamic for different universities. I also refactored the app's React Native code for V3 and made a best path algorithm for tours.`,
-        content: ['https://www.youtube.com/embed/3NAEDSFhHhU'],
+        content: [
+            'https://www.youtube.com/embed/3NAEDSFhHhU'
+        ],
         link: {
             website: 'https://broncobeam.com',
             android: 'https://play.google.com/store/apps/details?id=com.broncobeam_mobile&hl=en_US&gl=US',
             apple: 'https://apps.apple.com/us/app/beam-tours/id1588971126',
         },
-        dates: 'December 21, 2020 - July 30, 2022',
         stack: 'React, React Native, Javascript, CSS, Socket.io, Express.js, AWS S3, MongoDB, OneSignal',
         keyFeatures: `
         - Refactored existing Node.js server to be more scalable and secure
@@ -231,7 +239,8 @@ export const projectData = {
     },
     all_in_favor: {
         title: 'All in Favor',
-        shortenedDate: "Sept 4, '21 - Jan 6, '22",
+        startDate: 'September 4, 2021',
+        endDate: 'January 6, 2022',
         createdIn: 'React',
         img: '/images/projects/AllinFavor.webp',
         imgcss: {
@@ -243,7 +252,6 @@ export const projectData = {
         link: {
             website: 'https://www.allinfavor.org',
         },
-        dates: 'September 4, 2021 - Janurary 6, 2022',
         stack: 'React, Javascript, CSS, Socket.io, Express.js, MongoDB',
         keyFeatures: `
         - Wrote a custom networking system for the game in Node.js using Socket.IO, including the ability to
@@ -253,7 +261,8 @@ export const projectData = {
     },
     the_simple_ring_alpha: {
         title: 'The Simple Ring Alpha',
-        shortenedDate: "Oct 8, '20 - Dec 24, '21",
+        startDate: 'October 8, 2020',
+        endDate: 'December 24, 2021',
         createdIn: 'React / Unity / Firebase',
         img: '/images/projects/TheSimpleRing.webp',
         description: `This project was made for The Simple Ring Company. I worked as an independant contractor
@@ -263,7 +272,6 @@ export const projectData = {
             demo: 'https://ringtesting.jonathankido.com',
             about: 'https://thesimplering.com',
         },
-        dates: 'October 8, 2020 - December 24, 2021',
         stack: 'Unity WebGL, C#, React, Javascript, Firebase',
         keyFeatures: `
         - Worked for the founders of The Simple Ring on a consumer based mobile app
@@ -272,11 +280,11 @@ export const projectData = {
     },
     planet_destroyer: {
         title: 'Planet Destroyer',
-        shortenedDate: "Dec 5, '20 - Apr 15, '21",
+        startDate: 'December 5, 2020',
+        endDate: 'April 15, 2021',
         createdIn: 'Unity VR',
         img: '/images/projects/PD-v1.7.webp',
         description: `This project was made as the final project for GIMM 490. This project was started in GIMM 290.`,
-        dates: 'December 5, 2020 - April 15, 2021',
         stack: 'Unity, C#, Blender',
         keyFeatures: `
         - Individual project with all original code and art that was made with the Unity game engine
@@ -285,18 +293,21 @@ export const projectData = {
     },
     abc_stories: {
         title: 'ABC Stories',
-        shortenedDate: "Apr 12 - Dec 23, 2020",
+        startDate: 'April 12, 2020',
+        endDate: 'December 23, 2020',
         createdIn: 'Swift / React',
         img: '/images/projects/abcStories.webp',
         imgcss: { borderRadius: '10%' },
         parent: 'gimmworks',
         description: `This project was the first project that I got put on after getting hired by GIMM Works. The team was creating an app to help students who were struggling with writing. My job was to create a website that would display statistics about the users' progress to help them and their teachers figure out what they should focus on to improve. This project was later given to Blocksmith to maintain the server and app. however in the future the website functionality may be moved to the app.`,
-        content: ['https://www.youtube.com/embed/f6TUAltSobQ', '/images/projects/info/abcstoriesweb.mp4'],
+        content: [
+            'https://www.youtube.com/embed/f6TUAltSobQ',
+            '/images/projects/info/abcstoriesweb.mp4'
+        ],
         link: {
             website: 'https://www.abcstories.org/about',
             apple: 'https://apps.apple.com/us/app/abc-stories/id1539194514',
         },
-        dates: 'April 12, 2020 - December 23, 2020',
         stack: 'React, Javascript, Express.js, MongoDB, Swift, SQLite',
         keyFeatures: `
         - Created an API for the website and app
@@ -308,91 +319,116 @@ export const projectData = {
     },
     minesweeper_solver: {
         title: 'Minesweeper Solver',
-        shortenedDate: "Nov 1 - Dec 4, 2020",
+        startDate: 'November 1, 2020',
+        endDate: 'December 4, 2020',
         createdIn: 'Unity',
         img: '/images/projects/minesweeper.webp',
         description: `This project was a side project. I had challenged myself to create a minesweeper solver. It uses basic knowledge and flags the 100% bomb spots, and clears the the spots that it calculates cannot have a bomb. There are some occasions where it is unclear and has to use a probiblity calcualation based on the array of neigboring cells. The algorithm first clicks any spots where it has a 0% probiblity of a bomb being there and then repeats. If there isn't a valid direction it will click the flag in the location with the highest possiblity of there being a bomb and continue.`,
-        content: ['/images/projects/info/minesweepersolver.mp4'],
-        dates: 'November 1, 2020 - December 4, 2020',
+        content: [
+            '/images/projects/info/minesweepersolver.mp4'
+        ],
         stack: 'Unity, C#',
         keyFeatures: `
         - This generates a probability field to do an educated guess`,
     },
     cash_n_slash: {
         title: "Cash n' Slash",
-        shortenedDate: "Sep 14 - Nov 17, 2020",
+        startDate: 'September 14, 2020',
+        endDate: 'November 17, 2020',
         createdIn: 'Unity VR',
         img: '/images/projects/CashnSlash.webp',
         parent: 'gimmworks',
         description: `Cash n' Slash was a VR project made for Idaho Central Credit Union while I worked for GIMM Works. ICCU wanted a VR cash tornado alternative. I worked with a team of other people to create a VR game. I focused on a custom physics system and a VR suitable keyboard.`,
-        content: ['https://www.youtube.com/embed/htOdUCvf4t0', '/images/projects/info/vrKeyboard.mp4', '/images/projects/info/moneyPhysics.mp4', '/images/projects/info/cashTextures.png', '/images/projects/info/cashGravity.gif', '/images/projects/info/cafe.gif',],
-        dates: 'September 14, 2020 - November 17, 2020',
+        content: [
+            'https://www.youtube.com/embed/htOdUCvf4t0',
+            '/images/projects/info/vrKeyboard.mp4',
+            '/images/projects/info/moneyPhysics.mp4',
+            '/images/projects/info/cashTextures.png',
+            '/images/projects/info/cashGravity.gif',
+            '/images/projects/info/cafe.gif',
+        ],
         stack: 'Unity, C#, Blender',
     },
     swordwhip: {
         title: 'Swordwhip',
-        shortenedDate: "Sep 15 - 16, 2020",
+        startDate: 'September 15, 2020',
+        endDate: 'September 16, 2020',
         createdIn: 'Unity',
         img: '/images/projects/swordwhip.webp',
         description: `This project was created during the first few days of Cash n' Slash. Orignially the project was going to have weapons but later it was changed so that the player had to grab the cash and there would be no weapons in the game at all after that point. I later used this in a school project.
             This was my take on a weapon. It was inspired by Soul Calibur character Ivy's weapon. This project was made using Unity's Hinge Joint component, with a script attached so that the length could increase and decrease. While the length was decreasing it would also reduce the hinges' swing distance so it would not move while it was fully retracted.`,
-        content: ['/images/projects/info/swordwhip.mp4'],
-        dates: 'September 15, 2020 - September 16, 2020',
+        content: [
+            '/images/projects/info/swordwhip.mp4'
+        ],
         stack: 'Unity, C#, Blender',
     },
     deadline: {
         title: 'Deadline',
-        shortenedDate: "Sept 6 - 13, 2018",
+        startDate: 'September 6, 2018',
+        endDate: 'September 13, 2018',
         createdIn: 'Flash',
         img: '/images/projects/deadline.webp',
         description: `Deadline was a project I made during a challenge for Dev Club. The challenge was to make a game where the player had to compete a task before a countdown timer was up. These challenges were open for a week, with the results displayed to the rest of the club at the end of the week.`,
-        content: ['/images/projects/info/deadline.mp4', '/flash/DeadlineGame.swf'],
-        dates: 'September 6, 2018 - September 13, 2018',
+        content: [
+            '/images/projects/info/deadline.mp4',
+            '/flash/DeadlineGame.swf'
+        ],
         stack: 'Adobe Animate, Flash, ActionScript 3',
     },
     defend: {
         title: 'Defend',
-        shortenedDate: "Aug 3 - 18, 2018",
+        startDate: 'August 3, 2018',
+        endDate: 'August 18, 2018',
         createdIn: 'Flash',
         img: '/images/projects/defend.webp',
         description: `Defend was a side project I made towards the end of GIMM 260, and during my first year as a peer mentor. This project was made with the goal in mind of becoming another game template for Professor Ellertson to have available for the incoming freshman.`,
-        content: ['/images/projects/info/defend.mp4', '/flash/Defend.swf'],
-        dates: 'August 3, 2018 - August 18, 2018',
+        content: [
+            '/images/projects/info/defend.mp4',
+            '/flash/Defend.swf'
+        ],
         stack: 'Adobe Animate, Flash, ActionScript 3',
     },
     uno_ai: {
         title: 'UNO AI',
-        shortenedDate: "Nov 21 - Dec 10, 2017",
+        startDate: 'November 21, 2017',
+        endDate: 'December 10, 2017',
         createdIn: 'Flash',
         img: '/images/projects/uno.webp',
         description: `Uno AI was a side project that I created towards the end of GIMM 110. The AI is coded to sort its hand in view, create an array of available options and then choose a random card to play or draw one if no plays are possible.`,
-        content: ['/images/projects/info/uno.mp4', '/flash/Uno.swf'],
-        dates: 'November 21, 2017 - December 10, 2017',
+        content: [
+            '/images/projects/info/uno.mp4',
+            '/flash/Uno.swf'
+        ],
         stack: 'Adobe Animate, Flash, ActionScript 3',
     },
     survive: {
         title: 'Survive',
-        shortenedDate: "Sep 18 - Oct 31, 2017",
+        startDate: 'September 18, 2017',
+        endDate: 'October 31, 2017',
         createdIn: 'Flash',
         img: '/images/projects/survive.webp',
         description: `Survive was the first individual game I created in GIMM 110 and my first game ever. The assignment was to create a game based off of a very basic template.
             The template I based mine on was a space shooter with the player's ship locked in the center of the screen.
             I changed the ship from being stagnant to be able to move with player input subject to gravity, added the ability to change weapon types (one a charged attack and the other a fully automatic attack with reload) by pressing w, and created my own graphics.`,
-        content: ['/images/projects/info/survive.mp4', '/flash/Survive.swf'],
-        dates: 'September 18, 2017 - October 31, 2017',
+        content: [
+            '/images/projects/info/survive.mp4',
+            '/flash/Survive.swf'
+        ],
         stack: 'Adobe Animate, Flash, ActionScript 3',
     },
     original_logo_animation: {
         title: 'Original Logo Animation',
-        shortenedDate: "June 13, 2015",
+        startDate: 'June 13, 2015',
+        endDate: 'June 13, 2015',
         createdIn: 'Blender',
         img: '/images/projects/OriginalLogoAnimation.webp',
         description: `This was a simple project in high school, and actually my first animation using blender, at the time I was thinking I would be a Youtuber and this would be my short intro before every video.`,
-        content: ['/images/projects/info/firstanimation.mp4'],
+        content: [
+            '/images/projects/info/firstanimation.mp4'
+        ],
         meanings: {
             VFoS: '/about#VFoS',
         },
-        dates: 'June 13, 2015',
         stack: 'Blender',
         keyFeatures: `
         - This is the first project that involve modeling and animating something without assistance`,

@@ -5,7 +5,7 @@ import { projectData, projectsOrder } from '../_data';
 
 import '../css/projects.css';
 import { ProjectTimer } from '../components';
-import { TileFlex, TileFlexTouchSupport, timeout } from '../utils';
+import { TileFlex, TileFlexTouchSupport, formatDate, timeout } from '../utils';
 import { checkAchievement } from '../_actions/user.actions';
 
 class Projects extends React.Component {
@@ -45,8 +45,9 @@ class Projects extends React.Component {
         this.setState({ updateModal: !updateModal });
     }
 
-    mapTile({ title = '', shortenedDate: date = '', createdIn = '', img = "", imgcss = {} }, index) {
+    mapTile({ title = '', createdIn = '', img = "", imgcss = {}, ...rem }, index) {
         const { toMine, rows } = this.state;
+        const date = formatDate(rem, true)
         return (
             <div key={index + "tile"} id={title.replace(/[^a-zA-Z ]/g, "").split(' ').join('_')} className='tile' {...TileFlex(toMine)} style={{ backgroundImage: `url(${img})`, ...imgcss, ...(toMine ? { boxShadow: 'none', cursor: 'auto' } : {}) }} onClick={(e) => this.modalShow(e.target.id)}>
                 <div className={` ${toMine ? 'toMinesweeper' : 'overlay'}`} style={{ backgroundImage: `url(/images/projects/minesweeper/toMinesweeper.webp)` }} onAnimationEnd={() => this.setState({

@@ -28,7 +28,10 @@ class ModalController extends Component {
         if (projectData[modal]) return <ProjectModal focus={modal} />;
 
         console.error('ERROR: Modal was not found:', modal);
-        return <Default />;
+
+        return <center style={{ margin: "4% 0px", padding: '0px 15%' }}>
+            Content for this project has not yet been created.
+        </center>;
     }
 
     resetScroll = (e, hide) => (hide) ? e.scroll(0, 0) : null;

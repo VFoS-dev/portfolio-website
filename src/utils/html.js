@@ -148,3 +148,19 @@ export function dragParentElement(thisInstead = false, absoluteParent = false, c
         onTouchStart: touchDragSetup,
     }
 }
+
+export function formatDate({ startDate, endDate }, shorten = false) {
+    if (startDate === endDate) return startDate;
+    if (!shorten) return `${startDate} - ${endDate}`;
+    const [sMonth, sDay, sYear] = startDate.split(/,?\s/)
+    const [eMonth, eDay, eYear] = endDate.split(/,?\s/)
+    const sameMonth = sMonth === eMonth, sameYear = sYear === eYear;
+    const months = { january: 'Jan.', february: 'Feb.', march: 'Mar.', april: 'Apr.', may: 'May.', june: 'Jun.', july: 'Jul.', august: 'Aug.', september: 'Sept.', october: 'Oct.', november: 'Nov.', december: 'Dec.', }
+
+    let sDate = `${months[sMonth.toLowerCase()]} ${sDay}${!sameYear && `, '${sYear.substring(2)}`}`.replace('false', '');
+    let eDate = (endDate === 'Present') ?
+        endDate :
+        `${!sameMonth && months[eMonth.toLowerCase()]} ${eDay}, '${eYear.substring(2)}`.replace('false', '');
+
+    return `${sDate} - ${eDate}`;
+}
