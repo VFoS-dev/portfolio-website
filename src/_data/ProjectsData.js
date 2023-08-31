@@ -5,7 +5,7 @@ export const projectsOrder = [
     'venture_title',
     'hbv',
     'high_call_rodeo',
-    'salestrak',
+    'sales_trak',
     'rio_genesis',
     'black_sage_tech',
     'motorpool_services',
@@ -134,7 +134,7 @@ export const projectData = {
         - Documented my discoveries
         - Reviewed the client's cloud services to increase security`,
     },
-    salestrak: {
+    sales_trak: {
         title: 'Sales Trak',
         startDate: 'January 26, 2023',
         endDate: 'July 31, 2023',
@@ -249,6 +249,9 @@ export const projectData = {
         },
         parent: 'gimmworks',
         description: `I hopped onto this project towards the end of it. When I joined it wasn't in the best place for security, and there was no networking for the game. The first thing that I did for this project was remove the saving of the user's password locally, and instead converted it to a JSON Web Token that contains no critical user data. The next steps were to add networking. I created all of the game's net code.`,
+        content: [
+            'https://www.youtube.com/embed/lfqCeVwhvLk'
+        ],
         link: {
             website: 'https://www.allinfavor.org',
         },
@@ -301,8 +304,13 @@ export const projectData = {
         parent: 'gimmworks',
         description: `This project was the first project that I got put on after getting hired by GIMM Works. The team was creating an app to help students who were struggling with writing. My job was to create a website that would display statistics about the users' progress to help them and their teachers figure out what they should focus on to improve. This project was later given to Blocksmith to maintain the server and app. however in the future the website functionality may be moved to the app.`,
         content: [
-            'https://www.youtube.com/embed/f6TUAltSobQ',
-            '/images/projects/info/abcstoriesweb.mp4'
+            {
+                src: 'https://www.youtube.com/embed/f6TUAltSobQ',
+                title: 'Video of the App',
+            }, {
+                src: '/images/projects/info/abcstoriesweb.mp4',
+                title: 'Video of the Website',
+            },
         ],
         link: {
             website: 'https://www.abcstories.org/about',
@@ -341,11 +349,31 @@ export const projectData = {
         description: `Cash n' Slash was a VR project made for Idaho Central Credit Union while I worked for GIMM Works. ICCU wanted a VR cash tornado alternative. I worked with a team of other people to create a VR game. I focused on a custom physics system and a VR suitable keyboard.`,
         content: [
             'https://www.youtube.com/embed/htOdUCvf4t0',
-            '/images/projects/info/vrKeyboard.mp4',
-            '/images/projects/info/moneyPhysics.mp4',
-            '/images/projects/info/cashTextures.png',
-            '/images/projects/info/cashGravity.gif',
-            '/images/projects/info/cafe.gif',
+            {
+                src: '/images/projects/info/vrKeyboard.mp4',
+                title: 'Early Developement',
+                description: 'This keyboard uses the right joystick of the VR controllers to move around the alphabet (left/right), and capitalize or lowercase (up/down), then uses the A button to input the letter, and B to backspace. This keyboard was later upgraded to allow for point controls.',
+            },
+            {
+                src: '/images/projects/info/moneyPhysics.mp4',
+                title: 'Early Cash Physics',
+                description: `The cash model's verticies were linked to a set of particles that would follow physics and collide with objects in the scene.`,
+            },
+            {
+                src: '/images/projects/info/cashTextures.png',
+                title: 'Cash Textures',
+                description: `These were the availiable textures I applied to the the particle-based models.`,
+            },
+            {
+                src: '/images/projects/info/cashGravity.gif',
+                title: 'Cash Physics',
+                description: `To allow for the feeling of being in a cash tornado I created these gravity objects that would pull particles to them if they were close enough, instead of them being pulled to the base downwards gravity in the scene.`,
+            },
+            {
+                src: '/images/projects/info/cafe.gif',
+                title: 'Simple Model Animation',
+                description: `This was a simple low poly building I modeled, with custom animated text objects that later had light emissions to apply a more futuristic feel.`,
+            },
         ],
         stack: 'Unity, C#, Blender',
     },
@@ -356,7 +384,7 @@ export const projectData = {
         createdIn: 'Unity',
         img: '/images/projects/swordwhip.webp',
         description: `This project was created during the first few days of Cash n' Slash. Orignially the project was going to have weapons but later it was changed so that the player had to grab the cash and there would be no weapons in the game at all after that point. I later used this in a school project.
-            This was my take on a weapon. It was inspired by Soul Calibur character Ivy's weapon. This project was made using Unity's Hinge Joint component, with a script attached so that the length could increase and decrease. While the length was decreasing it would also reduce the hinges' swing distance so it would not move while it was fully retracted.`,
+            This was my take on a weapon.It was inspired by Soul Calibur character Ivy's weapon. This project was made using Unity's Hinge Joint component, with a script attached so that the length could increase and decrease.While the length was decreasing it would also reduce the hinges' swing distance so it would not move while it was fully retracted.`,
         content: [
             '/images/projects/info/swordwhip.mp4'
         ],

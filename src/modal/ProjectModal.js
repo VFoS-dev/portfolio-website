@@ -77,10 +77,10 @@ class HandleContent {
     static Flash({ src, title = 'Playable Flash game' }) {
         return <Fragment>
             {title && <h1>{title}</h1>}
+            <p>This project is a Flash game. If you want to play it for yourself, you will have to use a supporting brower like <a href='https://www.palemoon.org' rel="noreferrer" target="_blank">Pale Moon</a>.</p>
             <div className="video" >
                 <object height="100%" width="100%" type="application/x-shockwave-flash" data={src} aria-label="flash game" />
             </div>
-            <p>This project is a Flash game. If you want to play it for yourself, you will have to use a supporting brower like <a href='https://www.palemoon.org' rel="noreferrer" target="_blank">Pale Moon</a>.</p>
         </Fragment>
     }
 
@@ -115,7 +115,7 @@ class HandleContent {
         return <Fragment>
             {title && <h1>{title}</h1>}
             {description && <p>{description}</p>}
-            <iframe src={src} title='portfolio' style={{ width: '100%', aspectRatio: '16/9' }} />
+            <iframe src={src} title='portfolio' style={{ width: '100%', aspectRatio: '16/9', position: 'relative' }} />
         </Fragment>
     }
 }

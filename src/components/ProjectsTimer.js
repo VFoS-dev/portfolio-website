@@ -40,10 +40,8 @@ class ProjectTimer extends React.Component {
             [...`${_count}`].forEach((char, i, str) => {
                 list[i + (3 - str.length)] = char;
             })
-        else {
-            list = [9, 9, 9];
-            this.props.checkAchievement('mineTime', count)
-        }
+        else list = [9, 9, 9];
+
         return list;
     }
 
