@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { Default, Matraex } from '../modal';
+import { Default, ProjectModal } from '../modal';
 import { checkAchievement } from '../_actions/user.actions';
 import { connect } from 'react-redux';
 import { projectData } from '../_data';
@@ -25,7 +25,7 @@ class ModalController extends Component {
     route(modal) {
         if (!modal) return <Fragment />;
 
-        if (projectData[modal]) return <Matraex focus={modal} />;
+        if (projectData[modal]) return <ProjectModal focus={modal} />;
 
         console.error('ERROR: Modal was not found:', modal);
         return <Default />;

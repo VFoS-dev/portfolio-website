@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { projectData } from '../_data';
 
-export class Matraex extends Component {
+export class ProjectModal extends Component {
     createlinks(link) {
         if (!link) return [];
         let links = [], about = false;
