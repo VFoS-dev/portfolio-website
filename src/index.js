@@ -9,7 +9,7 @@ import { ResumeBuilder } from './pages';
 import './css/index.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-const builder = /resume\?(.+)?create=1/.test(window.location.href);
+const builder = /resume\?(.+)?create=/.test(window.location.href);
 
 render(
   <Provider store={store}>

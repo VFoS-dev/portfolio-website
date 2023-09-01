@@ -1,0 +1,12 @@
+<svg style='--color-1:black; --color-2:white;' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 150 150">
+    <g style="mask: url(#visual);">
+        <rect y='0' width="150" height="150" fill="var(--color-2)" />
+        <rect stroke-width='12' stroke='var(--color-2)' fill='transparent' width="100" height="100"
+            transform="translate(75 4) rotate(45)" />
+    </g>
+    <mask id='visual'>
+        <rect fill="white" width="100" height="100" transform="translate(75 4) rotate(45)" />
+        <rect fill="white" stroke-width='9' stroke='black' width="80" height="80"
+            transform="translate(75 18) rotate(45)" />
+    </mask>
+</svg>

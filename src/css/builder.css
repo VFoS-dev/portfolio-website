@@ -62,6 +62,13 @@ body.builder fieldset {
         display: none !important;
     }
 
+    body.builder .autopagebreak {
+        clear: both;
+        display: inline-block;
+        width: 100%;
+        page-break-after: auto;
+    }
+
     body.builder .pagebreak {
         clear: both;
         page-break-after: always;
@@ -165,6 +172,26 @@ body.builder#printer .links svg {
     fill: #fff;
 }
 
+body.builder .links h5::after {
+    content: '';
+    top: 50%;
+    right: .5vw;
+    transform: translateY(-50%);
+    --size: 2vw;
+    width: var(--size);
+    height: var(--size);
+    background-image: var(--icon);
+    position: absolute;
+}
+
+body.builder .links .email {
+    --icon: url(/public/images/builder/mail-white.svg);
+}
+
+body.builder .links .globe {
+    --icon: url(/public/images/builder/globe-white.svg);
+}
+
 body.builder#printer #alt {
     background-color: transparent;
 }
@@ -262,7 +289,7 @@ body.builder header h5 {
     padding-left: 1vw;
     width: fit-content;
     border-radius: 1vw;
-    padding-right: 4vw;
+    padding-right: 3.5vw;
     font-size: 1.5vw;
 }
 
@@ -416,6 +443,15 @@ body.builder .info-container {
     color: var(--OffWhite);
 }
 
+body.builder .row li {
+    list-style: none;
+    display: block;
+}
+
+body.builder ul.row {
+    padding: 0;
+}
+
 body.builder .info-container .title {
     position: absolute;
     top: 0px;
@@ -438,6 +474,36 @@ body.builder .info-container .title::before {
     left: 0;
     transform: translateY(-50%);
     background-image: var(--icon, transparent);
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+#printer .title.work {
+    --icon: url(/public/images/builder/work-black.svg);
+}
+
+.title.work {
+    --icon: url(/public/images/builder/work-white.svg);
+}
+
+#printer .title.work {
+    --icon: url(/public/images/builder/work-black.svg);
+}
+
+#printer .title.university {
+    --icon: url(/public/images/builder/university-black.svg);
+}
+
+.title.university {
+    --icon: url(/public/images/builder/university-white.svg);
+}
+
+#printer .title.personal {
+    --icon: url(/public/images/builder/personal-black.svg);
+}
+
+.title.personal {
+    --icon: url(/public/images/builder/personal-white.svg);
 }
 
 #printer .title.building {
@@ -471,6 +537,7 @@ body.builder em {
 body.builder .info-container .content {
     margin: 2vw;
     font-size: 1.5vw;
+    gap: .25vw;
     display: flex;
     flex-wrap: wrap;
 }
@@ -501,7 +568,7 @@ body.builder .content :is(.advanced, .intermediate, .beginner, .novice) {
     border-radius: 1vw;
     position: relative;
     background-color: var(--color);
-    margin: 0.25vw;
+    margin: 0.125vw;
 }
 
 body.builder .content .visual {
@@ -538,6 +605,7 @@ body.builder .novice .visual>div {
 }
 
 body.builder .skills-container {
+    margin-top: 1vw;
     width: 85vw;
     display: flex;
     flex-wrap: nowrap;
@@ -603,13 +671,14 @@ body.builder .content .container {
     border-bottom: var(--color) 0.25vw solid;
     display: flex;
     flex-direction: row;
+    flex-grow: 1;
     width: -moz-fit-content;
     width: fit-content;
     margin: 0px;
+    gap: .125vw;
     padding-bottom: 1vw;
     margin-bottom: 1vw;
     position: relative;
-    margin-right: 1vw;
     flex-shrink: 0;
     width: unset;
     max-width: 100%;
@@ -646,7 +715,7 @@ body.builder .info-container .content.block {
 }
 
 body.builder footer {
-    margin-bottom: 3vw;
+    padding-bottom: 1vw;
     color: var(--OffWhite);
 }
 
@@ -722,4 +791,63 @@ body.builder .sticky-overlay>div:last-child {
 
 body.builder .sticky-overlay input {
     width: 2rem;
+}
+
+body.builder :is(.advanced, .intermediate, .beginner, .novice)::before {
+    content: '';
+    position: absolute;
+    transform: translate(-110%, -50%);
+    top: 50%;
+    --size: 2vw;
+    width: var(--size);
+    height: var(--size);
+    background-image: var(--icon, transparent);
+}
+
+body.builder .legend .advanced,
+body.builder#printer .advanced {
+    --icon: url(/public/images/builder/advanced-black.svg);
+}
+
+body.builder .legend .intermediate,
+body.builder#printer .intermediate {
+    --icon: url(/public/images/builder/intermediate-black.svg);
+}
+
+body.builder .legend .beginner,
+body.builder#printer .beginner {
+    --icon: url(/public/images/builder/beginner-black.svg);
+}
+
+body.builder .legend .novice,
+body.builder#printer .novice {
+    --icon: url(/public/images/builder/novice-black.svg);
+}
+
+body.builder .advanced {
+    --icon: url(/public/images/builder/advanced-white.svg);
+}
+
+body.builder .intermediate {
+    --icon: url(/public/images/builder/intermediate-white.svg);
+}
+
+body.builder .beginner {
+    --icon: url(/public/images/builder/beginner-white.svg);
+}
+
+body.builder .novice {
+    --icon: url(/public/images/builder/novice-white.svg);
+}
+
+body.builder main>.header {
+    margin-bottom: 0;
+}
+
+body.builder main>.info-container.full {
+    margin-top: 1vw;
+}
+
+body.builder main>.info-container.full+.info-container.full {
+    margin-top: 2.5vw;
 }

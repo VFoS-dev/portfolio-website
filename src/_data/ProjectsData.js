@@ -57,6 +57,7 @@ export const projectData = {
         - Added achievements, and even more functionality`,
     },
     matraex_inc: {
+        isParent: true,
         title: 'Matraex Inc.',
         startDate: 'January 17, 2023',
         endDate: 'August 11, 2023',

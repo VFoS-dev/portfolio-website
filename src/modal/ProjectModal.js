@@ -28,7 +28,7 @@ export class ProjectModal extends Component {
         const { fullName, title, description, link, stack, keyFeatures, parent, content, meanings, ...rem } = projectData[focus];
         const date = formatDate(rem);
         const [links, about] = this.createlinks(link);
-        const Title = HandleHeader.Input(fullName ?? title, parent)
+        const Title = HandleHeader.Input(fullName ?? title, parent);
 
         return (
             <Fragment>
@@ -44,7 +44,7 @@ export class ProjectModal extends Component {
                     {!!keyFeatures && <div style={{ textAlign: 'left' }}>
                         <h5>Noteables:</h5>
                         <ul>
-                            {keyFeatures.split('-').map((k, i) => (k.replace(/\s+/, '')) ? <li key={`${focus}-${i}`}>{k}</li> : '')}
+                            {keyFeatures.split('- ').map((k, i) => (k.replace(/\s+/, '')) ? <li key={`${focus}-${i}`}>{k}</li> : '')}
                         </ul>
                     </div>}
                     {content && content.map((c, i) => <Fragment key={`${focus}-${i}`}>{HandleContent.Input(c)}</Fragment>)}

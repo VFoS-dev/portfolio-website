@@ -36,7 +36,7 @@ export const skillData = [
         name: 'Coding Languages',
         color: 'orange',
         set: setSort([
-            { name: 'ActionScript 3 (AS3)', compentence: 70, category: 'coding' },
+            { name: 'ActionScript 3 (AS3)', compentence: 80, category: 'coding' },
             { name: 'AutoHotKey (AHK)', compentence: 82, category: 'coding' },
             { name: 'C++', compentence: 84, category: 'coding' },
             { name: 'C#', compentence: 88, category: 'coding' },
