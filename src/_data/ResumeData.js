@@ -44,6 +44,19 @@ export const resumeData = {
                 \t Presented previous projects of the department to prospective students and clients
                 \t Managed checking out equipment to other students`,
         },
+    ],
+    education: [
+        {
+            school: 'Boise State University',
+            years: 'August 2017 - December 2022',
+            majors: [
+                { short: 'GIMM', long: 'Games, Interactive Media, and Mobile' }
+            ],
+            minors: [
+                { short: 'MATH', long: 'Applied Mathematics' },
+                { short: 'ITM', long: 'Information Technology Management' }
+            ],
+        }
     ]
 }
 

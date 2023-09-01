@@ -1,9 +1,9 @@
-import React, { createRef } from 'react';
+import React, { Fragment, createRef } from 'react';
 import { connect } from 'react-redux';
 import { EditableFocusRot, createKey, dragParentElement, onDoubleClick } from '../utils';
 
 import '../css/resume.css'
-import { resumeCombinedData } from '../_data';
+import { resumeCombinedData, resumeData } from '../_data';
 import { checkAchievement } from '../_actions/user.actions';
 
 class Resume extends React.Component {
@@ -99,6 +99,7 @@ class Resume extends React.Component {
 
     render() {
         const { windows, } = this.state;
+        const { education } = resumeData;
         return (
             <div className="resume" style={{ backgroundImage: 'url(/images/resume/windows_xp_background.webp)' }}>
                 <div className='navpadding' />
@@ -132,11 +133,12 @@ class Resume extends React.Component {
                             <div className='window-page' {...EditableFocusRot()} onKeyUp={() => this.props.checkAchievement('editResume')}>
                                 <center><h1>Want a polished resume? <button className='hyperlink' onClick={() => this.openResume()} >Click Here</button></h1></center>
                                 <h2>Education: </h2>
-                                <p className='tab'>
-                                    Boise State University: 2017 - 2022
-                                    <br />Major: <strong>GIMM</strong> (Games, Interactive Media, and Mobile)
-                                    <br />Minors: <strong>MATH</strong> (Applied Mathematics), <strong>ITM</strong> (Information Technology Management)
-                                </p>
+                                {education.map(({ school, years, majors, minors }, i) => <p key={`${school}-${i}`} className='tab'>
+                                    {school}: {years}
+                                    <br />Major: {majors.map(({ short, long }, i) => <Fragment key={`${school}-${short}-${i}`}>{i > 0 ? ', ' : ""}<strong>{short}</strong> ({long})</Fragment>)}
+                                    <br />Minors: {minors.map(({ short, long }, i) => <Fragment key={`${school}-${short}-${i}`}>{i > 0 ? ', ' : ""}<strong>{short}</strong> ({long})</Fragment>)}
+                                </p>)}
+
                                 <br />
                                 {resumeCombinedData(flavored)}
                                 <br />
@@ -152,8 +154,7 @@ class Resume extends React.Component {
                             </div>
                         </div>
                     </div>
-                })
-                }
+                })}
 
                 <div className='taskbar'>
                     <div className='start' onClick={() => this.props.checkAchievement('windowStart')}><div className='windowIcon' />start</div>

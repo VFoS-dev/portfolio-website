@@ -22,7 +22,6 @@ body.builder figure {
 }
 
 body.builder :is(h1, h2, h3, h4, h5, h6) {
-    line-height: unset;
     color: unset;
     margin: 0;
     font-size: inherit;
@@ -59,6 +58,10 @@ body.builder fieldset {
 }
 
 @media print {
+    body.builder :is(.no-print, .no-print *) {
+        display: none !important;
+    }
+
     body.builder .pagebreak {
         clear: both;
         page-break-after: always;
@@ -73,9 +76,43 @@ body.builder fieldset {
         color-adjust: exact !important;
         print-color-adjust: exact !important;
     }
+
+    body.builder {
+        background-color: var(--background) !important;
+    }
+
+    body.builder .resume {
+        background-color: var(--background);
+        scale: 1 !important;
+        transform-origin: top center;
+    }
+}
+
+body.builder .fixed-overlay {
+    pointer-events: none;
+    position: absolute;
+    top: 0;
+    z-index: 20;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 0 15%;
+}
+
+body.builder .resume {
+    background-color: var(--background);
+    scale: 0.7;
+    transform-origin: top center;
+}
+
+.page-outline {
+    outline: 1px magenta solid;
+    width: 100%;
+    aspect-ratio: 8.5/11;
 }
 
 :root body.builder {
+    --content-color: white;
     --background: #333333;
     --buttons: #007EA7;
     --buttonsAlpha: #007da738;
@@ -92,11 +129,11 @@ body.builder fieldset {
 }
 
 body.builder {
-    background-color: var(--background);
+    background-color: unset;
     overflow: overlay;
 }
 
-body.builder #printer {
+body.builder#printer {
     --background: #fff;
     --buttons: #575757;
     --buttonsAlpha: #007da738;
@@ -104,57 +141,57 @@ body.builder #printer {
     --lightBlue: #277691;
 }
 
-body.builder #printer .logo {
+body.builder#printer .logo {
     border-radius: 0px;
+    filter: grayscale(1);
 }
 
-body.builder #printer header {
+body.builder#printer header {
     background-color: transparent;
 }
 
-body.builder #printer footer {
+body.builder#printer footer {
     background-color: transparent;
 }
 
-#printer #alt a,
-#printer .more-info a,
-body.builder #printer section a {
-    color: var(--header);
+body.builder#printer :is(section a, #alt a, .more-info a) {
+    color: black;
     font-family: "Avenir Next Bold";
 }
 
-body.builder #printer .links svg {
+
+body.builder#printer .links svg {
     stroke: #fff;
     fill: #fff;
 }
 
-body.builder #printer #alt {
+body.builder#printer #alt {
     background-color: transparent;
 }
 
 
-body.builder #printer .header {
+body.builder#printer .header {
     background-color: #fff;
 }
 
 #printer .advanced,
 #printer .beginner,
 #printer .intermediate,
-body.builder #printer .novice {
+body.builder#printer .novice {
     --visual-color: #fff;
     color: #fff;
 }
 
 #printer header h1,
-body.builder #printer header h4 {
+body.builder#printer header h4 {
     color: #000 !important;
 }
 
-body.builder #printer h1.more-info {
+body.builder#printer h1.more-info {
     color: #000 !important;
 }
 
-body.builder #printer header h5 {
+body.builder#printer header h5 {
     color: #fff !important;
 }
 
@@ -219,7 +256,8 @@ body.builder header h5 {
     position: relative;
     background-color: var(--buttons);
     color: var(--OffWhite);
-    margin: 1vw 1vw 1vw auto;
+    margin: .75vw;
+    margin-left: auto;
     padding: 0.5vw;
     padding-left: 1vw;
     width: fit-content;
@@ -232,7 +270,7 @@ body.builder .links .icon {
     padding: 0.5vw;
     position: absolute;
     top: 0px;
-    width: 2.8vw;
+    width: 2.5vw;
     height: 100%;
     right: 0px;
     margin-right: 0.5vw;
@@ -243,7 +281,7 @@ body.builder main div {
 }
 
 body.builder main {
-    margin-bottom: 2.5vw;
+    margin-bottom: 1vw;
 }
 
 body.builder #alt {
@@ -265,18 +303,58 @@ body.builder #alt h1 a {
 body.builder .header {
     position: relative;
     background-color: var(--buttons);
+    width: -moz-fit-content;
     width: fit-content;
     margin-top: 1vw;
     margin-bottom: 1vw;
-    padding: 1vw 4vw;
+    padding: 0.5vw 3vw;
     display: flex;
     overflow: hidden;
+    --size: 5vw;
+}
+
+body.builder .header:before {
+    content: '';
+    position: relative;
+    background-image: var(--icon, unset);
+    width: var(--size);
+    height: var(--size);
+    transform: translateY(5%);
+    background-size: cover;
+}
+
+body.builder#printer .header.checklist {
+    --icon: url(/public/images/builder/checklist-black.svg);
+}
+
+body.builder .header.checklist {
+    --icon: url(/public/images/builder/checklist-white.svg);
+}
+
+body.builder#printer .header.diploma {
+    --icon: url(/public/images/builder/diploma-black.svg);
+}
+
+body.builder .header.diploma {
+    --icon: url(/public/images/builder/diploma-white.svg);
+}
+
+body.builder#printer .header.gear::before {
+    --size: 4vw;
+    transform: translateY(15%);
+    --icon: url(/public/images/builder/gear-black.svg);
+}
+
+body.builder .header.gear::before {
+    --size: 4vw;
+    transform: translateY(15%);
+    --icon: url(/public/images/builder/gear-white.svg);
 }
 
 body.builder .header .icon {
     color: var(--OffWhite);
-    width: 4vw;
-    height: 4vw;
+    height: 3.5vw;
+    aspect-ratio: 1/1;
 }
 
 body.builder .header h1 {
@@ -290,10 +368,10 @@ body.builder .header h1 {
 
 body.builder .cut-outs div {
     position: absolute;
-    width: 4vw;
-    height: 4vw;
+    height: 50%;
     border-radius: 100%;
     background-color: var(--background);
+    aspect-ratio: 1/1;
 }
 
 body.builder .cut-outs div:nth-child(1) {
@@ -326,7 +404,7 @@ body.builder svg {
 }
 
 body.builder .info-container.full {
-    width: 80vw;
+    width: 85vw;
     margin-top: 3vw;
 }
 
@@ -348,6 +426,42 @@ body.builder .info-container .title {
     font-size: 2vw;
     color: var(--OffWhite);
     background-color: var(--background);
+}
+
+body.builder .info-container .title::before {
+    content: '';
+    --size: 3vw;
+    position: absolute;
+    width: var(--size);
+    height: var(--size);
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    background-image: var(--icon, transparent);
+}
+
+#printer .title.building {
+    --icon: url(/public/images/builder/building-black.svg);
+}
+
+.title.building {
+    --icon: url(/public/images/builder/building-white.svg);
+}
+
+#printer .title.coding {
+    --icon: url(/public/images/builder/coding-black.svg);
+}
+
+.title.coding {
+    --icon: url(/public/images/builder/coding-white.svg);
+}
+
+#printer .title.software {
+    --icon: url(/public/images/builder/software-black.svg);
+}
+
+.title.software {
+    --icon: url(/public/images/builder/software-white.svg);
 }
 
 body.builder em {
@@ -424,7 +538,7 @@ body.builder .novice .visual>div {
 }
 
 body.builder .skills-container {
-    width: 80vw;
+    width: 85vw;
     display: flex;
     flex-wrap: nowrap;
     flex-direction: row;
@@ -440,16 +554,45 @@ body.builder .skills-container>.info {
     width: 100%;
 }
 
+body.builder#printer .content .container {
+    --color: grey !important;
+}
+
+body.builder#printer .content .container .category {
+    --background: white;
+}
+
+body.builder#printer .legend {
+    --header: transparent;
+    --background: black;
+}
+
+body.builder#printer :is(.novice, .intermediate, .advanced, .beginner) {
+    color: black;
+    --visual-color: black;
+    --color: transparent;
+}
+
 body.builder .legend {
     background-color: var(--header);
     border-radius: 2vw;
     margin-top: 0px;
     padding: 0.5vw;
     width: 20vw;
-    margin-left: 2.5vw;
     font-size: 1.5vw;
     border: var(--OffWhite) 0.25vw solid;
     color: var(--background);
+}
+
+body.builder .legend-side {
+    gap: 3vw;
+    margin-left: 2.5vw;
+    margin-top: 0;
+    max-width: 20vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 body.builder .info .info-container {
@@ -460,12 +603,19 @@ body.builder .content .container {
     border-bottom: var(--color) 0.25vw solid;
     display: flex;
     flex-direction: row;
+    width: -moz-fit-content;
     width: fit-content;
     margin: 0px;
     padding-bottom: 1vw;
     margin-bottom: 1vw;
     position: relative;
     margin-right: 1vw;
+    flex-shrink: 0;
+    width: unset;
+    max-width: 100%;
+    padding-right: 0;
+    padding-left: 0;
+    flex-wrap: wrap;
 }
 
 body.builder .content .container .category {
@@ -501,7 +651,7 @@ body.builder footer {
 }
 
 body.builder footer h1 {
-    font-size: 2vw;
+    font-size: 1.5vw;
     text-align: center;
 }
 
@@ -516,10 +666,9 @@ body.builder li {
 }
 
 body.builder section {
-    margin-top: 2vw;
-    margin-bottom: 2vw;
-    padding: 0.5vw;
-    border: 0.25vw solid transparent;
+    margin-bottom: 0.5vw;
+    padding: 0.25vw;
+    border: 0.125vw solid transparent;
 }
 
 body.builder section header {
@@ -548,4 +697,29 @@ body.builder section a {
 
 body.builder section header em {
     white-space: nowrap;
+}
+
+body.builder .sticky-overlay * {
+    pointer-events: all;
+    width: fit-content;
+}
+
+body.builder .sticky-overlay {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+body.builder .sticky-overlay>div {
+    max-width: 15vw;
+    display: flex;
+    flex-direction: column;
+}
+
+body.builder .sticky-overlay>div:last-child {
+    margin-right: 20px;
+}
+
+body.builder .sticky-overlay input {
+    width: 2rem;
 }
