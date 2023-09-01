@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { EditableFocusRot, createKey, dragParentElement, onDoubleClick } from '../utils';
 
 import '../css/resume.css'
-import { resumeData } from '../_data';
+import { resumeCombinedData } from '../_data';
 import { checkAchievement } from '../_actions/user.actions';
 
 class Resume extends React.Component {
@@ -138,7 +138,7 @@ class Resume extends React.Component {
                                     <br />Minors: <strong>MATH</strong> (Applied Mathematics), <strong>ITM</strong> (Information Technology Management)
                                 </p>
                                 <br />
-                                {resumeData(flavored)}
+                                {resumeCombinedData(flavored)}
                                 <br />
                                 <h2>Projects:<button className='hyperlink' onClick={() => this.changePage('projects')} >Click Here</button></h2>
                                 <br />

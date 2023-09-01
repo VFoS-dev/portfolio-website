@@ -1,5 +1,52 @@
 import { Fragment } from "react";
 
+export const resumeData = {
+    experience: [
+        {
+            title: `Software Engineer`,
+            company: `Matraex Inc.`,
+            dates: `January 2023 - August 2023`,
+            keyPoints: `
+                \t Did full stack development on multiple web/app projects for clients
+                \t Create scripts that automate tasks, making development faster and smoother
+                \t Worked with the team to improve processes and increase documentation standards
+                \t Made flexible tools and reusable features that are used across several projects
+                \t Optimized several pages, functions, and API calls`,
+        },
+        {
+            title: `Software Developer`,
+            company: `GIMM Works`,
+            dates: `January 2020 - January 2023`,
+            keyPoints: `
+                \t Worked with other student developers on unique software projects for clients
+                \t Led back-end dev on several projects
+                \t Did full stack development and 3D modeling for multiple projects
+                \t Helped other teams implement security features on their projects
+                \t Mentored two new hires to help them learn React`,
+        },
+        {
+            title: `Independent Contractor`,
+            subTitle: `App Development`,
+            company: `The Simple Ring`,
+            dates: `September 2020 - December 2021`,
+            keyPoints: `
+                \t Worked for the founders of The Simple Ring on a consumer-based mobile app
+                \t Wrote the back-end data storage structure, designed and implemented the front-end UI, and integrated Firebase into the app
+                \t Prompted improvements in code quality and structure that affected both the front-end and the back-end`,
+        },
+        {
+            title: `GIMM Senior Peer Mentor`,
+            company: `Boise State GIMM Program`,
+            dates: `July 2018 - December 2019`,
+            keyPoints: `
+                \t Helped current GIMM students with debugging and gave advice about their code
+                \t Assisted other peer mentors when they got stuck
+                \t Presented previous projects of the department to prospective students and clients
+                \t Managed checking out equipment to other students`,
+        },
+    ]
+}
+
 const data = {
     flavored: <Fragment>
         <h2>Experience: </h2>
@@ -39,44 +86,16 @@ const data = {
     </Fragment>,
     standard: <Fragment>
         <h2>Experience: </h2>
-        <p><strong>Software Engineer - Matraex Inc.</strong></p>
-        <p><em>January 2023 - August 2023</em></p>
-        <ul>
-            <li>Did full stack development on multiple web/app projects for clients</li>
-            <li>Create scripts that automate tasks, making development faster and smoother</li>
-            <li>Worked with the team to improve processes and increase documentation standards</li>
-            <li>Made flexible tools and reusable features that are used across several projects</li>
-            <li>Optimized several pages, functions, and API calls</li>
-        </ul>
-        <p><strong>Software Developer - GIMM Works</strong></p>
-        <p><em>January 2020 - January 2023</em></p>
-        <ul>
-            <li>Worked with other student developers on unique software projects for clients</li>
-            <li>Led back-end dev on several projects</li>
-            <li>Did full stack development and 3D modeling for multiple projects</li>
-            <li>Helped other teams implement security features on their projects</li>
-            <li>Mentored two new hires to help them learn React</li>
-        </ul>
-        <p><strong>Independent Contractor, App Development - The Simple Ring</strong></p>
-        <p><em>September 2020 - December 2021</em></p>
-        <ul>
-            <li>Worked for the founders of The Simple Ring on a consumer-based mobile app</li>
-            <li>Wrote the back-end data storage structure, designed and implemented the front-end UI, and integrated Firebase into the app</li>
-            <li>Prompted improvements in code quality and structure that affected both the front-end and the back-end</li>
-        </ul>
-        <p><strong>GIMM Senior Peer Mentor - Boise State GIMM Program</strong></p>
-        <p><em>July 2018 - December 2019</em></p>
-        <ul>
-            <li>Helped current GIMM students with debugging and gave advice about their code</li>
-            <li>Assisted other peer mentors when they got stuck</li>
-            <li>Presented previous projects of the department to prospective students and clients</li>
-            <li>Managed checking out equipment to other students</li>
-        </ul>
+        {resumeData.experience.map(({ title, subTitle, company, dates, keyPoints }) => <Fragment key={`exp:${dates}`}>
+            <p><strong>{title}{subTitle ? `, ${subTitle}` : ""} - {company}</strong></p>
+            <p><em>{dates}</em></p>
+            {keyPoints && <ul>
+                {keyPoints.split("\t ").map((p, i) => (p.replace(/\s+/, '')) ?
+                    <li key={`${i}-${dates}`}>{p}</li> : ''
+                )}
+            </ul>}
+        </Fragment>)}
     </Fragment>,
 }
 
-
-
-
-
-export const resumeData = (flavored = false) => data[flavored ? 'flavored' : "standard"];
+export const resumeCombinedData = (flavored = false) => data[flavored ? 'flavored' : "standard"];

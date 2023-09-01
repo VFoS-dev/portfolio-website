@@ -1,0 +1,551 @@
+body.builder,
+body.builder :is(*, *::before, *::after) {
+    box-sizing: border-box;
+}
+
+body.builder a {
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+}
+
+body.builder button {
+    background-color: transparent;
+    color: inherit;
+    border-width: 0;
+    padding: 0;
+    cursor: pointer;
+}
+
+body.builder figure {
+    margin: 0;
+}
+
+body.builder :is(h1, h2, h3, h4, h5, h6) {
+    line-height: unset;
+    color: unset;
+    margin: 0;
+    font-size: inherit;
+    font-weight: inherit;
+}
+
+body.builder p {
+    margin: 0;
+}
+
+body.builder cite {
+    font-style: normal;
+}
+
+body.builder fieldset {
+    border-width: 0;
+    padding: 0;
+    margin: 0;
+}
+
+@font-face {
+    font-family: "Avenir Next";
+    src: url(/public/fonts/AvenirNextLTPro-Regular.otf);
+}
+
+@font-face {
+    font-family: "Avenir Next Bold";
+    src: url(/public/fonts/AvenirNextLTPro-Bold.otf);
+}
+
+@font-face {
+    font-family: "Avenir Next Italic";
+    src: url(/public/fonts/AvenirNextLTPro-It.otf);
+}
+
+@media print {
+    body.builder .pagebreak {
+        clear: both;
+        page-break-after: always;
+    }
+
+    body.builder .pagebreak-spacing {
+        margin-top: 1vw;
+    }
+
+    body.builder * {
+        -webkit-print-color-adjust: exact !important;
+        color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+}
+
+:root body.builder {
+    --background: #333333;
+    --buttons: #007EA7;
+    --buttonsAlpha: #007da738;
+    --header: #F7B423;
+    --OffWhite: #F7F4F3;
+    --lightBlue: #277691;
+    font-family: "Avenir Next";
+    --OffRed: rgb(211, 83, 83);
+    --OffOrange: rgb(211, 133, 60);
+    --OffYellow: rgb(209, 189, 6);
+    --OffGreen: rgb(32, 180, 44);
+    --OffBlue: rgb(9, 166, 172);
+    --OffPurple: rgb(195, 39, 209);
+}
+
+body.builder {
+    background-color: var(--background);
+    overflow: overlay;
+}
+
+body.builder #printer {
+    --background: #fff;
+    --buttons: #575757;
+    --buttonsAlpha: #007da738;
+    --OffWhite: #000000;
+    --lightBlue: #277691;
+}
+
+body.builder #printer .logo {
+    border-radius: 0px;
+}
+
+body.builder #printer header {
+    background-color: transparent;
+}
+
+body.builder #printer footer {
+    background-color: transparent;
+}
+
+#printer #alt a,
+#printer .more-info a,
+body.builder #printer section a {
+    color: var(--header);
+    font-family: "Avenir Next Bold";
+}
+
+body.builder #printer .links svg {
+    stroke: #fff;
+    fill: #fff;
+}
+
+body.builder #printer #alt {
+    background-color: transparent;
+}
+
+
+body.builder #printer .header {
+    background-color: #fff;
+}
+
+#printer .advanced,
+#printer .beginner,
+#printer .intermediate,
+body.builder #printer .novice {
+    --visual-color: #fff;
+    color: #fff;
+}
+
+#printer header h1,
+body.builder #printer header h4 {
+    color: #000 !important;
+}
+
+body.builder #printer h1.more-info {
+    color: #000 !important;
+}
+
+body.builder #printer header h5 {
+    color: #fff !important;
+}
+
+body.builder strong {
+    font-family: "Avenir Next Bold";
+}
+
+body.builder body {
+    background-color: var(--background);
+    padding: 0px;
+    margin: 0px;
+}
+
+body.builder header {
+    background-color: var(--header);
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+body.builder .logo {
+    width: 8vw;
+    height: 8vw;
+    background-image: url(/public/images/nav/logosprite.webp);
+    background-size: cover;
+    background-position-x: 100%;
+    background-color: var(--background);
+    border-radius: 100%;
+    margin: 1vw;
+}
+
+body.builder header h1 {
+    font-size: 4vw;
+}
+
+body.builder header h4 {
+    font-size: 2vw;
+}
+
+body.builder header .title {
+    align-self: center;
+    padding-bottom: 1vw;
+    color: var(--background);
+}
+
+body.builder .header-container {
+    display: flex;
+}
+
+body.builder header .links {
+    align-self: center;
+    text-align: end;
+    overflow: unset;
+    display: unset;
+    flex-wrap: unset;
+    justify-content: unset;
+    gap: unset;
+}
+
+
+body.builder header h5 {
+    position: relative;
+    background-color: var(--buttons);
+    color: var(--OffWhite);
+    margin: 1vw 1vw 1vw auto;
+    padding: 0.5vw;
+    padding-left: 1vw;
+    width: fit-content;
+    border-radius: 1vw;
+    padding-right: 4vw;
+    font-size: 1.5vw;
+}
+
+body.builder .links .icon {
+    padding: 0.5vw;
+    position: absolute;
+    top: 0px;
+    width: 2.8vw;
+    height: 100%;
+    right: 0px;
+    margin-right: 0.5vw;
+}
+
+body.builder main div {
+    margin: auto;
+}
+
+body.builder main {
+    margin-bottom: 2.5vw;
+}
+
+body.builder #alt {
+    background-color: rgba(0, 0, 0, 0.25);
+    height: 5vw;
+    color: var(--OffWhite);
+}
+
+body.builder #alt h1 {
+    padding-top: 1vw;
+    font-size: 2vw;
+    text-align: center;
+}
+
+body.builder #alt h1 a {
+    font-family: "Avenir Next Bold";
+}
+
+body.builder .header {
+    position: relative;
+    background-color: var(--buttons);
+    width: fit-content;
+    margin-top: 1vw;
+    margin-bottom: 1vw;
+    padding: 1vw 4vw;
+    display: flex;
+    overflow: hidden;
+}
+
+body.builder .header .icon {
+    color: var(--OffWhite);
+    width: 4vw;
+    height: 4vw;
+}
+
+body.builder .header h1 {
+    align-self: center;
+    padding-left: 1vw;
+    color: var(--OffWhite);
+    font-size: 4vw;
+    padding-top: 0.3vw;
+    text-transform: uppercase;
+}
+
+body.builder .cut-outs div {
+    position: absolute;
+    width: 4vw;
+    height: 4vw;
+    border-radius: 100%;
+    background-color: var(--background);
+}
+
+body.builder .cut-outs div:nth-child(1) {
+    left: 0px;
+    bottom: 0px;
+    transform: translate(-50%, 50%);
+}
+
+body.builder .cut-outs div:nth-child(2) {
+    right: 0px;
+    top: 0px;
+    transform: translate(50%, -50%);
+}
+
+body.builder .cut-outs div:nth-child(3) {
+    right: 0px;
+    bottom: 0px;
+    transform: translate(50%, 50%);
+}
+
+body.builder .cut-outs div:nth-child(4) {
+    left: 0px;
+    top: 0px;
+    transform: translate(-50%, -50%);
+}
+
+body.builder svg {
+    stroke: var(--OffWhite);
+    fill: var(--OffWhite);
+}
+
+body.builder .info-container.full {
+    width: 80vw;
+    margin-top: 3vw;
+}
+
+body.builder .info-container {
+    position: relative;
+    border: var(--OffWhite) 0.25vw solid;
+    width: fit-content;
+    border-radius: 2vw;
+    color: var(--OffWhite);
+}
+
+body.builder .info-container .title {
+    position: absolute;
+    top: 0px;
+    transform: translate(-0.25vw, -50%);
+    padding: 0.5vw;
+    padding-left: 3.5vw;
+    padding-right: 1vw;
+    font-size: 2vw;
+    color: var(--OffWhite);
+    background-color: var(--background);
+}
+
+body.builder em {
+    font-family: "Avenir Next Italic";
+}
+
+body.builder .info-container .content {
+    margin: 2vw;
+    font-size: 1.5vw;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+body.builder .info-container .icon {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 3vw;
+}
+
+body.builder .info-container .content {}
+
+body.builder .info-container .content.row {
+    flex-direction: row;
+}
+
+body.builder .info-container .content.col {
+    flex-direction: column;
+}
+
+body.builder .content :is(.advanced, .intermediate, .beginner, .novice) {
+    width: unset;
+    max-width: unset;
+    padding: 0.5vw;
+    padding-right: 1vw;
+    padding-left: 2.5vw;
+    border-radius: 1vw;
+    position: relative;
+    background-color: var(--color);
+    margin: 0.25vw;
+}
+
+body.builder .content .visual {
+    position: absolute;
+    top: 0.7vw;
+    left: 0.5vw;
+    width: 1.5vw;
+    height: 1.5vw;
+    padding: 0px;
+    margin: 0px;
+    transform: rotate(45deg);
+    border: 0.15vw var(--visual-color) solid;
+    overflow: hidden;
+}
+
+body.builder .visual>div {
+    width: 2vw;
+    height: 1.5vw;
+    background-color: var(--visual-color);
+}
+
+body.builder .advanced .visual>div {}
+
+body.builder .intermediate .visual>div {
+    transform: rotate(-45deg) translateY(10%);
+}
+
+body.builder .beginner .visual>div {
+    transform: rotate(-45deg) translateY(40%);
+}
+
+body.builder .novice .visual>div {
+    transform: rotate(-45deg) translateY(70%);
+}
+
+body.builder .skills-container {
+    width: 80vw;
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: row;
+}
+
+body.builder .skills-container>.info {
+    margin-top: 0px;
+    display: flex;
+    align-self: flex-start;
+    flex-wrap: nowrap;
+    flex-direction: column;
+    gap: 2.2vw;
+    width: 100%;
+}
+
+body.builder .legend {
+    background-color: var(--header);
+    border-radius: 2vw;
+    margin-top: 0px;
+    padding: 0.5vw;
+    width: 20vw;
+    margin-left: 2.5vw;
+    font-size: 1.5vw;
+    border: var(--OffWhite) 0.25vw solid;
+    color: var(--background);
+}
+
+body.builder .info .info-container {
+    width: 100%;
+}
+
+body.builder .content .container {
+    border-bottom: var(--color) 0.25vw solid;
+    display: flex;
+    flex-direction: row;
+    width: fit-content;
+    margin: 0px;
+    padding-bottom: 1vw;
+    margin-bottom: 1vw;
+    position: relative;
+    margin-right: 1vw;
+}
+
+body.builder .content .container .category {
+    position: absolute;
+    left: 50%;
+    bottom: 0px;
+    transform: translate(-50%, 55%);
+    padding: 0px 0.5vw;
+    white-space: nowrap;
+    background-color: var(--background);
+    font-size: 1.5vw;
+}
+
+body.builder h1.more-info {
+    margin: 1vw auto;
+    margin-top: 0.5vw;
+    font-size: 2vw;
+    text-align: center;
+    color: var(--header);
+}
+
+body.builder h1.more-info a {
+    color: var(--OffWhite);
+}
+
+body.builder .info-container .content.block {
+    display: block;
+}
+
+body.builder footer {
+    margin-bottom: 3vw;
+    color: var(--OffWhite);
+}
+
+body.builder footer h1 {
+    font-size: 2vw;
+    text-align: center;
+}
+
+body.builder ul {
+    margin-top: 0px;
+    padding-left: 2.5vw;
+    margin-bottom: 0px;
+}
+
+body.builder li {
+    padding-left: 0.25vw;
+}
+
+body.builder section {
+    margin-top: 2vw;
+    margin-bottom: 2vw;
+    padding: 0.5vw;
+    border: 0.25vw solid transparent;
+}
+
+body.builder section header {
+    background-color: transparent;
+    border-bottom: var(--OffWhite) 0.2vw solid;
+    margin-bottom: 0.5vw;
+}
+
+body.builder section.present {
+    background-color: var(--buttonsAlpha);
+    padding: 0.5vw;
+    border-radius: 1vw;
+    border: 0.25vw solid var(--OffBlue);
+}
+
+body.builder .minors {
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    gap: 0.5vw
+}
+
+body.builder section a {
+    color: var(--header);
+}
+
+body.builder section header em {
+    white-space: nowrap;
+}
