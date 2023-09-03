@@ -735,6 +735,7 @@ body.builder li {
 }
 
 body.builder section {
+    position: relative;
     margin-bottom: 0.5vw;
     padding: 0.25vw;
     border: 0.125vw solid transparent;
@@ -850,4 +851,52 @@ body.builder main>.info-container.full {
 
 body.builder main>.info-container.full+.info-container.full {
     margin-top: 2.5vw;
+}
+
+body.builder .resume .no-print {
+    display: none;
+}
+
+body.builder .resume.viewhidden .no-print {
+    display: block;
+    opacity: .5;
+    outline: 5px magenta solid;
+}
+
+body.builder .controls * {
+    pointer-events: all;
+}
+
+body.builder .controls {
+    flex-direction: row;
+    gap: 1vw;
+    font-size: 1.75vw;
+    pointer-events: none;
+    position: absolute;
+    z-index: 1000;
+    top: 0;
+    right: 0;
+    display: none;
+    color: white;
+    background-color: black;
+}
+
+body.builder *:hover>.controls {
+    display: flex;
+}
+
+.controls :is(.vis, .hid) {
+    display: none;
+}
+
+.no-print>.controls .hid {
+    display: block;
+}
+
+:not(.no-print)>.controls .vis {
+    display: block;
+}
+
+body.builder *:has(.controls) {
+    position: relative;
 }

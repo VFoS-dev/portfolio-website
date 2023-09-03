@@ -31,21 +31,21 @@ export class ResumeBuilder extends Component {
             pageOutline: 0,
             onePage: false,
             editing: false,
+            viewHidden: false,
         }
 
         this.populateSkills();
         this.populateProjects();
 
         document.getElementById('loading')?.remove();
-        document.getElementById('root').classList = '';
         document.title = `Jon Kido - Resume ${new Date().getFullYear()}`;
         document.body.className = 'builder'
     }
 
     async populateSkills() {
         let coding = [], software = {};
-        const { skills, skills: { advanced, intermediate, beginner, } } = this.state;
-        const levels = { beginner, intermediate, advanced };
+        const { skills, skills: { advanced, intermediate, beginner, novice } } = this.state;
+        const levels = { novice, beginner, intermediate, advanced, };
 
         skillData.forEach(({ color, name, set }) => {
             set.forEach(({ name: sName, compentence, category }) => {
@@ -129,21 +129,48 @@ export class ResumeBuilder extends Component {
         window.print()
     }
 
+
+    inStores({ android, apple }) {
+        let list = []
+        if (apple) list.push(<a href={apple} target='_blank'>App Store</a>)
+        if (android) list.push(<a href={android} target='_blank'>Play Store</a>)
+        return list.length ? <Fragment>
+            In the {list.map((l, i) => <Fragment>{i ? ' & ' : ''}{l}</Fragment>)}
+        </Fragment> : null
+    }
+
+    handleControls({ parentElement: controls, id }) {
+        let target = controls.parentElement;
+        switch (id) {
+            case 'visibility': return target.classList.toggle('no-print');
+            case 'focus': return target.classList.toggle('present');
+            default: return console.error('ERROR no control option for ', id)
+        }
+    }
+
     togglePrintFriendly = () => this.setState({ bodyState: document.body.id = document.body.id === 'printer' ? '' : 'printer' });
 
     render() {
         const { education, experience } = resumeData;
-        const { bodyState, pageOutline, colors, editing,
+        const { bodyState, pageOutline, colors, editing, viewHidden,
             skills: { coding, software },
             projects: { work, personal }
         } = this.state;
 
+        const controller =
+            <div className='controls' {...noteditable} onClick={({ target }) => this.handleControls(target)}>
+                <div id='focus'>focus</div>
+                <div id='visibility' className='vis'>hide</div>
+                <div id='visibility' className='hid'>show</div>
+            </div>
+
         return (<Fragment>
             <div className='no-print sticky-overlay'>
                 <div className='left'>
-                    <label>Page Outline: <input type='number' onChange={(e) => this.setState({ pageOutline: parseInt(e.target.value) })} min={0} step={1} defaultValue={0} /></label>
                     <label>One Page: <input type='checkbox' onChange={(e) => this.setState({ onePage: e.target.checked })} defaultValue={false} /></label>
+                    <label>Page Outline: <input type='number' onChange={(e) => this.setState({ pageOutline: parseInt(e.target.value) })} min={0} step={1} defaultValue={0} /></label>
                     <label>Edit Content: <input type='checkbox' onChange={(e) => this.setState({ editing: e.target.checked })} defaultValue={false} /></label>
+                    <label>View Hidden: <input type='checkbox' onChange={(e) => this.setState({ viewHidden: e.target.checked })} defaultValue={false} /></label>
                 </div>
                 <div className='right'>
                     <button onClick={() => this.togglePrintFriendly()}>Toggle Modes</button>
@@ -153,7 +180,7 @@ export class ResumeBuilder extends Component {
             {!!pageOutline && <div className='no-print fixed-overlay'>
                 {[...new Array(pageOutline)].map((p, i) => <div key={`outline-${i}`} className='page-outline' />)}
             </div>}
-            <div className='resume' contentEditable={editing} suppressContentEditableWarning='true'>
+            <div className={`resume ${viewHidden ? 'viewhidden' : ''}`} contentEditable={editing} suppressContentEditableWarning='true'>
                 <header  {...noteditable}>
                     <div className="header-container">
                         <div className="logo"></div>
@@ -185,19 +212,22 @@ export class ResumeBuilder extends Component {
                     <div className="skills-container">
                         <div className="info">
                             <div className="info-container">
+                                {controller}
                                 <h1 className="title coding">Coding</h1>
                                 <ul className="content row" style={{ '--color': 'var(--lightBlue)', '--visual-color': 'var(--OffWhite)' }}>
-                                    {coding.map(({ name, level }, i) => <li key={`${name}-${i}`} className={level}>{name}</li>)}
+                                    {coding.map(({ name, level }, i) => <li key={`${name}-${i}`} className={level}>{controller}{name}</li>)}
                                 </ul>
                             </div>
 
                             <div className="info-container">
+                                {controller}
                                 <h1 className="title software">Software</h1>
                                 <div className="content row" style={{ '--visual-color': 'var(--OffWhite)' }}>
                                     {Object.keys(software).map((s, i) => {
                                         const { set = [], name } = software[s]
                                         return <ul className="container" style={{ '--color': `var(${colors[i % colors.length]})` }}>
-                                            {set.map(({ name, level }, i) => <li key={`${name}-${i}`} className={level}>{name}</li>)}
+                                            {controller}
+                                            {set.map(({ name, level }, i) => <li key={`${name}-${i}`} className={level}>{controller}{name}</li>)}
                                             <div className="category">
                                                 {name}
                                             </div>
@@ -208,6 +238,7 @@ export class ResumeBuilder extends Component {
                         </div>
                         <div className='legend-side'>
                             <div className="legend content" style={{ '--visual-color': 'var(--background)' }} {...noteditable}>
+                                {controller}
                                 <div className="advanced">Professional</div>
                                 <div className="intermediate">Advanced</div>
                                 <div className="beginner">Intermediate</div>
@@ -215,6 +246,7 @@ export class ResumeBuilder extends Component {
                             </div>
 
                             <h1 className="more-info">
+                                {controller}
                                 Want to learn more? <br />
                                 Visit my portfolio: <a href="https://vfos.dev/">https://vfos.dev/</a>
                             </h1>
@@ -227,11 +259,13 @@ export class ResumeBuilder extends Component {
                     </div>
 
                     <div className="info-container full">
+                        {controller}
                         <h1 className="title building">Professional Experience</h1>
                         <div className="content block">
                             {experience.map(({ title, subTitle, company, dates, keyPoints }) => {
                                 let points = keyPoints.split('\t ');
                                 return (<section key={`${title}${company}${subTitle}`} className='autopagebreak'>
+                                    {controller}
                                     <header>
                                         <h2>{title}{subTitle ? `, ${subTitle}` : ""} - {company}</h2>
                                         <em>{dates}</em>
@@ -252,13 +286,15 @@ export class ResumeBuilder extends Component {
                     </div>
 
                     <div className="info-container full">
-                        <h1 className="title work">Works Projects</h1>
+                        {controller}
+                        <h1 className="title work">Work/Group Projects</h1>
                         <div className="content block">
                             {work.map(({ name, keyFeatures = '', stack, endDate, startDate, parent, link: { website, ...rem } = {}, }) => {
                                 let link = website === '/' ? 'https://vfos.dev' : website
-                                console.log(rem);
+                                let bulletpoint = this.inStores(rem)
                                 let points = keyFeatures.split('- ');
                                 return (<section className='autopagebreak'>
+                                    {controller}
                                     <header>
                                         <h2>{name} {link ? <Fragment>
                                             (<a href={link} target="_blank">{link}</a>)
@@ -274,6 +310,7 @@ export class ResumeBuilder extends Component {
                                                 <li>Bullet Points not found in data set</li>
                                             </Fragment>
                                         }
+                                        {!!bulletpoint && <li>{bulletpoint}</li>}
                                     </ul>
                                 </section>)
                             })}
@@ -281,13 +318,15 @@ export class ResumeBuilder extends Component {
                     </div>
 
                     <div className="info-container full">
+                        {controller}
                         <h1 className="title personal">Personal Projects</h1>
                         <div className="content block">
                             {personal.map(({ name, keyFeatures = '', stack, endDate, startDate, parent, link: { website, ...rem } = {}, }) => {
-                                let link = website === '/' ? 'https://vfos.dev' : website
-                                console.log(rem);
+                                let link = website === '/' ? 'https://vfos.dev' : website;
+                                let bulletpoint = this.inStores(rem)
                                 let points = keyFeatures.split('- ');
                                 return (<section className='autopagebreak'>
+                                    {controller}
                                     <header>
                                         <h2>{name} {link ? <Fragment>
                                             (<a href={link} target="_blank">{link}</a>)
@@ -303,6 +342,7 @@ export class ResumeBuilder extends Component {
                                                 <li>Bullet Points not found in data set</li>
                                             </Fragment>
                                         }
+                                        {!!bulletpoint && <li>{bulletpoint}</li>}
                                     </ul>
                                 </section>)
                             })}
@@ -315,10 +355,12 @@ export class ResumeBuilder extends Component {
                     </div>
 
                     <div className="info-container full" style={{ marginTop: '1vw' }}>
+                        {controller}
                         <h1 className="title university">University</h1>
                         <div className="content block">
                             {education.map(({ school, years, majors, minors }, i) =>
                                 <section className='autopagebreak'>
+                                    {controller}
                                     <header>
                                         <h2>{school}:</h2>
                                         <em>{years}</em>

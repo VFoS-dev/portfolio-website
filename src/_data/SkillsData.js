@@ -24,7 +24,7 @@ export const skillData = [
             { name: '.Net', compentence: 65, category: 'coding' },
             { name: 'Bootstrap', compentence: 76, category: 'coding' },
             { name: 'Express.js', compentence: 90, category: 'coding' },
-            { name: 'Ionic', compentence: 50, category: 'coding' },
+            { name: 'Ionic', compentence: 30, category: 'coding' },
             { name: 'JQuery', compentence: 83, linkedin: 5, category: 'coding' },
             { name: 'Node.js', compentence: 80, category: 'coding' },
             { name: 'React', compentence: 96, category: 'coding' },
@@ -61,14 +61,21 @@ export const skillData = [
         color: '#a733ff',
         set: setSort([
             { name: 'MongoDB', compentence: 90, category: 'software' },
-            { name: 'SQL', compentence: 87, category: 'software' },
+            { name: 'Firestore', compentence: 63, category: 'software' },
+            { name: 'GraphQL', compentence: 54, category: 'software' },
+            { name: 'MySQL', compentence: 95, category: 'software' },
+            { name: 'PostgreSQL', compentence: 94, category: 'software' },
+            { name: 'SQLite', compentence: 92, category: 'software' },
         ]),
     },
     {
         name: 'Version Control',
         color: 'green',
         set: setSort([
-            { name: 'git', compentence: 93, category: 'software' },
+            { name: 'git', compentence: 90, category: 'software' },
+            { name: 'gitlab', compentence: 93, category: 'software' },
+            { name: 'github', compentence: 92, category: 'software' },
+            { name: 'Plastic SCM', compentence: 21, category: 'software' },
         ]),
     },
     {

@@ -264,6 +264,7 @@ export const projectData = {
         - Worked with front-end developers to help them patch up security`,
     },
     the_simple_ring_alpha: {
+        isParent: true,
         title: 'The Simple Ring Alpha',
         startDate: 'October 8, 2020',
         endDate: 'December 24, 2021',
