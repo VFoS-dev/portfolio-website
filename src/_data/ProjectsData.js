@@ -1,4 +1,5 @@
 export const projectsOrder = [
+    'resume_builder',
     'project_kuro',
     'portfolio_website',
     'matraex_inc',
@@ -33,14 +34,17 @@ export const projectData = {
         img: '/images/projects/projectkuro.webp',
         description: ` I have been planning this project for a long time. It was inspired by many tabletop RPG games I played with my friends. I plan to convert some of the stories that arose from my turn-by-turn tabletop games into a realtime third-person game.`,
         stack: 'Unreal Engine 5, C++, Blender, Krita, Substance Painter',
+        keyFeatures: `
+        - 3D modeled a character for the game
+        - Implemented day and night cycles and character movement`,
     },
     portfolio_website: {
         title: 'Portfolio Website',
         startDate: 'October 26, 2022',
-        endDate: 'Present',
+        endDate: 'September 2, 2023',
         createdIn: 'React',
         img: '/images/projects/portfolioSite.webp',
-        description: `This project was originally a class project, you are currently looked at the 3rd and probably final update.`,
+        description: `This project was originally a class project. You are currently looking at the 3rd and probably final update.`,
         stack: 'React, Javascript, Blender, Krita, Markdown, HTML5 canvas',
         content: [
             '/',
@@ -54,7 +58,26 @@ export const projectData = {
         - I created all minigames in JavaScript, although I am not the original creator of the game concepts
         - Minigames are: Duck hunt, Minesweeper, Snake, Fruit Ninja
         - References of: Windows XP, and Star Wars
-        - Added achievements, and even more functionality`,
+        - Added achievements and even more functionality`,
+    },
+    resume_builder: {
+        title: 'Resume Builder',
+        startDate: 'August 30, 2022',
+        endDate: 'Present',
+        createdIn: 'React',
+        link:{
+            website:'https://vfos.dev/resume?create=1'
+        },
+        img: '/images/projects/resumebuilder.webp',
+        description: `I am lazy and didn't want to make a resume manually so I incorporated my website to create my resume for me.`,
+        stack: 'React, HTML, Javascript, CSS',
+        keyFeatures: `
+        - Populated the resume with information gathered from the data used in my portfolio website
+        - Created custom CSS formatting
+        - Made the resume preview ediable 
+        - Included toggle between eye-friendly and print-friendly versions 
+        - Added configurations like convering it to a one page document, page outlines, hiding sections, and more
+        - Implemented print to pdf`,
     },
     matraex_inc: {
         isParent: true,
@@ -339,7 +362,7 @@ export const projectData = {
         ],
         stack: 'Unity, C#',
         keyFeatures: `
-        - This generates a probability field to do an educated guess`,
+        - Wrote an algorithm that iteratively generates a probability field to make an educated guess`,
     },
     cash_n_slash: {
         title: "Cash n' Slash",
@@ -349,6 +372,10 @@ export const projectData = {
         img: '/images/projects/CashnSlash.webp',
         parent: 'gimmworks',
         description: `Cash n' Slash was a VR project made for Idaho Central Credit Union while I worked for GIMM Works. ICCU wanted a VR cash tornado alternative. I worked with a team of other people to create a VR game. I focused on a custom physics system and a VR suitable keyboard.`,
+        keyFeatures: `
+        - Implemented a custom physics system with altered gravity to simulate a tornado
+        - Created 3D models and animations for the environment 
+        - Built a VR-compatible keyboard with my own interaction design`,
         content: [
             'https://www.youtube.com/embed/htOdUCvf4t0',
             {
@@ -386,11 +413,16 @@ export const projectData = {
         createdIn: 'Unity',
         img: '/images/projects/swordwhip.webp',
         description: `This project was created during the first few days of Cash n' Slash. Orignially the project was going to have weapons but later it was changed so that the player had to grab the cash and there would be no weapons in the game at all after that point. I later used this in a school project.
-            This was my take on a weapon.It was inspired by Soul Calibur character Ivy's weapon. This project was made using Unity's Hinge Joint component, with a script attached so that the length could increase and decrease.While the length was decreasing it would also reduce the hinges' swing distance so it would not move while it was fully retracted.`,
+            This was my take on a weapon.It was inspired by Soul Calibur character Ivy's weapon. This project was made using Unity's Hinge Joint component, with a script attached so that the length could increase and decrease. While the length was decreasing it would also reduce the hinges' swing distance so it would not move while it was fully retracted.`,
         content: [
             '/images/projects/info/swordwhip.mp4'
         ],
         stack: 'Unity, C#, Blender',
+        keyFeatures: `
+        - Modeled the sword in Blender
+        - Made a sword creator tool in Unity to customize the number of sword segments and other configurations
+        - Used Unity physics to make the whip functional 
+        - Wrote a script with an animation to make it toggle between a sword and a swordwhip`,
     },
     deadline: {
         title: 'Deadline',
@@ -404,6 +436,11 @@ export const projectData = {
             '/flash/DeadlineGame.swf'
         ],
         stack: 'Adobe Animate, Flash, ActionScript 3',
+        keyFeatures: `
+        - Created state-based animations for the player
+        - Integrated hitboxes with animations
+        - Incorporated a dash mechanic
+        - Implemented missles that follow the player`,
     },
     defend: {
         title: 'Defend',
@@ -417,6 +454,9 @@ export const projectData = {
             '/flash/Defend.swf'
         ],
         stack: 'Adobe Animate, Flash, ActionScript 3',
+        keyFeatures: `
+        - Made a vector path-following entity
+        - Created different types of towers and field traps, each with a unique mechanic`,
     },
     uno_ai: {
         title: 'UNO AI',
@@ -430,6 +470,9 @@ export const projectData = {
             '/flash/Uno.swf'
         ],
         stack: 'Adobe Animate, Flash, ActionScript 3',
+        keyFeatures: `
+        - Implemented a rule-based AI that can play Uno
+        - Created a dynamic hand of cards that smoothly animates whenever cards are added or removed`,
     },
     survive: {
         title: 'Survive',
@@ -445,6 +488,9 @@ export const projectData = {
             '/flash/Survive.swf'
         ],
         stack: 'Adobe Animate, Flash, ActionScript 3',
+        keyFeatures: `
+        - Made the graphics for the game
+        - Implemented player movement and weapon swapping`,
     },
     original_logo_animation: {
         title: 'Original Logo Animation',
@@ -452,7 +498,7 @@ export const projectData = {
         endDate: 'June 13, 2015',
         createdIn: 'Blender',
         img: '/images/projects/OriginalLogoAnimation.webp',
-        description: `This was a simple project in high school, and actually my first animation using blender, at the time I was thinking I would be a Youtuber and this would be my short intro before every video.`,
+        description: `This was a simple project in high school, and actually my first animation using Blender. At the time I was thinking I would be a YouTuber and this would be my short intro before every video.`,
         content: [
             '/images/projects/info/firstanimation.mp4'
         ],
@@ -461,6 +507,6 @@ export const projectData = {
         },
         stack: 'Blender',
         keyFeatures: `
-        - This is the first project that involve modeling and animating something without assistance`,
+        - This is the first project I did that involved modeling and animating something without assistance`,
     },
 }
