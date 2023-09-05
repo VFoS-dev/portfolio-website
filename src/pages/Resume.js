@@ -133,9 +133,7 @@ class Resume extends React.Component {
                             <div className='window-page' {...EditableFocusRot()} onKeyUp={() => this.props.checkAchievement('editResume')}>
                                 <center><h1>Want a polished resume?</h1>
                                     <h5>
-                                        <button className='hyperlink' onClick={() => this.openResume('complete')} >Complete Resume</button>
-                                        <button className='hyperlink' onClick={() => this.openResume('gamedev')} >Game Dev Resume</button>
-                                        <button className='hyperlink' onClick={() => this.openResume('full-stack')} >Full Stack Resume</button>
+                                        <button className='hyperlink' onClick={() => this.openResume('complete')} >Complete Resume</button> <button className='hyperlink' onClick={() => this.openResume('gamedev')} >Game Dev Resume</button> <button className='hyperlink' onClick={() => this.openResume('full-stack')} >Full Stack Resume</button>
                                     </h5>
                                     <br />
                                     <br />

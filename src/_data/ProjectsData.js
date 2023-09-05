@@ -73,9 +73,9 @@ export const projectData = {
         keyFeatures: `
         - Populated the resume with information gathered from the data used in my portfolio website
         - Created custom CSS formatting
-        - Made the resume preview ediable 
+        - Made the resume preview editable 
         - Included toggle between eye-friendly and print-friendly versions 
-        - Added configurations like convering it to a one page document, page outlines, hiding sections, and more
+        - Added configurations like converting it to a one page document, page outlines, hiding sections, and more
         - Implemented print to pdf`,
     },
     matraex_inc: {
