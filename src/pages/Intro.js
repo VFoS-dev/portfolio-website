@@ -39,8 +39,10 @@ class Intro extends React.Component {
     }
 
     toResume() {
-        this.props.checkAchievement('realresume');
-        window.open('/pdf/resume_eye_friendly.pdf', '_blank');
+        const [_, page, secret] = window.location.pathname.split('/');
+        const _newPage = "resume";
+        window.history.pushState(`/${_newPage}`, 'Title', `/${_newPage}`);
+        this.props.updatePage(page, _newPage);
     }
 
     vKeyboard({ target: { id } }) {

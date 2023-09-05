@@ -92,9 +92,9 @@ class Resume extends React.Component {
         window.open('/resume?create=1', '_blank');
     }
 
-    openResume() {
+    openResume(subset = 'complete') {
         this.props.checkAchievement('realresume');
-        window.open('/pdf/resume_eye_friendly.pdf', '_blank');
+        window.open(`/pdf/${subset}_resume_eye_friendly.pdf`, '_blank');
     }
 
     render() {
@@ -131,7 +131,19 @@ class Resume extends React.Component {
                         <div className="window-options" />
                         <div className="window-body">
                             <div className='window-page' {...EditableFocusRot()} onKeyUp={() => this.props.checkAchievement('editResume')}>
-                                <center><h1>Want a polished resume? <button className='hyperlink' onClick={() => this.openResume()} >Click Here</button></h1></center>
+                                <center><h1>Want a polished resume?</h1>
+                                    <h5>
+                                        <button className='hyperlink' onClick={() => this.openResume('complete')} >Complete Resume</button>
+                                        <button className='hyperlink' onClick={() => this.openResume('gamedev')} >Game Dev Resume</button>
+                                        <button className='hyperlink' onClick={() => this.openResume('full-stack')} >Full Stack Resume</button>
+                                    </h5>
+                                    <br />
+                                    <br />
+                                    <h1>Want to create a custom resume? </h1>
+                                    <h5>
+                                        <button className='hyperlink' onClick={() => this.createResume()} >Click Here</button>
+                                    </h5>
+                                </center>
                                 <h2>Education: </h2>
                                 {education.map(({ school, years, majors, minors }, i) => <p key={`${school}-${i}`} className='tab'>
                                     {school}: {years}
@@ -148,9 +160,6 @@ class Resume extends React.Component {
                                 <br />
                                 <h2>Contact Information:<button className='hyperlink' onClick={() => this.changePage('socials')} >Click Here</button></h2>
                                 <p>Email: jonkido@vfos.dev</p>
-                            </div>
-                            <div className='window-page' {...EditableFocusRot()} onKeyUp={() => this.props.checkAchievement('editResume')}>
-                                <center><h1>Want to create a custom resume? <button className='hyperlink' onClick={() => this.createResume()} >Click Here</button></h1></center>
                             </div>
                         </div>
                     </div>

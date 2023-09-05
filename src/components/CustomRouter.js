@@ -122,7 +122,7 @@ class CustomRouter extends React.Component {
         const { scrollPercent, animate } = this.state;
         switch (req) {
             default:
-            case 'intro': return <Intro key="Intro" activePage={active} focused={this.focus} />;
+            case 'intro': return <Intro key="Intro" activePage={active} updatePage={this.updatePage} focused={this.focus} />;
             case 'projects': return <Projects key="Projects" activePage={active} updatePage={this.updatePage} focused={this.focus} />;
             case 'resume': return <Resume key="Resume" activePage={active} updatePage={this.updatePage} focused={this.focus} />;
             case 'skills': return <Skills key="Skills" activePage={active} animating={animate} scrolled={scrollPercent} focused={this.focus} />;
