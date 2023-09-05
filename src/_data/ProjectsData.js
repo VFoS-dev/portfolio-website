@@ -2,7 +2,6 @@ export const projectsOrder = [
     'resume_builder',
     'project_kuro',
     'portfolio_website',
-    'matraex_inc',
     'venture_title',
     'hbv',
     'high_call_rodeo',

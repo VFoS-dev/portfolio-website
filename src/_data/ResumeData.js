@@ -8,10 +8,11 @@ export const resumeData = {
             dates: `January 2023 - August 2023`,
             keyPoints: `
                 \t Did full stack development on multiple web/app projects for clients
-                \t Create scripts that automate tasks, making development faster and smoother
+                \t Created scripts to automate tasks, making development faster and smoother
                 \t Worked with the team to improve processes and increase documentation standards
                 \t Made flexible tools and reusable features that are used across several projects
-                \t Optimized several pages, functions, and API calls`,
+                \t Presented work to clients and responded to their feedback
+                \t Collaborated with teammates, giving them feedback on problem solving and code optimization`,
         },
         {
             title: `Software Developer`,
@@ -48,7 +49,7 @@ export const resumeData = {
     education: [
         {
             school: 'Boise State University',
-            years: 'August 2017 - December 2022',
+            years: '',
             majors: [
                 { short: 'GIMM', long: 'Games, Interactive Media, and Mobile' }
             ],

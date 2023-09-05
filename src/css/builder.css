@@ -57,7 +57,23 @@ body.builder fieldset {
     src: url(/public/fonts/AvenirNextLTPro-It.otf);
 }
 
+@page {
+    background-color: var(--background);
+    margin: 0in;
+    print-color-adjust: exact;
+}
+
+@page :first {
+    margin-top: 0in;
+}
+
 @media print {
+    html {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        background-color: var(--background);
+    }
+
     body.builder :is(.no-print, .no-print *) {
         display: none !important;
     }
@@ -89,9 +105,12 @@ body.builder fieldset {
     }
 
     body.builder .resume {
-        background-color: var(--background);
+        box-shadow: none !important;
         scale: 1 !important;
-        transform-origin: top center;
+    }
+
+    body.builder .resume-container {
+        height: unset !important;
     }
 }
 
@@ -107,6 +126,7 @@ body.builder .fixed-overlay {
 }
 
 body.builder .resume {
+    box-shadow: 0 0 15px black;
     background-color: var(--background);
     scale: 0.7;
     transform-origin: top center;
@@ -118,7 +138,7 @@ body.builder .resume {
     aspect-ratio: 8.5/11;
 }
 
-:root body.builder {
+:root {
     --content-color: white;
     --background: #333333;
     --buttons: #007EA7;
@@ -140,7 +160,7 @@ body.builder {
     overflow: overlay;
 }
 
-body.builder#printer {
+:root #printer {
     --background: #fff;
     --buttons: #575757;
     --buttonsAlpha: #007da738;
@@ -332,7 +352,7 @@ body.builder .header {
     background-color: var(--buttons);
     width: -moz-fit-content;
     width: fit-content;
-    margin-top: 1vw;
+    transform: translateY(1vw);
     margin-bottom: 1vw;
     padding: 0.5vw 3vw;
     display: flex;
@@ -386,10 +406,10 @@ body.builder .header .icon {
 
 body.builder .header h1 {
     align-self: center;
+    padding: 0.3vw 0;
     padding-left: 1vw;
     color: var(--OffWhite);
     font-size: 4vw;
-    padding-top: 0.3vw;
     text-transform: uppercase;
 }
 
@@ -432,7 +452,8 @@ body.builder svg {
 
 body.builder .info-container.full {
     width: 85vw;
-    margin-top: 3vw;
+    transform: translateY(1.5vw);
+    margin-bottom: 1.5vw;
 }
 
 body.builder .info-container {
@@ -536,6 +557,7 @@ body.builder em {
 
 body.builder .info-container .content {
     margin: 2vw;
+    margin-top: 2.5vw;
     font-size: 1.5vw;
     gap: .25vw;
     display: flex;
@@ -605,7 +627,8 @@ body.builder .novice .visual>div {
 }
 
 body.builder .skills-container {
-    margin-top: 1vw;
+    transform: translateY(1vw);
+    margin-bottom: 1vw;
     width: 85vw;
     display: flex;
     flex-wrap: nowrap;
@@ -639,6 +662,10 @@ body.builder#printer :is(.novice, .intermediate, .advanced, .beginner) {
     color: black;
     --visual-color: black;
     --color: transparent;
+}
+
+body.builder .resume.viewhidden .legend.no-print {
+    display: block;
 }
 
 body.builder .legend {
@@ -715,6 +742,7 @@ body.builder .info-container .content.block {
 }
 
 body.builder footer {
+    padding-top: 1vw;
     padding-bottom: 1vw;
     color: var(--OffWhite);
 }
@@ -790,8 +818,8 @@ body.builder .sticky-overlay>div:last-child {
     margin-right: 20px;
 }
 
-body.builder .sticky-overlay input {
-    width: 2rem;
+body.builder .sticky-overlay input[type='number'] {
+    width: 2.25rem;
 }
 
 body.builder :is(.advanced, .intermediate, .beginner, .novice)::before {
@@ -841,14 +869,6 @@ body.builder .novice {
     --icon: url(/public/images/builder/novice-white.svg);
 }
 
-body.builder main>.header {
-    margin-bottom: 0;
-}
-
-body.builder main>.info-container.full {
-    margin-top: 1vw;
-}
-
 body.builder main>.info-container.full+.info-container.full {
     margin-top: 2.5vw;
 }
@@ -858,12 +878,12 @@ body.builder .resume .no-print {
 }
 
 body.builder .resume.viewhidden .no-print {
-    display: block;
+    display: inherit;
     opacity: .5;
     outline: 5px magenta solid;
 }
 
-body.builder .controls * {
+body.builder .controls>* {
     pointer-events: all;
 }
 
@@ -878,15 +898,44 @@ body.builder .controls {
     right: 0;
     display: none;
     color: white;
-    background-color: black;
+    background-color: rgba(0, 0, 0, 0.5);
 }
 
 body.builder *:hover>.controls {
     display: flex;
 }
 
-.controls :is(.vis, .hid) {
+.controls :is(.vis, .hid, .exp) {
     display: none;
+}
+
+.controls>div {
+    background-image: var(--icon-button, blue);
+    height: 5vmin;
+    width: 5vmin;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+.present .controls>#focus {
+    --icon-button: url(/public/images/builder/focus-active.svg);
+}
+
+.controls #visibility.hid {
+    --icon-button: url(/public/images/builder/eye-active.svg);
+}
+
+.controls #visibility.vis {
+    --icon-button: url(/public/images/builder/eye.svg);
+}
+
+.controls>#focus {
+    --icon-button: url(/public/images/builder/focus.svg);
+}
+
+.full .content .controls .exp {
+    display: block;
 }
 
 .no-print>.controls .hid {
@@ -899,4 +948,74 @@ body.builder *:hover>.controls {
 
 body.builder *:has(.controls) {
     position: relative;
+}
+
+body.builder {
+    background-color: rgb(150, 147, 178);
+}
+
+body.builder .sticky-header {
+    z-index: 10000;
+    position: sticky;
+    top: 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    background-color: rgb(76, 76, 85);
+    color: white;
+    flex-wrap: wrap;
+    padding: .5vw 1.5vw;
+    gap: 1vw;
+}
+
+body.builder .icon-button:hover {
+    opacity: .7;
+}
+
+body.builder .icon-button {
+    transition: opacity .25s;
+    background-image: var(--icon, transparent);
+    height: 2rem;
+    width: 2rem;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+body.builder .icon-button.pages {
+    --icon: url(/public/images/builder/onepage.svg);
+}
+
+body.builder .icon-button.pages.true {
+    --icon: url(/public/images/builder/onepage-active.svg);
+}
+
+body.builder .icon-button.edit {
+    background-size: 1.75rem;
+    --icon: url(/public/images/builder/editing.svg);
+}
+
+body.builder .icon-button.edit.true {
+    --icon: url(/public/images/builder/editing-active.svg);
+}
+
+body.builder .icon-button.hidden {
+    --icon: url(/public/images/builder/eye.svg);
+}
+
+body.builder .icon-button.hidden.true {
+    --icon: url(/public/images/builder/eye-active.svg);
+}
+
+body.builder .icon-button.modes {
+    --icon: url(/public/images/builder/printer.svg);
+}
+
+body.builder .icon-button.modes.true {
+    --icon: url(/public/images/builder/printer-active.svg);
+}
+
+body.builder .icon-button.print {
+    --icon: url(/public/images/builder/print.svg);
 }

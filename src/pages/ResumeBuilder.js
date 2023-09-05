@@ -28,7 +28,7 @@ export class ResumeBuilder extends Component {
                 personal: [],
             },
             colors: ['--OffRed', '--OffOrange', '--OffYellow', '--OffGreen', '--OffBlue', '--OffPurple',],
-            pageOutline: 0,
+            url: 'pdf/resume_print_friendly.pdf',
             onePage: false,
             editing: false,
             viewHidden: false,
@@ -107,6 +107,12 @@ export class ResumeBuilder extends Component {
         const { onePage } = this.state;
         let stylesheet = document.querySelector('style#printSettings');
         let styles = '';
+        if (document.body.id == 'printer') {
+            styles = `
+            :root {
+                --background:#fff !important;
+            }`;
+        }
         if (!stylesheet) {
             stylesheet = document.createElement('style');
             stylesheet.id = 'printSettings';
@@ -117,8 +123,7 @@ export class ResumeBuilder extends Component {
 
         if (onePage) {
             const { offsetWidth, offsetHeight } = document.querySelector('.resume');
-            console.log(offsetWidth, offsetHeight);
-            styles = `
+            styles += `
             @page{
                 size: 8.5in ${8.5 * (offsetHeight / offsetWidth)}in;
             }`;
@@ -128,7 +133,6 @@ export class ResumeBuilder extends Component {
 
         window.print()
     }
-
 
     inStores({ android, apple }) {
         let list = []
@@ -141,6 +145,7 @@ export class ResumeBuilder extends Component {
 
     handleControls({ parentElement: controls, id }) {
         let target = controls.parentElement;
+        setTimeout(this.updateHeight, 0)
         switch (id) {
             case 'visibility': return target.classList.toggle('no-print');
             case 'focus': return target.classList.toggle('present');
@@ -148,240 +153,243 @@ export class ResumeBuilder extends Component {
         }
     }
 
-    togglePrintFriendly = () => this.setState({ bodyState: document.body.id = document.body.id === 'printer' ? '' : 'printer' });
+    updateHeight() {
+        const resume = document.querySelector('.resume');
+        const container = document.querySelector('.resume-container');
+        container.style.height = resume.offsetHeight * .7 + 30 + 'px'
+    }
 
     render() {
+        document.querySelector('style#printSettings')?.remove()
+        setTimeout(this.updateHeight, 0)
         const { education, experience } = resumeData;
-        const { bodyState, pageOutline, colors, editing, viewHidden,
+        const { bodyState, colors, editing, viewHidden, url, onePage,
             skills: { coding, software },
             projects: { work, personal }
         } = this.state;
 
         const controller =
             <div className='controls' {...noteditable} onClick={({ target }) => this.handleControls(target)}>
-                <div id='focus'>focus</div>
-                <div id='visibility' className='vis'>hide</div>
-                <div id='visibility' className='hid'>show</div>
+                <div id='focus' className='exp'></div>
+                <div id='visibility' className='vis'></div>
+                <div id='visibility' className='hid'></div>
             </div>
 
         return (<Fragment>
-            <div className='no-print sticky-overlay'>
-                <div className='left'>
-                    <label>One Page: <input type='checkbox' onChange={(e) => this.setState({ onePage: e.target.checked })} defaultValue={false} /></label>
-                    <label>Page Outline: <input type='number' onChange={(e) => this.setState({ pageOutline: parseInt(e.target.value) })} min={0} step={1} defaultValue={0} /></label>
-                    <label>Edit Content: <input type='checkbox' onChange={(e) => this.setState({ editing: e.target.checked })} defaultValue={false} /></label>
-                    <label>View Hidden: <input type='checkbox' onChange={(e) => this.setState({ viewHidden: e.target.checked })} defaultValue={false} /></label>
-                </div>
-                <div className='right'>
-                    <button onClick={() => this.togglePrintFriendly()}>Toggle Modes</button>
-                    <button onClick={() => this.print()}>Save Copy</button>
-                </div>
-            </div>
-            {!!pageOutline && <div className='no-print fixed-overlay'>
-                {[...new Array(pageOutline)].map((p, i) => <div key={`outline-${i}`} className='page-outline' />)}
-            </div>}
-            <div className={`resume ${viewHidden ? 'viewhidden' : ''}`} contentEditable={editing} suppressContentEditableWarning='true'>
-                <header  {...noteditable}>
-                    <div className="header-container">
-                        <div className="logo"></div>
-                        <div className="title">
-                            <h1>Jonathan Kido</h1>
-                            <h4 contentEditable={editing} suppressContentEditableWarning='true'>Full Stack, Game Dev, Programmer</h4>
-                        </div>
-                    </div>
-                    <div className="links">
-                        <h5 className='email'>
-                            <a href="mailto:jonkido@vfos.dev">jonkido@vfos.dev</a>
-                        </h5>
-                        <h5 className='globe'>
-                            <a href="https://vfos.dev" target="_blank" rel="noreferrer">vfos.dev</a>
-                        </h5>
-                    </div>
-                </header>
-                <div id="alt" {...noteditable}>
-                    {bodyState ?
-                        <h1>Eye-friendly version: <a href="https://vfos.dev/pdf/resume_eye_friendly.pdf">https://vfos.dev/pdf/resume_eye_friendly.pdf</a></h1> :
-                        <h1>Print-friendly version: <a href="https://vfos.dev/pdf/resume_print_friendly.pdf">https://vfos.dev/pdf/resume_print_friendly.pdf</a></h1>
-                    }
-                </div>
-                <main>
-                    <div className="header gear">
-                        <div className="cut-outs"><div /><div /><div /><div /></div>
-                        <h1>Skills</h1>
-                    </div>
-                    <div className="skills-container">
-                        <div className="info">
-                            <div className="info-container">
-                                {controller}
-                                <h1 className="title coding">Coding</h1>
-                                <ul className="content row" style={{ '--color': 'var(--lightBlue)', '--visual-color': 'var(--OffWhite)' }}>
-                                    {coding.map(({ name, level }, i) => <li key={`${name}-${i}`} className={level}>{controller}{name}</li>)}
-                                </ul>
-                            </div>
+            <div className='no-print sticky-header'>
+                <button className={`icon-button pages ${onePage}`} onClick={() => this.setState({ onePage: !onePage })} />
+                <button className={`icon-button edit ${editing}`} onClick={() => this.setState({ editing: !editing })} />
+                <button className={`icon-button hidden ${viewHidden}`} onClick={() => this.setState({ viewHidden: !viewHidden })} />
+                <label>Url: <input onChange={(e) => this.setState({ url: e.target.value })} value={url} /></label>
 
-                            <div className="info-container">
-                                {controller}
-                                <h1 className="title software">Software</h1>
-                                <div className="content row" style={{ '--visual-color': 'var(--OffWhite)' }}>
-                                    {Object.keys(software).map((s, i) => {
-                                        const { set = [], name } = software[s]
-                                        return <ul className="container" style={{ '--color': `var(${colors[i % colors.length]})` }}>
-                                            {controller}
-                                            {set.map(({ name, level }, i) => <li key={`${name}-${i}`} className={level}>{controller}{name}</li>)}
-                                            <div className="category">
-                                                {name}
-                                            </div>
-                                        </ul>
-                                    })}
+                <div className='gap' />
+
+                <button className={`icon-button modes ${!!bodyState}`} onClick={() => this.setState({ bodyState: document.body.id = document.body.id === 'printer' ? '' : 'printer' })} />
+                <button className={`icon-button print`} onClick={() => this.print()} />
+            </div>
+            <div className='resume-container'>
+
+                <div className={`resume ${viewHidden ? 'viewhidden' : ''}`} contentEditable={editing} suppressContentEditableWarning='true'>
+                    <header  {...noteditable}>
+                        <div className="header-container">
+                            <div className="logo"></div>
+                            <div className="title">
+                                <h1>Jonathan Kido</h1>
+                                <h4 contentEditable={editing} suppressContentEditableWarning='true'>Full Stack, Game Dev, Programmer</h4>
+                            </div>
+                        </div>
+                        <div className="links">
+                            <h5 className='email'>
+                                <a href="mailto:jonkido@vfos.dev">jonkido@vfos.dev</a>
+                            </h5>
+                            <h5 className='globe'>
+                                <a href="https://vfos.dev" target="_blank" rel="noreferrer">vfos.dev</a>
+                            </h5>
+                        </div>
+                    </header>
+                    <div id="alt" {...noteditable}>
+                        {controller}
+                        <h1>{bodyState ? 'Eye' : "Print"}-friendly version: <a href={`https://vfos.dev/${url}`}>{`https://vfos.dev/${url}`}</a></h1>
+                    </div>
+                    <main>
+                        <div className="header gear">
+                            <div className="cut-outs"><div /><div /><div /><div /></div>
+                            <h1>Skills</h1>
+                        </div>
+                        <div className="skills-container">
+                            <div className="info">
+                                <div className="info-container">
+                                    {controller}
+                                    <h1 className="title coding">Coding</h1>
+                                    <ul className="content row" style={{ '--color': 'var(--lightBlue)', '--visual-color': 'var(--OffWhite)' }}>
+                                        {coding.map(({ name, level }, i) => <li key={`${name}-${i}`} className={level}>{controller}{name}</li>)}
+                                    </ul>
+                                </div>
+
+                                <div className="info-container">
+                                    {controller}
+                                    <h1 className="title software">Software</h1>
+                                    <div className="content row" style={{ '--visual-color': 'var(--OffWhite)' }}>
+                                        {Object.keys(software).map((s, i) => {
+                                            const { set = [], name } = software[s]
+                                            return <ul className="container" style={{ '--color': `var(${colors[i % colors.length]})` }}>
+                                                {controller}
+                                                {set.map(({ name, level }, i) => <li key={`${name}-${i}`} className={level}>{controller}{name}</li>)}
+                                                <div className="category">
+                                                    {name}
+                                                </div>
+                                            </ul>
+                                        })}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div className='legend-side'>
-                            <div className="legend content" style={{ '--visual-color': 'var(--background)' }} {...noteditable}>
-                                {controller}
-                                <div className="advanced">Professional</div>
-                                <div className="intermediate">Advanced</div>
-                                <div className="beginner">Intermediate</div>
-                                <div className="novice">Beginner</div>
+                            <div className='legend-side'>
+                                <div className="legend content" style={{ '--visual-color': 'var(--background)' }} {...noteditable}>
+                                    {controller}
+                                    <div className="advanced">Professional</div>
+                                    <div className="intermediate">Advanced</div>
+                                    <div className="beginner">Intermediate</div>
+                                    <div className="novice">Beginner</div>
+                                </div>
+
+                                <h1 className="more-info">
+                                    {controller}
+                                    Want to learn more? <br />
+                                    Visit my portfolio: <a href="https://vfos.dev/">https://vfos.dev/</a>
+                                </h1>
                             </div>
-
-                            <h1 className="more-info">
-                                {controller}
-                                Want to learn more? <br />
-                                Visit my portfolio: <a href="https://vfos.dev/">https://vfos.dev/</a>
-                            </h1>
                         </div>
-                    </div>
 
-                    <div className="header checklist">
-                        <div className="cut-outs"><div /><div /><div /><div /></div>
-                        <h1>Experience</h1>
-                    </div>
-
-                    <div className="info-container full">
-                        {controller}
-                        <h1 className="title building">Professional Experience</h1>
-                        <div className="content block">
-                            {experience.map(({ title, subTitle, company, dates, keyPoints }) => {
-                                let points = keyPoints.split('\t ');
-                                return (<section key={`${title}${company}${subTitle}`} className='autopagebreak'>
-                                    {controller}
-                                    <header>
-                                        <h2>{title}{subTitle ? `, ${subTitle}` : ""} - {company}</h2>
-                                        <em>{dates}</em>
-                                    </header>
-                                    <ul>
-                                        {points.length > 1 ?
-                                            <Fragment>
-                                                {points.map(p => p.replace(/(\s|\n)+/, '') ? <li key={`${company}${p}`}>{p}</li> : '')}
-                                            </Fragment> :
-                                            <Fragment>
-                                                <li>Bullet Points not found in data set</li>
-                                            </Fragment>
-                                        }
-                                    </ul>
-                                </section>);
-                            })}
+                        <div className="header checklist">
+                            <div className="cut-outs"><div /><div /><div /><div /></div>
+                            <h1>Experience</h1>
                         </div>
-                    </div>
 
-                    <div className="info-container full">
-                        {controller}
-                        <h1 className="title work">Work/Group Projects</h1>
-                        <div className="content block">
-                            {work.map(({ name, keyFeatures = '', stack, endDate, startDate, parent, link: { website, ...rem } = {}, }) => {
-                                let link = website === '/' ? 'https://vfos.dev' : website
-                                let bulletpoint = this.inStores(rem)
-                                let points = keyFeatures.split('- ');
-                                return (<section className='autopagebreak'>
-                                    {controller}
-                                    <header>
-                                        <h2>{name} {link ? <Fragment>
-                                            (<a href={link} target="_blank">{link}</a>)
-                                        </Fragment> : ""}</h2>
-                                        <em>{startDate}{endDate !== startDate ? ` - ${endDate}` : ''}</em>
-                                    </header>
-                                    <ul>
-                                        {points.length > 1 ?
-                                            <Fragment>
-                                                {points.map(p => p.replace(/(\s|\n)+/, '') ? <li key={`${name}${p}`}>{p}</li> : '')}
-                                            </Fragment> :
-                                            <Fragment>
-                                                <li>Bullet Points not found in data set</li>
-                                            </Fragment>
-                                        }
-                                        {!!bulletpoint && <li>{bulletpoint}</li>}
-                                    </ul>
-                                </section>)
-                            })}
+                        <div className="info-container full">
+                            {controller}
+                            <h1 className="title building">Professional Experience</h1>
+                            <div className="content block">
+                                {experience.map(({ title, subTitle, company, dates, keyPoints }) => {
+                                    let points = keyPoints.split('\t ');
+                                    return (<section key={`${title}${company}${subTitle}`} className='autopagebreak'>
+                                        {controller}
+                                        <header>
+                                            <h2>{title}{subTitle ? `, ${subTitle}` : ""} - {company}</h2>
+                                            <em>{dates}</em>
+                                        </header>
+                                        <ul>
+                                            {points.length > 1 ?
+                                                <Fragment>
+                                                    {points.map(p => p.replace(/(\s|\n)+/, '') ? <li key={`${company}${p}`}>{p}</li> : '')}
+                                                </Fragment> :
+                                                <Fragment>
+                                                    <li>Bullet Points not found in data set</li>
+                                                </Fragment>
+                                            }
+                                        </ul>
+                                    </section>);
+                                })}
+                            </div>
                         </div>
-                    </div>
 
-                    <div className="info-container full">
-                        {controller}
-                        <h1 className="title personal">Personal Projects</h1>
-                        <div className="content block">
-                            {personal.map(({ name, keyFeatures = '', stack, endDate, startDate, parent, link: { website, ...rem } = {}, }) => {
-                                let link = website === '/' ? 'https://vfos.dev' : website;
-                                let bulletpoint = this.inStores(rem)
-                                let points = keyFeatures.split('- ');
-                                return (<section className='autopagebreak'>
-                                    {controller}
-                                    <header>
-                                        <h2>{name} {link ? <Fragment>
-                                            (<a href={link} target="_blank">{link}</a>)
-                                        </Fragment> : ""}</h2>
-                                        <em>{startDate}{endDate !== startDate ? ` - ${endDate}` : ''}</em>
-                                    </header>
-                                    <ul>
-                                        {points.length > 1 ?
-                                            <Fragment>
-                                                {points.map(p => p.replace(/(\s|\n)+/, '') ? <li key={`${name}${p}`}>{p}</li> : '')}
-                                            </Fragment> :
-                                            <Fragment>
-                                                <li>Bullet Points not found in data set</li>
-                                            </Fragment>
-                                        }
-                                        {!!bulletpoint && <li>{bulletpoint}</li>}
-                                    </ul>
-                                </section>)
-                            })}
+                        <div className="info-container full">
+                            {controller}
+                            <h1 className="title work">Work/Group Projects</h1>
+                            <div className="content block">
+                                {work.map(({ name, keyFeatures = '', stack, endDate, startDate, parent, link: { website, ...rem } = {}, }) => {
+                                    let link = website === '/' ? 'https://vfos.dev' : website
+                                    let bulletpoint = this.inStores(rem)
+                                    let points = keyFeatures.split('- ');
+                                    return (<section className='autopagebreak'>
+                                        {controller}
+                                        <header>
+                                            <h2>{name} {link ? <Fragment>
+                                                (<a href={link} target="_blank">{link}</a>)
+                                            </Fragment> : ""}</h2>
+                                            <em>{startDate}{endDate !== startDate ? ` - ${endDate}` : ''}</em>
+                                        </header>
+                                        <ul>
+                                            {points.length > 1 ?
+                                                <Fragment>
+                                                    {points.map(p => p.replace(/(\s|\n)+/, '') ? <li key={`${name}${p}`}>{p}</li> : '')}
+                                                </Fragment> :
+                                                <Fragment>
+                                                    <li>Bullet Points not found in data set</li>
+                                                </Fragment>
+                                            }
+                                            {!!bulletpoint && <li>{bulletpoint}</li>}
+                                        </ul>
+                                    </section>)
+                                })}
+                            </div>
                         </div>
-                    </div>
 
-                    <div className="header diploma">
-                        <div className="cut-outs"><div /><div /><div /><div /></div>
-                        <h1>Education</h1>
-                    </div>
-
-                    <div className="info-container full" style={{ marginTop: '1vw' }}>
-                        {controller}
-                        <h1 className="title university">University</h1>
-                        <div className="content block">
-                            {education.map(({ school, years, majors, minors }, i) =>
-                                <section className='autopagebreak'>
-                                    {controller}
-                                    <header>
-                                        <h2>{school}:</h2>
-                                        <em>{years}</em>
-                                    </header>
-                                    {majors?.length &&
-                                        <h2>Major{majors.length > 1 ? 's' : ''}: {majors.map(({ short, long }, i) =>
-                                            <Fragment key={`${school}-${short}-${i}`}>{i > 0 ? ', ' : ""}<strong>{short}</strong> ({long})</Fragment>)}
-                                        </h2>}
-                                    {minors?.length &&
-                                        <h2>Minor{minors.length > 1 ? 's' : ''}: {minors.map(({ short, long }, i) =>
-                                            <Fragment key={`${school}-${short}-${i}`}>{i > 0 ? ', ' : ""}<strong>{short}</strong> ({long})</Fragment>)}
-                                        </h2>}
-                                </section>
-                            )}
+                        <div className="info-container full">
+                            {controller}
+                            <h1 className="title personal">Personal Projects</h1>
+                            <div className="content block">
+                                {personal.map(({ name, keyFeatures = '', stack, endDate, startDate, parent, link: { website, ...rem } = {}, }) => {
+                                    let link = website === '/' ? 'https://vfos.dev' : website;
+                                    let bulletpoint = this.inStores(rem)
+                                    let points = keyFeatures.split('- ');
+                                    return (<section className='autopagebreak'>
+                                        {controller}
+                                        <header>
+                                            <h2>{name} {link ? <Fragment>
+                                                (<a href={link} target="_blank">{link}</a>)
+                                            </Fragment> : ""}</h2>
+                                            <em>{startDate}{endDate !== startDate ? ` - ${endDate}` : ''}</em>
+                                        </header>
+                                        <ul>
+                                            {points.length > 1 ?
+                                                <Fragment>
+                                                    {points.map(p => p.replace(/(\s|\n)+/, '') ? <li key={`${name}${p}`}>{p}</li> : '')}
+                                                </Fragment> :
+                                                <Fragment>
+                                                    <li>Bullet Points not found in data set</li>
+                                                </Fragment>
+                                            }
+                                            {!!bulletpoint && <li>{bulletpoint}</li>}
+                                        </ul>
+                                    </section>)
+                                })}
+                            </div>
                         </div>
-                    </div>
-                </main >
-                <footer>
-                    <h1>Last update: {new Date().toLocaleDateString('nu', { year: 'numeric', month: 'long', day: 'numeric' })}</h1>
-                </footer>
-            </div >
+
+                        <div className="header diploma">
+                            <div className="cut-outs"><div /><div /><div /><div /></div>
+                            <h1>Education</h1>
+                        </div>
+
+                        <div className="info-container full" style={{ marginTop: '1vw' }}>
+                            {controller}
+                            <h1 className="title university">University</h1>
+                            <div className="content block">
+                                {education.map(({ school, years, majors, minors }, i) =>
+                                    <section className='autopagebreak'>
+                                        {controller}
+                                        <header>
+                                            <h2>{school}:</h2>
+                                            <em>{years}</em>
+                                        </header>
+                                        {majors?.length &&
+                                            <h2>Major{majors.length > 1 ? 's' : ''}: {majors.map(({ short, long }, i) =>
+                                                <Fragment key={`${school}-${short}-${i}`}>{i > 0 ? ', ' : ""}<strong>{short}</strong> ({long})</Fragment>)}
+                                            </h2>}
+                                        {minors?.length &&
+                                            <h2>Minor{minors.length > 1 ? 's' : ''}: {minors.map(({ short, long }, i) =>
+                                                <Fragment key={`${school}-${short}-${i}`}>{i > 0 ? ', ' : ""}<strong>{short}</strong> ({long})</Fragment>)}
+                                            </h2>}
+                                    </section>
+                                )}
+                            </div>
+                        </div>
+                    </main >
+                    <footer>
+                        <h1>Last update: {new Date().toLocaleDateString('nu', { year: 'numeric', month: 'long', day: 'numeric' })}</h1>
+                    </footer>
+                </div >
+            </div>
         </Fragment >);
     }
 }
