@@ -56,14 +56,14 @@ export function rotation(state = origin, { type, pos }) {
 }
 
 function onMount(reset = false) {
-    const [, view = 'intro',] = window.location.pathname.split('/')
-
+    const [, v,] = window.location.pathname.split('/');
+    const view = v || 'intro';
     const pos = {
         resume: 'top',
         skills: 'left',
         about: 'right',
-        projects: 'bottom',
-        socials: 'back',
+        projects: 'back',
+        socials: 'bottom',
         intro: 'front',
     }[reset ? 'intro' : view.toLowerCase()]
 

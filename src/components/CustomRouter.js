@@ -20,7 +20,6 @@ class CustomRouter extends React.Component {
             update: false,
             animate: false,
             animations: true,
-            aniTimer: null,
             loc: 'front',
             winloc: '',
             queue: false,
@@ -38,6 +37,11 @@ class CustomRouter extends React.Component {
 
         document.addEventListener('keydown', this.keyRot);
         window.addEventListener('custom-changeRot', this.changeRot);
+    }
+
+    componentWillUnmount() {
+        document.removeEventListener('keydown', this.keyRot);
+        window.removeEventListener('custom-changeRot', this.changeRot);
     }
 
     changeRot = (e) => this.setState({ cantRot: e.detail });
@@ -68,10 +72,12 @@ class CustomRouter extends React.Component {
         }, 300)
     }
 
-    updatePage(_page, _new) {
-        const _newpage = _new.split('/')[0];
+    updatePage(_p, _n) {
+        const _page = _p || 'intro',
+            _newpage = _n || 'intro';
+
         const { rotation } = this.props;
-        const { loc, animate, aniTimer, animations, update } = this.state;
+        const { loc, animate, animations, update } = this.state;
 
         const _loc = JSON.stringify(rotation).split(`":"${_newpage}"`)[0].split('"').slice(-1)[0];
 
@@ -93,13 +99,10 @@ class CustomRouter extends React.Component {
             }, 100)
         }
 
-        if (aniTimer) window.clearTimeout(aniTimer);
-        var timer = setTimeout(() => this.setState({ animate: false }), 1000);
-
         var queue = (_newpage !== _page) ? _page : false;
 
         this.props.rotate(_loc);
-        this.setState({ update: !update, animate: animations, aniTimer: timer, loc: _loc, queue: queue });
+        this.setState({ update: !update, animate: animations, loc: _loc, queue: queue });
         this.props.checkAchievement('firstStep');
         this.props.checkAchievement('doubleRotate', _loc);
     }
@@ -133,23 +136,26 @@ class CustomRouter extends React.Component {
     render() {
         const { animate, loc, queue, scrollPercent, fixedRefs } = this.state;
         const { rotation } = this.props;
-        const [, page,] = window.location.pathname.split('/');
-        if (!!page && rotation.front !== page) this.props.rotate(JSON.stringify(rotation).split(`":"${page} `)[0].split('"').splice(-1)[0]);
-        if (!fixedRefs) setTimeout(() => this.setState({ fixedRefs: true }), 0)
-
+        const [, p = 'intro',] = window.location.pathname.split('/');
+        const page = p || 'intro';
+        if (page && rotation.front !== page) this.props.rotate(JSON.stringify(rotation).split(`":"${page} `)[0].split('"').splice(-1)[0]);
+        if (!fixedRefs) setTimeout(() => this.setState({ fixedRefs: true }), 0);
         let secondPages = queue && animate;
         return (<Fragment>
             <SecretController focused={this.focus} />
             <AchievementNotification focused={this.focus} />
             <NavBar updatePage={this.updatePage} last={page} scrollPercent={scrollPercent} focused={this.focus} />
             <div className="cube-container" style={{ perspective: `${document.documentElement.clientWidth}px` }} onAnimationEnd={() => this.removeLoading()}>
-                <div ref={this.prior} className={`face prior ani-${loc} ${queue}`} key={'prior'} style={secondPages ? {} : { display: 'none' }}>
+                <div ref={this.prior} className={`face prior ani-${loc} ${queue || page}`} key={'prior'} style={secondPages ? {} : { display: 'none' }}>
                     {secondPages && this.Router(queue, false)}
                 </div>
                 <div ref={this.skip} className={`face skip ani-back ${rotation.bottom}`} key={'skip'} style={secondPages && loc === "back" ? {} : { display: 'none' }}>
                     {secondPages && loc === "back" && this.Router(rotation.bottom, false)}
                 </div>
-                <div ref={this.focus} id="focused" key={'focus'} className={`face focus${animate && !!queue ? ` ani-${loc}` : ""} ${page}`} onScroll={() => this.UpdateNavBar()}>
+                <div ref={this.focus} id="focused" key={'focus'} className={`face focus${animate && !!queue ? ` ani-${loc}` : ""} ${page}`}
+                    onScroll={() => this.UpdateNavBar()}
+                    onAnimationEnd={() => this.setState({ animate: false })}
+                >
                     {this.Router(page, true)}
                 </div>
             </div>

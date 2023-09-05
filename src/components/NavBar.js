@@ -24,7 +24,12 @@ class NavBar extends Component {
 
         // listeners
         window.addEventListener('popstate', this.listener);
-        window.addEventListener('custom-hideNavbar', this.toggleNavbar)
+        window.addEventListener('custom-hideNavbar', this.toggleNavbar);
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('popstate', this.listener);
+        window.removeEventListener('custom-hideNavbar', this.toggleNavbar);
     }
 
     toggleNavbar = (e) => this.setState({ hidden: e.detail ?? !this.state.hidden })

@@ -32,6 +32,10 @@ class Projects extends React.Component {
         }
     }
 
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.resize);
+    }
+
     resize(e) {
         const { refresh, minesweeper } = this.state;
         if (!minesweeper) this.setState({ refresh: !refresh });

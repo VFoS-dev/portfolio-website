@@ -19,6 +19,10 @@ class SecretController extends Component {
         window.addEventListener('custom-pushState', this.listener);
     }
 
+    componentWillUnmount() {
+        window.removeEventListener('custom-pushState', this.listener);
+    }
+
     listener() {
         const [, , secret] = window.location.pathname.split('/');
         const { update, shown } = this.state;

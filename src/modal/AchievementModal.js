@@ -19,7 +19,10 @@ export class AchievementModal extends Component {
         window.addEventListener('custom-toggle-menu', this.toggleMenu);
     }
 
-    componentWillUnmount = () => document.removeEventListener('keydown', this.keyHandle);
+    componentWillUnmount() {
+        document.removeEventListener('keydown', this.keyHandle);
+        window.removeEventListener('custom-toggle-menu', this.toggleMenu);
+    }
 
     toggleMenu = () => this.keyHandle({}, true)
 
