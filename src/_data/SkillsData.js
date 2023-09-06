@@ -13,7 +13,7 @@ export const skillData = [
             { name: 'Krita', compentence: 78, category: 'software' },
             { name: 'Photoshop', compentence: 60, category: 'software' },
             { name: 'Substance Painter', compentence: 40, category: 'software' },
-            { name: 'Unity', compentence: 90, category: 'software' },
+            { name: 'Unity', compentence: 90, linkedin: 15, category: 'software' },
             { name: 'Unreal', compentence: 79, category: 'software' },
         ]),
     },
