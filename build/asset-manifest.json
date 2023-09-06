@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.ef59be53.css",
-    "main.js": "/static/js/main.41992813.js",
+    "main.js": "/static/js/main.cc45fdfe.js",
     "static/media/Handjet.ttf": "/static/media/Handjet.2e5fbe1cc6ab96ffab4e.ttf",
     "static/media/AvenirNextLTPro-Bold.otf": "/static/media/AvenirNextLTPro-Bold.711a4eb654bf1139f123.otf",
     "static/media/AvenirNextLTPro-Regular.otf": "/static/media/AvenirNextLTPro-Regular.94f2f163d4b698242fef.otf",
@@ -59,10 +59,10 @@
     "static/media/focus-active.svg": "/static/media/focus-active.b6482660c9e2e9434f9f.svg",
     "static/media/focus.svg": "/static/media/focus.3ca53b1537ce85ffb8a3.svg",
     "main.ef59be53.css.map": "/static/css/main.ef59be53.css.map",
-    "main.41992813.js.map": "/static/js/main.41992813.js.map"
+    "main.cc45fdfe.js.map": "/static/js/main.cc45fdfe.js.map"
   },
   "entrypoints": [
     "static/css/main.ef59be53.css",
-    "static/js/main.41992813.js"
+    "static/js/main.cc45fdfe.js"
   ]
 }
