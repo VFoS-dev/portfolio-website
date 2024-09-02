@@ -1,0 +1,18 @@
+{
+  "name": "portfolio-website",
+  "author": "Jonathan Kido",
+  "version": "3.0.0",
+  "scripts": {
+    "start": "concurrently 'npm:backend:start' 'npm:frontend:start' 'npm:admin:start'",
+    "postinstall": "npm run install:backend && npm run install:frontend && echo 'Install Complete!'",
+    "install:frontend": "echo 'Installing frontend' && cd frontend && npm i",
+    "install:backend": "echo 'Installing backend' && cd backend && npm i",
+    "install:admin": "echo 'Installing admin' && cd admin && npm i",
+    "backend:start": "cd backend && npm run start",
+    "frontend:start": "cd frontend && npm run start",
+    "admin:start": "cd admin && npm run start"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
