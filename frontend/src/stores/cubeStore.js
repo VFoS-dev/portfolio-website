@@ -33,6 +33,11 @@ const useCubeStore = defineStore('cubeStore', {
         getList() {
             return ['projects', 'home', 'socials', 'resume', 'about', 'skills']
         },
+        resized() {
+            if (this.state.instant) return;
+            this.state.instant = true
+            setTimeout(() => this.state.instant = false, 0)
+        },
         updateFocus(name) {
             delete this.state[this.focus]
             this.focus = name;

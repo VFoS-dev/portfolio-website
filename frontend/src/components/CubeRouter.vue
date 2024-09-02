@@ -47,6 +47,7 @@ function reduceRot({ propertyName }) {
 onMounted(() => {
     addEventListener('keydown', cubeStore.keyRot)
     addEventListener('keyup', cubeStore.keyRot)
+    addEventListener('resize', cubeStore.resized)
 })
 </script>
 
@@ -99,13 +100,18 @@ onMounted(() => {
         width: 100dvw;
         height: 100dvh;
         transition-delay: .25s;
-        z-index: 1;
+        z-index: 2;
+        scale: 1;
+    }
+
+    &.expand>section {
+        scale: .5;
     }
 
     &>section {
         position: fixed;
         transform-origin: center;
-        --half-size: calc(var(--cube-size) / 2 + 1px);
+        --half-size: calc(var(--cube-size) / 2);
         translate: -50% -50%;
         width: var(--cube-size);
         height: var(--cube-size);
