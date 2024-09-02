@@ -1,33 +1,34 @@
 <template>
-    <div class="cube" :class="{ animated }" :style="style" @transitionend="reduceRot">
+    <div class="cube" :class="[{ animated, expand: cubeStore.shouldExpand }, cubeStore.focus]" :style="style"
+        @transitionend="reduceRot">
         <section class="home">
-            <slot name="Home"> Home
-                {{ cubeStore.current }}
+            <slot name="Home">
+                <div class="empty">Home</div>
             </slot>
         </section>
         <section class="socials">
-            <slot name="Socials"> Socials
-                {{ cubeStore.current }}
+            <slot name="Socials">
+                <div class="empty">Socials</div>
             </slot>
         </section>
         <section class="resume">
-            <slot name="Resume"> Resume
-                {{ cubeStore.current }}
+            <slot name="Resume">
+                <div class="empty">Resume</div>
             </slot>
         </section>
         <section class="about">
-            <slot name="About"> About
-                {{ cubeStore.current }}
+            <slot name="About">
+                <div class="empty">About</div>
             </slot>
         </section>
         <section class="skills">
-            <slot name="Skills"> Skills
-                {{ cubeStore.current }}
+            <slot name="Skills">
+                <div class="empty">Skills</div>
             </slot>
         </section>
         <section class="projects">
-            <slot name="Projects"> Projects
-                {{ cubeStore.current }}
+            <slot name="Projects">
+                <div class="empty">Projects</div>
             </slot>
         </section>
     </div>
@@ -40,7 +41,8 @@ import { computed, onMounted, ref } from 'vue';
 const animated = ref(false);
 const style = computed(() => ({ "--transfrom": cubeStore.getTransformation() }))
 
-function reduceRot() {
+function reduceRot({ propertyName }) {
+    if (propertyName !== 'transform') return
     cubeStore.reset()
 }
 
@@ -62,8 +64,6 @@ onMounted(() => {
     --cube-size: 50vmin;
     position: absolute;
     transform-style: preserve-3d;
-    transform-origin: center;
-    animation: testCube 10s linear infinite;
     transform: var(--transfrom);
 
     &.animated {
@@ -108,17 +108,34 @@ onMounted(() => {
         transform: rotate3d(1, 0, 0, -90deg) translateZ(var(--half-size));
     }
 
+    &.expand.home>section.home,
+    &.expand.socials>section.socials,
+    &.expand.resume>section.resume,
+    &.expand.about>section.about,
+    &.expand.skills>section.skills,
+    &.expand.projects>section.projects {
+        width: 100dvw;
+        height: 100dvh;
+        transition-delay: .25s;
+    }
+
     &>section {
         position: fixed;
         transform-origin: center;
-        --half-size: calc(var(--cube-size) / 2);
+        --half-size: calc(var(--cube-size) / 2 + 1px);
         translate: -50% -50%;
         width: var(--cube-size);
         height: var(--cube-size);
+        transition: width, height;
+        transition-duration: .25s;
+        overflow: auto;
 
-        .full-size {
-            width: 100dvw;
-            height: 100dvh;
+        &>div.empty {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            font-size: 10rem;
         }
 
         color:black;

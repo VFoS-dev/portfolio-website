@@ -2,13 +2,14 @@ import { defineStore } from 'pinia';
 import pinia from './piniaInstance';
 import { Quaternion } from '@/utilities/quaternions';
 
-
 const useCubeStore = defineStore('cubeStore', {
     state: () => {
         let projects;
         return {
             canKeyRotate: true,
             rotIntervals: {},
+            shouldExpand: true,
+            focus: 'home',
             current: Quaternion.ConvertFromEuler(360, 0, 0),
             home: Quaternion.ConvertFromEuler(360, 0, 0),
             socials: Quaternion.ConvertFromEuler(90, 0, 0),
@@ -28,17 +29,21 @@ const useCubeStore = defineStore('cubeStore', {
         rotateTo({ name }) {
             if (!this[name]) return;
 
-            this.current = this.current.rotateTo(this[name]);
+            this.current = this[name];
+            this.focus = name;
         },
         reset() {
-            for (const key of this.getList()) {
-                const _quaternion = this[key]
+            for (const name of this.getList()) {
+                const _quaternion = this[name]
                 if (Quaternion.SameForward(_quaternion, this.current)) {
+                    this.shouldExpand = true;
+                    this.focus = name;
                     return this.current = _quaternion;
                 }
             }
         },
         rotate({ x = 0, y = 0, z = 0 }) {
+            this.shouldExpand = false
             const eulerQuat = Quaternion.ConvertFromEuler(x, y, z);
             this.current = Quaternion.Multiply(this.current, eulerQuat);
         },
