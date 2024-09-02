@@ -1,9 +1,9 @@
 <template>
-  <CubePage />
+  <CubeRouter />
 </template>
 
 <script setup>
-import CubePage from '@/components/CubePage.vue';
+import CubeRouter from '@/components/CubeRouter.vue';
 </script>
 
 <style scoped>
