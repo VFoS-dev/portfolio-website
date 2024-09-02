@@ -9,8 +9,8 @@ const useCubeStore = defineStore('cubeStore', {
         let projects;
         return {
             canKeyRotate: true,
-            current: vector3D(0, 0, 0),
-            home: eulerToQuaternion(0, 0, 0),
+            current: vector3D(360, 0, 0),
+            home: eulerToQuaternion(360, 0, 0),
             socials: eulerToQuaternion(90, 0, 0),
             resume: eulerToQuaternion(0, 90, 0),
             about: eulerToQuaternion(0, 180, 180),

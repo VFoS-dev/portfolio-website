@@ -1,4 +1,4 @@
-import { eulerToQuaternion, multiplyQuaternions, quaternionToMatrix, areQuaternionsEqual, quaternionToCords, normalizeQuaternion } from "./quaternions";
+import { eulerToQuaternion, multiplyQuaternions, quaternionToMatrix, areQuaternionsEqual, quaternionToCords } from "./quaternions";
 
 export function vector3D(x = 0, y = 0, z = 0) {
     let quaternion = eulerToQuaternion(x, y, z);
@@ -22,36 +22,13 @@ export function vector3D(x = 0, y = 0, z = 0) {
     }
 
     function reduce(quaternions) {
-        let closestQuat = null;
-        quaternion = normalizeQuaternion(quaternion)
-        console.log(quaternions);
-
-        const cords = `${quaternionToCords(quaternion)}`
-        const possible = [
-            [1, 0, 0],
-            [-1, 0, 0],
-            [0, 1, 0],
-            [0, -1, 0],
-            [0, 0, 1],
-            [0, 0, -1],
-        ]
-
-        found:
-        for (const vector of possible) {
-            for (const key of quaternions.keys) {
-                const _quaternion = quaternions[key]
-                const _cords = `${quaternionToCords(_quaternion, vector)}`
-                console.log(_cords === cords, areQuaternionsEqual(_quaternion, quaternion), _cords, cords);
-
-                if (_cords === cords) {
-                    closestQuat = _quaternion;
-                    break found;
-                }
+        for (const key of quaternions.keys) {
+            const _quaternion = quaternions[key]
+            if (areQuaternionsEqual(_quaternion, quaternion)) {
+                quaternion = _quaternion;
+                break;
             }
         }
-        console.log(closestQuat);
-        if (closestQuat)
-            quaternion = closestQuat;
 
         return compileState()
     }

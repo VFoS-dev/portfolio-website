@@ -75,6 +75,8 @@ onMounted(() => {
         --background: blue;
         background-color: var(--background);
         transform: translateZ(var(--half-size));
+
+        color: white;
     }
 
     .socials {
@@ -119,6 +121,8 @@ onMounted(() => {
             width: 100dvw;
             height: 100dvh;
         }
+
+        color:black;
     }
 }
 </style>

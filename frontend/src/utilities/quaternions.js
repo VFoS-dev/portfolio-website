@@ -39,15 +39,13 @@ export function quaternionToMatrix({ x, y, z, w }) {
     return matrix;
 }
 
+// Quaternion multiplication function (q1 * q2)
 export function multiplyQuaternions(q1, q2) {
-    const { x: x1, y: y1, z: z1, w: w1 } = q1;
-    const { x: x2, y: y2, z: z2, w: w2 } = q2;
-
     return {
-        x: w1 * x2 + x1 * w2 + y1 * z2 - z1 * y2,
-        y: w1 * y2 - x1 * z2 + y1 * w2 + z1 * x2,
-        z: w1 * z2 + x1 * y2 - y1 * x2 + z1 * w2,
-        w: w1 * w2 - x1 * x2 - y1 * y2 - z1 * z2,
+        w: q1.w * q2.w - q1.x * q2.x - q1.y * q2.y - q1.z * q2.z,
+        x: q1.w * q2.x + q1.x * q2.w + q1.y * q2.z - q1.z * q2.y,
+        y: q1.w * q2.y - q1.x * q2.z + q1.y * q2.w + q1.z * q2.x,
+        z: q1.w * q2.z + q1.x * q2.y - q1.y * q2.x + q1.z * q2.w
     };
 }
 
@@ -99,38 +97,59 @@ export function quaternionToCords(quaternion, vector = [0, 0, 1]) {
     return result;
 }
 
-export function normalizeQuaternion({ x, y, z, w }) {
-    // Compute the norm (magnitude) of the quaternion
-    let norm = Math.sqrt(x * x + y * y + z * z + w * w);
+export function approximateVector({ x, y, z }) {
+    let magnitude = Math.sqrt(x * x + y * y + z * z);
 
-    // Check if the norm is not zero to avoid division by zero
-    if (norm === 0) {
-        throw new Error('Cannot normalize a quaternion with zero magnitude');
-    }
-
-    // Normalize each component
     return {
-        x: x / norm,
-        y: y / norm,
-        z: z / norm,
-        w: w / norm
+        x: Math.round(x / magnitude) || 0,
+        y: Math.round(y / magnitude) || 0,
+        z: Math.round(z / magnitude) || 0,
     };
 }
 
 export function areQuaternionsEqual(q1, q2) {
     // Normalize both quaternions
-    let normalizedQ1 = normalizeQuaternion(q1);
-    let normalizedQ2 = normalizeQuaternion(q2);
-    console.log(normalizedQ1, normalizedQ2);
+    let normalizedQ1 = getForwardVector(q1);
+    let normalizedQ2 = getForwardVector(q2);
 
+    console.log(normalizedQ1, normalizedQ2);
 
     // Check if the quaternions are equal or negations of each other
     return (normalizedQ1.x === normalizedQ2.x &&
         normalizedQ1.y === normalizedQ2.y &&
-        normalizedQ1.z === normalizedQ2.z &&
-        normalizedQ1.w === normalizedQ2.w) ||
-        (normalizedQ1.x === -normalizedQ2.x &&
-            normalizedQ1.y === -normalizedQ2.y &&
-            normalizedQ1.z === -normalizedQ2.z &&
-            normalizedQ1.w === -normalizedQ2.w);
+        normalizedQ1.z === normalizedQ2.z);
+}
+
+// Function to get the conjugate (inverse for unit quaternions)
+function quaternionConjugate(q) {
+    return { w: q.w, x: -q.x, y: -q.y, z: -q.z };
+}
+
+// Function to rotate a vector by a quaternion
+function rotateVectorByQuaternion(v, q) {
+    // Convert the vector to a quaternion with w = 0
+    let vectorQuat = { w: 0, x: v.x, y: v.y, z: v.z };
+
+    // Get the conjugate (inverse) of the quaternion
+    let qInverse = quaternionConjugate(q);
+
+    // Perform the rotation: q * v * q^-1
+    let rotatedQuat = multiplyQuaternions(multiplyQuaternions(q, vectorQuat), qInverse);
+
+    // Return the rotated vector part
+
+    return {
+        x: Math.round(rotatedQuat.x) || 0,
+        y: Math.round(rotatedQuat.y) || 0,
+        z: Math.round(rotatedQuat.z) || 0,
+    };
+}
+
+// Function to get the forward vector from a quaternion
+function getForwardVector(q) {
+    // World-space forward vector (0, 0, 1)
+    let forward = { x: 0, y: 0, z: 1 };
+
+    // Rotate the forward vector by the quaternion
+    return rotateVectorByQuaternion(forward, q);
 }
