@@ -1,14 +1,16 @@
 import { defineStore } from 'pinia';
 import pinia from './piniaInstance';
 import { Quaternion } from '@/utilities/quaternions';
+import router from '@/router';
+import { prefersLessMotion } from '@/services/motion-service';
 
 const useCubeStore = defineStore('cubeStore', {
     state: () => {
         let projects;
         return {
+            state: { animated: true, expand: true, instant: false, home: true },
             canKeyRotate: true,
             rotIntervals: {},
-            shouldExpand: true,
             focus: 'home',
             current: Quaternion.ConvertFromEuler(360, 0, 0),
             home: Quaternion.ConvertFromEuler(360, 0, 0),
@@ -20,32 +22,46 @@ const useCubeStore = defineStore('cubeStore', {
         }
     },
     actions: {
+        reducedMotion(bool) {
+            this.state.animated = !bool
+            this.state.instant = bool
+            this.canKeyRotate = !bool
+        },
         getTransformation() {
             return `matrix3d(${Quaternion.ConvertToMatrix(cubeStore.current).toString()})`
         },
         getList() {
             return ['projects', 'home', 'socials', 'resume', 'about', 'skills']
         },
+        updateFocus(name) {
+            delete this.state[this.focus]
+            this.focus = name;
+            this.state[name] = true
+        },
         rotateTo({ name }) {
             if (!this[name]) return;
 
             this.current = this[name];
-            this.focus = name;
+            this.updateFocus(name);
+            this.state.expand = true;
         },
         reset() {
             for (const name of this.getList()) {
                 const _quaternion = this[name]
                 if (Quaternion.SameForward(_quaternion, this.current)) {
-                    this.shouldExpand = true;
-                    this.focus = name;
-                    return this.current = _quaternion;
+                    return router.push({ name });
                 }
             }
         },
         rotate({ x = 0, y = 0, z = 0 }) {
-            this.shouldExpand = false
+            this.state.expand = false
             const eulerQuat = Quaternion.ConvertFromEuler(x, y, z);
             this.current = Quaternion.Multiply(this.current, eulerQuat);
+
+            if (!this.state.animated) {
+                this.state.instant = true;
+                this.reset()
+            } else this.state.instant = false;
         },
         setRotInterval(dir, keyup) {
             const key = Object.keys(dir)
@@ -68,8 +84,9 @@ const useCubeStore = defineStore('cubeStore', {
                 Object.values(this.rotIntervals).forEach(clearInterval)
             }
         },
-        keyRot(e, keyup = false) {
+        keyRot(e) {
             if (!this.canKeyRotate) return;
+            const keyup = e.type == "keyup"
 
             switch (e.code) {
                 case 'ArrowUp':
@@ -101,3 +118,4 @@ const useCubeStore = defineStore('cubeStore', {
 });
 
 export const cubeStore = useCubeStore(pinia);
+prefersLessMotion.subscribe(cubeStore.reducedMotion)

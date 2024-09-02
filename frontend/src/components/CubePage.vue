@@ -1,6 +1,5 @@
 <template>
-    <div class="cube" :class="[{ animated, expand: cubeStore.shouldExpand }, cubeStore.focus]" :style="style"
-        @transitionend="reduceRot">
+    <div class="cube" :class="cubeStore.state" :style="style" @transitionend="reduceRot">
         <section class="home">
             <slot name="Home">
                 <div class="empty">Home</div>
@@ -36,9 +35,8 @@
 
 <script setup>
 import { cubeStore } from '@/stores/cubeStore';
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted } from 'vue';
 
-const animated = ref(false);
 const style = computed(() => ({ "--transfrom": cubeStore.getTransformation() }))
 
 function reduceRot({ propertyName }) {
@@ -46,16 +44,9 @@ function reduceRot({ propertyName }) {
     cubeStore.reset()
 }
 
-function animate(pre = () => { }) {
-    animated.value = false
-    pre()
-    setTimeout(() => animated.value = true, 0);
-}
-
 onMounted(() => {
-    document.addEventListener('keydown', cubeStore.keyRot)
-    document.addEventListener('keyup', e => cubeStore.keyRot(e, true))
-    animate()
+    addEventListener('keydown', cubeStore.keyRot)
+    addEventListener('keyup', cubeStore.keyRot)
 })
 </script>
 
@@ -139,6 +130,12 @@ onMounted(() => {
         }
 
         color:black;
+    }
+
+    &.instant {
+        * {
+            transition: none !important;
+        }
     }
 }
 </style>
