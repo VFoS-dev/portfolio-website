@@ -53,7 +53,6 @@ onMounted(() => {
 <style scoped lang="less">
 .cube {
     --cube-size: 50vmin;
-    position: absolute;
     transform-style: preserve-3d;
     transform: var(--transfrom);
 
@@ -63,39 +62,31 @@ onMounted(() => {
 
     .home {
         --background: blue;
-        background-color: var(--background);
         transform: translateZ(var(--half-size));
-
-        color: white;
     }
 
     .socials {
         --background: green;
-        background-color: var(--background);
         transform: rotate3d(1, 0, 0, 90deg) translateZ(var(--half-size));
     }
 
     .resume {
         --background: yellow;
-        background-color: var(--background);
         transform: rotate3d(0, 1, 0, 90deg) translateZ(var(--half-size));
     }
 
     .about {
         --background: red;
-        background-color: var(--background);
         transform: rotate3d(1, 0, 0, 180deg) translateZ(var(--half-size));
     }
 
     .skills {
         --background: magenta;
-        background-color: var(--background);
         transform: rotate3d(0, 1, 0, 270deg) translateZ(var(--half-size));
     }
 
     .projects {
         --background: orange;
-        background-color: var(--background);
         transform: rotate3d(1, 0, 0, -90deg) translateZ(var(--half-size));
     }
 
@@ -108,6 +99,7 @@ onMounted(() => {
         width: 100dvw;
         height: 100dvh;
         transition-delay: .25s;
+        z-index: 1;
     }
 
     &>section {
@@ -117,9 +109,11 @@ onMounted(() => {
         translate: -50% -50%;
         width: var(--cube-size);
         height: var(--cube-size);
+        background-color: var(--background);
         transition: width, height;
         transition-duration: .25s;
         overflow: auto;
+        border: 1px solid black;
 
         &>div.empty {
             display: flex;
@@ -128,8 +122,6 @@ onMounted(() => {
             height: 100%;
             font-size: 10rem;
         }
-
-        color:black;
     }
 
     &.instant {
