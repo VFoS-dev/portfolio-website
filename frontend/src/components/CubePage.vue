@@ -38,9 +38,7 @@ import { cubeStore } from '@/stores/cubeStore';
 import { computed, onMounted, ref } from 'vue';
 
 const animated = ref(false);
-const style = computed(() => {
-    return { "--matrix": `matrix3d(${cubeStore.current.getMatrix().toString()})` }
-})
+const style = computed(() => ({ "--transfrom": cubeStore.getTransformation() }))
 
 function reduceRot() {
     cubeStore.reset()
@@ -54,6 +52,7 @@ function animate(pre = () => { }) {
 
 onMounted(() => {
     document.addEventListener('keydown', cubeStore.keyRot)
+    document.addEventListener('keyup', e => cubeStore.keyRot(e, true))
     animate()
 })
 </script>
@@ -65,7 +64,7 @@ onMounted(() => {
     transform-style: preserve-3d;
     transform-origin: center;
     animation: testCube 10s linear infinite;
-    transform: var(--matrix);
+    transform: var(--transfrom);
 
     &.animated {
         transition: transform .5s ease-out;
