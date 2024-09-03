@@ -57,3 +57,7 @@ export default router
 router.afterEach((to) => {
   cubeStore.rotateTo(to)
 })
+
+router.beforeResolve(() => {
+  cubeStore.beforeRoute()
+})

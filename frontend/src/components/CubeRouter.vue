@@ -99,13 +99,13 @@ onMounted(() => {
     &.expand.projects>section.projects {
         width: 100dvw;
         height: 100dvh;
-        transition-delay: .25s;
+        transition-delay: .012s;
         z-index: 2;
         scale: 1;
     }
 
     &.expand>section {
-        scale: .5;
+        scale: .5 .5 .5;
     }
 
     &>section {
@@ -119,7 +119,7 @@ onMounted(() => {
         transition: width, height;
         transition-duration: .25s;
         overflow: auto;
-        border: 1px solid black;
+        outline: 1px solid black;
 
         &>div.empty {
             display: flex;

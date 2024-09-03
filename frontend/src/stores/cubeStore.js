@@ -9,6 +9,7 @@ const useCubeStore = defineStore('cubeStore', {
         let projects;
         return {
             state: { animated: true, expand: true, instant: false, home: true },
+            fromMound: true,
             canKeyRotate: true,
             rotIntervals: {},
             focus: 'home',
@@ -43,17 +44,26 @@ const useCubeStore = defineStore('cubeStore', {
             this.focus = name;
             this.state[name] = true
         },
+        beforeRoute() {
+            this.state.expand = false;
+        },
         rotateTo({ name }) {
             if (!this[name]) return;
 
             this.current = this[name];
-            this.updateFocus(name);
-            this.state.expand = true;
+            this.updateFocus(name)
+
+            if (this.fromMound) {
+                this.fromMound = false
+                this.state.expand = true
+            }
         },
         reset() {
+            this.state.expand = true
             for (const name of this.getList()) {
                 const _quaternion = this[name]
                 if (Quaternion.SameForward(_quaternion, this.current)) {
+                    this.updateFocus(name);
                     return router.push({ name });
                 }
             }
@@ -63,10 +73,9 @@ const useCubeStore = defineStore('cubeStore', {
             const eulerQuat = Quaternion.ConvertFromEuler(x, y, z);
             this.current = Quaternion.Multiply(this.current, eulerQuat);
 
-            if (!this.state.animated) {
-                this.state.instant = true;
+            if (this.state.instant = !this.state.animated) {
                 this.reset()
-            } else this.state.instant = false;
+            };
         },
         setRotInterval(dir, keyup) {
             const key = Object.keys(dir)
