@@ -2,13 +2,20 @@
     <nav>
         <AnimatedLogo :hasScroll="false" :scrollPercent=".7" />
         <div>
-
+            <ul>
+                <li v-for="link of links">
+                    <NavLink :to="link">{{ link }}</NavLink>
+                </li>
+            </ul>
         </div>
     </nav>
 </template>
 
 <script setup>
 import AnimatedLogo from "@/components/Navigation/AnimatedLogo.vue";
+import NavLink from "@/components/Navigation/NavLink.vue";
+
+const links = ['projects', 'skills', 'resume', 'about', 'socials']
 </script>
 
 <style lang="less" scoped>
@@ -33,5 +40,13 @@ nav {
         background: -webkit-linear-gradient(rgba(1, 1, 1, 0.9), transparent);
         height: clamp(100px, 18vh, 120px);
     }
+}
+
+ul {
+    padding: 0;
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    list-style-type: none;
 }
 </style>
