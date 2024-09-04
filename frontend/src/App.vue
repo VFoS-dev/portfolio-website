@@ -1,14 +1,40 @@
 <template>
   <NavBar />
-  <CubeRouter />
+  <CubeRouter>
+    <template #home>
+      <HomeView />
+    </template>
+    <template #projects>
+      <ProjectsView />
+    </template>
+    <template #skills>
+      <SkillsView />
+    </template>
+    <template #resume>
+      <ResumeView />
+    </template>
+    <template #about>
+      <AboutView />
+    </template>
+    <template #socials>
+      <SocialsView />
+    </template>
+  </CubeRouter>
 </template>
 
 <script setup>
-import CubeRouter from '@/components/CubeRouter.vue';
+import CubeRouter from '@/router/CubeRouter.vue';
 import NavBar from '@/components/Navigation/NavBar.vue';
 import { onMounted, provide, ref } from "vue";
 import provideInject from './enums/provideInject';
 import { navStore } from './stores/navStore';
+
+import HomeView from './views/HomeView.vue';
+import ProjectsView from './views/ProjectsView.vue';
+import SkillsView from './views/SkillsView.vue';
+import ResumeView from './views/ResumeView.vue';
+import SocialsView from './views/SocialsView.vue';
+import AboutView from './views/AboutView.vue';
 
 const isMobile = ref(false);
 const isPortrait = ref(false);
