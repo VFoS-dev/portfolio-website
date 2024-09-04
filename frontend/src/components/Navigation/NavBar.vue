@@ -2,18 +2,23 @@
     <nav>
         <AnimatedLogo :hasScroll="false" :scrollPercent=".7" />
         <div>
-            <ul>
-                <li v-for="link of links">
-                    <NavLink :to="link">{{ link }}</NavLink>
-                </li>
-            </ul>
+            <CheckPoints @reset="console.log('reset')"/>
+            <Teleport to="#mobile-nav" :disabled="true">
+                <ul>
+                    <li v-for="link of links">
+                        <NavLink :to="link">{{ link }}</NavLink>
+                    </li>
+                </ul>
+            </Teleport>
         </div>
     </nav>
+    <div id="mobile-nav"> </div>
 </template>
 
 <script setup>
 import AnimatedLogo from "@/components/Navigation/AnimatedLogo.vue";
 import NavLink from "@/components/Navigation/NavLink.vue";
+import CheckPoints from "@/components/CheckPoints/CheckPoints.vue";
 
 const links = ['projects', 'skills', 'resume', 'about', 'socials']
 </script>
@@ -23,6 +28,7 @@ nav {
     position: absolute;
     display: flex;
     flex-direction: row;
+    gap: 1rem;
     width: 100dvw;
     z-index: 12;
     top: 0;

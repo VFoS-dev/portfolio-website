@@ -1,9 +1,9 @@
 <template>
-    <div id="cube" :class="cubeStore.state" :style="style" 
-        @transitionstart="cubeRotationStarted" @transitionend="cubeRotationFinished">
+    <div id="cube" :class="cubeStore.state" :style="style" @transitionstart="cubeRotationStarted"
+        @transitionend="cubeRotationFinished">
         <Teleport to="#app" v-for="key of cubeStore.getList()" :key="key" :disabled="teleportDisabled(key)">
-            <section :id="key" :ref="elementRefs(key)" 
-                @animationstart="panelStartedShrinking" @animationend="panelHasShrunk" @transitionend="panelHasExpanded">
+            <section :id="key" :ref="elementRefs(key)" @animationstart="panelStartedShrinking"
+                @animationend="panelHasShrunk" @transitionend="panelHasExpanded">
                 <slot :name="key">
                     <div class="empty">{{ key }}</div>
                 </slot>
