@@ -153,6 +153,8 @@ function teleportDisabled(side) {
     }
 
     &.instant {
+        transition: none !important;
+
         * {
             transition: none !important;
         }

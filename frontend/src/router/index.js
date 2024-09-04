@@ -1,5 +1,6 @@
 import Fragment from '@/components/Fragment.vue'
 import { cubeStore } from '@/stores/cubeStore'
+import { navStore } from '@/stores/navStore'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
@@ -56,6 +57,7 @@ export default router
 
 router.afterEach((to) => {
   cubeStore.rotateTo(to)
+  navStore.navigated()
 })
 
 router.beforeResolve(() => {

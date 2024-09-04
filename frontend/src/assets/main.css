@@ -9,3 +9,10 @@
   perspective: 100vmin;
   overflow: clip;
 }
+
+:root {
+  --modal-z: 15;
+  --nav-mobile-z: 10;
+  --nav-backdrop-z: 7;
+  --nav-z: 5;
+}

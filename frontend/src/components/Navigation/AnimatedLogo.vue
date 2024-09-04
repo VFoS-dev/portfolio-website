@@ -41,4 +41,10 @@ a {
         animation: iconAni 1s steps(16) 500ms infinite alternate-reverse;
     }
 }
+
+@media (prefers-reduced-motion) {
+    a {
+        background-position-x: 100% !important;
+    }
+}
 </style>
