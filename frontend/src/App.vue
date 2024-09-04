@@ -5,5 +5,5 @@
 
 <script setup>
 import CubeRouter from '@/components/CubeRouter.vue';
-import NavBar from '@/components/NavBar.vue';
+import NavBar from '@/components/Navigation/NavBar.vue';
 </script>

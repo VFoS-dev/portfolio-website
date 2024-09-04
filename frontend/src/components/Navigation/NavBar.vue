@@ -8,12 +8,11 @@
 </template>
 
 <script setup>
-import AnimatedLogo from "@/components/AnimatedLogo.vue";
+import AnimatedLogo from "@/components/Navigation/AnimatedLogo.vue";
 </script>
 
 <style lang="less" scoped>
 nav {
-    
     position: absolute;
     display: flex;
     flex-direction: row;
