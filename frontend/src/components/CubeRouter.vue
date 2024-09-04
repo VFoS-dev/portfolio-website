@@ -1,117 +1,127 @@
 <template>
-    <div class="cube" :class="cubeStore.state" :style="style" @transitionend="reduceRot">
-        <section class="home">
-            <slot name="Home">
-                <div class="empty">Home</div>
-            </slot>
-        </section>
-        <section class="socials">
-            <slot name="Socials">
-                <div class="empty">Socials</div>
-            </slot>
-        </section>
-        <section class="resume">
-            <slot name="Resume">
-                <div class="empty">Resume</div>
-            </slot>
-        </section>
-        <section class="about">
-            <slot name="About">
-                <div class="empty">About</div>
-            </slot>
-        </section>
-        <section class="skills">
-            <slot name="Skills">
-                <div class="empty">Skills</div>
-            </slot>
-        </section>
-        <section class="projects">
-            <slot name="Projects">
-                <div class="empty">Projects</div>
-            </slot>
-        </section>
+    <div id="cube" :class="cubeStore.state" :style="style" 
+        @transitionstart="cubeRotationStarted" @transitionend="cubeRotationFinished">
+        <Teleport to="#app" v-for="key of cubeStore.getList()" :key="key" :disabled="teleportDisabled(key)">
+            <section :id="key" :ref="elementRefs(key)" 
+                @animationstart="panelStartedShrinking" @animationend="panelHasShrunk" @transitionend="panelHasExpanded">
+                <slot :name="key">
+                    <div class="empty">{{ key }}</div>
+                </slot>
+            </section>
+        </Teleport>
     </div>
 </template>
 
 <script setup>
 import { cubeStore } from '@/stores/cubeStore';
-import { computed, onMounted } from 'vue';
+import { reactive, computed, onMounted, ref } from 'vue';
 
-const style = computed(() => ({ "--transfrom": cubeStore.getTransformation() }))
-
-function reduceRot({ propertyName }) {
-    if (propertyName !== 'transform') return
-    cubeStore.reset()
-}
+const style = computed(() => ({ "--transfrom": cubeStore.getTransformation() }));
+const animating = reactive([false, false]);
+const isAnimating = () => animating[0] + animating[1];
+const elements = reactive({});
+const elementRefs = (key) => (el) => elements[key] = el;
+const hasMounted = ref(false);
 
 onMounted(() => {
-    addEventListener('keydown', cubeStore.keyRot)
-    addEventListener('keyup', cubeStore.keyRot)
-    addEventListener('resize', cubeStore.resized)
+    addEventListener('keydown', cubeStore.keyRot);
+    addEventListener('keyup', cubeStore.keyRot);
+    addEventListener('resize', cubeStore.resized);
+    setTimeout(() => {
+        cubeStore.getList().forEach(teleportDisabled);
+        hasMounted.value = true;
+    }, 0);
 })
+
+function cubeRotationStarted() {
+    animating[0] = true;
+}
+
+function cubeRotationFinished({ propertyName }) {
+    if (propertyName !== 'transform') return;
+
+    animating[1] = false;
+    cubeStore.reset();
+}
+
+function panelHasExpanded({ target }) {
+    const { [target.id]: active, expand } = cubeStore.state;
+    if (!active || !expand) return;
+
+    animating[0] = false;
+    target.classList.add('in');
+}
+
+function panelStartedShrinking({ animationName }) {
+    if (animationName !== 'side-in') return;
+
+    animating[1] = true;
+}
+
+function panelHasShrunk({ animationName, target }) {
+    if (animationName !== 'side-in') return;
+
+    animating[0] = false;
+    target.classList.remove('in');
+}
+
+function teleportDisabled(side) {
+    const { [side]: active, expand, animated } = cubeStore.state;
+    const parent = elements[side]?.parentNode;
+
+    if (!animated || !hasMounted.value) {
+        return !active;
+    }
+
+    if (active && expand && parent?.id === 'app') {
+        elements[side].classList.add('in');
+    }
+
+    return !active || !expand || isAnimating();
+}
 </script>
 
-<style scoped lang="less">
-.cube {
-    --cube-size: 50vmin;
-    transform-style: preserve-3d;
-    transform: var(--transfrom);
-
-    &.animated {
-        transition: transform .5s ease-out;
-    }
-
-    .home {
-        --background: blue;
-        transform: translateZ(var(--half-size));
-    }
-
-    .socials {
-        --background: green;
-        transform: rotate3d(1, 0, 0, 90deg) translateZ(var(--half-size));
-    }
-
-    .resume {
-        --background: yellow;
-        transform: rotate3d(0, 1, 0, 90deg) translateZ(var(--half-size));
-    }
-
-    .about {
-        --background: red;
-        transform: rotate3d(1, 0, 0, 180deg) translateZ(var(--half-size));
-    }
-
-    .skills {
-        --background: magenta;
-        transform: rotate3d(0, 1, 0, 270deg) translateZ(var(--half-size));
-    }
-
-    .projects {
-        --background: orange;
-        transform: rotate3d(1, 0, 0, -90deg) translateZ(var(--half-size));
-    }
-
-    &.expand.home>section.home,
-    &.expand.socials>section.socials,
-    &.expand.resume>section.resume,
-    &.expand.about>section.about,
-    &.expand.skills>section.skills,
-    &.expand.projects>section.projects {
+<style>
+@keyframes side-in {
+    0% {
         width: 100dvw;
         height: 100dvh;
-        transition-delay: .012s;
-        z-index: 2;
-        scale: 1;
     }
 
-    &.expand>section {
-        scale: .5 .5 .5;
+    100% {
+        width: var(--cube-size);
+        height: var(--cube-size);
     }
+}
+</style>
+
+<style scoped lang="less">
+:is(#app, #cube)>section>div.empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    font-size: 10rem;
+}
+
+#app>section {
+    position: absolute;
+    width: 100dvw;
+    height: 100dvh;
+    background-color: var(--background);
+    transform: none;
+}
+
+#cube {
+    --cube-size: 50vmin;
+    --half-size: calc(var(--cube-size) / 2);
+    pointer-events: none;
+    transform-style: preserve-3d;
+    transform: translateZ(calc(-1 * var(--half-size))) var(--transfrom);
 
     &>section {
         position: fixed;
         transform-origin: center;
-        --half-size: calc(var(--cube-size) / 2);
         translate: -50% -50%;
         width: var(--cube-size);
         height: var(--cube-size);
@@ -121,13 +131,25 @@ onMounted(() => {
         overflow: auto;
         outline: 1px solid black;
 
-        &>div.empty {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100%;
-            font-size: 10rem;
+        &.in {
+            animation: side-in .5s forwards ease;
         }
+    }
+
+    &.expand.home>section#home,
+    &.expand.socials>section#socials,
+    &.expand.resume>section#resume,
+    &.expand.about>section#about,
+    &.expand.skills>section#skills,
+    &.expand.projects>section#projects {
+        width: 100dvw;
+        height: 100dvh;
+        z-index: 2;
+        scale: 1;
+    }
+
+    &.expand>section {
+        scale: .9 .9 .9;
     }
 
     &.instant {
@@ -135,5 +157,39 @@ onMounted(() => {
             transition: none !important;
         }
     }
+
+    &.animated {
+        transition: transform .5s ease-out;
+    }
+}
+
+#home {
+    --background: blue;
+    transform: translateZ(var(--half-size));
+}
+
+#socials {
+    --background: green;
+    transform: rotate3d(1, 0, 0, 90deg) translateZ(var(--half-size));
+}
+
+#resume {
+    --background: yellow;
+    transform: rotate3d(0, 1, 0, 90deg) translateZ(var(--half-size));
+}
+
+#about {
+    --background: red;
+    transform: rotate3d(1, 0, 0, 180deg) translateZ(var(--half-size));
+}
+
+#skills {
+    --background: magenta;
+    transform: rotate3d(0, 1, 0, 270deg) translateZ(var(--half-size));
+}
+
+#projects {
+    --background: orange;
+    transform: rotate3d(1, 0, 0, -90deg) translateZ(var(--half-size));
 }
 </style>
