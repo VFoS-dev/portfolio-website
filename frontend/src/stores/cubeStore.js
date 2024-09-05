@@ -23,6 +23,9 @@ const useCubeStore = defineStore('cubeStore', {
         }
     },
     actions: {
+        activeGame(bool) {
+            this.canKeyRotate = !bool
+        },
         reducedMotion(bool) {
             this.state.animated = !bool
             this.state.instant = bool

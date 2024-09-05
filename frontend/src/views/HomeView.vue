@@ -1,11 +1,11 @@
 <template>
     <canvas ref="canvas" :gameState="gameState"></canvas>
-    <div class="welcome">
+    <div class="welcome" :class="{ hide: playingGame }">
         <h2>Hello</h2>
         <h1>I'm <span>Jon Kido</span></h1>
         <h3>Full Stack and Game Developer</h3>
         <div class="button-group">
-            <StyledButton class="orange">
+            <StyledButton class="orange" @click="playSnake">
                 Play Snake
             </StyledButton>
             <StyledButton class="blue" v-if="false">
@@ -23,11 +23,13 @@ import { snakeGameSetup } from '@/canvas/snake';
 import StyledButton from '@/components/StyledButton.vue';
 import router from '@/router';
 import { cubeStore } from '@/stores/cubeStore';
+import { navStore } from '@/stores/navStore';
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 
 const game = ref({})
 const canvas = ref();
 const toResume = () => router.push({ name: 'resume' })
+const playingGame = ref(false)
 const gameState = computed(() => {
     const state = cubeStore.state.home;
     if (state) game.value.unpause?.();
@@ -36,12 +38,25 @@ const gameState = computed(() => {
 })
 
 onMounted(() => {
-    game.value = snakeGameSetup(canvas.value)
+    game.value = snakeGameSetup(canvas.value, gameEnded);
 })
 
 onBeforeUnmount(() => {
-    game.value.unmount?.()
+    game.value.unmount?.();
 })
+
+function playSnake() {
+    game.value.gameStart();
+    navStore.activeGame(true);
+    cubeStore.activeGame(true);
+    playingGame.value = true;
+}
+
+function gameEnded() {
+    navStore.activeGame(false);
+    cubeStore.activeGame(false);
+    playingGame.value = false;
+}
 
 </script>
 
@@ -65,6 +80,11 @@ canvas {
     position: absolute;
     top: 53%;
     transform: translateY(-50%);
+    transition: opacity var(--hide-duration);
+
+    &.hide {
+        opacity: 0;
+    }
 }
 
 .button-group {

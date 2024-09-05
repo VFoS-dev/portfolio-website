@@ -1,0 +1,212 @@
+import { inBounds } from "@/utilities/game";
+
+export const CELLS = 34;
+export const COLORS = {
+    unset: '#151024',
+    gold: '#f8df01',
+    food: '#28d7eb',
+    green: '#09ff00',
+    red: '#f32222',
+    white: '#ffffff',
+};
+export const BOARD_STATES = {
+    unset: 'unset',
+    food: 'food',
+    snake: Number, // converted to a number on move
+};
+
+export const getColor = (color) => COLORS[color] ?? COLORS.unset;
+
+export function generateBoard(canvas) {
+    const { innerHeight, innerWidth } = window;
+    canvas.width = innerWidth
+    canvas.height = innerHeight
+
+    const size = (innerHeight > innerWidth) ?
+        { longer: innerHeight, shorter: innerWidth, x: 'shorter', y: 'longer', longerCount: 0, shorterCount: 0 } :
+        { longer: innerWidth, shorter: innerHeight, x: 'longer', y: 'shorter', longerCount: 0, shorterCount: 0 }
+
+    const cellSize = size.longer / CELLS;
+    size.longerCount = CELLS;
+    size.shorterCount = Math.max(2, Math.floor(size.shorter / cellSize));
+    if (size.shorterCount % 2) size.shorterCount--;
+
+    const sizeRem = {
+        x: (size[`${size.x}Count`] * cellSize - size[`${size.x}`]) / 2,
+        y: (size[`${size.y}Count`] * cellSize - size[`${size.y}`]) / 2,
+    }
+
+    const board = [];
+    for (let x = 0; x < size[`${size.x}Count`]; x++) {
+        board.push(new Array(size[`${size.y}Count`]).fill('unset'));
+    }
+
+    fullDraw(canvas, board, cellSize, sizeRem)
+
+    return {
+        board, cellSize, sizeRem,
+        update: [],
+    }
+}
+
+export function fullDraw(canvas, board, cellSize, sizeRem) {
+    const ctx = canvas.getContext('2d');
+    let halfSize = cellSize / 2;
+    const { innerHeight, innerWidth } = document.documentElement;
+    ctx.clearRect(0, 0, innerWidth, innerHeight);
+    board.forEach((col, ix) => {
+        col.forEach((color, iy) => {
+            let x = ix * cellSize + halfSize - sizeRem.x;
+            let y = iy * cellSize + halfSize - sizeRem.y;
+
+            // fill initial cell
+            ctx.beginPath();
+            ctx.arc(x, y, halfSize / 3, 0, 2 * Math.PI);
+            ctx.fillStyle = getColor(color);
+            ctx.fill();
+        });
+    });
+}
+
+export function drawUpdated(canvas, board, updated, cellSize, sizeRem, snakeColors) {
+    const ctx = canvas.getContext('2d')
+    let halfSize = cellSize / 2;
+    for (const { x: ix, y: iy } of updated) {
+        let x = ix * cellSize + halfSize - sizeRem.x;
+        let y = iy * cellSize + halfSize - sizeRem.y;
+
+        // clear
+        ctx.clearRect(x - halfSize, y - halfSize, cellSize, cellSize);
+        const cell = board[ix][iy];
+        let color = getColor(cell)
+        if (typeof cell === 'number') {
+            if ((cell >= snakeColors.length && typeof snakeColors[snakeColors.length - 1] !== 'string') || typeof snakeColors[cell % snakeColors.length] !== 'string') {
+                color = getColor('white')
+            } else {
+                color = getColor(snakeColors[cell % snakeColors.length])
+            }
+        }
+
+        // fill in gradient
+        if (color != 'unset' && color != 'white') {
+            const gradient = ctx.createRadialGradient(x, y, halfSize / 3, x, y, halfSize);
+            gradient.addColorStop(0, color + '7E');
+            gradient.addColorStop(1, color + '00');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(x - cellSize, y - cellSize, x + cellSize, y + cellSize);
+        }
+
+        // fill initial cell
+        ctx.beginPath();
+        ctx.arc(x, y, halfSize / 3, 0, 2 * Math.PI);
+        ctx.fillStyle = color;
+        ctx.fill();
+    }
+
+    return []
+}
+
+export function dirToXY(_dir) {
+    const [vel, dir] = _dir;
+    const opp = { x: 'y', y: 'x' };
+    const mag = { '+': 1, '-': -1 };
+
+    return {
+        [dir]: mag[vel],
+        [opp[dir]]: 0,
+    }
+}
+
+export function inputPlayer() {
+    let dir = '+x';
+    let head = { x: 1, y: 1 };
+    let segments = []
+
+    return {
+        direction(value, force = false) {
+            if (!segments.length || force) return dir = value;
+            const { dx, dy } = dirToXY(value)
+            const { x, y } = head
+            const { x: sx, y: sy } = segments[0]
+
+            if (x + dx === sx && y + dy === sy) return;
+
+            dir = value
+        },
+        getDirection() {
+            return dir
+        },
+        snakeMoved(pos = { x: 0, y: 0 }, grow = false) {
+            segments.unshift(head)
+            head = pos
+            if (!grow) {
+                segments.pop()
+            }
+        },
+        setSnake({ head: h, segments: s = [] }) {
+            head = h
+            segments = s
+        },
+        getSnake() {
+            return { head, segments };
+        }
+    }
+}
+
+export function generateSnake(board, length = 5) {
+    const head = {
+        x: Math.round(board.length / 2),
+        y: Math.round(board[0].length / 2),
+    }
+
+    return {
+        head,
+        segments: [...new Array(length - 1)].fill(head)
+    }
+}
+
+export function movePlayer(player, board) {
+    const dead = { board, tickDelay: 500, alive: false, update: [], }
+
+    // get snake
+    let head, x, y, segments, update;
+    const { x: dx, y: dy } = dirToXY(player.getDirection());
+    ({ head, segments } = player.getSnake());
+    ({ x, y } = head);
+
+    // out of bounds
+    if (!inBounds({ x: dx + x, y: dy + y, }, { xMax: board.length - 1, yMax: board[0].length - 1 })) {
+        return dead
+    }
+
+    // butt moved
+    const { x: sx, y: sy } = segments[segments.length - 1]
+    board[sx][sy] = BOARD_STATES.unset
+
+    // check spot
+    const newPos = board[x + dx][y + dy]
+    if (![BOARD_STATES.unset, BOARD_STATES.food].includes(newPos)) {
+        return dead
+    }
+
+    // update all positions of the snake
+    update = [head, ...segments, { x: x + dx, y: y + dy }]
+    console.log(update);
+
+    // move player
+    player.snakeMoved({ x: x + dx, y: y + dy }, BOARD_STATES.food === newPos);
+    ({ head, segments } = player.getSnake());
+
+    // update board state based on the players poition
+    board[head.x][head.y] = 0;
+    for (let i = 0; i < segments.length; i++) {
+        const { x, y } = segments[i]
+        board[x][y] = i + 1
+    }
+
+    return {
+        update, board,
+        alive: true,
+        tickDelay: 500,
+    }
+}

@@ -1,5 +1,5 @@
 <template>
-    <nav>
+    <nav :class="{ hide: navStore.hide }">
         <AnimatedLogo :hasScroll="false" :scrollPercent=".7" />
         <section>
             <CheckPoints @reset="console.log('reset')" />
@@ -16,7 +16,7 @@
             <HambergerMenu id="mobile-switch" @click="toggleNav" />
         </section>
     </nav>
-    <div id="mobile-nav" :class="{ open: navStore.open }"> </div>
+    <div id="mobile-nav" :class="{ open: navStore.open, hide: navStore.hide }"> </div>
 </template>
 
 <script setup>
@@ -47,6 +47,10 @@ function clickedBackDrop({ target }) {
 </script>
 
 <style lang="less" scoped>
+.hide {
+    opacity: 0;
+}
+
 nav {
     position: absolute;
     display: flex;
@@ -57,6 +61,7 @@ nav {
     top: 0;
     left: 0;
     padding: 10px 15px;
+    transition: opacity var(--hide-duration);
 
     &::before {
         content: "";
