@@ -166,7 +166,7 @@ function teleportDisabled(side) {
 }
 
 #home {
-    --background: blue;
+    --background: #020212;
     transform: translateZ(var(--half-size));
 }
 
