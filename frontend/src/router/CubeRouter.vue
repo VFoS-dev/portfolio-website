@@ -128,7 +128,7 @@ function teleportDisabled(side) {
         background-color: var(--background);
         transition: width, height;
         transition-duration: .25s;
-        overflow: auto;
+        overflow: clip;
         outline: 1px solid black;
 
         &.in {

@@ -19,15 +19,33 @@
 </template>
 
 <script setup>
+import { snakeGameSetup } from '@/canvas/snake';
 import StyledButton from '@/components/StyledButton.vue';
 import router from '@/router';
-import { ref } from 'vue';
+import { onBeforeUnmount, onMounted, ref } from 'vue';
 
+const game = ref({})
 const canvas = ref();
 const toResume = () => router.push({ name: 'resume' })
+
+onMounted(() => {
+    game.value = snakeGameSetup(canvas.value)
+})
+
+onBeforeUnmount(() => {
+    game.value.unmount?.()
+})
+
 </script>
 
 <style lang="less" scoped>
+canvas {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
 .welcome {
     align-items: flex-start;
     color: #fff;
