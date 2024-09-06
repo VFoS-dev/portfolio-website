@@ -252,3 +252,19 @@ export function populateFood(board, count = 0) {
 
     return { board, updates }
 }
+
+export default {
+    CELLS,
+    COLORS,
+    BOARD_STATES,
+    getColor,
+    generateBoard,
+    fullDraw,
+    drawUpdated,
+    drawCell,
+    dirToXY,
+    inputPlayer,
+    generateSnake,
+    movePlayer,
+    populateFood,
+}

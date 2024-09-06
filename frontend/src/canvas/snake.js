@@ -1,6 +1,6 @@
 import { fn } from "@/utilities/defaults";
 import { gameLoop } from "@/utilities/game";
-import { drawUpdated, generateBoard, inputPlayer, generateSnake, movePlayer, fullDraw, BOARD_STATES, populateFood } from "./snake-util";
+import sUtil from "./snake-util";
 
 export function snakeGameSetup(canvas, gameEnded = fn) {
     let tickDelay = 500;
@@ -8,9 +8,9 @@ export function snakeGameSetup(canvas, gameEnded = fn) {
     let isPlayer = false;
     let alive = false;
     let snakeColors = ['green', 'gold', -1]
-    const player = inputPlayer();
+    const player = sUtil.inputPlayer();
     let update, board, cellSize, sizeRem, botDelay;
-    ({ update, board, cellSize, sizeRem } = generateBoard(canvas));
+    ({ update, board, cellSize, sizeRem } = sUtil.generateBoard(canvas));
 
     const { start, restart, stop } = gameLoop((deltaTime) => {
         tickDelay -= deltaTime;
@@ -18,11 +18,11 @@ export function snakeGameSetup(canvas, gameEnded = fn) {
         if (tickDelay > 0) return;
 
         if (isPlayer) {
-            ({ update, board, alive, tickDelay } = movePlayer(player, board));
+            ({ update, board, alive, tickDelay } = sUtil.movePlayer(player, board));
         }
 
         // draw changed 
-        update = drawUpdated(canvas, board, update, cellSize, sizeRem, snakeColors)
+        update = sUtil.drawUpdated(canvas, board, update, cellSize, sizeRem, snakeColors)
 
         if (alive) return;
 
@@ -39,16 +39,16 @@ export function snakeGameSetup(canvas, gameEnded = fn) {
         if (isBot) return console.log('bot');
         isPlayer = !isBot;
         if (botDelay) botDelay = clearTimeout(botDelay)
-        board = board.map(x => x.map(y => BOARD_STATES.unset));
+        board = board.map(x => x.map(y => sUtil.BOARD_STATES.unset));
 
         // create snake
-        const snake = generateSnake(board);
+        const snake = sUtil.generateSnake(board);
         player.setSnake(snake);
         player.direction('+x', true);
 
-        ({ board } = populateFood(board, !isBot * 4 + 1));
+        ({ board } = sUtil.populateFood(board, !isBot * 4 + 1));
 
-        fullDraw(canvas, board, cellSize, sizeRem);
+        sUtil.fullDraw(canvas, board, cellSize, sizeRem);
 
         // start loop
         if (loopEnded) start();
@@ -74,7 +74,7 @@ export function snakeGameSetup(canvas, gameEnded = fn) {
     }
 
     function resized() {
-        ({ update, board, cellSize, sizeRem } = generateBoard(canvas));
+        ({ update, board, cellSize, sizeRem } = sUtil.generateBoard(canvas));
         stop()
         gameEnded()
     }
