@@ -1,6 +1,6 @@
 import { fn } from "@/utilities/defaults";
 import { gameLoop } from "@/utilities/game";
-import { drawUpdated, generateBoard, inputPlayer, generateSnake, movePlayer, fullDraw, BOARD_STATES } from "./snake-util";
+import { drawUpdated, generateBoard, inputPlayer, generateSnake, movePlayer, fullDraw, BOARD_STATES, populateFood } from "./snake-util";
 
 export function snakeGameSetup(canvas, gameEnded = fn) {
     let tickDelay = 500;
@@ -44,9 +44,11 @@ export function snakeGameSetup(canvas, gameEnded = fn) {
         // create snake
         const snake = generateSnake(board);
         player.setSnake(snake);
-        player.direction('+x', true)
+        player.direction('+x', true);
 
-        fullDraw(canvas, board, cellSize, sizeRem)
+        ({ board } = populateFood(board, !isBot * 4 + 1));
+
+        fullDraw(canvas, board, cellSize, sizeRem);
 
         // start loop
         if (loopEnded) start();
@@ -73,6 +75,8 @@ export function snakeGameSetup(canvas, gameEnded = fn) {
 
     function resized() {
         ({ update, board, cellSize, sizeRem } = generateBoard(canvas));
+        stop()
+        gameEnded()
     }
 
     addEventListener('resize', resized);

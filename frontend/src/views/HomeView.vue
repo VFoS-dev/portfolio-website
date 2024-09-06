@@ -84,6 +84,7 @@ canvas {
 
     &.hide {
         opacity: 0;
+        pointer-events: none;
     }
 }
 

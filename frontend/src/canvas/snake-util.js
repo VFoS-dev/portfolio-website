@@ -51,33 +51,36 @@ export function generateBoard(canvas) {
 
 export function fullDraw(canvas, board, cellSize, sizeRem) {
     const ctx = canvas.getContext('2d');
-    let halfSize = cellSize / 2;
-    const { innerHeight, innerWidth } = document.documentElement;
-    ctx.clearRect(0, 0, innerWidth, innerHeight);
+    const halfSize = cellSize / 2;
     board.forEach((col, ix) => {
-        col.forEach((color, iy) => {
-            let x = ix * cellSize + halfSize - sizeRem.x;
-            let y = iy * cellSize + halfSize - sizeRem.y;
+        col.forEach((cell, iy) => {
+            const x = ix * cellSize + halfSize - sizeRem.x;
+            const y = iy * cellSize + halfSize - sizeRem.y;
 
-            // fill initial cell
-            ctx.beginPath();
-            ctx.arc(x, y, halfSize / 3, 0, 2 * Math.PI);
-            ctx.fillStyle = getColor(color);
-            ctx.fill();
+            let color = getColor(cell)
+            if (typeof cell === 'number') {
+                if ((cell >= snakeColors.length && typeof snakeColors[snakeColors.length - 1] !== 'string') || typeof snakeColors[cell % snakeColors.length] !== 'string') {
+                    color = getColor('white')
+                } else {
+                    color = getColor(snakeColors[cell % snakeColors.length])
+                }
+            }
+
+            const gradient = color != getColor('unset') && color != getColor('white')
+
+            drawCell(ctx, x, y, halfSize, cellSize, color, gradient)
         });
     });
 }
 
 export function drawUpdated(canvas, board, updated, cellSize, sizeRem, snakeColors) {
     const ctx = canvas.getContext('2d')
-    let halfSize = cellSize / 2;
+    const halfSize = cellSize / 2;
     for (const { x: ix, y: iy } of updated) {
-        let x = ix * cellSize + halfSize - sizeRem.x;
-        let y = iy * cellSize + halfSize - sizeRem.y;
-
-        // clear
-        ctx.clearRect(x - halfSize, y - halfSize, cellSize, cellSize);
+        const x = ix * cellSize + halfSize - sizeRem.x;
+        const y = iy * cellSize + halfSize - sizeRem.y;
         const cell = board[ix][iy];
+
         let color = getColor(cell)
         if (typeof cell === 'number') {
             if ((cell >= snakeColors.length && typeof snakeColors[snakeColors.length - 1] !== 'string') || typeof snakeColors[cell % snakeColors.length] !== 'string') {
@@ -87,23 +90,32 @@ export function drawUpdated(canvas, board, updated, cellSize, sizeRem, snakeColo
             }
         }
 
-        // fill in gradient
-        if (color != 'unset' && color != 'white') {
-            const gradient = ctx.createRadialGradient(x, y, halfSize / 3, x, y, halfSize);
-            gradient.addColorStop(0, color + '7E');
-            gradient.addColorStop(1, color + '00');
-            ctx.fillStyle = gradient;
-            ctx.fillRect(x - cellSize, y - cellSize, x + cellSize, y + cellSize);
-        }
+        const gradient = color != getColor('unset') && color != getColor('white')
 
-        // fill initial cell
-        ctx.beginPath();
-        ctx.arc(x, y, halfSize / 3, 0, 2 * Math.PI);
-        ctx.fillStyle = color;
-        ctx.fill();
+        drawCell(ctx, x, y, halfSize, cellSize, color, gradient)
     }
 
     return []
+}
+
+export function drawCell(ctx, x, y, halfSize, cellSize, color, hasGradient) {
+    // clear
+    ctx.clearRect(x - halfSize, y - halfSize, cellSize, cellSize);
+
+    // fill in gradient
+    if (hasGradient) {
+        const gradient = ctx.createRadialGradient(x, y, halfSize / 3, x, y, halfSize);
+        gradient.addColorStop(0, color + '7E');
+        gradient.addColorStop(1, color + '00');
+        ctx.fillStyle = gradient;
+        ctx.fillRect(x - cellSize, y - cellSize, x + cellSize, y + cellSize);
+    }
+
+    // fill initial cell
+    ctx.beginPath();
+    ctx.arc(x, y, halfSize / 3, 0, 2 * Math.PI);
+    ctx.fillStyle = color;
+    ctx.fill();
 }
 
 export function dirToXY(_dir) {
@@ -125,7 +137,7 @@ export function inputPlayer() {
     return {
         direction(value, force = false) {
             if (!segments.length || force) return dir = value;
-            const { dx, dy } = dirToXY(value)
+            const { x: dx, y: dy } = dirToXY(value)
             const { x, y } = head
             const { x: sx, y: sy } = segments[0]
 
@@ -191,11 +203,19 @@ export function movePlayer(player, board) {
 
     // update all positions of the snake
     update = [head, ...segments, { x: x + dx, y: y + dy }]
-    console.log(update);
+
+    const ateFood = BOARD_STATES.food === newPos;
 
     // move player
-    player.snakeMoved({ x: x + dx, y: y + dy }, BOARD_STATES.food === newPos);
+    player.snakeMoved({ x: x + dx, y: y + dy }, ateFood);
     ({ head, segments } = player.getSnake());
+    const tickDelay = Math.max(125, 500 - 10 * (segments.length - 4))
+
+    if (ateFood) {
+        let updates;
+        ({ board, updates } = populateFood(board, 1))
+        update = [...update, ...updates]
+    }
 
     // update board state based on the players poition
     board[head.x][head.y] = 0;
@@ -207,6 +227,28 @@ export function movePlayer(player, board) {
     return {
         update, board,
         alive: true,
-        tickDelay: 500,
+        tickDelay,
     }
+}
+
+export function populateFood(board, count = 0) {
+    const possibleSpots = []
+    const updates = []
+    for (var x = 0; x < board.length; x++) {
+        for (var y = 0; y < board.length; y++) {
+            if (board[x][y] === BOARD_STATES.unset) {
+                possibleSpots.push({ x, y });
+            }
+        }
+    }
+
+    for (var f = 0; f < count; f++) {
+        if (!possibleSpots.length) break;
+        const random = Math.floor(possibleSpots.length * Math.random());
+        const [{ x, y }] = possibleSpots.splice(random, 1);
+        board[x][y] = BOARD_STATES.food;
+        updates.push({ x, y })
+    }
+
+    return { board, updates }
 }
