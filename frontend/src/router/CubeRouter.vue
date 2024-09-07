@@ -186,7 +186,7 @@ function teleportDisabled(side) {
 }
 
 #skills {
-    --background: magenta;
+    --background: #242424;
     transform: rotate3d(0, 1, 0, 270deg) translateZ(var(--half-size));
 }
 
