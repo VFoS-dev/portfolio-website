@@ -1,16 +1,30 @@
 <template>
     new skills
-    <Canvas ref="canvas"/>
+    <Canvas ref="canvasRef" :state="starFieldState" />
 </template>
 
 <script setup>
+import { setupStarField } from '@/canvas/starfield';
 import Canvas from '@/components/Canvas.vue'
-import { onMounted, ref } from 'vue';
-const canvas = ref()
+import { cubeStore } from '@/stores/cubeStore';
+import { computed, onMounted, ref, onBeforeUnmount } from 'vue';
+
+const canvasRef = ref()
+const starField = ref({})
+
+const starFieldState = computed(() => {
+    const state = cubeStore.state.skills;
+    if (state) starField.value.unpause?.();
+    else starField.value.pause?.();
+    return state;
+})
 
 onMounted(() => {
-    console.log(canvas.value.canvas);
+    starField.value = setupStarField(canvasRef.value.canvas)
+})
 
+onBeforeUnmount(() => {
+    starField.value.unmount?.();
 })
 </script>
 
