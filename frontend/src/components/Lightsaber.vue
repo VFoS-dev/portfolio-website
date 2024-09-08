@@ -1,5 +1,5 @@
 <template>
-    <div class="saber">
+    <div class="saber" :class="{ on: props.on }">
         <div class="light" :style="styles"></div>
     </div>
 </template>
@@ -8,17 +8,18 @@
 import { computed } from 'vue'
 
 const props = defineProps({
+    on: { type: Boolean, default: true },
     percent: { type: Number, default: 100 },
-    color: { type: String, default: 'white' },
+    auraColor: { type: String, default: 'blue' },
     innerColor: { type: String, default: 'white' },
-    lightColor: { type: String, default: 'black' },
+    lightColor: { type: String, default: 'white' },
 })
 
 const styles = computed(() => {
-    const { percent, color, innerColor, lightColor } = props
+    const { percent, auraColor, innerColor, lightColor } = props
     return {
         '--percent': `${percent}%`,
-        '--color': color,
+        '--aura-color': auraColor,
         '--inner-color': innerColor,
         '--light-color': lightColor,
     }
@@ -41,7 +42,7 @@ const styles = computed(() => {
 
     &::before {
         content: '';
-        background-image: url(/images/skills/hilt.png);
+        background-image: var(--hilt, url(/images/skills/hilt.png));
         background-repeat: no-repeat;
         background-size: contain;
         width: var(--hilt-width);
@@ -50,8 +51,13 @@ const styles = computed(() => {
         left: calc(-1 * var(--hilt-width));
         z-index: 1;
     }
-}
 
+    &:not(.on) {
+        .light {
+            width: 0%;
+        }
+    }
+}
 
 .light {
     position: absolute;
@@ -61,6 +67,6 @@ const styles = computed(() => {
     width: var(--percent, 100%);
     transition: width .5s ease-out;
     background-color: var(--light-color);
-    box-shadow: 0 0 5px var(--inner-color), 0 0 8px var(--inner-color), 0 0 12px var(--inner-color), 0 0 15px var(--color), 0 0 25px var(--color);
+    box-shadow: 0 0 5px var(--inner-color), 0 0 8px var(--inner-color), 0 0 12px var(--inner-color), 0 0 15px var(--aura-color), 0 0 25px var(--aura-color);
 }
 </style>

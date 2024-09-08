@@ -1,23 +1,26 @@
 <template>
     new skills
-    <div class="wrap">
-
-        <Lightsaber />
-    </div>
+    <Canvas ref="canvas"/>
 </template>
 
 <script setup>
-import Lightsaber from '@/components/Lightsaber.vue'
+import Canvas from '@/components/Canvas.vue'
+import { onMounted, ref } from 'vue';
+const canvas = ref()
+
+onMounted(() => {
+    console.log(canvas.value.canvas);
+
+})
 </script>
 
 <style lang="less" scoped>
-.wrap{
+.wrap {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     position: absolute;
-    top: 25%;
+    top: 10%;
     left: 25%;
     gap: 2rem;
-}</style>
-
+}
 </style>
