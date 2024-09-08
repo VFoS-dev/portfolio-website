@@ -1,5 +1,5 @@
 <template>
-    <canvas ref="canvas" :gameState="gameState"></canvas>
+    <Canvas ref="canvasRef" :gameState="gameState" />
     <div class="welcome" :class="{ hide: playingGame }">
         <h2>Hello</h2>
         <h1>I'm <span>Jon Kido</span></h1>
@@ -20,6 +20,7 @@
 
 <script setup>
 import { snakeGameSetup } from '@/canvas/snake';
+import Canvas from '@/components/Canvas.vue';
 import StyledButton from '@/components/StyledButton.vue';
 import router from '@/router';
 import { cubeStore } from '@/stores/cubeStore';
@@ -27,7 +28,7 @@ import { navStore } from '@/stores/navStore';
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 
 const game = ref({})
-const canvas = ref();
+const canvasRef = ref();
 const toResume = () => router.push({ name: 'resume' })
 const playingGame = ref(false)
 const gameState = computed(() => {
@@ -38,7 +39,7 @@ const gameState = computed(() => {
 })
 
 onMounted(() => {
-    game.value = snakeGameSetup(canvas.value, gameEnded);
+    game.value = snakeGameSetup(canvasRef.value.canvas, gameEnded);
 })
 
 onBeforeUnmount(() => {
@@ -61,13 +62,6 @@ function gameEnded() {
 </script>
 
 <style lang="less" scoped>
-canvas {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
-
 .welcome {
     align-items: flex-start;
     color: #fff;

@@ -49,6 +49,7 @@ function clickedBackDrop({ target }) {
 <style lang="less" scoped>
 .hide {
     opacity: 0;
+    pointer-events: none;
 }
 
 nav {
