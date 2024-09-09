@@ -21,25 +21,25 @@
 
 @font-face {
   font-family: "Handjet";
-  src: url(/public/fonts/Handjet.ttf);
+  src: url(/fonts/Handjet.ttf);
 }
 
 @font-face {
   font-family: "go3v2";
-  src: url(/public/fonts/go3v2.ttf);
+  src: url(/fonts/go3v2.ttf);
 }
 
 @font-face {
   font-family: "Avenir Next";
-  src: url(/public/fonts/AvenirNextLTPro-Regular.otf);
+  src: url(/fonts/AvenirNextLTPro-Regular.otf);
 }
 
 @font-face {
   font-family: "Avenir Next Bold";
-  src: url(/public/fonts/AvenirNextLTPro-Bold.otf);
+  src: url(/fonts/AvenirNextLTPro-Bold.otf);
 }
 
 @font-face {
   font-family: "Avenir Next Italic";
-  src: url(/public/fonts/AvenirNextLTPro-It.otf);
+  src: url(/fonts/AvenirNextLTPro-It.otf);
 }

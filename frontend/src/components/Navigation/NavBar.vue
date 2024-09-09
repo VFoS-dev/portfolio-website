@@ -63,10 +63,15 @@ nav {
     left: 0;
     padding: 10px 15px;
     transition: opacity var(--hide-duration);
+    pointer-events: none;
+
+    * {
+        pointer-events: all;
+    }
 
     &::before {
         content: "";
-        pointer-events: none;
+
         position: fixed;
         top: 0;
         left: 0;

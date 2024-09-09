@@ -1,11 +1,13 @@
 <template>
-    <div class="saber" :class="{ on: props.on }">
-        <div class="light" :style="styles"></div>
+    <div class="saber" :class="{ on: power }" @click="toggle">
+        <div class="light" :style="styles" 
+            @transitionstart="animating = true" @transitionend="animating = false">
+        </div>
     </div>
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, reactive, ref } from 'vue'
 
 const props = defineProps({
     on: { type: Boolean, default: true },
@@ -13,23 +15,42 @@ const props = defineProps({
     auraColor: { type: String, default: 'blue' },
     innerColor: { type: String, default: 'white' },
     lightColor: { type: String, default: 'white' },
+    getColors: Function,
+})
+
+const power = ref(props.on)
+const animating = ref(false)
+const colors = reactive({
+    auraColor: props.auraColor,
+    innerColor: props.innerColor,
+    lightColor: props.lightColor,
 })
 
 const styles = computed(() => {
-    const { percent, auraColor, innerColor, lightColor } = props
+    const { percent } = props
     return {
         '--percent': `${percent}%`,
-        '--aura-color': auraColor,
-        '--inner-color': innerColor,
-        '--light-color': lightColor,
+        '--aura-color': colors.auraColor,
+        '--inner-color': colors.innerColor,
+        '--light-color': colors.lightColor,
     }
 })
+
+function toggle() {
+    power.value = !power.value
+
+    if (power.value && props.getColors && !animating.value) {
+        Object.assign(colors, props.getColors())
+    }
+}
 </script>
 
 <style lang="less" scoped>
 .saber {
     --hilt-width: 92px;
     --hilt-height: 16px;
+    pointer-events: none;
+    cursor: pointer;
 
     flex-grow: 1;
     display: flex;
@@ -38,10 +59,10 @@ const styles = computed(() => {
     margin-left: var(--hilt-width);
     height: var(--hilt-height);
     position: relative;
-    width: 700px;
 
     &::before {
         content: '';
+        pointer-events: all;
         background-image: var(--hilt, url(/images/skills/hilt.png));
         background-repeat: no-repeat;
         background-size: contain;
@@ -67,6 +88,6 @@ const styles = computed(() => {
     width: var(--percent, 100%);
     transition: width .5s ease-out;
     background-color: var(--light-color);
-    box-shadow: 0 0 5px var(--inner-color), 0 0 8px var(--inner-color), 0 0 12px var(--inner-color), 0 0 15px var(--aura-color), 0 0 25px var(--aura-color);
+    box-shadow: 0 0 5px var(--inner-color), 0 0 12px var(--inner-color), 0 0 15px var(--aura-color), 0 0 35px var(--aura-color);
 }
 </style>
