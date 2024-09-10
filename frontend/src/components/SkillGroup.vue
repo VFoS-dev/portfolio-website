@@ -1,11 +1,11 @@
 <template>
-    <section :style="styles">
+    <section :style="styles" :key="colors">
         <header>
-            <AlphaNumericButton @click="toggleSort"></AlphaNumericButton>
+            <AlphaNumericButton @click="toggleSort" :clicked="state === 'alphabetical'" />
             <h1>{{ props.header }}</h1>
-            <button @click="changeColors">settings</button>
+            <Saber @click="changeColors" />
         </header>
-        <div class="sabers" :key="colors" :style="{ '--count': props.skills.length }" :state="state">
+        <div class="sabers" :style="{ '--count': props.skills.length }" :state="state">
             <div class="sorted" v-for="({ name, percent }, index) of props.skills" :key="index" :style="sorted[name]">
                 <header>
                     <h2>{{ name }}</h2>
@@ -21,6 +21,7 @@
 import { computed, ref } from 'vue';
 import Lightsaber from './Lightsaber.vue';
 import AlphaNumericButton from '@/components/Buttons/AlphaNumericButton.vue';
+import Saber from './Buttons/Saber.vue';
 
 const props = defineProps({
     header: String,
