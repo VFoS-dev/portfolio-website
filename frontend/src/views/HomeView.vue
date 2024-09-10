@@ -21,7 +21,7 @@
 <script setup>
 import { snakeGameSetup } from '@/canvas/snake';
 import Canvas from '@/components/Canvas.vue';
-import StyledButton from '@/components/StyledButton.vue';
+import StyledButton from '@/components/Buttons/StyledButton.vue';
 import router from '@/router';
 import { cubeStore } from '@/stores/cubeStore';
 import { navStore } from '@/stores/navStore';

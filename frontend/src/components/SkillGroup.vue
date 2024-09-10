@@ -1,7 +1,7 @@
 <template>
     <section :style="styles">
         <header>
-            <button @click="toggleSort">sort</button>
+            <AlphaNumericButton @click="toggleSort"></AlphaNumericButton>
             <h1>{{ props.header }}</h1>
             <button @click="changeColors">settings</button>
         </header>
@@ -20,6 +20,7 @@
 <script setup>
 import { computed, ref } from 'vue';
 import Lightsaber from './Lightsaber.vue';
+import AlphaNumericButton from '@/components/Buttons/AlphaNumericButton.vue';
 
 const props = defineProps({
     header: String,
