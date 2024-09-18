@@ -1,8 +1,34 @@
 <template>
-    <div class="wrap">
+    <div class="wrap" ref="wrapper" @scroll="handleScroll">
         <slot></slot>
     </div>
 </template>
+
+<script setup>
+import { onMounted, ref } from 'vue';
+
+const props = defineProps({
+    scrollTop: { type: Number, default: 0 }
+})
+const emit = defineEmits(['scroll'])
+const wrapper = ref()
+
+function handleScroll({ target: { scrollTop, scrollHeight } }, mount = false) {
+    let percent = Math.min(1, scrollTop / (scrollHeight - innerHeight))
+    if (scrollHeight - innerHeight <= 0) {
+        percent = 1
+    }
+
+    emit('scroll', {
+        scroll: scrollTop,
+        percent,
+        mount,
+    })
+}
+
+onMounted(() => setTimeout(() => handleScroll({ target: wrapper.value }, true), 0))
+
+</script>
 
 <style lang="less" scoped>
 .wrap {

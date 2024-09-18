@@ -4,15 +4,12 @@
 
 <script setup>
 import { computed } from 'vue'
-
 const props = defineProps({
     scrollPercent: { type: Number, default: 0 },
-    hasScroll: { type: Boolean, default: false },
 })
 
 const frame = computed(() => {
-    const { scrollPercent, hasScroll } = props;
-    if (!hasScroll) return;
+    const { scrollPercent } = props;
 
     return Math.round(scrollPercent * 16)
 })

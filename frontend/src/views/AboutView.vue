@@ -1,5 +1,5 @@
 <template>
-    <Wrapper>
+    <Wrapper :scrollTop="aboutStore.scroll" @scroll="aboutStore.updateScroll">
         <StringToHTML :string="aboutStore.getContent" :key="aboutStore.lastFetched" />
     </Wrapper>
     <Wrapper display>

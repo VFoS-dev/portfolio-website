@@ -1,11 +1,17 @@
 import { defineStore } from 'pinia';
 import pinia from './piniaInstance';
+import { cubeStore } from './cubeStore';
 
 const useNavStore = defineStore('navStore', {
     state: () => {
         return {
             open: false,
             hide: false,
+        }
+    },
+    getters: {
+        getScroll() {
+            return cubeStore.getActiveScroll
         }
     },
     actions: {

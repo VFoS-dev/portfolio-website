@@ -3,11 +3,14 @@ import pinia from './piniaInstance';
 import { getSkills, getColors } from '@/services/api-service';
 import { randomIndex } from '@/utilities/arrays';
 import { shouldFetch } from '@/utilities/persistence';
+import { cubeStore } from './cubeStore';
+import sides from '@/enums/sides';
 
 
 const useSkillStore = defineStore('skillStore', {
     state: () => {
         return {
+            scroll: 0,
             loading: true,
             lastFetched: {
                 skills: 0,
@@ -57,6 +60,10 @@ const useSkillStore = defineStore('skillStore', {
     actions: {
         randomColor() {
             return randomIndex(this.colors) ?? {}
+        },
+        updateScroll({ scroll, percent, mount }) {
+            this.scroll = scroll
+            cubeStore.updateScroll(sides.skills, percent, mount)
         }
     }
 });

@@ -1,6 +1,6 @@
 <template>
     <nav :class="{ hide: navStore.hide }">
-        <AnimatedLogo :hasScroll="false" :scrollPercent=".7" />
+        <AnimatedLogo :scrollPercent="navStore.getScroll" />
         <section>
             <CheckPoints @reset="console.log('reset')" />
             <Portal to="#mobile-nav" :disabled="!isMobile">

@@ -3,16 +3,26 @@ import pinia from './piniaInstance';
 import { Quaternion } from '@/utilities/quaternions';
 import router from '@/router';
 import { prefersLessMotion } from '@/services/motion-service';
+import sides from '@/enums/sides';
 
 const useCubeStore = defineStore('cubeStore', {
     state: () => {
         let projects;
         return {
-            state: { animated: true, expand: true, instant: false, home: true },
+            state: { animated: true, expand: true, instant: false, [sides.home]: true },
+            scrolls: {
+                defaults: {},
+                [sides.projects]: 1,
+                [sides.home]: 1,
+                [sides.socials]: 1,
+                [sides.resume]: 1,
+                [sides.about]: 1,
+                [sides.skills]: 1,
+            },
             fromMound: true,
             canKeyRotate: true,
             rotIntervals: {},
-            focus: 'home',
+            focus: sides.home,
             current: Quaternion.ConvertFromEuler(360, 0, 0),
             home: Quaternion.ConvertFromEuler(360, 0, 0),
             socials: Quaternion.ConvertFromEuler(90, 0, 0),
@@ -20,6 +30,12 @@ const useCubeStore = defineStore('cubeStore', {
             about: Quaternion.ConvertFromEuler(0, 180, 180),
             skills: Quaternion.ConvertFromEuler(0, 270, 0),
             project: projects = Quaternion.ConvertFromEuler(-90, 0, 0), projects,
+        }
+    },
+    getters: {
+        getActiveScroll(state) {
+            const { scrolls, focus } = state
+            return scrolls[focus]
         }
     },
     actions: {
@@ -35,7 +51,7 @@ const useCubeStore = defineStore('cubeStore', {
             return `matrix3d(${Quaternion.ConvertToMatrix(cubeStore.current).toString()})`
         },
         getList() {
-            return ['projects', 'home', 'socials', 'resume', 'about', 'skills']
+            return Object.values(sides)
         },
         resized() {
             if (this.state.instant) return;
@@ -52,7 +68,10 @@ const useCubeStore = defineStore('cubeStore', {
         },
         rotateTo({ name }) {
             if (!this[name]) return;
-
+            this.scrolls = {
+                ...this.scrolls,
+                ...this.scrolls.defaults
+            }
             this.current = this[name];
             this.updateFocus(name)
 
@@ -131,6 +150,12 @@ const useCubeStore = defineStore('cubeStore', {
                 default: return;
             }
         },
+        updateScroll(side, percent, base = false) {
+            if (base) {
+                this.scrolls.defaults[side] = 0
+                this.scrolls[side] = 0
+            } else this.scrolls[side] = percent
+        }
     }
 });
 
