@@ -1,7 +1,7 @@
 <template>
     <Canvas ref="canvasRef" :state="starFieldState" />
     <Wrapper>
-        <SkillGroup v-for="([name, value]) of Object.entries(skillStore.skills)" :header="name" :skills="value"
+        <SkillGroup v-for="([name, value]) of Object.entries(skillStore.getSkills)" :header="name" :skills="value"
             :getColors="skillStore.randomColor" />
     </Wrapper>
 </template>
@@ -27,7 +27,6 @@ const starFieldState = computed(() => {
 
 onMounted(() => {
     starField.value = setupStarField(canvasRef.value.canvas);
-    skillStore.fetchData()
 })
 
 onBeforeUnmount(() => {

@@ -2,61 +2,61 @@ import { defineStore } from 'pinia';
 import pinia from './piniaInstance';
 import { getSkills, getColors } from '@/services/api-service';
 import { randomIndex } from '@/utilities/arrays';
+import { shouldFetch } from '@/utilities/persistence';
 
 
 const useSkillStore = defineStore('skillStore', {
     state: () => {
         return {
             loading: true,
+            lastFetched: {
+                skills: 0,
+                colors: 0,
+            },
             skills: {},
             colors: [],
         }
     },
-    actions: {
-        async fetchData() {
-            await Promise.all([this.apiSkills(), this.apiColors()])
+    getters: {
+        getSkills(state) {
+            if (shouldFetch(state.lastFetched.skills)) {
+                this.getColors
+                getSkills().then(skills => {
+                    state.lastFetched.skills = new Date();
+                    const sGroups = {};
+                    const order = new Set();
 
-            return {
-                skills: this.skills,
-                colors: this.colors,
+                    for (const { group, name, percent } of skills) {
+                        order.add(group);
+                        if (!sGroups[group]) {
+                            sGroups[group] = [];
+                        }
+
+                        sGroups[group].push({ name, percent });
+                    }
+
+                    state.skills = {};
+                    for (const group of [...order].sort()) {
+                        state.skills[group] = sGroups[group];
+                    }
+                })
             }
+            return state.skills;
         },
+        getColors(state) {
+            if (shouldFetch(state.lastFetched.colors)) {
+                getColors().then(colors => {
+                    state.lastFetched.colors = new Date();
+                    state.colors = colors;
+                })
+            }
+
+            return state.colors
+        }
+    },
+    actions: {
         randomColor() {
             return randomIndex(this.colors) ?? {}
-        },
-        async apiSkills() {
-            this.loading = true;
-            const skills = await getSkills()
-
-            const sGroups = {}
-            const order = new Set()
-
-            for (const { group, name, percent } of skills) {
-                order.add(group)
-                if (!sGroups[group]) {
-                    sGroups[group] = []
-                }
-
-                sGroups[group].push({ name, percent })
-            }
-
-            this.skills = {}
-            for (const group of [...order].sort()) {
-                this.skills[group] = sGroups[group]
-            }
-
-            this.loading = false;
-
-            return this.skills
-        },
-        async apiColors() {
-            this.loading = true;
-
-            this.colors = await getColors()
-
-            this.loading = false;
-
-            return this.colors
         }
     }
 });

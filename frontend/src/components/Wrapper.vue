@@ -15,5 +15,14 @@
     width: 100dvw;
     height: 100dvh;
     overflow: auto;
+
+    &[display] {
+        pointer-events: none;
+        padding: 0;
+
+        * {
+            pointer-events: all;
+        }
+    }
 }
 </style>
