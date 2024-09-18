@@ -10,6 +10,11 @@
   overflow: clip;
 }
 
+* {
+  scrollbar-color: var(--scrollbar-color, #00000080) transparent;
+  scrollbar-width: thin;
+}
+
 :root {
   --modal-z: 15;
   --nav-mobile-z: 10;

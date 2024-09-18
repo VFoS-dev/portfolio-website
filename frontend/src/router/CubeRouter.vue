@@ -187,6 +187,7 @@ function teleportDisabled(side) {
 
 #skills {
     --background: #242424;
+    --scrollbar-color: #ffffff74;
     transform: rotate3d(0, 1, 0, 270deg) translateZ(var(--half-size));
 }
 

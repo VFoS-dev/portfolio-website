@@ -3,7 +3,7 @@
         <StringToHTML :string="aboutStore.getContent" :key="aboutStore.lastFetched" />
     </Wrapper>
     <Wrapper display>
-        asdfasdf
+        <DuckHunt />
     </Wrapper>
 </template>
 
@@ -11,7 +11,7 @@
 import { aboutStore } from '@/stores/aboutStore';
 import StringToHTML from '@/components/StringToHTML.vue'
 import Wrapper from '@/components/Wrapper.vue';
-
+import DuckHunt from '@/domGames/DuckHunt.vue';
 </script>
 
 <style lang="less" scoped>
