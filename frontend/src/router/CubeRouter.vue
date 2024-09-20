@@ -181,7 +181,7 @@ function teleportDisabled(side) {
 }
 
 #about {
-    --background: #34d0ff;
+    --background: #32b5fc;
     transform: rotate3d(1, 0, 0, 180deg) translateZ(var(--half-size));
 }
 

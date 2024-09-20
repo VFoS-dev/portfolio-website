@@ -3,7 +3,7 @@
         <StringToHTML :string="aboutStore.getContent" :key="aboutStore.lastFetched" />
     </Wrapper>
     <Wrapper display>
-        <DuckHunt />
+        <DuckHunt :active="cubeStore.state.about" />
     </Wrapper>
 </template>
 
@@ -12,6 +12,7 @@ import { aboutStore } from '@/stores/aboutStore';
 import StringToHTML from '@/components/StringToHTML.vue'
 import Wrapper from '@/components/Wrapper.vue';
 import DuckHunt from '@/domGames/DuckHunt/DuckHunt.vue';
+import { cubeStore } from '@/stores/cubeStore';
 </script>
 
 <style lang="less" scoped>
@@ -28,6 +29,9 @@ import DuckHunt from '@/domGames/DuckHunt/DuckHunt.vue';
     font-family: VT323, latin;
     font-size: 2.5rem;
     pointer-events: none;
+    text-shadow:
+        2px 2px 1px grey,
+        -1px -1px grey;
 
     &.tab {
         text-indent: calc(3rem + 1rem * var(--tabAmount, 0));

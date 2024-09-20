@@ -1,6 +1,10 @@
 <template>
-    <div :id="props.id" :type="props.type" :alive="props.alive" :class="classes" :style="props.position"
-        @animationend="handleAnimationEnd"></div>
+    <div :type="props.type" :alive="props.alive" :class="classes" :style="style" @animationend="removeDuck"
+        @click="hitDuck">
+        <Teleport v-if="props.score" to="[birds]">
+            <span class="score" :style="style">{{ props.score }}</span>
+        </Teleport>
+    </div>
 </template>
 
 <script setup>
@@ -11,8 +15,9 @@ const props = defineProps({
     id: [String, Number],
     type: { type: String, default: 'blue' },
     alive: { type: Boolean, default: true },
+    score: [String, Number],
     direction: { type: Object, default: () => ({ x: 1, y: 0 }) },
-    position: { type: String, default: () => ({ top: `${50}%`, left: `${50}%` }) }
+    position: { type: Object, default: () => ({ top: 50, left: 50 }) }
 })
 
 const classes = computed(() => {
@@ -27,16 +32,21 @@ const classes = computed(() => {
     return dir
 })
 
-function handleAnimationEnd({ animationName }) {
-    switch (animationName) {
-        case 'duckFalling': return emit('removeDuck', props.id)
+const style = computed(() => {
+    const { top, left } = props.position
+    return {
+        top: `${top}px`,
+        left: `${left}px`
     }
-}
+})
+
+const hitDuck = () => emit('hitDuck', props.id)
+const removeDuck = ({ animationName }) => animationName === 'duckFalling' && emit('removeDuck', props.id)
 </script>
 
 <style scoped lang="less">
 div {
-    --size: 120;
+    --size: 100;
     width: calc(var(--size) * 1px);
     height: calc(var(--size) * 1px);
     pointer-events: all;
@@ -81,6 +91,15 @@ div {
     }
 
     &[alive='true'] {
+        &:hover::after {
+            pointer-events: none;
+            content: '';
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            background: url(/images/about/crosshair.svg);
+        }
+
         &::before {
             animation: duckFlapping 0.4s steps(3) infinite;
         }
@@ -114,19 +133,32 @@ div {
     }
 
     &[alive='false'] {
-        pointer-events: none !important;
-        cursor: auto !important;
-        animation: duckDeath 500ms steps(1) .7s infinite;
-        --y-start: -236px;
-        --y-end: -236px;
+        pointer-events: none;
+        cursor: auto;
+        animation: duckDeath 200ms steps(1) .7s infinite;
+        --y-start: -232px;
+        --y-end: -232px;
         --x-middle: var(--x-start);
 
         &::before {
             animation: duckFalling 4s linear .7s forwards;
-            background-position-y: var(--y-start) !important;
-            background-position-x: var(--x-middle) !important;
+            background-position-y: var(--y-start);
+            background-position-x: var(--x-middle);
         }
     }
+}
+
+span.score {
+    position: absolute;
+    animation: duckScore 0.25s 3s forwards;
+    text-shadow:
+        2px 2px black,
+        -1px -1px black;
+    color: #fff;
+    font-family: VT323, latin;
+    font-size: 2rem;
+    z-index: -1;
+    transform: translate(calc(50px - 50%), calc(50px - 50%));
 }
 </style>
 
@@ -159,11 +191,21 @@ div {
 
 @keyframes duckFalling {
     from {
-        --x-middle: calc(var(--x-start) - 35px);
+        --x-middle: calc(var(--x-start) - 39px);
     }
 
     to {
         transform: translateY(100vh);
+    }
+}
+
+@keyframes duckScore {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
     }
 }
 </style>

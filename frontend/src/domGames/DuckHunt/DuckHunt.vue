@@ -1,14 +1,37 @@
 <template>
     <div birds>
-        <Duck v-for="bird of birds" v-bind="bird" :key="bird.id" />
+        <Duck v-for="bird of Object.values(birds)" v-bind="bird.getObject?.() ?? bird" :key="bird.id"
+            @removeDuck="duckHunt?.removeDuck" @hitDuck="duckHunt?.hitDuck" />
     </div>
     <div grass></div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue';
 import Duck from './Duck.vue';
-const birds = ref([])
+import { duckHuntSetup } from '@/domGames/DuckHunt/duckHunt';
+
+const birds = reactive({})
+const props = defineProps({
+    active: { type: Boolean, default: false }
+})
+const duckHunt = ref()
+
+watch(() => props.active, (state) => {
+    setTimeout(() => {
+        if (!duckHunt.value) duckHunt.value = duckHuntSetup(birds);
+        if (state) duckHunt.value.unpause?.();
+        else duckHunt.value.pause?.();
+    }, 0)
+})
+
+onMounted(() => {
+    duckHunt.value = duckHuntSetup(birds);
+})
+
+onBeforeUnmount(() => {
+    duckHunt.value.unmount?.();
+})
 </script>
 
 <style scoped lang="less">
