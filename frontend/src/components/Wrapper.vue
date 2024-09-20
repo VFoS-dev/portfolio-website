@@ -45,10 +45,7 @@ onMounted(() => setTimeout(() => handleScroll({ target: wrapper.value }, true), 
     &[display] {
         pointer-events: none;
         padding: 0;
-
-        * {
-            pointer-events: all;
-        }
+        overflow: clip;
     }
 }
 </style>

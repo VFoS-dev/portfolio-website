@@ -11,13 +11,14 @@
 import { aboutStore } from '@/stores/aboutStore';
 import StringToHTML from '@/components/StringToHTML.vue'
 import Wrapper from '@/components/Wrapper.vue';
-import DuckHunt from '@/domGames/DuckHunt.vue';
+import DuckHunt from '@/domGames/DuckHunt/DuckHunt.vue';
 </script>
 
 <style lang="less" scoped>
 .wrap {
     padding-left: 15vw;
     padding-right: 15vw;
+    padding-bottom: 90px;
 }
 
 :deep(p) {
