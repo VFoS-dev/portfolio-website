@@ -11,7 +11,8 @@ export function gameLoop(callback = fn, hasStopped = fn) {
     let shouldRestart = false;
 
     function loop(currentTime = 0) {
-        const deltaTime = currentTime - pastTime;
+        let deltaTime = currentTime - pastTime;
+        if (deltaTime > 100) deltaTime = 0; // most likely background tab -> refocus
         pastTime = currentTime;
 
         if (!active) {
@@ -29,9 +30,7 @@ export function gameLoop(callback = fn, hasStopped = fn) {
             active = true;
             shouldRestart = false;
             loop()
-        } else {
-            hasStopped()
-        }
+        } else hasStopped()
     }
 
     return {
@@ -43,9 +42,9 @@ export function gameLoop(callback = fn, hasStopped = fn) {
         },
         restart() {
             pastTime = 0;
-            if (active) {
-                active = true;
+            if (!active) {
                 shouldRestart = true;
+                loop();
             }
         },
         stop() {
@@ -56,4 +55,8 @@ export function gameLoop(callback = fn, hasStopped = fn) {
 
 export function inBounds({ x, y }, { yMax, xMax, xMin = 0, yMin = 0 }) {
     return x >= xMin && x <= xMax && y >= yMin && y <= yMax;
+}
+
+export function random(range = 1, min = 0, magnifier = 1) {
+    return (Math.random() * (range - min) + min) * magnifier
 }

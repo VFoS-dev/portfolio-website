@@ -1,9 +1,9 @@
 <template>
-    <div birds>
+    <div birds :class="{ active }">
         <Duck v-for="bird of Object.values(birds)" v-bind="bird.getObject?.() ?? bird" :key="bird.id"
             @removeDuck="duckHunt?.removeDuck" @hitDuck="duckHunt?.hitDuck" />
     </div>
-    <div grass></div>
+    <div grass :class="{ active }"></div>
 </template>
 
 <script setup>
@@ -35,6 +35,15 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped lang="less">
+div:not(.active) :deep(div[type]) {
+    &::after,
+    &::before {
+        animation-play-state: paused !important;
+    }
+
+    animation-play-state: paused !important;
+}
+
 div[grass] {
     position: absolute;
     height: 90px;

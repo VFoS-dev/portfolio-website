@@ -1,6 +1,6 @@
 <template>
     <div :type="props.type" :alive="props.alive" :class="classes" :style="style" @animationend="removeDuck"
-        @click="hitDuck">
+        @pointerdown="hitDuck">
         <Teleport v-if="props.score" to="[birds]">
             <span class="score" :style="style">{{ props.score }}</span>
         </Teleport>
@@ -101,7 +101,7 @@ div {
         }
 
         &::before {
-            animation: duckFlapping 0.4s steps(3) infinite;
+            animation: duckFlapping .5s steps(3) infinite;
         }
 
         /* flying diagonally */
