@@ -132,3 +132,11 @@ export class Bird {
 export function getBirdCount(score) {
     return min(floor(score / 40) + 2, 125)
 }
+
+export function reId(birds, bird) {
+    delete birds[bird.id]
+
+    for (let id = 1; id <= birds.count; id++) {
+        if (!birds[id]) return birds[bird.id = id] = bird
+    }
+}

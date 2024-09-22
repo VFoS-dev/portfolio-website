@@ -1,6 +1,6 @@
 import { fn } from "@/utilities/defaults";
 import { gameLoop, nextId, random } from "@/utilities/game";
-import { Bird, getBirdCount } from "./duckHunt-util";
+import { Bird, getBirdCount, reId } from "./duckHunt-util";
 
 export function duckHuntSetup(ducks = {}, scoreBoard = fn) {
     let count = 0;
@@ -28,6 +28,7 @@ export function duckHuntSetup(ducks = {}, scoreBoard = fn) {
         if (delay > tick) return;
         Object.values(birds).forEach(bird => {
             bird.move(tick);
+            if (bird.id > birds.count) reId(birds, bird)
             if (bird.escapedCount < 2) return;
             if (birds.count <= 3) return;
 
