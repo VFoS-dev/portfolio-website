@@ -3,19 +3,24 @@
         <Duck v-for="bird of Object.values(birds)" v-bind="bird.getObject?.() ?? bird" :key="bird.id"
             @removeDuck="duckHunt?.removeDuck" @hitDuck="duckHunt?.hitDuck" />
     </div>
-    <div grass :class="{ active }"></div>
+    <div grass :class="{ active }">
+
+        <Score :score="score" />
+    </div>
 </template>
 
 <script setup>
 import { onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue';
 import Duck from './Duck.vue';
 import { duckHuntSetup } from '@/domGames/DuckHunt/duckHunt';
+import Score from './Score.vue';
 
 const birds = reactive({})
 const props = defineProps({
     active: { type: Boolean, default: false }
 })
 const duckHunt = ref()
+const score = ref(0)
 
 watch(() => props.active, (state) => {
     setTimeout(() => {
@@ -26,7 +31,7 @@ watch(() => props.active, (state) => {
 })
 
 onMounted(() => {
-    duckHunt.value = duckHuntSetup(birds);
+    duckHunt.value = duckHuntSetup(birds, (val) => score.value = val);
 })
 
 onBeforeUnmount(() => {
@@ -36,6 +41,7 @@ onBeforeUnmount(() => {
 
 <style scoped lang="less">
 div:not(.active) :deep(div[type]) {
+
     &::after,
     &::before {
         animation-play-state: paused !important;

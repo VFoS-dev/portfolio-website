@@ -60,3 +60,7 @@ export function inBounds({ x, y }, { yMax, xMax, xMin = 0, yMin = 0 }) {
 export function random(range = 1, min = 0, magnifier = 1) {
     return (Math.random() * (range - min) + min) * magnifier
 }
+
+export function nextId(obj = {}) {
+    return Math.max(...Object.keys(obj ?? {}), 0) + 1
+}

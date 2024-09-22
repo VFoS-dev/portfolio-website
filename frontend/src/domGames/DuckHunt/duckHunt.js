@@ -1,9 +1,13 @@
 import { fn } from "@/utilities/defaults";
-import { gameLoop } from "@/utilities/game";
+import { gameLoop, nextId } from "@/utilities/game";
 import { Bird, getBirdCount } from "./duckHunt-util";
 
 export function duckHuntSetup(ducks = {}, scoreBoard = fn) {
-    for (var i = 0; i < 3; i++) ducks[i] = new Bird(i);
+    for (var i = 0; i < 3; i++) {
+        const id = nextId(ducks)
+        ducks[id] = new Bird(id);
+    }
+
     let score = 0;
     const delay = 24;
     let tick = 0
@@ -12,7 +16,12 @@ export function duckHuntSetup(ducks = {}, scoreBoard = fn) {
     const { restart, stop } = gameLoop((deltaTime) => {
         tick += deltaTime;
         if (delay > tick) return;
-        Object.values(ducks).forEach(duck => duck.move(tick))
+        Object.values(ducks).forEach(duck => {
+            if (duck.move(tick) > 2 && birdCount > 3) {
+                delete ducks[duck.id]
+                newBirdCount()
+            }
+        })
         tick -= delay
     })
 
@@ -23,9 +32,14 @@ export function duckHuntSetup(ducks = {}, scoreBoard = fn) {
         scoreBoard((score += _score) + '00')
 
         if (birdCount < getBirdCount(score)) {
-            ducks[birdCount] = new Bird(birdCount);
-            birdCount = Object.keys(ducks).length;
+            const id = nextId(ducks)
+            ducks[id] = new Bird(id);
+            newBirdCount()
         }
+    }
+
+    function newBirdCount() {
+        birdCount = Object.keys(ducks).length;
     }
 
     function removeDuck(id) {

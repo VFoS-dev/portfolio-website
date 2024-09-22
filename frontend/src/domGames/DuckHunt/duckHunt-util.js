@@ -3,7 +3,7 @@ const { sign, round, abs, atan2, cos, sin, min, sqrt, floor } = Math;
 
 export class Bird {
     id = -1;
-    type = 'blue';
+    type = '';
     types = ['blue', 'brown', 'green'];
     alive = true;
     velocity = { x: 1, y: 7 };
@@ -13,6 +13,7 @@ export class Bird {
     direction = { x: 1, y: 0 };
     position = { top: 0, left: 0 };
     magnitude = 1;
+    escapedCount = 0;
 
     constructor(id) {
         this.id = id;
@@ -20,7 +21,7 @@ export class Bird {
     }
 
     respawn() {
-        this.type = this.getRandomType();
+        this.type = this.getRandomType(this.type);
         this.alive = true;
         this.score = '';
         const canDodge = random() > .7;
@@ -51,11 +52,13 @@ export class Bird {
         }
 
         if (!inBounds({ x: this.position.left, y: this.position.top }, { yMax: innerHeight, xMax: innerWidth, xMin: -100, yMin: -100 })) {
-            this.respawn()
+            this.respawn();
+            return ++this.escapedCount;
         }
     }
 
     hit(score) {
+        this.escapedCount = 0;
         this.score = score;
         this.alive = false;
     }
@@ -71,8 +74,9 @@ export class Bird {
         }
     }
 
-    getRandomType() {
-        return this.types[floor(random(this.types.length))];
+    getRandomType(previousType) {
+        const types = this.types.filter(t => t !== previousType)
+        return types[floor(random(types.length))];
     }
 
     changeVelocity() {
