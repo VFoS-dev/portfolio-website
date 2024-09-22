@@ -53,7 +53,7 @@ export class Bird {
 
         if (!inBounds({ x: this.position.left, y: this.position.top }, { yMax: innerHeight, xMax: innerWidth, xMin: -100, yMin: -100 })) {
             this.respawn();
-            return ++this.escapedCount;
+            this.escapedCount++;
         }
     }
 
@@ -84,11 +84,14 @@ export class Bird {
 
         const randDir = (min = 0) => random(3, min) - 2;
         const tangent = atan2(-randDir(1), randDir());
-        const y = -sin(tangent);
-        const x = cos(tangent);
+        let y = -sin(tangent);
+        let x = cos(tangent);
 
-        this.direction.y = -round(y)
-        this.direction.x = sign(x) * +(abs(sin(y)) < .97)
+        const vertical = abs(sin(y)) > .8
+        this.direction = {
+            y: vertical ? -(y = sign(y)) : -round(y),
+            x: vertical ? x = 0 : sign(x),
+        }
 
         this.velocity = {
             x: x * this.magnitude,
@@ -127,5 +130,5 @@ export class Bird {
 }
 
 export function getBirdCount(score) {
-    return min(floor(score / 80 + 2), 125)
+    return min(floor(score / 40) + 2, 125)
 }
