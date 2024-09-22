@@ -1,12 +1,13 @@
 <template>
-    <div>
+    <MenuItem class="score">
         <span> {{ padScore }} </span>
         <span> SCORE </span>
-    </div>
+    </MenuItem>
 </template>
 
 <script setup>
 import { computed } from 'vue';
+import MenuItem from './MenuItem.vue';
 
 const props = defineProps({
     score: [String, Number],
@@ -24,19 +25,10 @@ const padScore = computed(() => {
 </script>
 
 <style scoped lang="less">
-div {
+.score {
     --margin: 1rem;
-    background-color: black;
-    font-family: VT323, latin;
-    font-weight: normal;
-    font-size: 1.5rem;
-    color: white;
-    padding: .125rem .25rem;
-    position: absolute;
     right: var(--margin);
     bottom: var(--margin);
-    line-height: 1rem;
-    border: 2px solid #80d010;
     display: flex;
     flex-direction: column;
 

@@ -4,7 +4,7 @@
             @removeDuck="duckHunt?.removeDuck" @hitDuck="duckHunt?.hitDuck" />
     </div>
     <div grass :class="{ active }">
-
+        <ActiveBirds :birds="birds" />
         <Score :score="score" />
     </div>
 </template>
@@ -14,6 +14,7 @@ import { onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue';
 import Duck from './Duck.vue';
 import { duckHuntSetup } from '@/domGames/DuckHunt/duckHunt';
 import Score from './Score.vue';
+import ActiveBirds from './ActiveBirds.vue';
 
 const birds = reactive({})
 const props = defineProps({

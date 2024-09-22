@@ -29,7 +29,7 @@ export function duckHuntSetup(ducks = {}, scoreBoard = fn) {
         Object.values(birds).forEach(bird => {
             bird.move(tick);
             if (bird.id > birds.count) reId(birds, bird)
-            if (bird.escapedCount < 2) return;
+            if (bird.escapedCount < 3) return;
             if (birds.count <= 3) return;
 
             delete birds[bird.id]
