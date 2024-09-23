@@ -1,0 +1,24 @@
+@keyframes spriteLoop {
+    from {
+        background-position-y: var(--y-start, 0px);
+        background-position-x: var(--x-start, 0px);
+    }
+
+    to {
+        background-position-y: var(--y-end, var(--y-start, 0px));
+        background-position-x: var(--x-end, var(--x-start, 0px));
+    }
+}
+
+/* needed for rough reset animations */
+@keyframes spriteLoop2 {
+    from {
+        background-position-y: var(--y-start, 0px);
+        background-position-x: var(--x-start, 0px);
+    }
+
+    to {
+        background-position-y: var(--y-end, var(--y-start, 0px));
+        background-position-x: var(--x-end, var(--x-start, 0px));
+    }
+}

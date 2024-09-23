@@ -101,7 +101,7 @@ div {
         }
 
         &::before {
-            animation: duckFlapping .5s steps(3) infinite;
+            animation: spriteLoop .5s steps(3) infinite;
         }
 
         /* flying diagonally */
@@ -163,18 +163,6 @@ span.score {
 </style>
 
 <style>
-@keyframes duckFlapping {
-    from {
-        background-position-y: var(--y-start);
-        background-position-x: var(--x-start);
-    }
-
-    to {
-        background-position-y: var(--y-end);
-        background-position-x: var(--x-end);
-    }
-}
-
 @keyframes duckDeath {
     0% {
         scale: 1 1;

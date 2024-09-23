@@ -3,10 +3,10 @@
         <Duck v-for="bird of Object.values(birds)" v-bind="bird.getObject?.() ?? bird" :key="bird.id"
             @removeDuck="duckHunt?.removeDuck" @hitDuck="duckHunt?.hitDuck" />
     </div>
-    <div grass :class="{ active }">
-        <ActiveBirds :birds="birds" />
-        <Score :score="score" />
-    </div>
+    <div grass :class="{ active }" />
+    <ActiveBirds :birds="birds" class="ui" />
+    <Score :score="score" class="ui" />
+    <Dog />
 </template>
 
 <script setup>
@@ -15,6 +15,7 @@ import Duck from './Duck.vue';
 import { duckHuntSetup } from '@/domGames/DuckHunt/duckHunt';
 import Score from './Score.vue';
 import ActiveBirds from './ActiveBirds.vue';
+import Dog from './Dog.vue';
 
 const birds = reactive({})
 const props = defineProps({
@@ -69,5 +70,9 @@ div[birds] {
     left: 0;
     height: 100%;
     width: 100%;
+}
+
+.ui {
+    z-index: 3;
 }
 </style>
