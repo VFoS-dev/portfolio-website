@@ -129,6 +129,67 @@ export class Bird {
     }
 }
 
+export class Dog {
+    id = -1;
+    state = 'idle';
+    direction = { x: 1 };
+    position = { left: 100 };
+    width = 118;
+    states = ["idle", "walking", "sniffing", "jumping", "laughing", "show", "show_multiple"]
+    duration = 0;
+
+    constructor(id) {
+        this.id = id;
+        this.toState('walking')
+    }
+
+    update(deltaTime, birdCount) {
+        this.duration += deltaTime;
+        this[this.state]?.(deltaTime, birdCount);
+    }
+
+    toState(nextState = 'idle') {
+        const halt = this[`${nextState}_end`]?.();
+        if (!halt) {
+            this.state = nextState;
+            this[`${nextState}_start`]?.(nextState);
+        }
+        console.log(this.state);
+
+    }
+
+    nextState({ animationName }) {
+        switch (this.state) {
+            case "show":
+            case "show_multiple":
+                if (animationName != 'dogUpDown') return;
+                return this.toState("idle");
+            case "jumping":
+                if (animationName != 'dogJumping') return;
+                return this.toState("idle");
+        }
+    }
+
+    birdHit() {
+        if (['walking', 'sniffing'].includes(this.state)) {
+            this.toState("jumping");
+        }
+    }
+
+    birdPickup() {
+
+    }
+
+    getObject() {
+        return {
+            id: this.id,
+            state: this.state,
+            direction: this.direction,
+            position: this.position,
+        }
+    }
+}
+
 export function getBirdCount(score) {
     return floor(score / 40) + 3
 }

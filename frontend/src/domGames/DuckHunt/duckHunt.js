@@ -1,12 +1,13 @@
 import { fn } from "@/utilities/defaults";
 import { gameLoop, nextId, random } from "@/utilities/game";
-import { Bird, getBirdCount, reId } from "./duckHunt-util";
+import { Bird, Dog, getBirdCount, reId } from "./duckHunt-util";
 
-export function duckHuntSetup(ducks = {}, scoreBoard = fn) {
+export function duckHuntSetup(ducks = {}, dogs = {}, scoreBoard = fn) {
     let count = 0;
     let score = 0;
     const delay = 24;
     let tick = 0;
+    let doggo = {}
 
     const birds = new Proxy(ducks, {
         get: (bird, id) => (id === 'count') ? count : bird[id],
@@ -21,6 +22,10 @@ export function duckHuntSetup(ducks = {}, scoreBoard = fn) {
             const bird = birds[id]
             bird.type = bird.types[id % bird.types.length]
         }
+
+        if (!Object.keys(dogs).length) {
+            doggo = dogs[1] = new Dog(1)
+        }
     }
 
     const { restart, stop } = gameLoop((deltaTime) => {
@@ -34,11 +39,16 @@ export function duckHuntSetup(ducks = {}, scoreBoard = fn) {
 
             delete birds[bird.id]
         })
+
+        doggo.update(tick, birds.count)
+
         tick -= delay;
     })
 
     function hitDuck(id) {
         if (!birds[id]) return
+
+        doggo.birdHit()
 
         const _score = Math.round(random(20, 5));
         birds[id].hit(_score + '00')
@@ -51,6 +61,7 @@ export function duckHuntSetup(ducks = {}, scoreBoard = fn) {
     }
 
     function removeDuck(id) {
+        doggo.birdPickup(birds[id])
         birds[id].respawn();
     }
 
@@ -62,5 +73,6 @@ export function duckHuntSetup(ducks = {}, scoreBoard = fn) {
         unmount: stop,
         removeDuck,
         hitDuck,
+        dogNextState: (e) => doggo.nextState(e),
     }
 }

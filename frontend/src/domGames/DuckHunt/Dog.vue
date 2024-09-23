@@ -1,11 +1,15 @@
 <template>
-    <div :state="props.state" :class="classes" :style="style"> </div>
+    <div :state="props.state" :class="classes" :style="style" @animationend="nextState" />
 </template>
 
 <script setup>
+import { computed } from 'vue';
+
+const emit = defineEmits(['nextState'])
 
 const props = defineProps({
-    state: String,
+    id: String,
+    state: { type: String, default: 'idle' },
     direction: { type: Object, default: () => ({}) },
     position: { type: Object, default: () => ({}) },
 })
@@ -22,12 +26,13 @@ const classes = computed(() => {
 })
 
 const style = computed(() => {
-    const { top, left } = props.position
+    const { left } = props.position;
     return {
-        top: `${top}px`,
         left: `${left}px`
     }
 })
+
+const nextState = (e) => emit('nextState', e, props.id)
 </script>
 
 <style scoped lang="less">
@@ -104,13 +109,13 @@ div {
         }
     }
 
-    &[state="show-duck"] {
+    &[state^="show"] {
         --x-start: -316px;
         animation: dogUpDown 2s linear forwards;
         z-index: 0;
         bottom: 100px;
 
-        &.multiple {
+        &[state="show_multiple"] {
             --y-start: -60px;
         }
 

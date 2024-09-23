@@ -3,10 +3,12 @@
         <Duck v-for="bird of Object.values(birds)" v-bind="bird.getObject?.() ?? bird" :key="bird.id"
             @removeDuck="duckHunt?.removeDuck" @hitDuck="duckHunt?.hitDuck" />
     </div>
-    <div grass :class="{ active }" />
-    <ActiveBirds :birds="birds" class="ui" />
-    <Score :score="score" class="ui" />
-    <Dog />
+    <div grass :class="{ active }">
+        <ActiveBirds :birds="birds" class="ui" />
+        <Score :score="score" class="ui" />
+        <Dog v-for="dog of Object.values(dogs)" v-bind="dog.getObject?.()" :key="dog.id"
+            @nextState="duckHunt?.dogNextState" />
+    </div>
 </template>
 
 <script setup>
@@ -17,7 +19,8 @@ import Score from './Score.vue';
 import ActiveBirds from './ActiveBirds.vue';
 import Dog from './Dog.vue';
 
-const birds = reactive({})
+const birds = reactive({});
+const dogs = reactive({});
 const props = defineProps({
     active: { type: Boolean, default: false }
 })
@@ -33,7 +36,7 @@ watch(() => props.active, (state) => {
 })
 
 onMounted(() => {
-    duckHunt.value = duckHuntSetup(birds, (val) => score.value = val);
+    duckHunt.value = duckHuntSetup(birds, dogs, (val) => score.value = val);
 })
 
 onBeforeUnmount(() => {
@@ -55,12 +58,20 @@ div:not(.active) :deep(div[type]) {
 div[grass] {
     position: absolute;
     height: 90px;
-    background-color: aliceblue;
     width: 100vw;
     bottom: 0;
-    z-index: 2;
-    background: url(/images/about/grass.webp);
-    background-repeat: repeat, no-repeat;
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        height: 100%;
+        width: 100%;
+        background: url(/images/about/grass.webp);
+        background-repeat: repeat, no-repeat;
+        z-index: 2;
+    }
 }
 
 div[birds] {
