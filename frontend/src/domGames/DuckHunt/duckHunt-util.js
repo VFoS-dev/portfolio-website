@@ -136,7 +136,7 @@ export class Dog {
     direction = { x: 1 };
     position = { left: 100 };
     width = 59;
-    states = ["idle", "walking", "sniffing", "jumping", "laughing", "show", "show_multiple"]
+    states = ["idle", "walking", "sniffing", "jumping", "show1", "show2", "show3", "show4+"]
     duration = 0;
     speed = 2;
     stateDuration = 0;
@@ -166,8 +166,10 @@ export class Dog {
 
     nextState({ animationName }) {
         switch (this.state) {
-            case "show":
-            case "show_multiple":
+            case "show1":
+            case "show2":
+            case "show3":
+            case "show4+":
                 if (animationName != 'dogUpDown') return;
                 return this.toState("idle");
             case "jumping":
@@ -234,14 +236,8 @@ export class Dog {
         }
     }
 
-    show_start() {
-        const { x } = this.birds.shift();
-        this.position.left = x;
-    }
-
-    show_multiple_start() {
+    _show(amount = 1) {
         let total = 0;
-        const amount = 2;
 
         for (let i = 0; i < amount; i++) {
             const { x } = this.birds.shift();
@@ -258,6 +254,22 @@ export class Dog {
         this.birds = birds.reverse();
     }
 
+    show1_start() {
+        this._show(1)
+    }
+
+    show2_start() {
+        this._show(2)
+    }
+
+    show3_start() {
+        this._show(3)
+    }
+
+    "show4+_start"() {
+        this._show(this.birds.length)
+    }
+
     idle_start() {
         this.randomDuration(2, 1, 250);
         this.randomDirection();
@@ -266,11 +278,13 @@ export class Dog {
     idle({ alive }) {
         if (this.duration < this.stateDuration) return;
 
-        const count = this.birds.length
-        if (count) return this.toState(count > 1
-            ? "show_multiple"
-            : "show"
-        )
+        switch (this.birds.length) {
+            case 0: break;
+            case 1:
+            case 2:
+            case 3: return this.toState('show' + this.birds.length)
+            default: return this.toState('show4+')
+        }
 
         if (alive && !this.timer) {
             this.timer = setTimeout(this.toState.bind(this), 6000, "walking")

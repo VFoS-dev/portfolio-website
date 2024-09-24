@@ -40,6 +40,11 @@ div {
     position: absolute;
     bottom: 1rem;
     display: none;
+    width: var(--width);
+    height: var(--height);
+    --height: 47px;
+    --width: 59px;
+
 
     &:not([state="idle"]) {
         z-index: 2;
@@ -51,8 +56,8 @@ div {
         display: block;
         transform-origin: bottom;
         scale: 2;
-        height: 47px;
-        width: 59px;
+        width: var(--width);
+        height: var(--height);
         background: url(/images/about/sprite_sheet.webp);
     }
 
@@ -78,6 +83,7 @@ div {
     }
 
     &[state="jumping"] {
+        --height: 50px;
         --x-end: -120px;
         --y-start: -59px;
         --duration: .75s;
@@ -90,22 +96,9 @@ div {
         }
 
         &::before {
-            height: 50px;
             background-position-x: var(--x-start);
             background-position-y: var(--y-start);
             animation: spriteLoop2 var(--duration) steps(2) var(--delay) forwards;
-        }
-    }
-
-    &[state="laughing"] {
-        --x-start: -180px;
-        --x-end: -300px;
-        --y-start: -59px;
-        animation: dogUpDown 2s linear forwards;
-        z-index: 0;
-
-        &::before {
-            animation: spriteLoop .5s steps(2) infinite;
         }
     }
 
@@ -115,8 +108,19 @@ div {
         z-index: 0;
         bottom: 100px;
 
-        &[state="show_multiple"] {
+        &[state="show2"] {
             --y-start: -60px;
+        }
+
+        &[state="show3"] {
+            --y-start: -60px;
+            --x-start: -240px;
+        }
+
+        &[state="show4+"] {
+            --y-start: -53px;
+            --x-start: -180px;
+            --height: 54px;
         }
 
         &::before {
