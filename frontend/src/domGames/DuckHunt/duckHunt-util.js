@@ -54,6 +54,7 @@ export class Bird {
         if (!inBounds({ x: this.position.left, y: this.position.top }, { yMax: innerHeight, xMax: innerWidth, xMin: -100, yMin: -100 })) {
             this.respawn();
             this.escapedCount++;
+            return true
         }
     }
 
@@ -134,28 +135,33 @@ export class Dog {
     state = 'idle';
     direction = { x: 1 };
     position = { left: 100 };
-    width = 118;
+    width = 59;
     states = ["idle", "walking", "sniffing", "jumping", "laughing", "show", "show_multiple"]
     duration = 0;
+    speed = 2;
+    stateDuration = 0;
+    birds = [];
+    timer;
 
     constructor(id) {
         this.id = id;
         this.toState('walking')
     }
 
-    update(deltaTime, birdCount) {
-        this.duration += deltaTime;
-        this[this.state]?.(deltaTime, birdCount);
+    update(state) {
+        this.duration += state.deltaTime;
+        this[this.state]?.(state);
+    }
+
+    birdPickup(bird) {
+        this.birds.push({ x: bird.position.left })
     }
 
     toState(nextState = 'idle') {
-        const halt = this[`${nextState}_end`]?.();
-        if (!halt) {
-            this.state = nextState;
-            this[`${nextState}_start`]?.(nextState);
-        }
-        console.log(this.state);
-
+        this.timer = clearTimeout(this.timer);
+        this[`${nextState}_start`]?.();
+        this.state = nextState;
+        this.duration = 0;
     }
 
     nextState({ animationName }) {
@@ -170,14 +176,105 @@ export class Dog {
         }
     }
 
-    birdHit() {
+    birdHit(bird) {
         if (['walking', 'sniffing'].includes(this.state)) {
             this.toState("jumping");
         }
+        setTimeout(this.birdPickup.bind(this), getGroundedTime(bird), bird)
     }
 
-    birdPickup() {
+    randomDirection() {
+        this.direction.x = round(random()) * 2 - 1
+    }
 
+    changeDirection(start = false) {
+        const { x } = this.direction
+        const { left } = this.position
+
+        if (start) {
+            this.randomDuration()
+        } else if (x > 0 && left + this.width > innerWidth) {
+            this.direction.x = -this.direction.x
+        } else if (x < 0 && left < 0) {
+            this.direction.x = -this.direction.x
+        }
+    }
+
+    randomDuration(range = 10, min = 2, magnitude = 1000) {
+        this.stateDuration = random(range, min, magnitude)
+    }
+
+    walking_start() {
+        this.randomDuration()
+        this.changeDirection(true)
+        if (this.state === 'idle') {
+            this.position.left = {
+                1: innerWidth + this.width,
+                0: -this.width,
+            }[round(random())]
+        }
+    }
+
+    walking() {
+        this.position.left += this.direction.x * this.speed;
+
+        if (this.duration >= this.stateDuration) {
+            return this.toState("sniffing")
+        }
+        this.changeDirection()
+    }
+
+    sniffing_start() {
+        this.randomDuration(3, 1)
+    }
+
+    sniffing() {
+        if (this.duration >= this.stateDuration) {
+            return this.toState("walking")
+        }
+    }
+
+    show_start() {
+        const { x } = this.birds.shift();
+        this.position.left = x;
+    }
+
+    show_multiple_start() {
+        let total = 0;
+        const amount = 2;
+
+        for (let i = 0; i < amount; i++) {
+            const { x } = this.birds.shift();
+            total += x
+        }
+
+        this.position.left = total / amount;
+
+        const birds = []
+        while (birds.length <= 6 && this.birds.length) {
+            birds.push(this.birds.shift())
+        }
+
+        this.birds = birds.reverse();
+    }
+
+    idle_start() {
+        this.randomDuration(2, 1, 250);
+        this.randomDirection();
+    }
+
+    idle({ alive }) {
+        if (this.duration < this.stateDuration) return;
+
+        const count = this.birds.length
+        if (count) return this.toState(count > 1
+            ? "show_multiple"
+            : "show"
+        )
+
+        if (alive && !this.timer) {
+            this.timer = setTimeout(this.toState.bind(this), 6000, "walking")
+        }
     }
 
     getObject() {
@@ -201,4 +298,12 @@ export function reId(birds, bird) {
             return birds[bird.id = id] = bird
         }
     }
+}
+
+export function getGroundedTime(bird) {
+    const hangDelay = 700;
+    const animationSeconds = 4000;
+    const { top: birdHeight } = bird.position;
+
+    return hangDelay + animationSeconds * (innerHeight - birdHeight) / innerHeight
 }

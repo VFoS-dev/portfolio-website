@@ -1,5 +1,5 @@
 <template>
-    <div :state="props.state" :class="classes" :style="style" @animationend="nextState" />
+    <div type="dog" :state="props.state" :class="classes" :style="style" @animationend="nextState" />
 </template>
 
 <script setup>
@@ -8,7 +8,7 @@ import { computed } from 'vue';
 const emit = defineEmits(['nextState'])
 
 const props = defineProps({
-    id: String,
+    id: [String, Number],
     state: { type: String, default: 'idle' },
     direction: { type: Object, default: () => ({}) },
     position: { type: Object, default: () => ({}) },

@@ -7,7 +7,6 @@ export function duckHuntSetup(ducks = {}, dogs = {}, scoreBoard = fn) {
     let score = 0;
     const delay = 24;
     let tick = 0;
-    let doggo = {}
 
     const birds = new Proxy(ducks, {
         get: (bird, id) => (id === 'count') ? count : bird[id],
@@ -24,23 +23,27 @@ export function duckHuntSetup(ducks = {}, dogs = {}, scoreBoard = fn) {
         }
 
         if (!Object.keys(dogs).length) {
-            doggo = dogs[1] = new Dog(1)
+            dogs[1] = new Dog(1)
         }
     }
 
     const { restart, stop } = gameLoop((deltaTime) => {
         tick += deltaTime;
         if (delay > tick) return;
+        let allAlive = true;
         Object.values(birds).forEach(bird => {
-            bird.move(tick);
+            const escaped = bird.move(tick);
+            if (!bird.alive) allAlive = false
             if (bird.id > birds.count) reId(birds, bird)
-            if (bird.escapedCount < 3) return;
+            if (!escaped || bird.escapedCount < 3) return;
             if (birds.count <= 3) return;
 
             delete birds[bird.id]
         })
 
-        doggo.update(tick, birds.count)
+        Object.values(dogs).forEach(dog => {
+            dog.update({ deltaTime: tick, alive: allAlive })
+        })
 
         tick -= delay;
     })
@@ -48,7 +51,9 @@ export function duckHuntSetup(ducks = {}, dogs = {}, scoreBoard = fn) {
     function hitDuck(id) {
         if (!birds[id]) return
 
-        doggo.birdHit()
+        Object.values(dogs).forEach(dog => {
+            dog.birdHit(birds[id])
+        })
 
         const _score = Math.round(random(20, 5));
         birds[id].hit(_score + '00')
@@ -61,7 +66,8 @@ export function duckHuntSetup(ducks = {}, dogs = {}, scoreBoard = fn) {
     }
 
     function removeDuck(id) {
-        doggo.birdPickup(birds[id])
+        console.log('duck respawned');
+
         birds[id].respawn();
     }
 
@@ -73,6 +79,10 @@ export function duckHuntSetup(ducks = {}, dogs = {}, scoreBoard = fn) {
         unmount: stop,
         removeDuck,
         hitDuck,
-        dogNextState: (e) => doggo.nextState(e),
+        dogNextState: (e) => {
+            Object.values(dogs).forEach(dog => {
+                dog.nextState(e)
+            })
+        },
     }
 }
