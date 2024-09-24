@@ -157,9 +157,9 @@ export class Dog {
         this.birds.push({ x: bird.position.left })
     }
 
-    toState(nextState = 'idle') {
+    toState(nextState = 'idle', info) {
         this.timer = clearTimeout(this.timer);
-        this[`${nextState}_start`]?.();
+        this[`${nextState}_start`]?.(info);
         this.state = nextState;
         this.duration = 0;
     }
@@ -180,7 +180,7 @@ export class Dog {
 
     birdHit(bird) {
         if (['walking', 'sniffing'].includes(this.state)) {
-            this.toState("jumping");
+            this.toState("jumping", bird);
         }
         setTimeout(this.birdPickup.bind(this), getGroundedTime(bird), bird)
     }
@@ -234,6 +234,10 @@ export class Dog {
         if (this.duration >= this.stateDuration) {
             return this.toState("walking")
         }
+    }
+
+    jumping_start(bird) {
+        this.direction.x = sign(bird.position.left - this.position.left)
     }
 
     _show(amount = 1) {
