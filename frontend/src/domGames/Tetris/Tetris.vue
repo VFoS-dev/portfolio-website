@@ -1,28 +1,18 @@
 <template>
     <div class="space">
-        <I />
-        <J />
-        <L />
-        <O />
-        <S />
-        <T />
-        <Z />
+        <Board />
     </div>
 </template>
 
 <script setup>
-import I from './Pieces/I.vue';
-import J from './Pieces/J.vue';
-import L from './Pieces/L.vue';
-import O from './Pieces/O.vue';
-import S from './Pieces/S.vue';
-import T from './Pieces/T.vue';
-import Z from './Pieces/Z.vue';
+import Board from './Board/Board.vue';
 </script>
 
 <style scoped lang="less">
 .space {
-    align-content: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     width: 100%;
     height: 100%;
 }

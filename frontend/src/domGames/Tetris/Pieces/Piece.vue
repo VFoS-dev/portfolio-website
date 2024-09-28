@@ -34,4 +34,8 @@
         grid-template-areas: "b1 b2 b3 b4";
     }
 }
+
+.ui .s4x1 {
+    margin: calc(var(--size, 30px) / 2) 0;
+}
 </style>
