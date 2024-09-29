@@ -64,3 +64,7 @@ export function random(range = 1, min = 0, magnifier = 1) {
 export function nextId(obj = {}) {
     return Math.max(...Object.keys(obj ?? {}).filter(n => !isNaN(n)), 0) + 1
 }
+
+export function randomArray(arr) {
+    return arr[Math.floor(random(arr.length))]
+}

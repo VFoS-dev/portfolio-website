@@ -72,7 +72,6 @@ span {
     }
 }
 
-
 [b1] {
     grid-area: b1;
 }

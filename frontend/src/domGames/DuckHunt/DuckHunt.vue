@@ -29,7 +29,7 @@ const score = ref(0)
 
 watch(() => props.active, (state) => {
     setTimeout(() => {
-        if (!duckHunt.value) duckHunt.value = duckHuntSetup(birds);
+        if (!duckHunt.value) duckHunt.value = duckHuntSetup(birds, dogs, (val) => score.value = val);
         if (state) duckHunt.value.unpause?.();
         else duckHunt.value.pause?.();
     }, 0)
