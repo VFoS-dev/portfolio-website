@@ -26,12 +26,14 @@ export function dragParentElement(
   achievementName = ''
 ) {
   function mouseDragSetup(e) {
+    e.preventDefault();
     let x = e.clientX,
       y = e.clientY,
       parent = thisInstead ? e.target : e.target.parentElement;
     if (absoluteParent) parent.style.position = 'absolute';
 
     function elementDrag(e) {
+      e.preventDefault();
       checkAchievement(achievementName);
       parent.style.top = `${parent.offsetTop - (y - (y = e.clientY))}px`;
       parent.style.left = `${parent.offsetLeft - (x - (x = e.clientX))}px`;
@@ -46,12 +48,14 @@ export function dragParentElement(
   }
 
   function touchDragSetup(e) {
+    e.preventDefault();
     let x = e.targetTouches[0].clientX,
       y = e.targetTouches[0].clientY,
       parent = thisInstead ? e.target : e.target.parentElement;
     if (absoluteParent) parent.style.position = 'absolute';
 
     function elementDrag(e) {
+      e.preventDefault();
       checkAchievement(achievementName);
       parent.style.top = `${parent.offsetTop - (y - (y = e.targetTouches[0].clientY))}px`;
       parent.style.left = `${parent.offsetLeft - (x - (x = e.targetTouches[0].clientX))}px`;

@@ -209,6 +209,10 @@ const titleBarProps = getTitleBarProps();
   display: flex;
   justify-content: space-between;
   align-items: center;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 
   &-text {
     pointer-events: none;
