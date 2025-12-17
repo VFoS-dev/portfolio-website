@@ -1,71 +1,119 @@
 <template>
-  <div class="resume" :style="{ backgroundImage: 'url(/images/resume/windows_xp_background.webp)' }">
-    <div class='center-start windows-icon-offset'>
-      <div class='start'>
-        <div class='windows-icon' style="position: relative" v-bind="getIconProps(false)">
-          <img src='/images/resume/wordicon_destop.svg' />
+  <div
+    class="resume"
+    :style="{ backgroundImage: 'url(/images/resume/windows_xp_background.webp)' }"
+  >
+    <div class="center-start windows-icon-offset">
+      <div class="start">
+        <div class="windows-icon" style="position: relative" v-bind="getIconProps(false)">
+          <img src="/images/resume/wordicon_destop.svg" />
           <p>Jon Kido Resume 20XX Rough Draft</p>
         </div>
       </div>
-      <div class='start'>
-        <div class='windows-icon' style="position: relative" v-bind="getIconProps(true)">
-          <img src='/images/resume/wordicon_destop.svg' />
+      <div class="start">
+        <div class="windows-icon" style="position: relative" v-bind="getIconProps(true)">
+          <img src="/images/resume/wordicon_destop.svg" />
           <p>Flavored Resume 20XX Rough Draft</p>
         </div>
       </div>
     </div>
-    <div v-for="(window, i) in windows" :key="`windows-${window.key}`"
-      :class="['window', { focused: window.focused, fullscreened: window.fullscreened, minimized: window.minimized }]"
-      @mousedown="setWindowState(`focused-${i}`, true)">
+    <div
+      v-for="(window, i) in windows"
+      :key="`windows-${window.key}`"
+      :class="[
+        'window',
+        { focused: window.focused, fullscreened: window.fullscreened, minimized: window.minimized },
+      ]"
+      @mousedown="setWindowState(`focused-${i}`, true)"
+    >
       <div class="title-bar" v-bind="getTitleBarProps()">
         <div class="title-bar-text">
-          <div class='wordIcon title' />
+          <div class="wordIcon title" />
           Jon Kido Resume 20XX Rough Draft - Microsoft Word
         </div>
         <div class="title-bar-controls">
-          <button class="minimize" aria-label="Minimize" :id="`minimized-${i}`" @click="setWindowState(`minimized-${i}`)"></button>
-          <button class="maximize" aria-label="Maximize" :id="`fullscreened-${i}`" @click="setWindowState(`fullscreened-${i}`)"></button>
-          <button class="close" aria-label="Close" :id="`closed-${i}`" @click="setWindowState(`closed-${i}`)"></button>
+          <button
+            :id="`minimized-${i}`"
+            class="minimize"
+            aria-label="Minimize"
+            @click="setWindowState(`minimized-${i}`)"
+          ></button>
+          <button
+            :id="`fullscreened-${i}`"
+            class="maximize"
+            aria-label="Maximize"
+            @click="setWindowState(`fullscreened-${i}`)"
+          ></button>
+          <button
+            :id="`closed-${i}`"
+            class="close"
+            aria-label="Close"
+            @click="setWindowState(`closed-${i}`)"
+          ></button>
         </div>
       </div>
       <div class="window-options" />
       <div class="window-body">
-        <div class='window-page' v-bind="getEditableProps()" @keyup="">
+        <div class="window-page" v-bind="getEditableProps()" @keyup="">
           <center>
             <h1>Want a polished resume?</h1>
             <h5>
-              <button class='hyperlink' @click="openResume('complete')">Complete Resume</button>
-              <button class='hyperlink' @click="openResume('gamedev')">Game Dev Resume</button>
-              <button class='hyperlink' @click="openResume('full-stack')">Full Stack Resume</button>
+              <button class="hyperlink" @click="openResume('complete')">Complete Resume</button>
+              <button class="hyperlink" @click="openResume('gamedev')">Game Dev Resume</button>
+              <button class="hyperlink" @click="openResume('full-stack')">Full Stack Resume</button>
             </h5>
             <br />
             <br />
             <h1>Want to create a custom resume?</h1>
             <h5>
-              <button class='hyperlink' @click="createResume">Click Here</button>
+              <button class="hyperlink" @click="createResume">Click Here</button>
             </h5>
           </center>
           <h2>Education:</h2>
-          <p v-for="(edu, eduIndex) in resumeData.education" :key="`${edu.school}-${eduIndex}`" class='tab'>
-            {{ edu.school }}: {{ edu.years }}
-            <br />Major: <span v-for="(major, majorIndex) in edu.majors"
-              :key="`${edu.school}-${major.short}-${majorIndex}`">
-              <span v-if="majorIndex > 0">, </span><strong>{{ major.short }}</strong> ({{ major.long }})
+          <p
+            v-for="(edu, eduIndex) in resumeData.education"
+            :key="`${edu.school}-${eduIndex}`"
+            class="tab"
+          >
+            {{ edu.school }}: {{ edu.years }} <br />Major:
+            <span
+              v-for="(major, majorIndex) in edu.majors"
+              :key="`${edu.school}-${major.short}-${majorIndex}`"
+            >
+              <span v-if="majorIndex > 0">, </span><strong>{{ major.short }}</strong> ({{
+                major.long
+              }})
             </span>
-            <br />Minors: <span v-for="(minor, minorIndex) in edu.minors"
-              :key="`${edu.school}-${minor.short}-${minorIndex}`">
-              <span v-if="minorIndex > 0">, </span><strong>{{ minor.short }}</strong> ({{ minor.long }})
+            <br />Minors:
+            <span
+              v-for="(minor, minorIndex) in edu.minors"
+              :key="`${edu.school}-${minor.short}-${minorIndex}`"
+            >
+              <span v-if="minorIndex > 0">, </span><strong>{{ minor.short }}</strong> ({{
+                minor.long
+              }})
             </span>
           </p>
 
           <br />
           <div v-if="window.flavored">
             <h2>Experience:</h2>
-            <div v-for="(exp, expIndex) in resumeData.flavored.experience" :key="`flavored-${expIndex}`">
-              <p><strong>{{ exp.title }}</strong></p>
-              <p><em>{{ exp.dates }}</em></p>
+            <div
+              v-for="(exp, expIndex) in resumeData.flavored.experience"
+              :key="`flavored-${expIndex}`"
+            >
+              <p>
+                <strong>{{ exp.title }}</strong>
+              </p>
+              <p>
+                <em>{{ exp.dates }}</em>
+              </p>
               <ul>
-                <li v-for="(point, pointIndex) in exp.points" :key="`flavored-${expIndex}-${pointIndex}`">{{ point }}
+                <li
+                  v-for="(point, pointIndex) in exp.points"
+                  :key="`flavored-${expIndex}-${pointIndex}`"
+                >
+                  {{ point }}
                 </li>
               </ul>
             </div>
@@ -73,39 +121,61 @@
           <div v-else>
             <h2>Experience:</h2>
             <div v-for="(exp, expIndex) in resumeData.experience" :key="`exp-${expIndex}`">
-              <p><strong>{{ exp.title }}{{ exp.subTitle ? `, ${exp.subTitle}` : "" }} - {{ exp.company
-                  }}</strong></p>
-              <p><em>{{ exp.dates }}</em></p>
+              <p>
+                <strong
+                  >{{ exp.title }}{{ exp.subTitle ? `, ${exp.subTitle}` : '' }} -
+                  {{ exp.company }}</strong
+                >
+              </p>
+              <p>
+                <em>{{ exp.dates }}</em>
+              </p>
               <ul v-if="exp.keyPoints">
-                <li v-for="(point, pointIndex) in exp.keyPoints.split('\t ').filter(p => p.trim())"
-                  :key="`${expIndex}-${pointIndex}`">{{ point }}</li>
+                <li
+                  v-for="(point, pointIndex) in exp.keyPoints.split('\t ').filter(p => p.trim())"
+                  :key="`${expIndex}-${pointIndex}`"
+                >
+                  {{ point }}
+                </li>
               </ul>
             </div>
           </div>
           <br />
-          <h2>Projects:<button class='hyperlink' @click="changePage('projects')">Click Here</button></h2>
+          <h2>
+            Projects:<button class="hyperlink" @click="changePage('projects')">Click Here</button>
+          </h2>
           <br />
-          <h2>Skills:<button class='hyperlink' @click="changePage('skills')">Click Here</button></h2>
+          <h2>
+            Skills:<button class="hyperlink" @click="changePage('skills')">Click Here</button>
+          </h2>
           <br />
-          <h2>Contact Information:<button class='hyperlink' @click="changePage('socials')">Click Here</button>
+          <h2>
+            Contact Information:<button class="hyperlink" @click="changePage('socials')">
+              Click Here
+            </button>
           </h2>
           <p>Email: jonkido@vfos.dev</p>
         </div>
       </div>
     </div>
 
-    <div class='taskbar'>
-      <div class='start'>
-        <div class='windowIcon' />start
+    <div class="taskbar">
+      <div class="start">
+        <div class="windowIcon" />
+        start
       </div>
-      <div class='applications'>
-        <div v-for="(window, i) in windows" :key="window.key" :class="['application', { focused: window.focused }]"
-          @mousedown="setWindowState(`focused-${i}`, true)">
-          <div class='wordIcon' />
-          <div class='txt'>Jon Kido Resume 20XX Rough Draft - Microsoft Word</div>
+      <div class="applications">
+        <div
+          v-for="(window, i) in windows"
+          :key="window.key"
+          :class="['application', { focused: window.focused }]"
+          @mousedown="setWindowState(`focused-${i}`, true)"
+        >
+          <div class="wordIcon" />
+          <div class="txt">Jon Kido Resume 20XX Rough Draft - Microsoft Word</div>
         </div>
       </div>
-      <div ref="timeEle" id="time">{{ currentTime }}</div>
+      <div id="time" ref="timeEle">{{ currentTime }}</div>
     </div>
   </div>
 </template>
@@ -123,8 +193,8 @@ const windows = ref([
     focused: true,
     minimized: false,
     fullscreened: false,
-    key: createKey()
-  }
+    key: createKey(),
+  },
 ]);
 
 const currentTime = ref('');
@@ -147,7 +217,6 @@ onBeforeUnmount(() => {
   if (timeInterval) clearInterval(timeInterval);
 });
 
-
 function newWindow(flavored = false) {
   const keys = windows.value.map(function (w) {
     w.focused = false;
@@ -158,7 +227,7 @@ function newWindow(flavored = false) {
     focused: true,
     minimized: false,
     fullscreened: false,
-    key: createKey(keys)
+    key: createKey(keys),
   });
 }
 
@@ -206,7 +275,7 @@ function handleNewWindow(flavored) {
 function getIconProps(flavored) {
   return {
     ...onDoubleClick(handleNewWindow, [flavored]),
-    ...dragParentElement(true, true)
+    ...dragParentElement(true, true),
   };
 }
 
@@ -232,7 +301,17 @@ function getEditableProps() {
 @title-bar-blue: #0050ee;
 @title-bar-blue-dark: #0831d9;
 @title-bar-blue-darker: #001ea0;
-@title-bar-blue-gradient: linear-gradient(180deg, #0997ff, #0053ee 8%, #0050ee 40%, #06f 88%, #06f 93%, #005bff 95%, #003dd7 96%, #003dd7);
+@title-bar-blue-gradient: linear-gradient(
+  180deg,
+  #0997ff,
+  #0053ee 8%,
+  #0050ee 40%,
+  #06f 88%,
+  #06f 93%,
+  #005bff 95%,
+  #003dd7 96%,
+  #003dd7
+);
 @start-green: #52be27;
 @start-green-dark: #2f6b07;
 @start-green-light: #a6db96;
@@ -300,7 +379,9 @@ function getEditableProps() {
       font-size: 1em;
       border-bottom-right-radius: 10px;
       border-top-right-radius: 10px;
-      box-shadow: inset 0 0 19px 0 @start-green-dark, inset @start-green-light 0 7px 19px -7px;
+      box-shadow:
+        inset 0 0 19px 0 @start-green-dark,
+        inset @start-green-light 0 7px 19px -7px;
       transform: translateY(-3px);
       position: relative;
       cursor: pointer;
@@ -376,7 +457,13 @@ function getEditableProps() {
     z-index: 0;
     overflow: hidden;
     resize: both;
-    box-shadow: inset -1px -1px #00138c, inset 1px 1px @title-bar-blue-dark, inset -2px -2px @title-bar-blue-darker, inset 2px 2px #166aee, inset -3px -3px #003bda, inset 3px 3px #0855dd;
+    box-shadow:
+      inset -1px -1px #00138c,
+      inset 1px 1px @title-bar-blue-dark,
+      inset -2px -2px @title-bar-blue-darker,
+      inset 2px 2px #166aee,
+      inset -3px -3px #003bda,
+      inset 3px 3px #0855dd;
     position: absolute;
     border-top-left-radius: @border-radius;
     border-top-right-radius: @border-radius;
@@ -428,7 +515,7 @@ function getEditableProps() {
   display: flex;
   flex-direction: column;
   outline: none;
-  font-family: "Times New Roman", Times, serif;
+  font-family: 'Times New Roman', Times, serif;
   margin: 30px auto;
   border: @black 2px solid;
   box-shadow: @black 5px 5px 0;
@@ -441,7 +528,12 @@ function getEditableProps() {
   -webkit-user-select: text;
   user-select: text;
 
-  h1, h2, p, li, strong, em {
+  h1,
+  h2,
+  p,
+  li,
+  strong,
+  em {
     color: @black;
   }
 

@@ -1,5 +1,5 @@
 <template>
-    <canvas ref="canvas"></canvas>
+  <canvas ref="canvas"></canvas>
 </template>
 
 <script setup>
@@ -12,9 +12,9 @@ defineExpose({ canvas });
 
 <style lang="less" scoped>
 canvas {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 </style>

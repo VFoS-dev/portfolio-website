@@ -5,11 +5,17 @@ const path = require('path');
 const vueFile = fs.readFileSync('src/views/ResumeView.vue', 'utf8');
 
 // Extract minimize SVG
-const minimizeMatch = vueFile.match(/button\.minimize\s*\{[^}]*background-image:\s*url\(data:image\/svg\+xml;charset=utf-8,([^)]+)\)/);
-// Extract maximize SVG  
-const maximizeMatch = vueFile.match(/button\.maximize\s*\{[^}]*background-image:\s*url\(data:image\/svg\+xml;charset=utf-8,([^)]+)\)/);
+const minimizeMatch = vueFile.match(
+  /button\.minimize\s*\{[^}]*background-image:\s*url\(data:image\/svg\+xml;charset=utf-8,([^)]+)\)/
+);
+// Extract maximize SVG
+const maximizeMatch = vueFile.match(
+  /button\.maximize\s*\{[^}]*background-image:\s*url\(data:image\/svg\+xml;charset=utf-8,([^)]+)\)/
+);
 // Extract close SVG
-const closeMatch = vueFile.match(/button\.close\s*\{[^}]*background-image:\s*url\(data:image\/svg\+xml;charset=utf-8,([^)]+)\)/);
+const closeMatch = vueFile.match(
+  /button\.close\s*\{[^}]*background-image:\s*url\(data:image\/svg\+xml;charset=utf-8,([^)]+)\)/
+);
 
 if (minimizeMatch) {
   const decoded = decodeURIComponent(minimizeMatch[1]);
@@ -28,4 +34,3 @@ if (closeMatch) {
   fs.writeFileSync('public/images/resume/close.svg', decoded);
   console.log('Created close.svg');
 }
-

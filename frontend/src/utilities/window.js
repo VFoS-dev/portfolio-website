@@ -1,76 +1,84 @@
 export function createKey(currentkeys = []) {
-    const l = "abcdefghijklmnopqurstuvwyz"
-    const key = [...l].map(() => l[Math.floor(Math.random() * l.length)]).join("")
-    return !currentkeys.includes(key) ? key : createKey(currentkeys)
+  const l = 'abcdefghijklmnopqurstuvwyz';
+  const key = [...l].map(() => l[Math.floor(Math.random() * l.length)]).join('');
+  return !currentkeys.includes(key) ? key : createKey(currentkeys);
 }
 
-export function onDoubleClick(callback = () => { }, params = []) {
-    let first = 0;
+export function onDoubleClick(callback = () => {}, params = []) {
+  let first = 0;
 
-    function click() {
-        const time = new Date()
-        if (time - first < 1000) callback(...params)
-        first = time;
-    }
+  function click() {
+    const time = new Date();
+    if (time - first < 1000) callback(...params);
+    first = time;
+  }
 
-    return {
-        onDblclick: () => callback(...params),
-        onTouchend: click,
-    }
+  return {
+    onDblclick: () => callback(...params),
+    onTouchend: click,
+  };
 }
 
-export function dragParentElement(thisInstead = false, absoluteParent = false, checkAchievement = () => { }, achievementName = '') {
-    function mouseDragSetup(e) {
-        let x = e.clientX, y = e.clientY, parent = thisInstead ? e.target : e.target.parentElement;
-        if (absoluteParent) parent.style.position = 'absolute';
+export function dragParentElement(
+  thisInstead = false,
+  absoluteParent = false,
+  checkAchievement = () => {},
+  achievementName = ''
+) {
+  function mouseDragSetup(e) {
+    let x = e.clientX,
+      y = e.clientY,
+      parent = thisInstead ? e.target : e.target.parentElement;
+    if (absoluteParent) parent.style.position = 'absolute';
 
-        function elementDrag(e) {
-            checkAchievement(achievementName)
-            parent.style.top = `${(parent.offsetTop - (y - (y = e.clientY)))}px`;
-            parent.style.left = `${(parent.offsetLeft - (x - (x = e.clientX)))}px`;
-        }
-
-        function closeDragElement() {
-            document.onmousemove = document.onmouseup = null;
-        }
-
-        document.onmousemove = elementDrag;
-        document.onmouseup = closeDragElement;
+    function elementDrag(e) {
+      checkAchievement(achievementName);
+      parent.style.top = `${parent.offsetTop - (y - (y = e.clientY))}px`;
+      parent.style.left = `${parent.offsetLeft - (x - (x = e.clientX))}px`;
     }
 
-    function touchDragSetup(e) {
-        let x = e.targetTouches[0].clientX, y = e.targetTouches[0].clientY, parent = thisInstead ? e.target : e.target.parentElement;
-        if (absoluteParent) parent.style.position = 'absolute';
-
-        function elementDrag(e) {
-            checkAchievement(achievementName)
-            parent.style.top = `${(parent.offsetTop - (y - (y = e.targetTouches[0].clientY)))}px`;
-            parent.style.left = `${(parent.offsetLeft - (x - (x = e.targetTouches[0].clientX)))}px`;
-        }
-
-        function closeDragElement() {
-            document.ontouchmove = document.ontouchend = null;
-        }
-
-        document.ontouchmove = elementDrag;
-        document.ontouchend = closeDragElement;
+    function closeDragElement() {
+      document.onmousemove = document.onmouseup = null;
     }
 
-    return {
-        onMousedown: mouseDragSetup,
-        onTouchstart: touchDragSetup,
+    document.onmousemove = elementDrag;
+    document.onmouseup = closeDragElement;
+  }
+
+  function touchDragSetup(e) {
+    let x = e.targetTouches[0].clientX,
+      y = e.targetTouches[0].clientY,
+      parent = thisInstead ? e.target : e.target.parentElement;
+    if (absoluteParent) parent.style.position = 'absolute';
+
+    function elementDrag(e) {
+      checkAchievement(achievementName);
+      parent.style.top = `${parent.offsetTop - (y - (y = e.targetTouches[0].clientY))}px`;
+      parent.style.left = `${parent.offsetLeft - (x - (x = e.targetTouches[0].clientX))}px`;
     }
+
+    function closeDragElement() {
+      document.ontouchmove = document.ontouchend = null;
+    }
+
+    document.ontouchmove = elementDrag;
+    document.ontouchend = closeDragElement;
+  }
+
+  return {
+    onMousedown: mouseDragSetup,
+    onTouchstart: touchDragSetup,
+  };
 }
 
 export function editableFocusRot() {
-    function changeRot(bool) {
-        window.dispatchEvent(new CustomEvent("custom-changeRot", { detail: bool }));
-    }
+  function changeRot(bool) {
+    window.dispatchEvent(new CustomEvent('custom-changeRot', { detail: bool }));
+  }
 
-    return {
-        contentEditable: true,
-        onFocus: () => changeRot(true),
-        onBlur: () => changeRot(false),
-    }
+  return {
+    contentEditable: true,
+    onFocus: () => changeRot(true),
+    onBlur: () => changeRot(false),
+  };
 }
-

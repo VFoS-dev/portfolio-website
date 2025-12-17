@@ -1,10 +1,10 @@
 <template>
-    <Piece class="s2x2">
-        <Block b1 />
-        <Block b2 />
-        <Block b3 />
-        <Block b4 />
-    </Piece>
+  <Piece class="s2x2">
+    <Block b1 />
+    <Block b2 />
+    <Block b3 />
+    <Block b4 />
+  </Piece>
 </template>
 
 <script setup>
@@ -14,6 +14,6 @@ import Piece from './Piece.vue';
 
 <style scoped lang="less">
 div {
-    --color: rgb(247, 0, 255);
+  --color: rgb(247, 0, 255);
 }
 </style>

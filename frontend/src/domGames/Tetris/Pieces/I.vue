@@ -1,10 +1,10 @@
 <template>
-    <Piece class="s4x1">
-        <Block b1 />
-        <Block b2 />
-        <Block b3 />
-        <Block b4 />
-    </Piece>
+  <Piece class="s4x1">
+    <Block b1 />
+    <Block b2 />
+    <Block b3 />
+    <Block b4 />
+  </Piece>
 </template>
 
 <script setup>
@@ -14,6 +14,6 @@ import Block from './Block.vue';
 
 <style scoped lang="less">
 div {
-    --color: green;
+  --color: green;
 }
 </style>

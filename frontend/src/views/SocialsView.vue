@@ -1,11 +1,5 @@
-<template>
-    new socials
-</template>
+<template>new socials</template>
 
-<script setup>
+<script setup></script>
 
-</script>
-
-<style lang="less" scoped>
-
-</style>
+<style lang="less" scoped></style>

@@ -1,8 +1,7 @@
 <template>
-    <Tetris :active="cubeStore.state.projects">
-        <div>cool</div>
-
-    </Tetris>
+  <Tetris :active="cubeStore.state.projects">
+    <div>cool</div>
+  </Tetris>
 </template>
 
 <script setup>

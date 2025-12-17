@@ -22,30 +22,30 @@
   --nav-backdrop-z: 7;
   --nav-z: 5;
 
-  --hide-duration: .5s;
+  --hide-duration: 0.5s;
 }
 
 @font-face {
-  font-family: "Handjet";
+  font-family: 'Handjet';
   src: url(/fonts/Handjet.ttf);
 }
 
 @font-face {
-  font-family: "go3v2";
+  font-family: 'go3v2';
   src: url(/fonts/go3v2.ttf);
 }
 
 @font-face {
-  font-family: "Avenir Next";
+  font-family: 'Avenir Next';
   src: url(/fonts/AvenirNextLTPro-Regular.otf);
 }
 
 @font-face {
-  font-family: "Avenir Next Bold";
+  font-family: 'Avenir Next Bold';
   src: url(/fonts/AvenirNextLTPro-Bold.otf);
 }
 
 @font-face {
-  font-family: "Avenir Next Italic";
+  font-family: 'Avenir Next Italic';
   src: url(/fonts/AvenirNextLTPro-It.otf);
 }

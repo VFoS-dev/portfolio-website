@@ -1,39 +1,39 @@
-import Fragment from '@/components/Fragment.vue'
-import { cubeStore } from '@/stores/cubeStore'
-import { navStore } from '@/stores/navStore'
-import { createRouter, createWebHistory } from 'vue-router'
+import Fragment from '@/components/Fragment.vue';
+import { cubeStore } from '@/stores/cubeStore';
+import { navStore } from '@/stores/navStore';
+import { createRouter, createWebHistory } from 'vue-router';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/:pathMatch(.*)*',
-      redirect: '/'
+      redirect: '/',
     },
     {
       path: '/',
       name: 'home',
-      component: Fragment
+      component: Fragment,
     },
     {
       path: '/socials',
       name: 'socials',
-      component: Fragment
+      component: Fragment,
     },
     {
       path: '/resume',
       name: 'resume',
-      component: Fragment
+      component: Fragment,
     },
     {
       path: '/about',
       name: 'about',
-      component: Fragment
+      component: Fragment,
     },
     {
       path: '/skills',
       name: 'skills',
-      component: Fragment
+      component: Fragment,
     },
     {
       path: '/projects',
@@ -41,25 +41,25 @@ const router = createRouter({
         {
           path: '',
           name: 'projects',
-          component: Fragment
+          component: Fragment,
         },
         {
           path: ':name',
           name: 'project',
-          component: Fragment
-        }
-      ]
-    }
-  ]
-})
+          component: Fragment,
+        },
+      ],
+    },
+  ],
+});
 
-export default router
+export default router;
 
-router.afterEach((to) => {
-  cubeStore.rotateTo(to)
-  navStore.navigated()
-})
+router.afterEach(to => {
+  cubeStore.rotateTo(to);
+  navStore.navigated();
+});
 
 router.beforeResolve(() => {
-  cubeStore.beforeRoute()
-})
+  cubeStore.beforeRoute();
+});

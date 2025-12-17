@@ -1,4 +1,4 @@
 export default {
-    isMobile: 'isMobile',
-    isPortrait: 'isPortrait',
-}
+  isMobile: 'isMobile',
+  isPortrait: 'isPortrait',
+};

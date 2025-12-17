@@ -1,10 +1,10 @@
 <template>
-    <Piece class="s3x2">
-        <Block b1 />
-        <Block b4 />
-        <Block b5 />
-        <Block b6 />
-    </Piece>
+  <Piece class="s3x2">
+    <Block b1 />
+    <Block b4 />
+    <Block b5 />
+    <Block b6 />
+  </Piece>
 </template>
 
 <script setup>
@@ -14,6 +14,6 @@ import Block from './Block.vue';
 
 <style scoped lang="less">
 div {
-    --color: blue;
+  --color: blue;
 }
 </style>

@@ -1,12 +1,12 @@
 <template>
-    <Teleport :to="to" :disabled="disabled" :key="disabled">
-        <slot></slot>
-    </Teleport>
+  <Teleport :key="disabled" :to="to" :disabled="disabled">
+    <slot></slot>
+  </Teleport>
 </template>
 
 <script setup>
 defineProps({
-    to: String,
-    disabled: Boolean,
-})
+  to: String,
+  disabled: Boolean,
+});
 </script>

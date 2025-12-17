@@ -1,20 +1,25 @@
 <template>
-    <section :style="styles" :key="colors">
+  <section :key="colors" :style="styles">
+    <header>
+      <AlphaNumericButton :clicked="state === 'alphabetical'" @click="toggleSort" />
+      <h1>{{ props.header }}</h1>
+      <Saber @click="changeColors" />
+    </header>
+    <div class="sabers" :style="{ '--count': props.skills.length }" :state="state">
+      <div
+        v-for="({ name, percent }, index) of props.skills"
+        :key="index"
+        class="sorted"
+        :style="sorted[name]"
+      >
         <header>
-            <AlphaNumericButton @click="toggleSort" :clicked="state === 'alphabetical'" />
-            <h1>{{ props.header }}</h1>
-            <Saber @click="changeColors" />
+          <h2>{{ name }}</h2>
+          <span>{{ percent }}%</span>
         </header>
-        <div class="sabers" :style="{ '--count': props.skills.length }" :state="state">
-            <div class="sorted" v-for="({ name, percent }, index) of props.skills" :key="index" :style="sorted[name]">
-                <header>
-                    <h2>{{ name }}</h2>
-                    <span>{{ percent }}%</span>
-                </header>
-                <Lightsaber :percent="percent" v-bind="colors" :getColors="props.getColors" />
-            </div>
-        </div>
-    </section>
+        <Lightsaber :percent="percent" v-bind="colors" :get-colors="props.getColors" />
+      </div>
+    </div>
+  </section>
 </template>
 
 <script setup>
@@ -24,117 +29,120 @@ import AlphaNumericButton from '@/components/Buttons/AlphaNumericButton.vue';
 import Saber from './Buttons/Saber.vue';
 
 const props = defineProps({
-    header: String,
-    skills: Array,
-    getColors: Function,
-})
+  header: String,
+  skills: Array,
+  getColors: Function,
+});
 
-const trigger = ref(false)
-const colors = computed(() => ({ trigger: trigger.value, ...props.getColors() }))
+const trigger = ref(false);
+const colors = computed(() => ({ trigger: trigger.value, ...props.getColors() }));
 const styles = computed(() => {
-    const { textColor, auraColor, innerColor, lightColor } = colors.value
-    return {
-        '--text-color': textColor,
-        '--aura-color': auraColor,
-        '--inner-color': innerColor,
-        '--light-color': lightColor,
-    }
-})
-const state = ref('alphabetical')
+  const { textColor, auraColor, innerColor, lightColor } = colors.value;
+  return {
+    '--text-color': textColor,
+    '--aura-color': auraColor,
+    '--inner-color': innerColor,
+    '--light-color': lightColor,
+  };
+});
+const state = ref('alphabetical');
 const sorted = computed(() => {
-    const { skills } = props
+  const { skills } = props;
 
-    const table = {}
-    const names = skills.map(({ name }, i) => (table[name] = i, name))
-    const skill = (i) => skills[table[i]]
-    const toObject = (arr) => arr.reduce((t, c, i) => (t[c] = i, t), {})
+  const table = {};
+  const names = skills.map(({ name }, i) => ((table[name] = i), name));
+  const skill = i => skills[table[i]];
+  const toObject = arr => arr.reduce((t, c, i) => ((t[c] = i), t), {});
 
-    const byPercent = toObject(names.sort((a, b) => skill(b).percent - skill(a).percent))
-    const byName = toObject(names.sort((a, b) => skill(a).name.localeCompare(skill(b).name)))
+  const byPercent = toObject(names.sort((a, b) => skill(b).percent - skill(a).percent));
+  const byName = toObject(names.sort((a, b) => skill(a).name.localeCompare(skill(b).name)));
 
-    return names.reduce((t, c) => (t[c] = { '--value': byPercent[c], '--name': byName[c] }, t), {})
-})
+  return names.reduce((t, c) => ((t[c] = { '--value': byPercent[c], '--name': byName[c] }), t), {});
+});
 
 function toggleSort() {
-    state.value = {
-        alphabetical: 'numerical',
-        numerical: 'alphabetical',
-    }[state.value]
+  state.value = {
+    alphabetical: 'numerical',
+    numerical: 'alphabetical',
+  }[state.value];
 }
 
 function changeColors() {
-    trigger.value = !trigger.value
+  trigger.value = !trigger.value;
 }
 </script>
 
 <style lang="less" scoped>
 .sorted header {
-    align-items: baseline;
-    margin-bottom: .5rem;
+  align-items: baseline;
+  margin-bottom: 0.5rem;
 }
 
 header {
-    z-index: 1;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+  z-index: 1;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 
-    h1 {
-        font-size: 2.5rem;
-        line-height: 2.5rem;
-    }
+  h1 {
+    font-size: 2.5rem;
+    line-height: 2.5rem;
+  }
 
-    h2 {
-        font-size: 2rem;
-        line-height: 2rem;
-    }
+  h2 {
+    font-size: 2rem;
+    line-height: 2rem;
+  }
 
-    span {
-        font-size: 1rem;
-        line-height: 1rem;
-    }
-
+  span {
+    font-size: 1rem;
+    line-height: 1rem;
+  }
 }
 
 * {
-    color: var(--text-color, white);
-    font-weight: bold;
+  color: var(--text-color, white);
+  font-weight: bold;
 }
 
 section {
-    background-color: var(--background);
-    border-radius: 30px;
-    padding: 30px;
-    border: 1px solid var(--light-color);
-    box-shadow: var(--inner-color, white) 0px 0px 5px, var(--aura-color) 0px 0px 15px;
-    opacity: .9;
-    transition: opacity 1s 4s;
+  background-color: var(--background);
+  border-radius: 30px;
+  padding: 30px;
+  border: 1px solid var(--light-color);
+  box-shadow:
+    var(--inner-color, white) 0px 0px 5px,
+    var(--aura-color) 0px 0px 15px;
+  opacity: 0.9;
+  transition: opacity 1s 4s;
 
-    &:hover {
-        transition-delay: 0s;
-        opacity: 1;
-    }
+  &:hover {
+    transition-delay: 0s;
+    opacity: 1;
+  }
 }
 
 .sabers {
-    --cell-size: calc(2rem + 16px);
-    --cell-padding: .5rem;
-    height: calc(var(--count) * calc(2 * var(--cell-padding) + var(--cell-size)));
-    position: relative;
+  --cell-size: calc(2rem + 16px);
+  --cell-padding: 0.5rem;
+  height: calc(var(--count) * calc(2 * var(--cell-padding) + var(--cell-size)));
+  position: relative;
 
-    .sorted {
-        position: absolute;
-        width: 100%;
-        top: calc(var(--index) * calc(2 * var(--cell-padding) + var(--cell-size)) + var(--cell-padding));
-        transition: top .25s;
-    }
+  .sorted {
+    position: absolute;
+    width: 100%;
+    top: calc(
+      var(--index) * calc(2 * var(--cell-padding) + var(--cell-size)) + var(--cell-padding)
+    );
+    transition: top 0.25s;
+  }
 
-    &[state="alphabetical"] .sorted {
-        --index: var(--name);
-    }
+  &[state='alphabetical'] .sorted {
+    --index: var(--name);
+  }
 
-    &[state="numerical"] .sorted {
-        --index: var(--value);
-    }
+  &[state='numerical'] .sorted {
+    --index: var(--value);
+  }
 }
 </style>

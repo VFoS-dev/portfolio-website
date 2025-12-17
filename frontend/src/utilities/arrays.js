@@ -1,5 +1,5 @@
 export function randomIndex(array) {
-    if (!array.length) return
+  if (!array.length) return;
 
-    return array[Math.floor(Math.random() * array.length)]
+  return array[Math.floor(Math.random() * array.length)];
 }
