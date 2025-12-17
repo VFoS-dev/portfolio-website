@@ -1,0 +1,97 @@
+{
+  "experience": [
+    {
+      "title": "Software Engineer",
+      "company": "Matraex Inc.",
+      "dates": "January 2023 - August 2023",
+      "keyPoints": "\t Did full stack development on multiple web/app projects for clients\n\t Created scripts to automate tasks, making development faster and smoother\n\t Worked with the team to improve processes and increase documentation standards\n\t Made flexible tools and reusable features that are used across several projects\n\t Presented work to clients and responded to their feedback\n\t Collaborated with teammates, giving them feedback on problem solving and code optimization"
+    },
+    {
+      "title": "Software Developer",
+      "company": "GIMM Works",
+      "dates": "January 2020 - January 2023",
+      "keyPoints": "\t Worked with other student developers on unique software projects for clients\n\t Led back-end dev on several projects\n\t Did full stack development and 3D modeling for multiple projects\n\t Helped other teams implement security features on their projects\n\t Mentored two new hires to help them learn React"
+    },
+    {
+      "title": "Independent Contractor",
+      "subTitle": "App Development",
+      "company": "The Simple Ring",
+      "dates": "September 2020 - December 2021",
+      "keyPoints": "\t Worked for the founders of The Simple Ring on a consumer-based mobile app\n\t Wrote the back-end data storage structure, designed and implemented the front-end UI, and integrated Firebase into the app\n\t Prompted improvements in code quality and structure that affected both the front-end and the back-end"
+    },
+    {
+      "title": "GIMM Senior Peer Mentor",
+      "company": "Boise State GIMM Program",
+      "dates": "July 2018 - December 2019",
+      "keyPoints": "\t Helped current GIMM students with debugging and gave advice about their code\n\t Assisted other peer mentors when they got stuck\n\t Presented previous projects of the department to prospective students and clients\n\t Managed checking out equipment to other students"
+    }
+  ],
+  "education": [
+    {
+      "school": "Boise State University",
+      "years": "",
+      "majors": [
+        {
+          "short": "GIMM",
+          "long": "Games, Interactive Media, and Mobile"
+        }
+      ],
+      "minors": [
+        {
+          "short": "MATH",
+          "long": "Applied Mathematics"
+        },
+        {
+          "short": "ITM",
+          "long": "Information Technology Management"
+        }
+      ]
+    }
+  ],
+  "flavored": {
+    "experience": [
+      {
+        "title": "Software Engineer - Matraex Inc.",
+        "dates": "January 2023 - August 2023",
+        "points": [
+          "Spearheaded end-to-end development across diverse web and app projects, showcasing adeptness in full-stack implementation.",
+          "Pioneered the creation of meticulously engineered scripts, streamlining workflows and augmenting efficiency in development processes.",
+          "Collaborated seamlessly within cross-functional teams to drive process enhancement initiatives, elevating documentation standards and ensuring a culture of continuous improvement.",
+          "Architected adaptable tools and modular features, garnering utilization across a spectrum of projects and amplifying development scalability.",
+          "Masterminded optimization strategies for multiple pages, functions, and intricate API calls, resulting in substantial performance enhancements and refined user experiences."
+        ]
+      },
+      {
+        "title": "Software Developer - GIMM Works",
+        "dates": "January 2020 - January 2023",
+        "points": [
+          "Collaborated closely with a dynamic cohort of student developers, orchestrating the successful delivery of bespoke software projects that catered to discerning client needs.",
+          "Assumed a pivotal role as the driving force behind the implementation of back-end solutions on multiple projects, showcasing proficiency in leading technical endeavors.",
+          "Demonstrated mastery in executing full-stack development assignments while concurrently leveraging 3D modeling expertise to infuse innovation into diverse project landscapes.",
+          "Played an instrumental role in bolstering project integrity by imparting security prowess to fellow teams, thereby fortifying applications with robust protective measures.",
+          "Distinguished as a dedicated mentor, steering the growth of two newly onboarded professionals by equipping them with profound insights into React, thereby catalyzing their learning journeys."
+        ]
+      },
+      {
+        "title": "Independent Contractor, App Development - The Simple Ring",
+        "dates": "September 2020 - December 2021",
+        "points": [
+          "Contributed significantly to The Simple Ring, an innovative consumer-centric mobile app, under the direct guidance of its founders.",
+          "Devised and constructed the robust back-end data storage architecture, seamlessly aligning it with the cutting-edge front-end UI design, and seamlessly integrating Firebase functionality to enhance app performance.",
+          "Championed a culture of excellence by driving advancements in code quality and structural optimization, exerting a profound impact on both the front-end and back-end components of the application."
+        ]
+      },
+      {
+        "title": "GIMM Senior Peer Mentor - Boise State GIMM Program",
+        "dates": "July 2018 - December 2019",
+        "points": [
+          "Elevated the learning experience of current GIMM students by providing invaluable debugging insights and expert guidance on their code-related challenges.",
+          "Demonstrated exceptional teamwork and expertise by stepping in to assist fellow peer mentors during times of technical impasse.",
+          "Served as a captivating presenter, showcasing the department's past projects to both potential students and discerning clients, thereby bolstering its reputation and fostering engagement.",
+          "Exhibited strong organizational skills through adept management of equipment lending, ensuring seamless checkout procedures and optimal resource allocation for fellow students."
+        ]
+      }
+    ]
+  }
+}
+
