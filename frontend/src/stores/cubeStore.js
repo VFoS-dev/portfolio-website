@@ -80,16 +80,27 @@ const useCubeStore = defineStore('cubeStore', {
         this.fromMound = false;
         this.state.expand = true;
       }
+      
+      // Reset the resetting flag after navigation completes
+      this._resetting = false;
     },
     reset() {
+      // Prevent multiple rapid resets
+      if (this._resetting) return;
+      this._resetting = true;
+      
       this.state.expand = true;
       for (const name of this.getList()) {
         const _quaternion = this[name];
         if (Quaternion.SameForward(_quaternion, this.current)) {
           this.updateFocus(name);
-          return router.push({ name });
+          router.push({ name }).finally(() => {
+            this._resetting = false;
+          });
+          return;
         }
       }
+      this._resetting = false;
     },
     rotate({ x = 0, y = 0, z = 0 }) {
       this.state.expand = false;

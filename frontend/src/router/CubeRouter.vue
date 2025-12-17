@@ -48,7 +48,9 @@ onMounted(() => {
   }, 0);
 });
 
-function cubeRotationStarted() {
+function cubeRotationStarted({ propertyName }) {
+  // Only track transform transitions
+  if (propertyName !== 'transform') return;
   animating[0] = true;
 }
 
@@ -59,9 +61,15 @@ function cubeRotationFinished({ propertyName }) {
   cubeStore.reset();
 }
 
-function panelHasExpanded({ target }) {
+function panelHasExpanded({ target, propertyName }) {
+  // Only handle width/height transitions, ignore other properties
+  if (propertyName !== 'width' && propertyName !== 'height') return;
+  
   const { [target.id]: active, expand } = cubeStore.state;
   if (!active || !expand) return;
+
+  // Only process once per expansion (check if already has 'in' class)
+  if (target.classList.contains('in')) return;
 
   animating[0] = false;
   target.classList.add('in');
@@ -88,8 +96,14 @@ function teleportDisabled(side) {
     return !active;
   }
 
-  if (active && expand && parent?.id === 'app') {
-    elements[side].classList.add('in');
+  // Only add 'in' class if section is active, expanded, teleported, and doesn't already have it
+  if (active && expand && parent?.id === 'app' && !elements[side]?.classList.contains('in')) {
+    // Use requestAnimationFrame to ensure DOM is ready
+    requestAnimationFrame(() => {
+      if (elements[side] && elements[side].parentNode?.id === 'app') {
+        elements[side].classList.add('in');
+      }
+    });
   }
 
   return !active || !expand || isAnimating();
