@@ -8,16 +8,16 @@
       <div
         v-for="(window, i) in windows"
         :key="window.key"
-        :class="['application', { focused: window.focused }]"
+        :class="['application', { focused: window.state?.focused }]"
         @mousedown="$emit('focus', i)"
       >
         <component
-          :is="getIconComponent(window.config?.icon)"
-          v-if="window.config?.icon && getIconComponent(window.config.icon)"
-          :src="getIconSrc(window.config.icon)"
-          class="taskbar-icon"
+          :is="getIconComponent(window.icon)"
+          v-if="window.icon && getIconComponent(window.icon)"
+          :src="getIconSrc(window.icon)"
+          :class="['taskbar-icon', window.iconClass]"
         />
-        <div class="txt">{{ window.config?.title || 'Jon Kido Resume 20XX Rough Draft - Microsoft Word' }}</div>
+        <div class="txt">{{ window.title || 'Jon Kido Resume 20XX Rough Draft - Microsoft Word' }}</div>
       </div>
     </div>
     <div id="time" ref="timeEle">{{ currentTime }}</div>

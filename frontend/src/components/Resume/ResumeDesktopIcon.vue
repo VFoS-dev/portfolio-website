@@ -1,7 +1,7 @@
 <template>
   <div class="start">
     <div class="windows-icon" style="position: relative" v-bind="iconProps">
-      <img src="/images/resume/wordicon_destop.svg" />
+      <img :src="icon" />
       <p>{{ label }}</p>
     </div>
   </div>
@@ -11,6 +11,10 @@
 defineProps({
   iconProps: {
     type: Object,
+    required: true,
+  },
+  icon: {
+    type: String,
     required: true,
   },
   label: {

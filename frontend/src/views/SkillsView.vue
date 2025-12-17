@@ -3,6 +3,7 @@
   <Wrapper :scroll-top="skillStore.scroll" @scroll="skillStore.updateScroll">
     <SkillGroup
       v-for="[name, value] of Object.entries(skillStore.getSkills)"
+      :key="name"
       :header="name"
       :skills="value"
       :get-colors="skillStore.randomColor"

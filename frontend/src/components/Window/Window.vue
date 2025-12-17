@@ -1,24 +1,33 @@
 <template>
-  <Resizable :disabled="windowState.fullscreened" :min-width="config.minWidth || 150"
-    :min-height="config.minHeight || 150"
-    :classes="['window', { focused: windowState.focused, fullscreened: windowState.fullscreened, minimized: windowState.minimized }]"
-    @mousedown="$emit('focus', index)">
+  <Resizable
+    :disabled="state.fullscreened"
+    :min-width="minWidth || 150"
+    :min-height="minHeight || 150"
+    :classes="['window', { focused: state.focused, fullscreened: state.fullscreened, minimized: state.minimized }]"
+    @mousedown="$emit('focus', index)"
+  >
     <div class="title-bar" v-bind="titleBarProps">
       <div class="title-bar-text">
         <component
-          v-if="config.icon && iconComponent"
           :is="iconComponent"
+          v-if="icon && iconComponent"
           :src="iconSrc"
-          :class="['windowIcon', config.iconClass]"
+          :class="['windowIcon', iconClass]"
         />
-        <span class="title-text">{{ config.title }}</span>
+        <span class="title-text">{{ title }}</span>
       </div>
       <div class="title-bar-controls">
-        <button v-for="control in ['minimize', 'maximize', 'close']" :key="control" :id="`${control}-${index}`"
-          :class="control" :aria-label="control" @click="$emit(control, index)" />
+        <button
+          v-for="control in ['minimize', 'maximize', 'close']"
+          :id="`${control}-${index}`"
+          :key="control"
+          :class="control"
+          :aria-label="control"
+          @click="$emit(control, index)"
+        />
       </div>
     </div>
-    <slot />
+    <App :app="app" :app-props="appProps" />
   </Resizable>
 </template>
 
@@ -26,61 +35,76 @@
 import { computed, defineAsyncComponent } from 'vue';
 import Resizable from './Resizable.vue';
 import { dragParentElement } from '@/utilities/window';
+import App from './App.vue';
 
 const props = defineProps({
-  windowState: {
+  title: {
+    type: String,
+    required: true,
+  },
+  icon: {
+    type: [String, Object],
+    default: null,
+  },
+  iconClass: {
+    type: String,
+    default: null,
+  },
+  state: {
     type: Object,
     required: true,
+  },
+  app: {
+    type: String,
+    required: true,
+  },
+  appProps: {
+    type: Object,
+    default: () => ({}),
   },
   index: {
     type: Number,
     required: true,
   },
-  config: {
-    type: Object,
-    required: true,
-    default: () => ({
-      title: 'Window',
-      icon: null,
-      iconClass: null,
-      controls: {
-        minimize: true,
-        maximize: true,
-        close: true,
-      },
-    }),
+  minWidth: {
+    type: Number,
+    default: 150,
+  },
+  minHeight: {
+    type: Number,
+    default: 150,
   },
 });
 
 defineEmits(['focus', 'minimize', 'maximize', 'close']);
 
 const iconComponent = computed(() => {
-  if (!props.config.icon) return null;
-  
+  if (!props.icon) return null;
+
   // If icon is a string path to an image, use img tag
-  if (typeof props.config.icon === 'string' && (props.config.icon.startsWith('/') || props.config.icon.startsWith('http'))) {
+  if (typeof props.icon === 'string' && (props.icon.startsWith('/') || props.icon.startsWith('http'))) {
     return 'img';
   }
-  
+
   // If icon is a string component path, dynamically import it
-  if (typeof props.config.icon === 'string') {
+  if (typeof props.icon === 'string') {
     try {
       return defineAsyncComponent({
-        loader: () => import(`@/components/${props.config.icon}.vue`),
+        loader: () => import(`@/components/${props.icon}.vue`),
         errorComponent: null,
       });
     } catch {
       return null;
     }
   }
-  
+
   // If icon is already a component, use it directly
-  return props.config.icon;
+  return props.icon;
 });
 
 const iconSrc = computed(() => {
-  if (typeof props.config.icon === 'string' && (props.config.icon.startsWith('/') || props.config.icon.startsWith('http'))) {
-    return props.config.icon;
+  if (typeof props.icon === 'string' && (props.icon.startsWith('/') || props.icon.startsWith('http'))) {
+    return props.icon;
   }
   return null;
 });
@@ -149,7 +173,7 @@ const titleBarProps = getTitleBarProps();
   height: 80vh;
   width: 90vw;
   left: 5vw;
-  top: 5vh;
+  top: 10vh;
   font-size: 11px;
   background: @window-bg;
 

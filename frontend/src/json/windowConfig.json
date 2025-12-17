@@ -1,0 +1,36 @@
+{
+  "icons": [
+    {
+      "title": "Jon Kido Resume 20XX Rough Draft - Microsoft Word",
+      "desktop-icon": "/images/resume/wordicon_destop.svg",
+      "icon": "/images/resume/wordIcon.png",
+      "app": "Word",
+      "appProps": {
+        "content": "Hi"
+      }
+    },
+    {
+      "title": "Flavored Resume 20XX Rough Draft - Microsoft Word",
+      "desktop-icon": "/images/resume/wordicon_destop.svg",
+      "icon": "/images/resume/wordIcon.png",
+      "app": "Word",
+      "appProps": {
+        "content": "Hi Bye"
+      }
+    },
+    {
+      "title": "Minesweeper",
+      "desktop-icon": "/images/resume/minesweepericon.svg",
+      "icon": "/images/resume/minesweepericon.svg",
+      "app": "Minesweeper"
+    }
+  ],
+  "defaultWindow": {
+    "title": "Jon Kido Resume 20XX Rough Draft - Microsoft Word",
+    "icon": "/images/resume/wordIcon.png",
+    "app": "Word",
+    "appProps": {
+      "content": "Hi"
+    }
+  }
+}
