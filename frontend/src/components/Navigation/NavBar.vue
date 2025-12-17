@@ -8,8 +8,8 @@
           <li v-if="isMobile">
             <NavLink to="home">Home</NavLink>
           </li>
-          <li v-for="link of links">
-            <NavLink :to="link">{{ link }}</NavLink>
+          <li v-for="link of links" :key="link">
+            <NavLink :to="link">{{ capitalize(link) }}</NavLink>
           </li>
         </ul>
       </Portal>
@@ -28,6 +28,7 @@ import { inject } from 'vue';
 import provideInject from '@/enums/provideInject';
 import { navStore } from '@/stores/navStore';
 import HambergerMenu from './HambergerMenu.vue';
+import { capitalize } from '@/utilities/conversions';
 
 const links = ['projects', 'skills', 'resume', 'about', 'socials'];
 const isMobile = inject(provideInject.isMobile);
