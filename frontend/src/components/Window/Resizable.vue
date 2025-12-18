@@ -37,6 +37,11 @@ const props = defineProps({
 
 const resizableRef = ref(null);
 
+// Expose the ref so parent can access it
+defineExpose({
+  resizableRef,
+});
+
 const computedClasses = computed(() => {
   if (Array.isArray(props.classes)) {
     return props.classes;

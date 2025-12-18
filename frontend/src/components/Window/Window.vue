@@ -1,5 +1,6 @@
 <template>
   <Resizable
+    ref="resizableRef"
     :disabled="state.fullscreened"
     :min-width="minWidth || 150"
     :min-height="minHeight || 150"
@@ -34,7 +35,7 @@
 </template>
 
 <script setup>
-import { computed, defineAsyncComponent } from 'vue';
+import { computed, defineAsyncComponent, ref, provide } from 'vue';
 import Resizable from './Resizable.vue';
 import { dragParentElement } from '@/utilities/window';
 import App from './App.vue';
@@ -116,6 +117,28 @@ function getTitleBarProps() {
 }
 
 const titleBarProps = getTitleBarProps();
+
+const resizableRef = ref(null);
+
+// Provide a method to set window size from child components
+function setWindowSize(width, height) {
+  if (resizableRef.value) {
+    // Access the Resizable component's exposed ref
+    const resizableComponent = resizableRef.value;
+    if (resizableComponent && resizableComponent.resizableRef) {
+      const windowElement = resizableComponent.resizableRef.value;
+      if (windowElement) {
+        windowElement.style.width = `${width}px`;
+        windowElement.style.height = `${height}px`;
+        // Also update left/top to center if needed (optional)
+        // const currentLeft = parseFloat(windowElement.style.left) || windowElement.getBoundingClientRect().left;
+        // const currentTop = parseFloat(windowElement.style.top) || windowElement.getBoundingClientRect().top;
+      }
+    }
+  }
+}
+
+provide('setWindowSize', setWindowSize);
 </script>
 
 <style lang="less" scoped>
@@ -196,9 +219,10 @@ const titleBarProps = getTitleBarProps();
 }
 
 .window-content {
-  padding: 5px;
-  margin: 3px;
-  margin-top: 0;
+  padding: 6px;
+  margin-left: -2px;
+  padding-top: 0;
+  padding-bottom: 0;
   height: calc(100% - @taskbar-height);
   overflow: auto;
   

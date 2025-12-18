@@ -9,7 +9,7 @@
         v-for="(window, i) in windows"
         :key="window.key"
         :class="['application', { focused: window.state?.focused }]"
-        @mousedown="$emit('focus', i)"
+        @click="handleClick(window, i)"
       >
         <component
           :is="getIconComponent(window.icon)"
@@ -34,7 +34,7 @@ defineProps({
   },
 });
 
-defineEmits(['focus']);
+const emit = defineEmits(['focus', 'minimize']);
 
 const currentTime = ref('');
 const timeEle = ref(null);
@@ -46,6 +46,14 @@ function getTime() {
 
 function updateTime() {
   currentTime.value = getTime();
+}
+
+function handleClick(window, index) {
+  if (window.state?.focused) {
+    emit('minimize', index);
+  } else {
+    emit('focus', index);
+  }
 }
 
 function getIconComponent(icon) {

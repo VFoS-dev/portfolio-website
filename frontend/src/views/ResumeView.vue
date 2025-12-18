@@ -23,7 +23,7 @@
       @maximize="handleWindowMaximize(i)"
       @close="handleWindowClose(i)"
     />
-    <ResumeTaskbar :windows="windows" @focus="(index) => handleWindowFocus(index)" />
+    <ResumeTaskbar :windows="windows" @focus="(index) => handleWindowFocus(index)" @minimize="(index) => handleWindowMinimize(index)" />
   </div>
 </template>
 
