@@ -23,7 +23,13 @@
       @maximize="handleWindowMaximize(i)"
       @close="handleWindowClose(i)"
     />
-    <ResumeTaskbar :windows="windows" @focus="(index) => handleWindowFocus(index)" @minimize="(index) => handleWindowMinimize(index)" />
+    <ResumeTaskbar 
+      :windows="windows" 
+      @focus="(index) => handleWindowFocus(index)" 
+      @minimize="(index) => handleWindowMinimize(index)"
+      @open-app="handleOpenApp"
+      @shutdown="handleShutdown"
+    />
   </div>
 </template>
 
@@ -98,6 +104,18 @@ function getIconProps(windowConfig) {
     ...onDoubleClick(handleNewWindow, [windowConfig]),
     ...dragParentElement(true, true),
   };
+}
+
+function handleOpenApp(appConfig) {
+  newWindow(appConfig);
+}
+
+function handleShutdown() {
+  // Handle shutdown - could show a dialog or navigate away
+  if (confirm('Are you sure you want to shut down?')) {
+    // You can add shutdown logic here, like navigating away or closing the app
+    console.log('Shutting down...');
+  }
 }
 </script>
 

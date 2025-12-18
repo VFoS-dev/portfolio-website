@@ -1,6 +1,6 @@
 <template>
   <div class="taskbar">
-    <div class="start">
+    <div class="start" @click="toggleStartMenu">
       <div class="windowIcon" />
       start
     </div>
@@ -21,11 +21,20 @@
       </div>
     </div>
     <div id="time" ref="timeEle">{{ currentTime }}</div>
+    <StartMenu 
+      :is-open="startMenuOpen" 
+      :menu-items="menuItems"
+      @close="closeStartMenu"
+      @open-app="$emit('open-app', $event)"
+      @shutdown="$emit('shutdown')"
+    />
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount, defineAsyncComponent } from 'vue';
+import { ref, onMounted, onBeforeUnmount, defineAsyncComponent, computed } from 'vue';
+import StartMenu from './StartMenu.vue';
+import windowConfig from '@/json/windowConfig.json';
 
 defineProps({
   windows: {
@@ -34,7 +43,56 @@ defineProps({
   },
 });
 
-const emit = defineEmits(['focus', 'minimize']);
+const emit = defineEmits(['focus', 'minimize', 'open-app', 'shutdown']);
+
+const startMenuOpen = ref(false);
+
+const menuItems = computed(() => {
+  // Create menu items: Word, Minesweeper, and Resume
+  const items = [];
+  
+  // Add Word (use first Word entry)
+  const wordIcon = windowConfig.icons.find(icon => icon.app === 'Word');
+  if (wordIcon) {
+    items.push({
+      title: 'Word',
+      icon: wordIcon.icon,
+      app: 'Word',
+      appProps: {},
+    });
+  }
+  
+  // Add Minesweeper
+  const minesweeperIcon = windowConfig.icons.find(icon => icon.app === 'Minesweeper');
+  if (minesweeperIcon) {
+    items.push({
+      title: 'Minesweeper',
+      icon: minesweeperIcon.icon,
+      app: 'Minesweeper',
+      appProps: {},
+    });
+  }
+  
+  // Add Resume (use Word app with resume title)
+  if (wordIcon) {
+    items.push({
+      title: 'Resume',
+      icon: wordIcon.icon,
+      app: 'Word',
+      appProps: {},
+    });
+  }
+  
+  return items;
+});
+
+function toggleStartMenu() {
+  startMenuOpen.value = !startMenuOpen.value;
+}
+
+function closeStartMenu() {
+  startMenuOpen.value = false;
+}
 
 const currentTime = ref('');
 const timeEle = ref(null);
