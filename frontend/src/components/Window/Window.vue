@@ -6,7 +6,7 @@
     :classes="['window', { focused: state.focused, fullscreened: state.fullscreened, minimized: state.minimized }]"
     @mousedown="$emit('focus', index)"
   >
-    <div class="title-bar" v-bind="titleBarProps">
+    <div class="title-bar" v-bind="titleBarProps" @dblclick="$emit('maximize', index)">
       <div class="title-bar-text">
         <component
           :is="iconComponent"
