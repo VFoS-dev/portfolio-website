@@ -204,7 +204,6 @@ provide('setWindowSize', setWindowSize);
 }
 
 .window-content {
-  background-color: green;
   margin: 3px;
   margin-top: 0;
   height: calc(100% - @taskbar-height);
