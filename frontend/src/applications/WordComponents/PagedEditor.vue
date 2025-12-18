@@ -8,7 +8,7 @@
 import { ref, onMounted, onBeforeUnmount, watch, nextTick } from 'vue';
 import { EditorState, Plugin } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
-import { Schema, DOMParser, DOMSerializer, Fragment } from 'prosemirror-model';
+import { Schema, DOMParser, DOMSerializer, Fragment, Slice } from 'prosemirror-model';
 import { schema } from 'prosemirror-schema-basic';
 import { addListNodes } from 'prosemirror-schema-list';
 import { keymap } from 'prosemirror-keymap';
@@ -43,7 +43,7 @@ let editorView = null;
 const baseMarks = schema.spec.marks;
 const baseNodes = addListNodes(schema.spec.nodes, 'paragraph block*', 'block');
 
-// Define page node that contains block content
+// Define page node that contains block content (but not other pages)
 const pageNodeSpec = {
   content: 'block*',
   group: 'block',
@@ -145,6 +145,7 @@ function createEditorState(content) {
     history(),
     keymap(formattingKeymap),
     keymap(baseKeymap),
+    createClipboardPlugin(),
     createPaginationPlugin(),
   ];
   
@@ -181,6 +182,140 @@ function createEditorState(content) {
     doc: emptyDoc,
     schema: mySchema,
     plugins,
+  });
+}
+
+function createClipboardPlugin() {
+  return new Plugin({
+    props: {
+      handlePaste(view, event, slice) {
+        // Check if we're trying to paste inside a page
+        const { selection } = view.state;
+        const { $from } = selection;
+        
+        // Check if we're inside a page node
+        let insidePage = false;
+        for (let i = $from.depth; i > 0; i--) {
+          if ($from.node(i).type.name === 'page') {
+            insidePage = true;
+            break;
+          }
+        }
+        
+        if (!insidePage) {
+          return false; // Let default paste handler work
+        }
+        
+        // Check if the slice contains any page nodes
+        let hasPageNodes = false;
+        const content = slice.content;
+        
+        content.forEach((node) => {
+          if (node.type.name === 'page') {
+            hasPageNodes = true;
+          } else {
+            // Recursively check nested content
+            node.descendants((n) => {
+              if (n.type.name === 'page') {
+                hasPageNodes = true;
+                return false; // Stop traversal
+              }
+            });
+          }
+        });
+        
+        if (!hasPageNodes) {
+          return false; // No page nodes, let default handler work
+        }
+        
+        // Extract content from page nodes
+        const extractedNodes = [];
+        
+        function extractFromNode(node) {
+          if (node.type.name === 'page') {
+            // Extract all block content from the page
+            for (let i = 0; i < node.content.childCount; i++) {
+              const child = node.content.child(i);
+              // Recursively extract from nested pages (defensive)
+              if (child.type.name === 'page') {
+                extractFromNode(child);
+              } else {
+                extractedNodes.push(child);
+              }
+            }
+          } else {
+            // Check if this node contains page nodes
+            const hasNestedPages = node.content && node.content.childCount > 0;
+            if (hasNestedPages) {
+              for (let i = 0; i < node.content.childCount; i++) {
+                extractFromNode(node.content.child(i));
+              }
+            } else {
+              extractedNodes.push(node);
+            }
+          }
+        }
+        
+        content.forEach((node) => {
+          extractFromNode(node);
+        });
+        
+        // If we extracted content, create a new slice with just the content
+        if (extractedNodes.length > 0) {
+          const fragment = Fragment.from(extractedNodes);
+          const newSlice = new Slice(fragment, slice.openStart, slice.openEnd);
+          
+          // Use the default paste command with our modified slice
+          const { state, dispatch } = view;
+          const tr = state.tr;
+          tr.replaceSelection(newSlice);
+          
+          if (dispatch) {
+            dispatch(tr);
+          }
+          
+          return true; // Handled
+        }
+        
+        return false;
+      },
+    },
+    appendTransaction(transactions, oldState, newState) {
+      // Check for pages nested inside pages and remove them
+      const nestedPages = [];
+      
+      newState.doc.descendants((node, pos) => {
+        if (node.type.name === 'page') {
+          // Check if this page contains any page nodes
+          node.descendants((childNode, childPos) => {
+            if (childNode.type.name === 'page' && childNode !== node) {
+              // Found a page inside a page - collect it for removal
+              const absolutePos = pos + childPos + 1;
+              nestedPages.push({
+                start: absolutePos,
+                end: absolutePos + childNode.nodeSize - 2,
+                content: childNode.content,
+              });
+              return false; // Stop traversal of this branch
+            }
+          });
+        }
+      });
+      
+      if (nestedPages.length === 0) {
+        return null;
+      }
+      
+      // Apply changes in reverse order to maintain correct positions
+      const tr = newState.tr;
+      nestedPages.sort((a, b) => b.start - a.start); // Sort descending by position
+      
+      nestedPages.forEach(({ start, end, content }) => {
+        tr.replaceWith(start, end, content);
+      });
+      
+      return tr;
+    },
   });
 }
 
