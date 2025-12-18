@@ -1,14 +1,37 @@
 <template>
-  <div class="resume" :style="{ backgroundImage: 'url(/images/resume/windows_xp_background.webp)' }">
-    <div class="center-start windows-icon-offset">
+  <div 
+    class="resume" 
+    :style="desktopBackgroundStyle"
+    @mousedown="handleDesktopMouseDown"
+    @mousemove="handleDesktopMouseMove"
+    @mouseup="handleDesktopMouseUp"
+    @click="handleDesktopClick"
+    @contextmenu.prevent="handleContextMenu"
+  >
+    <div class="desktop-icons-container">
       <ResumeDesktopIcon
-        v-for="(icon, i) in windowConfig.icons"
-        :key="i"
-        :icon-props="getIconProps(icon)"
-        :icon="icon['desktop-icon']"
+        v-for="(icon, i) in visibleIcons"
+        :key="`icon-${i}-${icon.title}`"
+        :ref="el => setIconRef(el, i)"
+        :icon-props="getIconProps(icon, i)"
+        :icon="getIconPath(icon)"
         :label="icon.title"
+        :initial-x="icon.x || '50px'"
+        :initial-y="icon.y || '50px'"
+        :is-selected="selectedIconIndices.includes(i)"
+        :is-trash="icon.isTrash || false"
       />
     </div>
+    <div 
+      v-if="selectionBox.visible"
+      class="selection-box"
+      :style="{
+        left: `${selectionBox.left}px`,
+        top: `${selectionBox.top}px`,
+        width: `${selectionBox.width}px`,
+        height: `${selectionBox.height}px`
+      }"
+    ></div>
     <Window
       v-for="(window, i) in windows"
       :key="`windows-${window.key}`"
@@ -30,16 +53,71 @@
       @open-app="handleOpenApp"
       @shutdown="handleShutdown"
     />
+    <DesktopContextMenu
+      :visible="contextMenu.visible"
+      :x="contextMenu.x"
+      :y="contextMenu.y"
+      @close="closeContextMenu"
+      @background-changed="handleBackgroundChanged"
+      @background-reset="handleBackgroundReset"
+      @navbar-toggled="handleNavbarToggled"
+    />
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import ResumeDesktopIcon from '@/components/Resume/ResumeDesktopIcon.vue';
 import Window from '@/components/Window/Window.vue';
 import ResumeTaskbar from '@/components/Resume/ResumeTaskbar.vue';
-import { createKey, onDoubleClick, dragParentElement } from '@/utilities/window';
+import DesktopContextMenu from '@/components/Resume/DesktopContextMenu.vue';
+import { createKey, onDoubleClick, dragParentElement, dragParentElementWithTrash } from '@/utilities/window';
 import windowConfig from '@/json/windowConfig.json';
+import { trashStore } from '@/stores/trashStore';
+import { navStore } from '@/stores/navStore';
+import { cubeStore } from '@/stores/cubeStore';
+
+const defaultBackground = 'url(/images/resume/windows_xp_background.webp)';
+const desktopBackground = ref(localStorage.getItem('desktopBackground') || defaultBackground);
+
+const desktopBackgroundStyle = computed(() => {
+  const bg = desktopBackground.value;
+  if (bg.startsWith('data:') || bg.startsWith('http')) {
+    return { backgroundImage: `url(${bg})` };
+  }
+  return { backgroundImage: bg };
+});
+
+// Selection box state
+const selectionBox = ref({
+  visible: false,
+  startX: 0,
+  startY: 0,
+  left: 0,
+  top: 0,
+  width: 0,
+  height: 0,
+});
+
+const isSelecting = ref(false);
+const selectedIconIndices = ref([]);
+const iconRefs = ref([]);
+const isDraggingSelection = ref(false);
+const selectionDragStart = ref({ x: 0, y: 0 });
+const selectionInitialPositions = ref([]);
+const justFinishedSelecting = ref(false);
+
+const contextMenu = ref({
+  visible: false,
+  x: 0,
+  y: 0,
+});
+
+function setIconRef(el, index) {
+  if (el) {
+    iconRefs.value[index] = el;
+  }
+}
 
 const windows = ref([
   {
@@ -99,10 +177,526 @@ function handleNewWindow(windowConfig) {
   newWindow(windowConfig);
 }
 
-function getIconProps(windowConfig) {
+const iconRefreshKey = ref(0);
+
+const visibleIcons = computed(() => {
+  // Filter out icons that have been deleted (both temporarily and permanently)
+  const deletedTitles = trashStore.getAllDeletedIconTitles;
+  const filtered = windowConfig.icons.filter(icon => !deletedTitles.includes(icon.title));
+  // Force reactivity by including refresh key and trash count
+  iconRefreshKey.value;
+  trashStore.getTrashCount; // Make it reactive to trash count changes
+  return filtered;
+});
+
+function handleIconRestored() {
+  // Force refresh of visible icons
+  iconRefreshKey.value++;
+  // Update trash can icon if needed
+  updateTrashCanIcon();
+}
+
+function getIconPath(icon) {
+  // Update trash can icon based on whether it's empty or full
+  if (icon.isTrash) {
+    const hasItems = trashStore.getTrashCount > 0;
+    return hasItems 
+      ? '/images/resume/recyclebin_full.svg' 
+      : '/images/resume/recyclebin_empty.svg';
+  }
+  return icon['desktop-icon'];
+}
+
+function updateTrashCanIcon() {
+  // Force refresh to update trash can icon
+  iconRefreshKey.value++;
+}
+
+function handleContextMenu(e) {
+  // Only show context menu if clicking on desktop background, not on icons or windows
+  const target = e.target;
+  if (target.closest('.windows-icon') || target.closest('.window') || target.closest('.taskbar')) {
+    return;
+  }
+  
+  const rect = e.currentTarget.getBoundingClientRect();
+  contextMenu.value = {
+    visible: true,
+    x: e.clientX - rect.left,
+    y: e.clientY - rect.top,
+  };
+}
+
+function closeContextMenu() {
+  contextMenu.value.visible = false;
+}
+
+function handleBackgroundChanged(imageData) {
+  desktopBackground.value = imageData;
+}
+
+function handleBackgroundReset() {
+  desktopBackground.value = defaultBackground;
+  localStorage.removeItem('desktopBackground');
+}
+
+function handleNavbarToggled() {
+  // Navbar toggle is handled by the context menu component via navStore
+  // This is just for any additional logic if needed
+}
+
+function handleDocumentClick(e) {
+  // Close context menu if clicking outside of it
+  if (!e.target.closest('.context-menu')) {
+    closeContextMenu();
+  }
+}
+
+onMounted(() => {
+  window.addEventListener('icon-restored', handleIconRestored);
+  // Close context menu on click outside
+  document.addEventListener('click', handleDocumentClick);
+  // Load background from localStorage
+  const savedBackground = localStorage.getItem('desktopBackground');
+  if (savedBackground) {
+    desktopBackground.value = savedBackground;
+  }
+  // Disable cube rotation if navbar is hidden
+  if (navStore.hide) {
+    cubeStore.toggleKeyRotate(false);
+  }
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener('icon-restored', handleIconRestored);
+  document.removeEventListener('click', handleDocumentClick);
+  // Reset navbar visibility when leaving resume page
+  if (navStore.hide) {
+    navStore.toggleHide(false);
+    // Re-enable cube rotation when navbar is shown again
+    cubeStore.toggleKeyRotate(true);
+  }
+});
+
+function handleTrashDrop(iconConfig) {
+  trashStore.deleteIcon(iconConfig);
+  // Force refresh of visible icons
+  iconRefreshKey.value++;
+  updateTrashCanIcon();
+}
+
+function handleDesktopMouseDown(e) {
+  // Don't start selection on right-click (button 2) or middle-click (button 1)
+  // Only allow left-click (button 0) for selection
+  if (e.button !== 0 && e.button !== undefined) {
+    return;
+  }
+  
+  // Only start selection if clicking on desktop background (not on icons, windows, or taskbar)
+  const target = e.target;
+  const isDesktop = target.classList.contains('resume') || 
+                    target.classList.contains('desktop-icons-container') ||
+                    (target.tagName === 'DIV' && !target.closest('.windows-icon') && !target.closest('.window') && !target.closest('.taskbar'));
+  
+  if (isDesktop) {
+    // Check if we're clicking on an icon or its children
+    const iconElement = target.closest('.windows-icon');
+    if (iconElement) {
+      // If clicking on an icon, don't start selection
+      return;
+    }
+
+    // Clear previous selection
+    selectedIconIndices.value = [];
+    selectionBox.value.visible = false;
+
+    // Start selection box
+    const rect = e.currentTarget.getBoundingClientRect();
+    selectionBox.value = {
+      visible: true,
+      startX: e.clientX - rect.left,
+      startY: e.clientY - rect.top,
+      left: e.clientX - rect.left,
+      top: e.clientY - rect.top,
+      width: 0,
+      height: 0,
+    };
+    isSelecting.value = true;
+  }
+}
+
+function handleDesktopMouseMove(e) {
+  if (isSelecting.value) {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const currentX = e.clientX - rect.left;
+    const currentY = e.clientY - rect.top;
+
+    selectionBox.value.left = Math.min(selectionBox.value.startX, currentX);
+    selectionBox.value.top = Math.min(selectionBox.value.startY, currentY);
+    selectionBox.value.width = Math.abs(currentX - selectionBox.value.startX);
+    selectionBox.value.height = Math.abs(currentY - selectionBox.value.startY);
+
+    // Update selected icons based on selection box
+    updateSelectedIcons();
+  } else if (isDraggingSelection.value) {
+    // Drag all selected icons together
+    const deltaX = e.movementX || 0;
+    const deltaY = e.movementY || 0;
+
+    selectedIconIndices.value.forEach(index => {
+      const iconRef = iconRefs.value[index];
+      if (iconRef && iconRef.$el) {
+        const iconElement = iconRef.$el.querySelector('.windows-icon');
+        if (iconElement) {
+          const currentLeft = parseFloat(iconElement.style.left) || parseFloat(getComputedStyle(iconElement).left) || 0;
+          const currentTop = parseFloat(iconElement.style.top) || parseFloat(getComputedStyle(iconElement).top) || 0;
+          iconElement.style.left = `${currentLeft + deltaX}px`;
+          iconElement.style.top = `${currentTop + deltaY}px`;
+        }
+      }
+    });
+
+    // Check if over trash
+    checkSelectionOverTrash();
+  }
+}
+
+function handleDesktopMouseUp() {
+  if (isSelecting.value) {
+    isSelecting.value = false;
+    // Always hide selection box when mouse is released (even if icons are selected)
+    selectionBox.value.visible = false;
+    // Mark that we just finished selecting to prevent immediate clearing
+    justFinishedSelecting.value = true;
+    // Reset the flag after a short delay
+    setTimeout(() => {
+      justFinishedSelecting.value = false;
+    }, 200);
+    return; // Don't clear selection right after finishing selection
+  }
+  
+  // Don't clear selection on mouseup - let click handler do it if needed
+}
+
+function handleDesktopClick(e) {
+  // Don't clear selection if clicking on context menu
+  if (e.target.closest('.context-menu')) {
+    return;
+  }
+  
+  // Clear selection when clicking on desktop (not on icons)
+  // But don't clear if we just finished selecting
+  if (justFinishedSelecting.value) {
+    return;
+  }
+  
+  const target = e.target;
+  const isDesktop = target.classList.contains('resume') || 
+                    target.classList.contains('desktop-icons-container');
+  
+  // Only clear if clicking on empty desktop (not on icons or selection box)
+  if (isDesktop && !target.closest('.windows-icon') && !target.closest('.selection-box')) {
+    selectedIconIndices.value = [];
+    selectionBox.value.visible = false;
+  }
+}
+
+function updateSelectedIcons() {
+  if (!selectionBox.value.visible || selectionBox.value.width < 5 || selectionBox.value.height < 5) {
+    return;
+  }
+
+  const container = document.querySelector('.desktop-icons-container');
+  if (!container) return;
+
+  const containerRect = container.getBoundingClientRect();
+  const boxRect = {
+    left: selectionBox.value.left,
+    top: selectionBox.value.top,
+    right: selectionBox.value.left + selectionBox.value.width,
+    bottom: selectionBox.value.top + selectionBox.value.height,
+  };
+
+  const newSelection = [];
+  visibleIcons.value.forEach((icon, index) => {
+    // Don't select trash icon
+    if (icon.isTrash) return;
+
+    const iconRef = iconRefs.value[index];
+    if (iconRef && iconRef.$el) {
+      const iconElement = iconRef.$el.querySelector('.windows-icon');
+      if (iconElement) {
+        const iconRect = iconElement.getBoundingClientRect();
+        const iconLeft = iconRect.left - containerRect.left;
+        const iconTop = iconRect.top - containerRect.top;
+        const iconRight = iconLeft + iconRect.width;
+        const iconBottom = iconTop + iconRect.height;
+        const iconCenterX = iconLeft + iconRect.width / 2;
+        const iconCenterY = iconTop + iconRect.height / 2;
+
+        // Check if icon center or any corner is within selection box
+        if (
+          (iconCenterX >= boxRect.left && iconCenterX <= boxRect.right &&
+           iconCenterY >= boxRect.top && iconCenterY <= boxRect.bottom) ||
+          (iconLeft >= boxRect.left && iconRight <= boxRect.right &&
+           iconTop >= boxRect.top && iconBottom <= boxRect.bottom)
+        ) {
+          newSelection.push(index);
+        }
+      }
+    }
+  });
+
+  selectedIconIndices.value = newSelection;
+}
+
+function startSelectionDrag(e) {
+  if (selectedIconIndices.value.length > 1) {
+    e.preventDefault();
+    e.stopPropagation();
+    isDraggingSelection.value = true;
+    
+    const container = document.querySelector('.desktop-icons-container');
+    const containerRect = container.getBoundingClientRect();
+    selectionDragStart.value = {
+      x: e.clientX - containerRect.left,
+      y: e.clientY - containerRect.top,
+    };
+    
+    // Store initial positions
+    selectionInitialPositions.value = [];
+    selectedIconIndices.value.forEach(index => {
+      const iconRef = iconRefs.value[index];
+      if (iconRef && iconRef.$el) {
+        const iconElement = iconRef.$el.querySelector('.windows-icon');
+        if (iconElement) {
+          const rect = iconElement.getBoundingClientRect();
+          selectionInitialPositions.value[index] = {
+            left: rect.left - containerRect.left,
+            top: rect.top - containerRect.top,
+          };
+          iconElement.style.position = 'absolute';
+        }
+      }
+    });
+
+    // Add global mouse move and up handlers
+    document.addEventListener('mousemove', handleSelectionDrag);
+    document.addEventListener('mouseup', handleSelectionDragEnd);
+  }
+}
+
+function handleSelectionDrag(e) {
+  if (!isDraggingSelection.value) return;
+  
+  const container = document.querySelector('.desktop-icons-container');
+  if (!container) return;
+  const containerRect = container.getBoundingClientRect();
+  
+  const currentX = e.clientX - containerRect.left;
+  const currentY = e.clientY - containerRect.top;
+  const deltaX = currentX - selectionDragStart.value.x;
+  const deltaY = currentY - selectionDragStart.value.y;
+
+  selectedIconIndices.value.forEach(index => {
+    const iconRef = iconRefs.value[index];
+    if (iconRef && iconRef.$el) {
+      const iconElement = iconRef.$el.querySelector('.windows-icon');
+      if (iconElement && selectionInitialPositions.value[index]) {
+        const initial = selectionInitialPositions.value[index];
+        iconElement.style.left = `${initial.left + deltaX}px`;
+        iconElement.style.top = `${initial.top + deltaY}px`;
+      }
+    }
+  });
+
+  checkSelectionOverTrash();
+}
+
+function handleSelectionDragEnd() {
+  if (isDraggingSelection.value) {
+    isDraggingSelection.value = false;
+    document.removeEventListener('mousemove', handleSelectionDrag);
+    document.removeEventListener('mouseup', handleSelectionDragEnd);
+    
+    // Save positions of dragged icons
+    saveIconPositions();
+    
+    handleSelectionTrashDrop();
+    selectionInitialPositions.value = [];
+  }
+}
+
+function saveIconPositions() {
+  // Save current icon positions to windowConfig for selected icons
+  selectedIconIndices.value.forEach(index => {
+    const icon = visibleIcons.value[index];
+    const iconRef = iconRefs.value[index];
+    if (iconRef && iconRef.$el && icon) {
+      const iconElement = iconRef.$el.querySelector('.windows-icon');
+      if (iconElement) {
+        const left = iconElement.style.left || getComputedStyle(iconElement).left;
+        const top = iconElement.style.top || getComputedStyle(iconElement).top;
+        
+        // Find the icon in windowConfig and update its position
+        const configIcon = windowConfig.icons.find(cfgIcon => cfgIcon.title === icon.title);
+        if (configIcon) {
+          configIcon.x = left;
+          configIcon.y = top;
+        }
+      }
+    }
+  });
+}
+
+function checkSelectionOverTrash() {
+  const trashElement = document.querySelector('[data-is-trash="true"]');
+  if (!trashElement || selectedIconIndices.value.length === 0) return;
+
+  let anyOverTrash = false;
+  selectedIconIndices.value.forEach(index => {
+    const iconRef = iconRefs.value[index];
+    if (iconRef && iconRef.$el) {
+      const iconElement = iconRef.$el.querySelector('.windows-icon');
+      if (iconElement) {
+        const iconRect = iconElement.getBoundingClientRect();
+        const trashRect = trashElement.getBoundingClientRect();
+        const isOver = !(
+          iconRect.right < trashRect.left ||
+          iconRect.left > trashRect.right ||
+          iconRect.bottom < trashRect.top ||
+          iconRect.top > trashRect.bottom
+        );
+        if (isOver) {
+          anyOverTrash = true;
+        }
+      }
+    }
+  });
+
+  if (anyOverTrash) {
+    trashElement.classList.add('trash-highlight');
+  } else {
+    trashElement.classList.remove('trash-highlight');
+  }
+}
+
+function handleSelectionTrashDrop() {
+  const trashElement = document.querySelector('[data-is-trash="true"]');
+  if (!trashElement || selectedIconIndices.value.length === 0) return;
+
+  let anyOverTrash = false;
+  selectedIconIndices.value.forEach(index => {
+    const iconRef = iconRefs.value[index];
+    if (iconRef && iconRef.$el) {
+      const iconElement = iconRef.$el.querySelector('.windows-icon');
+      if (iconElement) {
+        const iconRect = iconElement.getBoundingClientRect();
+        const trashRect = trashElement.getBoundingClientRect();
+        const isOver = !(
+          iconRect.right < trashRect.left ||
+          iconRect.left > trashRect.right ||
+          iconRect.bottom < trashRect.top ||
+          iconRect.top > trashRect.bottom
+        );
+        if (isOver) {
+          anyOverTrash = true;
+        }
+      }
+    }
+  });
+
+  if (anyOverTrash) {
+    // Delete all selected icons
+    const iconsToDelete = selectedIconIndices.value.map(index => visibleIcons.value[index]);
+    iconsToDelete.forEach(iconConfig => {
+      if (!iconConfig.isTrash) {
+        handleTrashDrop(iconConfig);
+      }
+    });
+    selectedIconIndices.value = [];
+    selectionBox.value.visible = false;
+  }
+
+  if (trashElement) {
+    trashElement.classList.remove('trash-highlight');
+  }
+}
+
+function handleIconDragEnd(element) {
+  // Save icon position when drag ends
+  if (element) {
+    // element is the .windows-icon div
+    const left = element.style.left || getComputedStyle(element).left;
+    const top = element.style.top || getComputedStyle(element).top;
+    const labelElement = element.querySelector('p');
+    if (labelElement) {
+      const label = labelElement.textContent.trim();
+      const configIcon = windowConfig.icons.find(icon => icon.title === label);
+      if (configIcon) {
+        configIcon.x = left;
+        configIcon.y = top;
+      }
+    }
+  }
+}
+
+
+function getIconProps(iconConfig, index) {
+  // Trash icon can be dragged but shouldn't be deletable (can't drop on itself)
+  if (iconConfig.isTrash) {
+    return {
+      ...onDoubleClick(handleNewWindow, [iconConfig]),
+      ...dragParentElement(true, true, () => {}, '', handleIconDragEnd), // Trash can be dragged
+    };
+  }
+
+  // Get the normal drag props
+  const normalDragProps = dragParentElementWithTrash(true, true, handleTrashDrop, iconConfig, handleIconDragEnd);
+  
+  // Wrap the mousedown handler to check for multi-select
+  const originalOnMousedown = normalDragProps.onMousedown;
+  const customOnMousedown = function(e) {
+    // Check if multiple icons are selected and this is one of them
+    if (selectedIconIndices.value.length > 1 && selectedIconIndices.value.includes(index)) {
+      // Start multi-icon drag instead
+      e.preventDefault();
+      e.stopPropagation();
+      startSelectionDrag(e);
+      return;
+    }
+    
+    // Clear selection if this icon isn't selected
+    if (!selectedIconIndices.value.includes(index)) {
+      selectedIconIndices.value = [];
+      selectionBox.value.visible = false;
+    }
+    
+    // Use normal drag for single icon
+    if (originalOnMousedown) {
+      originalOnMousedown.call(this, e);
+    }
+  };
+
+  // Wrap touch handler similarly
+  const originalOnTouchstart = normalDragProps.onTouchstart;
+  const customOnTouchstart = function(e) {
+    if (selectedIconIndices.value.length > 1 && selectedIconIndices.value.includes(index)) {
+      e.preventDefault();
+      e.stopPropagation();
+      startSelectionDrag(e);
+      return;
+    }
+    if (originalOnTouchstart) {
+      originalOnTouchstart.call(this, e);
+    }
+  };
+
+  // Regular icons can be dragged and deleted
   return {
-    ...onDoubleClick(handleNewWindow, [windowConfig]),
-    ...dragParentElement(true, true),
+    ...onDoubleClick(handleNewWindow, [iconConfig]),
+    onMousedown: customOnMousedown,
+    onTouchstart: customOnTouchstart,
   };
 }
 
@@ -133,22 +727,24 @@ function handleShutdown() {
   transition: transform 0.25s ease-out;
 }
 
-.center-start {
+.desktop-icons-container {
   position: absolute;
-  top: 50%;
-  left: 50%;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
 
-  .start {
-    width: 70px;
-  }
-
-  &.windows-icon-offset {
-    justify-content: center;
-    gap: 20px;
-    flex-wrap: wrap;
-    height: 80px;
-    display: flex;
-    transform: translate(-50%, -50%);
-  }
+.selection-box {
+  position: absolute;
+  border: 1px dashed #0066cc;
+  background-color: rgba(0, 102, 204, 0.1);
+  pointer-events: none;
+  z-index: 10;
+  box-sizing: border-box;
+  border-style: dashed;
+  border-color: #0066cc;
+  background: rgba(0, 102, 204, 0.08);
 }
 </style>

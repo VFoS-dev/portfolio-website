@@ -22,6 +22,9 @@ const useNavStore = defineStore('navStore', {
     toggleOpen(bool) {
       return (this.open = bool ?? !this.open);
     },
+    toggleHide(bool) {
+      this.hide = bool ?? !this.hide;
+    },
     navigated() {
       this.open = false;
     },

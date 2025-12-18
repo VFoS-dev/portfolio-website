@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Windows XP Recycle Bin Empty -->
+  <defs>
+    <linearGradient id="binGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#d4d0c8;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#ece9d8;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#c0c0c0;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="lidGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#f0f0f0;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#d4d0c8;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Bin body -->
+  <rect x="18" y="28" width="28" height="32" rx="2" fill="url(#binGradient)" stroke="#808080" stroke-width="1"/>
+  
+  <!-- Bin lid -->
+  <rect x="16" y="24" width="32" height="6" rx="1" fill="url(#lidGradient)" stroke="#808080" stroke-width="1"/>
+  
+  <!-- Lid highlight -->
+  <rect x="18" y="25" width="28" height="2" fill="#ffffff" opacity="0.6"/>
+  
+  <!-- Recycling symbol (simplified) -->
+  <path d="M 24 36 L 28 32 L 32 36 L 30 40 L 34 40 L 32 44 L 28 44 L 30 40 L 26 40 Z" fill="#4a86e8" opacity="0.6"/>
+  <path d="M 36 40 L 40 36 L 44 40 L 42 44 L 46 44 L 44 48 L 40 48 L 42 44 L 38 44 Z" fill="#4a86e8" opacity="0.6"/>
+  
+  <!-- Shadow -->
+  <ellipse cx="32" cy="58" rx="14" ry="3" fill="#000000" opacity="0.2"/>
+</svg>
+

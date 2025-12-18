@@ -51,6 +51,10 @@ function clickedBackDrop({ target }) {
 .hide {
   opacity: 0;
   pointer-events: none;
+  
+  * {
+    pointer-events: none !important;
+  }
 }
 
 nav {
@@ -68,6 +72,10 @@ nav {
 
   * {
     pointer-events: all;
+  }
+  
+  &.hide * {
+    pointer-events: none !important;
   }
 
   &::before {
@@ -103,6 +111,10 @@ ul {
 
 #mobile-switch {
   z-index: 20;
+}
+
+section{
+  pointer-events: none;
 }
 
 :root[data-mobile='true'] {

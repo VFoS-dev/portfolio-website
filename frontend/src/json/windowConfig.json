@@ -5,6 +5,8 @@
       "desktop-icon": "/images/resume/wordicon_destop.svg",
       "icon": "/images/resume/wordIcon.png",
       "app": "Word",
+      "x": "10px",
+      "y": "150px",
       "appProps": {
         "content": ""
       }
@@ -14,6 +16,8 @@
       "desktop-icon": "/images/resume/wordicon_destop.svg",
       "icon": "/images/resume/wordIcon.png",
       "app": "Word",
+      "x": "calc(50% - 35px)",
+      "y": "calc(50% - 40px)",
       "appProps": {
         "content": "Hi Bye"
       }
@@ -22,7 +26,18 @@
       "title": "Minesweeper",
       "desktop-icon": "/images/resume/minesweepericon.svg",
       "icon": "/images/resume/minesweepericon.svg",
-      "app": "Minesweeper"
+      "app": "Minesweeper",
+      "x": "10px",
+      "y": "calc(100% - 120px)"
+    },
+    {
+      "title": "Trash",
+      "desktop-icon": "/images/resume/recyclebin_empty.svg",
+      "icon": "/images/resume/recyclebin_empty.svg",
+      "app": "RecycleBin",
+      "x": "calc(100% - 80px)",
+      "y": "0px",
+      "isTrash": true
     }
   ],
   "defaultWindow": {
