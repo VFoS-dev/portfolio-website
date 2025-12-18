@@ -27,7 +27,9 @@
         />
       </div>
     </div>
-    <App :app="app" :app-props="appProps" />
+    <div class="window-content">
+      <App :app="props.app" :app-props="props.appProps" />
+    </div>
   </Resizable>
 </template>
 
@@ -193,6 +195,106 @@ const titleBarProps = getTitleBarProps();
   }
 }
 
+.window-content {
+  padding: 5px;
+  margin: 3px;
+  margin-top: 0;
+  height: calc(100% - @taskbar-height);
+  overflow: auto;
+  
+  &::-webkit-scrollbar {
+    width: 17px;
+    height: 17px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: #ece9d8;
+    border: 1px inset #ece9d8;
+    box-shadow: inset 1px 1px 0 0 #ffffff, inset -1px -1px 0 0 #808080;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #f0f0f0 0%, #d4d0c8 50%, #c0c0c0 100%);
+    border: 1px solid #808080;
+    border-top-color: #ffffff;
+    border-left-color: #ffffff;
+    border-right-color: #424242;
+    border-bottom-color: #424242;
+    box-shadow: 
+      inset 0 1px 0 0 #ffffff,
+      inset 1px 0 0 0 #ffffff,
+      inset -1px -1px 0 0 #424242;
+    
+    &:hover {
+      background: linear-gradient(135deg, #e8e8e8 0%, #c8c4bc 50%, #b0b0b0 100%);
+    }
+    
+    &:active {
+      background: linear-gradient(135deg, #c8c4bc 0%, #b0b0b0 50%, #a0a0a0 100%);
+      box-shadow: 
+        inset 1px 1px 0 0 #424242,
+        inset -1px -1px 0 0 #ffffff;
+    }
+  }
+  
+  &::-webkit-scrollbar-button {
+    background: linear-gradient(135deg, #f0f0f0 0%, #d4d0c8 50%, #c0c0c0 100%);
+    border: 1px solid #808080;
+    border-top-color: #ffffff;
+    border-left-color: #ffffff;
+    border-right-color: #424242;
+    border-bottom-color: #424242;
+    box-shadow: 
+      inset 0 1px 0 0 #ffffff,
+      inset 1px 0 0 0 #ffffff,
+      inset -1px -1px 0 0 #424242;
+    height: 17px;
+    width: 17px;
+    
+    &:hover {
+      background: linear-gradient(135deg, #e8e8e8 0%, #c8c4bc 50%, #b0b0b0 100%);
+    }
+    
+    &:active {
+      background: linear-gradient(135deg, #c8c4bc 0%, #b0b0b0 50%, #a0a0a0 100%);
+      box-shadow: 
+        inset 1px 1px 0 0 #424242,
+        inset -1px -1px 0 0 #ffffff;
+    }
+    
+    // Arrow icons for Windows XP style (up arrow)
+    &:vertical:decrement {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='17' height='17'%3E%3Cpath fill='%23000000' d='M8.5 5.5L5 9h7z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+    
+    // Arrow icons for Windows XP style (down arrow)
+    &:vertical:increment {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='17' height='17'%3E%3Cpath fill='%23000000' d='M8.5 11.5L12 8H5z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+    
+    // Arrow icons for Windows XP style (left arrow)
+    &:horizontal:decrement {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='17' height='17'%3E%3Cpath fill='%23000000' d='M5.5 8.5L9 5v7z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+    
+    // Arrow icons for Windows XP style (right arrow)
+    &:horizontal:increment {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='17' height='17'%3E%3Cpath fill='%23000000' d='M11.5 8.5L8 12V5z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+  }
+  
+  // Firefox scrollbar styling
+  scrollbar-width: thin;
+  scrollbar-color: #c0c0c0 #ece9d8;
+}
 
 .title-bar {
   padding: 2px;
