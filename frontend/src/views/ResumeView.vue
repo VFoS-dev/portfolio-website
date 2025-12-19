@@ -41,6 +41,8 @@
       :app="window.app"
       :app-props="window.appProps"
       :index="i"
+      :width="window.width"
+      :height="window.height"
       @focus="handleWindowFocus(i)"
       @minimize="handleWindowMinimize(i)"
       @maximize="handleWindowMaximize(i)"

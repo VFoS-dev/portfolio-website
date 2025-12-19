@@ -1,6 +1,10 @@
 <template>
-  <Resizable ref="resizableRef" :disabled="state.fullscreened" :min-width="minWidth || 150"
+  <Resizable 
+    ref="resizableRef" 
+    :disabled="state.fullscreened" 
+    :min-width="minWidth || 150"
     :min-height="minHeight || 150"
+    :style="windowStyle"
     :classes="['window', { focused: state.focused, fullscreened: state.fullscreened, minimized: state.minimized }]"
     @mousedown="$emit('focus', index)">
     <div class="title-bar" v-bind="titleBarProps" @dblclick="$emit('maximize', index)">
@@ -62,6 +66,14 @@ const props = defineProps({
     type: Number,
     default: 150,
   },
+  width: {
+    type: [String, Number],
+    default: null,
+  },
+  height: {
+    type: [String, Number],
+    default: null,
+  },
 });
 
 defineEmits(['focus', 'minimize', 'maximize', 'close']);
@@ -104,6 +116,22 @@ function getTitleBarProps() {
 const titleBarProps = getTitleBarProps();
 
 const resizableRef = ref(null);
+
+// Compute window style with custom width/height if provided
+const windowStyle = computed(() => {
+  const style = {};
+  if (props.width !== null && props.width !== undefined) {
+    const widthValue = typeof props.width === 'number' ? `${props.width}px` : props.width;
+    style.width = widthValue;
+    style['--custom-width'] = widthValue;
+  }
+  if (props.height !== null && props.height !== undefined) {
+    const heightValue = typeof props.height === 'number' ? `${props.height}px` : props.height;
+    style.height = heightValue;
+    style['--custom-height'] = heightValue;
+  }
+  return Object.keys(style).length > 0 ? style : undefined;
+});
 
 // Provide a method to set window size from child components
 function setWindowSize(width, height) {
@@ -180,8 +208,8 @@ provide('setWindowSize', setWindowSize);
   -webkit-font-smoothing: antialiased;
   min-width: @window-min-size;
   min-height: @window-min-size;
-  height: 80vh;
-  width: 90vw;
+  height: var(--custom-height, 80vh);
+  width: var(--custom-width, 90vw);
   left: 5vw;
   top: 10vh;
   font-size: 11px;

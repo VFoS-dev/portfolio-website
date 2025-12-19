@@ -28,7 +28,9 @@
       "icon": "/images/resume/minesweepericon.svg",
       "app": "Minesweeper",
       "x": "10px",
-      "y": "calc(100% - 120px)"
+      "y": "calc(100% - 120px)",
+      "width": "400px",
+      "height": "528px"
     },
     {
       "title": "Trash",
