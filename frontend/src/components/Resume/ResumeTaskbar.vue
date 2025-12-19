@@ -73,14 +73,18 @@ const menuItems = computed(() => {
     });
   }
   
-  // Add Resume (use Word app with resume title)
-  if (wordIcon) {
-    items.push({
-      title: 'Resume',
-      icon: wordIcon.icon,
-      app: 'Word',
-      appProps: {},
-    });
+  // Add Resume (use defaultWindow configuration)
+  if (windowConfig.defaultWindow && windowConfig.defaultWindow.iconTitle) {
+    const defaultIcon = windowConfig.icons.find(icon => icon.title === windowConfig.defaultWindow.iconTitle);
+    if (defaultIcon) {
+      items.push({
+        title: defaultIcon.title, // Use the actual icon title (default window's name)
+        icon: defaultIcon.icon,
+        app: defaultIcon.app,
+        appProps: defaultIcon.appProps || {},
+        iconTitle: defaultIcon.title, // Store the actual icon title for opening
+      });
+    }
   }
   
   return items;

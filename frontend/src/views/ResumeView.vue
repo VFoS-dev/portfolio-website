@@ -1112,6 +1112,21 @@ function getIconProps(iconConfig, index) {
 }
 
 function handleOpenApp(appConfig) {
+  // If this is the defaultWindow menu item from start menu, use the defaultWindow icon
+  if (appConfig.iconTitle && windowConfig.defaultWindow && appConfig.iconTitle === windowConfig.defaultWindow.iconTitle) {
+    const defaultIcon = windowConfig.icons.find(icon => icon.title === appConfig.iconTitle);
+    if (defaultIcon) {
+      // Replace appConfig with the default icon configuration
+      Object.assign(appConfig, {
+        title: defaultIcon.title,
+        app: defaultIcon.app,
+        appProps: defaultIcon.appProps || {},
+        width: defaultIcon.width,
+        height: defaultIcon.height,
+      });
+    }
+  }
+  
   // If this is a saved Word document, load its content from localStorage
   if (appConfig.isCustom && appConfig.title) {
     // Extract fileName - handle both with and without .doc extension
