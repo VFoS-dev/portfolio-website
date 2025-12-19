@@ -63,6 +63,7 @@
       @background-changed="handleBackgroundChanged"
       @background-reset="handleBackgroundReset"
       @navbar-toggled="handleNavbarToggled"
+      @reset-all="handleResetAll"
     />
   </div>
 </template>
@@ -80,7 +81,7 @@ import { navStore } from '@/stores/navStore';
 import { cubeStore } from '@/stores/cubeStore';
 
 const defaultBackground = 'url(/images/resume/windows_xp_background.webp)';
-const desktopBackground = ref(localStorage.getItem('desktopBackground') || defaultBackground);
+const desktopBackground = ref(localStorage.getItem('r_desktopBackground') || defaultBackground);
 
 const desktopBackgroundStyle = computed(() => {
   const bg = desktopBackground.value;
@@ -175,7 +176,7 @@ function handleNewWindow(windowConfig) {
     }
     
     try {
-      const localStorageKey = `wordDocument_${fileName}`;
+      const localStorageKey = `r_wordDocument_${fileName}`;
       const savedData = localStorage.getItem(localStorageKey);
       
       if (savedData) {
@@ -206,10 +207,11 @@ function handleNewWindow(windowConfig) {
   } else {
     // For non-custom apps, check if a modified version exists
     const fileName = windowConfig.title.replace('.doc', '');
-    const modifiedKey = `wordDocument_modified_${fileName}`;
+    const modifiedKey = `r_wordDocument_modified_${fileName}`;
     
     try {
       const modifiedData = localStorage.getItem(modifiedKey);
+      const originalContent = windowConfig.appProps?.content || ''; // Store original content from JSON
       if (modifiedData) {
         // Modified version exists, use it instead of original
         const data = JSON.parse(modifiedData);
@@ -218,6 +220,7 @@ function handleNewWindow(windowConfig) {
           content: data.content || windowConfig.appProps?.content || '', // Use modified content
           isCustom: false, // Still non-custom (from JSON config)
           originalTitle: windowConfig.title, // Store original title
+          originalContent: originalContent, // Store original content for reset
         };
       } else {
         // No modified version, use original content
@@ -225,6 +228,7 @@ function handleNewWindow(windowConfig) {
           ...windowConfig.appProps,
           isCustom: false, // Mark as non-custom (from JSON config)
           originalTitle: windowConfig.title, // Store original title
+          originalContent: originalContent, // Store original content for reset
         };
       }
     } catch (e) {
@@ -234,6 +238,7 @@ function handleNewWindow(windowConfig) {
         ...windowConfig.appProps,
         isCustom: false,
         originalTitle: windowConfig.title,
+        originalContent: windowConfig.appProps?.content || '',
       };
     }
   }
@@ -244,10 +249,16 @@ function handleNewWindow(windowConfig) {
 const iconRefreshKey = ref(0);
 const savedIconsRefreshKey = ref(0); // Separate key for saved icons updates
 
+// Store original icon positions from windowConfig
+const originalIconPositions = new Map();
+windowConfig.icons.forEach(icon => {
+  originalIconPositions.set(icon.title, { x: icon.x, y: icon.y });
+});
+
 // Load saved icons from localStorage
 function loadSavedIcons() {
   try {
-    const savedIconsJson = localStorage.getItem('savedWordIcons');
+    const savedIconsJson = localStorage.getItem('r_savedWordIcons');
     if (savedIconsJson) {
       return JSON.parse(savedIconsJson);
     }
@@ -257,8 +268,69 @@ function loadSavedIcons() {
   return [];
 }
 
+// Save icon positions to localStorage
+function saveIconPositionsToLocalStorage() {
+  try {
+    const positions = {};
+    // Save positions from windowConfig icons
+    windowConfig.icons.forEach(icon => {
+      if (icon.x && icon.y) {
+        positions[icon.title] = { x: icon.x, y: icon.y };
+      }
+    });
+    // Save positions from custom icons
+    const savedIcons = loadSavedIcons();
+    savedIcons.forEach(icon => {
+      if (icon.x && icon.y) {
+        positions[icon.title] = { x: icon.x, y: icon.y };
+      }
+    });
+    localStorage.setItem('r_iconPositions', JSON.stringify(positions));
+  } catch (e) {
+    console.warn('Failed to save icon positions to localStorage', e);
+  }
+}
+
+// Load icon positions from localStorage
+function loadIconPositions() {
+  try {
+    const positionsJson = localStorage.getItem('r_iconPositions');
+    if (positionsJson) {
+      return JSON.parse(positionsJson);
+    }
+  } catch (e) {
+    console.warn('Failed to load icon positions from localStorage', e);
+  }
+  return {};
+}
+
 // Listen for saved icons updates and permanent deletions
 onMounted(() => {
+  // Load icon positions from localStorage and apply them
+  const savedPositions = loadIconPositions();
+  if (Object.keys(savedPositions).length > 0) {
+    // Apply positions to windowConfig icons
+    windowConfig.icons.forEach(icon => {
+      if (savedPositions[icon.title]) {
+        icon.x = savedPositions[icon.title].x;
+        icon.y = savedPositions[icon.title].y;
+      }
+    });
+    // Apply positions to custom icons
+    const savedIcons = loadSavedIcons();
+    savedIcons.forEach(icon => {
+      if (savedPositions[icon.title]) {
+        icon.x = savedPositions[icon.title].x;
+        icon.y = savedPositions[icon.title].y;
+      }
+    });
+    // Update saved icons with positions
+    if (savedIcons.length > 0) {
+      localStorage.setItem('r_savedWordIcons', JSON.stringify(savedIcons));
+    }
+    iconRefreshKey.value++;
+  }
+  
   window.addEventListener('saved-icons-updated', () => {
     iconRefreshKey.value++;
     savedIconsRefreshKey.value++; // Also refresh saved icons
@@ -367,7 +439,7 @@ function handleIconRestored(event) {
       if (savedIcon) {
         savedIcon.x = `${x}px`;
         savedIcon.y = y;
-        localStorage.setItem('savedWordIcons', JSON.stringify(savedIcons));
+        localStorage.setItem('r_savedWordIcons', JSON.stringify(savedIcons));
         savedIconsRefreshKey.value++; // Trigger reactivity update
       }
     } else {
@@ -427,12 +499,46 @@ function handleBackgroundChanged(imageData) {
 
 function handleBackgroundReset() {
   desktopBackground.value = defaultBackground;
-  localStorage.removeItem('desktopBackground');
+  localStorage.removeItem('r_desktopBackground');
 }
 
 function handleNavbarToggled() {
   // Navbar toggle is handled by the context menu component via navStore
   // This is just for any additional logic if needed
+}
+
+function handleResetAll() {
+  // Remove all localStorage keys that start with r_
+  Object.keys(localStorage).forEach(key => {
+    if (key.startsWith('r_')) {
+      localStorage.removeItem(key);
+    }
+  });
+  
+  // Reset icon positions to original positions from windowConfig
+  windowConfig.icons.forEach(icon => {
+    const originalPos = originalIconPositions.get(icon.title);
+    if (originalPos) {
+      icon.x = originalPos.x;
+      icon.y = originalPos.y;
+    }
+  });
+  
+  // Reset trash store state
+  trashStore.deletedIcons = [];
+  trashStore.permanentlyDeletedIcons = [];
+  
+  // Reset desktop background
+  desktopBackground.value = defaultBackground;
+  
+  // Refresh icons and windows
+  iconRefreshKey.value++;
+  savedIconsRefreshKey.value++;
+  
+  // Close all windows
+  windows.value = [];
+  
+  alert('All data has been reset!');
 }
 
 function handleDocumentClick(e) {
@@ -447,7 +553,7 @@ onMounted(() => {
   // Close context menu on click outside
   document.addEventListener('click', handleDocumentClick);
   // Load background from localStorage
-  const savedBackground = localStorage.getItem('desktopBackground');
+    const savedBackground = localStorage.getItem('r_desktopBackground');
   if (savedBackground) {
     desktopBackground.value = savedBackground;
   }
@@ -479,12 +585,12 @@ function handleTrashDrop(iconConfig) {
       : iconConfig.title;
     
     // Remove wordDocument entries
-    localStorage.removeItem(`wordDocument_${fileName}`);
+      localStorage.removeItem(`r_wordDocument_${fileName}`);
     
     // Also check for any wordDocument entries that might match (with or without .doc)
     Object.keys(localStorage).forEach(key => {
-      if (key.startsWith('wordDocument_')) {
-        const keyFileName = key.replace('wordDocument_', '');
+      if (key.startsWith('r_wordDocument_')) {
+        const keyFileName = key.replace('r_wordDocument_', '');
         // Match if the key fileName matches the icon's fileName (with or without .doc)
         if (keyFileName === fileName || keyFileName === iconConfig.title || 
             keyFileName === `${fileName}.doc` || keyFileName === iconConfig.title.replace('.doc', '')) {
@@ -505,7 +611,7 @@ function permanentlyDeleteIcon(iconConfig) {
   if (iconConfig.isCustom) {
     const savedIcons = loadSavedIcons();
     const updatedIcons = savedIcons.filter(icon => icon.title !== iconConfig.title);
-    localStorage.setItem('savedWordIcons', JSON.stringify(updatedIcons));
+    localStorage.setItem('r_savedWordIcons', JSON.stringify(updatedIcons));
   }
   
   // Also remove any associated localStorage entries (document data)
@@ -516,12 +622,12 @@ function permanentlyDeleteIcon(iconConfig) {
       : iconConfig.title;
     
     // Remove wordDocument entries
-    localStorage.removeItem(`wordDocument_${fileName}`);
+      localStorage.removeItem(`r_wordDocument_${fileName}`);
     
     // Also check for any wordDocument entries that might match (with or without .doc)
     Object.keys(localStorage).forEach(key => {
-      if (key.startsWith('wordDocument_')) {
-        const keyFileName = key.replace('wordDocument_', '');
+      if (key.startsWith('r_wordDocument_')) {
+        const keyFileName = key.replace('r_wordDocument_', '');
         // Match if the key fileName matches the icon's fileName (with or without .doc)
         if (keyFileName === fileName || keyFileName === iconConfig.title || 
             keyFileName === `${fileName}.doc` || keyFileName === iconConfig.title.replace('.doc', '')) {
@@ -789,7 +895,7 @@ function saveIconPositions() {
           if (savedIcon) {
             savedIcon.x = left;
             savedIcon.y = top;
-            localStorage.setItem('savedWordIcons', JSON.stringify(savedIcons));
+            localStorage.setItem('r_savedWordIcons', JSON.stringify(savedIcons));
             savedIconsRefreshKey.value++; // Trigger reactivity update
           }
         } else {
@@ -797,6 +903,8 @@ function saveIconPositions() {
           if (configIcon) {
             configIcon.x = left;
             configIcon.y = top;
+            // Save icon positions to localStorage
+            saveIconPositionsToLocalStorage();
           }
         }
       }
@@ -929,7 +1037,7 @@ function handleIconDragEnd(element) {
       if (savedIcon) {
         savedIcon.x = left;
         savedIcon.y = top;
-        localStorage.setItem('savedWordIcons', JSON.stringify(savedIcons));
+        localStorage.setItem('r_savedWordIcons', JSON.stringify(savedIcons));
         savedIconsRefreshKey.value++; // Trigger reactivity update
         return;
       }
@@ -939,6 +1047,8 @@ function handleIconDragEnd(element) {
       if (configIcon) {
         configIcon.x = left;
         configIcon.y = top;
+        // Save icon positions to localStorage
+        saveIconPositionsToLocalStorage();
       }
     }
   }
@@ -1011,7 +1121,7 @@ function handleOpenApp(appConfig) {
     }
     
     try {
-      const localStorageKey = `wordDocument_${fileName}`;
+      const localStorageKey = `r_wordDocument_${fileName}`;
       const savedData = localStorage.getItem(localStorageKey);
       
       if (savedData) {
@@ -1042,36 +1152,40 @@ function handleOpenApp(appConfig) {
   } else {
     // For non-custom apps, check if a modified version exists
     const fileName = appConfig.title.replace('.doc', '');
-    const modifiedKey = `wordDocument_modified_${fileName}`;
+    const modifiedKey = `r_wordDocument_modified_${fileName}`;
     
-    try {
-      const modifiedData = localStorage.getItem(modifiedKey);
-      if (modifiedData) {
-        // Modified version exists, use it instead of original
-        const data = JSON.parse(modifiedData);
+      try {
+        const modifiedData = localStorage.getItem(modifiedKey);
+        const originalContent = appConfig.appProps?.content || ''; // Store original content from JSON
+        if (modifiedData) {
+          // Modified version exists, use it instead of original
+          const data = JSON.parse(modifiedData);
+          appConfig.appProps = {
+            ...appConfig.appProps,
+            content: data.content || appConfig.appProps?.content || '', // Use modified content
+            isCustom: false, // Still non-custom (from JSON config)
+            originalTitle: appConfig.title, // Store original title
+            originalContent: originalContent, // Store original content for reset
+          };
+        } else {
+          // No modified version, use original content
+          appConfig.appProps = {
+            ...appConfig.appProps,
+            isCustom: false, // Mark as non-custom (from JSON config)
+            originalTitle: appConfig.title, // Store original title
+            originalContent: originalContent, // Store original content for reset
+          };
+        }
+      } catch (e) {
+        console.warn('Failed to check for modified document', e);
+        // On error, use original content
         appConfig.appProps = {
           ...appConfig.appProps,
-          content: data.content || appConfig.appProps?.content || '', // Use modified content
-          isCustom: false, // Still non-custom (from JSON config)
-          originalTitle: appConfig.title, // Store original title
-        };
-      } else {
-        // No modified version, use original content
-        appConfig.appProps = {
-          ...appConfig.appProps,
-          isCustom: false, // Mark as non-custom (from JSON config)
-          originalTitle: appConfig.title, // Store original title
+          isCustom: false,
+          originalTitle: appConfig.title,
+          originalContent: appConfig.appProps?.content || '',
         };
       }
-    } catch (e) {
-      console.warn('Failed to check for modified document', e);
-      // On error, use original content
-      appConfig.appProps = {
-        ...appConfig.appProps,
-        isCustom: false,
-        originalTitle: appConfig.title,
-      };
-    }
   }
   
   newWindow(appConfig);

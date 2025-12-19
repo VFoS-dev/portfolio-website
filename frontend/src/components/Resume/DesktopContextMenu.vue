@@ -14,6 +14,9 @@
     <div class="menu-item" @click="handleToggleNavbar">
       <span>{{ navbarHidden ? 'Show' : 'Hide' }} Navbar</span>
     </div>
+    <div class="menu-item" @click="handleResetAll">
+      <span>Reset All</span>
+    </div>
     <input
       ref="fileInput"
       type="file"
@@ -44,7 +47,7 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(['close', 'background-changed', 'background-reset', 'navbar-toggled']);
+const emit = defineEmits(['close', 'background-changed', 'background-reset', 'navbar-toggled', 'reset-all']);
 
 const fileInput = ref(null);
 const navbarHidden = computed(() => navStore.hide);
@@ -113,7 +116,7 @@ function handleFileSelected(event) {
       
       // Save to localStorage
       try {
-        localStorage.setItem('desktopBackground', imageData);
+        localStorage.setItem('r_desktopBackground', imageData);
         emit('background-changed', imageData);
       } catch (error) {
         // localStorage quota exceeded
@@ -143,7 +146,7 @@ function handleFileSelected(event) {
 }
 
 function handleResetBackground() {
-  localStorage.removeItem('desktopBackground');
+  localStorage.removeItem('r_desktopBackground');
   emit('background-reset');
   emit('close');
 }
@@ -155,6 +158,13 @@ function handleToggleNavbar() {
   cubeStore.toggleKeyRotate(!willBeHidden);
   emit('navbar-toggled');
   emit('close');
+}
+
+function handleResetAll() {
+  if (confirm('Are you sure you want to reset all? This will:\n- Remove all modified files\n- Delete all custom saved icons\n- Clear the trash\n- Reset the desktop background\n\nThis action cannot be undone.')) {
+    emit('reset-all');
+    emit('close');
+  }
 }
 </script>
 

@@ -7,17 +7,17 @@ const useTrashStore = defineStore('trashStore', {
     let deletedIcons = [];
     let permanentlyDeletedIcons = [];
     try {
-      const savedDeleted = localStorage.getItem('trashStore_deletedIcons');
+      const savedDeleted = localStorage.getItem('r_trashStore_deletedIcons');
       if (savedDeleted) {
         deletedIcons = JSON.parse(savedDeleted);
       }
-      const savedPermanentlyDeleted = localStorage.getItem('trashStore_permanentlyDeletedIcons');
+      const savedPermanentlyDeleted = localStorage.getItem('r_trashStore_permanentlyDeletedIcons');
       if (savedPermanentlyDeleted) {
         permanentlyDeletedIcons = JSON.parse(savedPermanentlyDeleted);
         // Filter out any custom saved Word documents (only keep JSON config icons)
         permanentlyDeletedIcons = permanentlyDeletedIcons.filter(icon => !icon.isCustom);
         // Save back the filtered list
-        localStorage.setItem('trashStore_permanentlyDeletedIcons', JSON.stringify(permanentlyDeletedIcons));
+        localStorage.setItem('r_trashStore_permanentlyDeletedIcons', JSON.stringify(permanentlyDeletedIcons));
       }
     } catch (e) {
       console.warn('Failed to load trash store from localStorage', e);
@@ -92,10 +92,10 @@ const useTrashStore = defineStore('trashStore', {
       // Save deleted and permanently deleted icons to localStorage
       // Only save permanently deleted icons from JSON config (not custom saved Word documents)
       try {
-        localStorage.setItem('trashStore_deletedIcons', JSON.stringify(this.deletedIcons));
+        localStorage.setItem('r_trashStore_deletedIcons', JSON.stringify(this.deletedIcons));
         // Filter out custom saved Word documents from permanently deleted icons before saving
         const jsonConfigPermanentlyDeleted = this.permanentlyDeletedIcons.filter(icon => !icon.isCustom);
-        localStorage.setItem('trashStore_permanentlyDeletedIcons', JSON.stringify(jsonConfigPermanentlyDeleted));
+        localStorage.setItem('r_trashStore_permanentlyDeletedIcons', JSON.stringify(jsonConfigPermanentlyDeleted));
       } catch (e) {
         console.warn('Failed to save trash store to localStorage', e);
       }

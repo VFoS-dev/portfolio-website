@@ -2,14 +2,24 @@
   <div class="word-app">
     <!-- Menu Bar -->
     <div class="menu-bar">
-      <div class="menu-item" @click="toggleFileMenu">
+      <div class="menu-item" @click="toggleFileMenu" @mouseleave="handleMenuMouseLeave('file', $event)" @mouseenter="handleMenuMouseEnter('file')">
         File
-        <div v-if="showFileMenu" class="menu-dropdown">
+        <div v-if="showFileMenu" class="menu-dropdown" @mouseleave="handleMenuMouseLeave('file', $event)" @mouseenter="handleMenuMouseEnter('file')">
           <div class="menu-option" @click="handleSave">Save</div>
           <div class="menu-option" @click="handleSaveAs">Save As...</div>
         </div>
       </div>
-      <div class="menu-item">Edit</div>
+      <div class="menu-item" @click="toggleEditMenu" @mouseleave="handleMenuMouseLeave('edit', $event)" @mouseenter="handleMenuMouseEnter('edit')">
+        Edit
+        <div v-if="showEditMenu" class="menu-dropdown" @mouseleave="handleMenuMouseLeave('edit', $event)" @mouseenter="handleMenuMouseEnter('edit')">
+          <div class="menu-option" @click="handleUndo" :class="{ disabled: !canUndo }">Undo</div>
+          <div class="menu-option" @click="handleRedo" :class="{ disabled: !canRedo }">Redo</div>
+          <template v-if="!isCustom">
+            <div class="menu-separator"></div>
+            <div class="menu-option" @click="handleReset" :class="{ disabled: !hasBeenModified }">Reset to Original</div>
+          </template>
+        </div>
+      </div>
       <div class="menu-item">View</div>
       <div class="menu-item">Insert</div>
       <div class="menu-item">Format</div>
@@ -179,16 +189,35 @@ const props = defineProps({
     type: String,
     default: '',
   },
+  originalContent: {
+    type: String,
+    default: '',
+  },
 });
 
 const editorRef = ref(null);
 const editorContent = ref(props.content || '');
 const showFileMenu = ref(false);
+const showEditMenu = ref(false);
+let menuLeaveTimeout = null;
+// Use originalContent prop if provided (for modified documents), otherwise use props.content
+const originalContent = ref(props.originalContent || props.content || ''); // Store original content for reset
 
 // Watch for changes to props.content and update editorContent
 watch(() => props.content, (newContent) => {
   if (newContent !== undefined && newContent !== null && newContent !== editorContent.value) {
     editorContent.value = newContent;
+    // Only update originalContent if originalContent prop is not set (first load)
+    if (!props.originalContent) {
+      originalContent.value = newContent;
+    }
+  }
+});
+
+// Watch for originalContent prop changes (when opening modified documents)
+watch(() => props.originalContent, (newOriginalContent) => {
+  if (newOriginalContent !== undefined && newOriginalContent !== null) {
+    originalContent.value = newOriginalContent;
   }
 });
 const selectedFont = ref('Times New Roman');
@@ -272,6 +301,12 @@ const isOrderedList = ref(false);
 const canUndo = ref(false);
 const canRedo = ref(false);
 
+// Check if document has been modified
+const hasBeenModified = computed(() => {
+  const currentContent = editorRef.value?.getContent() || editorContent.value;
+  return currentContent !== originalContent.value;
+});
+
 let editorView = null;
 let updateInterval = null;
 
@@ -291,10 +326,24 @@ onMounted(async () => {
   }
   
   // Load saved content if available
-  const savedContent = localStorage.getItem('wordDocument');
+  const savedContent = localStorage.getItem('r_wordDocument');
   if (savedContent && !props.content) {
     editorContent.value = savedContent;
+    originalContent.value = savedContent;
+  } else if (props.originalContent) {
+    // Use originalContent prop if provided (for modified documents)
+    originalContent.value = props.originalContent;
+  } else if (props.content) {
+    originalContent.value = props.content;
   }
+  
+  // Close menus when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.menu-item')) {
+      showFileMenu.value = false;
+      showEditMenu.value = false;
+    }
+  });
 });
 
 onBeforeUnmount(() => {
@@ -665,6 +714,51 @@ function toggleOrderedList() {
 // File menu functions
 function toggleFileMenu() {
   showFileMenu.value = !showFileMenu.value;
+  showEditMenu.value = false; // Close other menus
+}
+
+// Edit menu functions
+function toggleEditMenu() {
+  showEditMenu.value = !showEditMenu.value;
+  showFileMenu.value = false; // Close other menus
+}
+
+// Handle mouse enter - cancel any pending close
+function handleMenuMouseEnter(menuType) {
+  if (menuLeaveTimeout) {
+    clearTimeout(menuLeaveTimeout);
+    menuLeaveTimeout = null;
+  }
+}
+
+// Handle mouse leave from menu items and dropdowns
+function handleMenuMouseLeave(menuType, event) {
+  // Clear any existing timeout
+  if (menuLeaveTimeout) {
+    clearTimeout(menuLeaveTimeout);
+  }
+  
+  // Set a timeout to close the menu
+  menuLeaveTimeout = setTimeout(() => {
+    const relatedTarget = event.relatedTarget;
+    
+    // Check if mouse moved to any menu element (including the same menu)
+    const isMenuElement = relatedTarget && (
+      relatedTarget.closest('.menu-item') || 
+      relatedTarget.closest('.menu-dropdown')
+    );
+    
+    // Only close if mouse is not in any menu element
+    if (!isMenuElement) {
+      if (menuType === 'file') {
+        showFileMenu.value = false;
+      } else if (menuType === 'edit') {
+        showEditMenu.value = false;
+      }
+    }
+    
+    menuLeaveTimeout = null;
+  }, 150); // Delay to allow movement between menu item and dropdown
 }
 
 function handleSave() {
@@ -675,7 +769,7 @@ function handleSave() {
   if (!props.isCustom && props.originalTitle) {
     // Save modified version with a special key
     const fileName = props.originalTitle.replace('.doc', '');
-    const modifiedKey = `wordDocument_modified_${fileName}`;
+    const modifiedKey = `r_wordDocument_modified_${fileName}`;
     
     // Save document content to localStorage as modified version
     localStorage.setItem(modifiedKey, JSON.stringify({
@@ -715,7 +809,7 @@ function handleSaveAs() {
     const content = editorRef.value?.getContent() || editorContent.value;
     
     // Save document content
-    localStorage.setItem(`wordDocument_${fileName}`, JSON.stringify({
+    localStorage.setItem(`r_wordDocument_${fileName}`, JSON.stringify({
       name: fileName,
       content: content,
       timestamp: Date.now(),
@@ -732,7 +826,7 @@ function createOrUpdateWordIcon(fileName, content) {
   // Load existing saved icons
   let savedIcons = [];
   try {
-    const savedIconsJson = localStorage.getItem('savedWordIcons');
+    const savedIconsJson = localStorage.getItem('r_savedWordIcons');
     if (savedIconsJson) {
       savedIcons = JSON.parse(savedIconsJson);
     }
@@ -779,7 +873,7 @@ function createOrUpdateWordIcon(fileName, content) {
   }
   
   // Save back to localStorage
-  localStorage.setItem('savedWordIcons', JSON.stringify(savedIcons));
+  localStorage.setItem('r_savedWordIcons', JSON.stringify(savedIcons));
   
   // Emit event to refresh desktop icons
   window.dispatchEvent(new CustomEvent('saved-icons-updated'));
@@ -806,7 +900,7 @@ function handleNew() {
 function handleOpen() {
   const fileName = prompt('Enter file name to open:', 'document');
   if (fileName) {
-    const saved = localStorage.getItem(`wordDocument_${fileName}`);
+    const saved = localStorage.getItem(`r_wordDocument_${fileName}`);
     if (saved) {
       const data = JSON.parse(saved);
       editorContent.value = data.content;
@@ -832,12 +926,41 @@ function handleUndo() {
   const view = getEditorView();
   if (!view) return;
   applyCommand(undo);
+  showEditMenu.value = false;
 }
 
 function handleRedo() {
   const view = getEditorView();
   if (!view) return;
   applyCommand(redo);
+  showEditMenu.value = false;
+}
+
+function handleReset() {
+  if (!hasBeenModified.value) {
+    showEditMenu.value = false;
+    return;
+  }
+  
+  if (confirm('Are you sure you want to reset the document to its original state? All unsaved changes will be lost.')) {
+    // Reset editor content to original
+    editorContent.value = originalContent.value;
+    
+    // Update the editor view with original content
+    const view = getEditorView();
+    if (view) {
+      const schema = editorRef.value.getSchema();
+      if (schema) {
+        const parser = DOMParser.fromSchema(schema);
+        const dom = new DOMParser().parseFromString(originalContent.value, 'text/html');
+        const doc = parser.parse(dom);
+        const tr = view.state.tr.replace(0, view.state.doc.content.size, doc.content);
+        view.dispatch(tr);
+      }
+    }
+    
+    showEditMenu.value = false;
+  }
 }
 
 function handleContentUpdate(newContent) {
@@ -898,15 +1021,29 @@ document.addEventListener('click', (e) => {
       box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
       z-index: 1000;
       min-width: 150px;
+      color: #000000; // Reset color for dropdown to prevent inheritance
       
       .menu-option {
         padding: 4px 20px;
         cursor: pointer;
+        color: #000000; // Ensure default text color is black
         
-        &:hover {
+        &:hover:not(.disabled) {
           background: #316ac5;
           color: white;
         }
+        
+        &.disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+          color: #000000; // Keep disabled items black
+        }
+      }
+      
+      .menu-separator {
+        height: 1px;
+        background: #808080;
+        margin: 2px 0;
       }
     }
   }
