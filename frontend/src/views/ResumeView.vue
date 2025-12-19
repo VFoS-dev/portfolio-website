@@ -191,7 +191,49 @@ const visibleIcons = computed(() => {
   return filtered;
 });
 
-function handleIconRestored() {
+function handleIconRestored(event) {
+  // Get the restored icon from the event detail
+  const restoredIcon = event?.detail;
+  if (restoredIcon) {
+    // Calculate position starting from bottom left, stacking vertically and wrapping horizontally
+    const iconWidth = 70; // Icon width in pixels
+    const iconHeight = 100; // Approximate icon height (icon + padding + text)
+    const horizontalSpacing = 80; // Horizontal spacing between columns
+    const verticalSpacing = 110; // Vertical spacing between rows
+    const startX = 10; // Starting x position from left
+    const taskbarHeight = 40; // Approximate taskbar height
+    const bottomPadding = 10; // Padding from bottom
+    
+    // Get available height (viewport height minus taskbar)
+    const availableHeight = window.innerHeight - taskbarHeight;
+    
+    // Count non-trash icons that will be visible after restore (including the one being restored)
+    // We need to count icons that are not deleted and not trash
+    const deletedTitles = trashStore.getAllDeletedIconTitles;
+    const allNonTrashIcons = windowConfig.icons.filter(icon => !icon.isTrash && !deletedTitles.includes(icon.title));
+    // The restored icon is already removed from trash, so it should be in this list
+    const restoredCount = allNonTrashIcons.length - 1; // -1 to get 0-indexed position for the restored icon
+    
+    // Calculate how many icons fit per column (from bottom to top)
+    const iconsPerColumn = Math.max(1, Math.floor((availableHeight - bottomPadding - iconHeight) / verticalSpacing) + 1);
+    
+    // Calculate grid position
+    // Start from bottom and stack upward, wrapping to the right when needed
+    const column = Math.floor(restoredCount / iconsPerColumn);
+    const row = restoredCount % iconsPerColumn;
+    
+    // Calculate x and y positions
+    const x = startX + (column * horizontalSpacing);
+    const y = `calc(100% - ${taskbarHeight + bottomPadding + iconHeight + (row * verticalSpacing)}px)`;
+    
+    // Update the icon's position in windowConfig
+    const configIcon = windowConfig.icons.find(icon => icon.title === restoredIcon.title);
+    if (configIcon) {
+      configIcon.x = `${x}px`;
+      configIcon.y = y;
+    }
+  }
+  
   // Force refresh of visible icons
   iconRefreshKey.value++;
   // Update trash can icon if needed
