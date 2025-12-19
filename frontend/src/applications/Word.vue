@@ -157,7 +157,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue';
+import { ref, computed, onMounted, onBeforeUnmount, nextTick, watch } from 'vue';
 import PagedEditor from './WordComponents/PagedEditor.vue';
 import { cubeStore } from '@/stores/cubeStore';
 import { toggleMark, setBlockType } from 'prosemirror-commands';
@@ -171,11 +171,26 @@ const props = defineProps({
     type: String,
     default: '',
   },
+  isCustom: {
+    type: Boolean,
+    default: false,
+  },
+  originalTitle: {
+    type: String,
+    default: '',
+  },
 });
 
 const editorRef = ref(null);
 const editorContent = ref(props.content || '');
 const showFileMenu = ref(false);
+
+// Watch for changes to props.content and update editorContent
+watch(() => props.content, (newContent) => {
+  if (newContent !== undefined && newContent !== null && newContent !== editorContent.value) {
+    editorContent.value = newContent;
+  }
+});
 const selectedFont = ref('Times New Roman');
 const selectedFontSize = ref(12);
 const fontSizes = [8, 9, 10, 11, 12, 14, 16, 18, 20, 24, 28, 32, 36, 48, 72];
@@ -656,6 +671,26 @@ function handleSave() {
   showFileMenu.value = false;
   const content = editorRef.value?.getContent() || editorContent.value;
   
+  // If this is a non-custom app (from JSON config), save as modified version
+  if (!props.isCustom && props.originalTitle) {
+    // Save modified version with a special key
+    const fileName = props.originalTitle.replace('.doc', '');
+    const modifiedKey = `wordDocument_modified_${fileName}`;
+    
+    // Save document content to localStorage as modified version
+    localStorage.setItem(modifiedKey, JSON.stringify({
+      name: fileName,
+      content: content,
+      timestamp: Date.now(),
+      isModified: true,
+      originalTitle: props.originalTitle,
+    }));
+    
+    alert(`Document saved!`);
+    return;
+  }
+  
+  // For custom icons, use existing logic
   // Use default name if no title is set
   const defaultName = 'Document';
   const fileName = defaultName;

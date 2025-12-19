@@ -178,18 +178,73 @@ function handleWindowClose(index) {
 function handleNewWindow(windowConfig) {
   // If this is a saved Word document, load its content from localStorage
   if (windowConfig.isCustom && windowConfig.title) {
-    const fileName = windowConfig.title.replace('.doc', '');
+    // Extract fileName - handle both with and without .doc extension
+    let fileName = windowConfig.title;
+    if (fileName.endsWith('.doc')) {
+      fileName = fileName.slice(0, -4); // Remove .doc extension
+    }
+    
     try {
-      const savedData = localStorage.getItem(`wordDocument_${fileName}`);
+      const localStorageKey = `wordDocument_${fileName}`;
+      const savedData = localStorage.getItem(localStorageKey);
+      
       if (savedData) {
         const data = JSON.parse(savedData);
         windowConfig.appProps = {
           ...windowConfig.appProps,
-          content: data.content || '',
+          content: data.content || windowConfig.appProps?.content || '', // Use localStorage content, fallback to appProps
+          isCustom: true, // Mark as custom icon
+          originalTitle: windowConfig.title,
+        };
+      } else {
+        // If no localStorage data, use appProps content as fallback
+        windowConfig.appProps = {
+          ...windowConfig.appProps,
+          isCustom: true,
+          originalTitle: windowConfig.title,
         };
       }
     } catch (e) {
       console.warn('Failed to load saved document content', e);
+      // On error, still set the props
+      windowConfig.appProps = {
+        ...windowConfig.appProps,
+        isCustom: true,
+        originalTitle: windowConfig.title,
+      };
+    }
+  } else {
+    // For non-custom apps, check if a modified version exists
+    const fileName = windowConfig.title.replace('.doc', '');
+    const modifiedKey = `wordDocument_modified_${fileName}`;
+    
+    try {
+      const modifiedData = localStorage.getItem(modifiedKey);
+      if (modifiedData) {
+        // Modified version exists, use it instead of original
+        const data = JSON.parse(modifiedData);
+        windowConfig.appProps = {
+          ...windowConfig.appProps,
+          content: data.content || windowConfig.appProps?.content || '', // Use modified content
+          isCustom: false, // Still non-custom (from JSON config)
+          originalTitle: windowConfig.title, // Store original title
+        };
+      } else {
+        // No modified version, use original content
+        windowConfig.appProps = {
+          ...windowConfig.appProps,
+          isCustom: false, // Mark as non-custom (from JSON config)
+          originalTitle: windowConfig.title, // Store original title
+        };
+      }
+    } catch (e) {
+      console.warn('Failed to check for modified document', e);
+      // On error, use original content
+      windowConfig.appProps = {
+        ...windowConfig.appProps,
+        isCustom: false,
+        originalTitle: windowConfig.title,
+      };
     }
   }
   
@@ -944,18 +999,73 @@ function getIconProps(iconConfig, index) {
 function handleOpenApp(appConfig) {
   // If this is a saved Word document, load its content from localStorage
   if (appConfig.isCustom && appConfig.title) {
-    const fileName = appConfig.title.replace('.doc', '');
+    // Extract fileName - handle both with and without .doc extension
+    let fileName = appConfig.title;
+    if (fileName.endsWith('.doc')) {
+      fileName = fileName.slice(0, -4); // Remove .doc extension
+    }
+    
     try {
-      const savedData = localStorage.getItem(`wordDocument_${fileName}`);
+      const localStorageKey = `wordDocument_${fileName}`;
+      const savedData = localStorage.getItem(localStorageKey);
+      
       if (savedData) {
         const data = JSON.parse(savedData);
         appConfig.appProps = {
           ...appConfig.appProps,
-          content: data.content || '',
+          content: data.content || appConfig.appProps?.content || '', // Use localStorage content, fallback to appProps
+          isCustom: true, // Mark as custom icon
+          originalTitle: appConfig.title,
+        };
+      } else {
+        // If no localStorage data, use appProps content as fallback
+        appConfig.appProps = {
+          ...appConfig.appProps,
+          isCustom: true,
+          originalTitle: appConfig.title,
         };
       }
     } catch (e) {
       console.warn('Failed to load saved document content', e);
+      // On error, still set the props
+      appConfig.appProps = {
+        ...appConfig.appProps,
+        isCustom: true,
+        originalTitle: appConfig.title,
+      };
+    }
+  } else {
+    // For non-custom apps, check if a modified version exists
+    const fileName = appConfig.title.replace('.doc', '');
+    const modifiedKey = `wordDocument_modified_${fileName}`;
+    
+    try {
+      const modifiedData = localStorage.getItem(modifiedKey);
+      if (modifiedData) {
+        // Modified version exists, use it instead of original
+        const data = JSON.parse(modifiedData);
+        appConfig.appProps = {
+          ...appConfig.appProps,
+          content: data.content || appConfig.appProps?.content || '', // Use modified content
+          isCustom: false, // Still non-custom (from JSON config)
+          originalTitle: appConfig.title, // Store original title
+        };
+      } else {
+        // No modified version, use original content
+        appConfig.appProps = {
+          ...appConfig.appProps,
+          isCustom: false, // Mark as non-custom (from JSON config)
+          originalTitle: appConfig.title, // Store original title
+        };
+      }
+    } catch (e) {
+      console.warn('Failed to check for modified document', e);
+      // On error, use original content
+      appConfig.appProps = {
+        ...appConfig.appProps,
+        isCustom: false,
+        originalTitle: appConfig.title,
+      };
     }
   }
   
