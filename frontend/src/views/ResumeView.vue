@@ -68,7 +68,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
+import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue';
 import ResumeDesktopIcon from '@/components/Resume/ResumeDesktopIcon.vue';
 import Window from '@/components/Window/Window.vue';
 import ResumeTaskbar from '@/components/Resume/ResumeTaskbar.vue';
@@ -121,17 +121,7 @@ function setIconRef(el, index) {
   }
 }
 
-const windows = ref([
-  {
-    ...windowConfig.defaultWindow,
-    key: createKey(),
-    state: {
-      fullscreened: false,
-      focused: true,
-      minimized: false,
-    },
-  },
-]);
+const windows = ref([]);
 
 function newWindow(windowConfig) {
   const keys = windows.value.map(function (w) {
@@ -282,6 +272,21 @@ onMounted(() => {
     iconRefreshKey.value++;
     savedIconsRefreshKey.value++; // Also refresh saved icons
   });
+  
+  // Open default window on mount if specified
+  if (windowConfig.defaultWindow && windowConfig.defaultWindow.iconTitle) {
+    // Wait for icons to be loaded
+    nextTick(() => {
+      // Find the icon by title
+      const allIconsList = allIcons.value;
+      const defaultIcon = allIconsList.find(icon => icon.title === windowConfig.defaultWindow.iconTitle);
+      
+      if (defaultIcon) {
+        // Open the icon using handleNewWindow
+        handleNewWindow(defaultIcon);
+      }
+    });
+  }
 });
 
 onBeforeUnmount(() => {
