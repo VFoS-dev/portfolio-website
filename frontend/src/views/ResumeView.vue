@@ -281,8 +281,9 @@ function handleIconRestored(event) {
     
     // Count non-trash icons that will be visible after restore (including the one being restored)
     // We need to count icons that are not deleted and not trash
+    // Use allIcons to include both config icons and saved Word document icons
     const deletedTitles = trashStore.getAllDeletedIconTitles;
-    const allNonTrashIcons = windowConfig.icons.filter(icon => !icon.isTrash && !deletedTitles.includes(icon.title));
+    const allNonTrashIcons = allIcons.value.filter(icon => !icon.isTrash && !deletedTitles.includes(icon.title));
     // The restored icon is already removed from trash, so it should be in this list
     const restoredCount = allNonTrashIcons.length - 1; // -1 to get 0-indexed position for the restored icon
     
@@ -307,6 +308,7 @@ function handleIconRestored(event) {
         savedIcon.x = `${x}px`;
         savedIcon.y = y;
         localStorage.setItem('savedWordIcons', JSON.stringify(savedIcons));
+        savedIconsRefreshKey.value++; // Trigger reactivity update
       }
     } else {
       // Update windowConfig icon position

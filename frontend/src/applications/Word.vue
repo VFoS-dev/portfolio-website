@@ -726,8 +726,18 @@ function createOrUpdateWordIcon(fileName, content) {
   };
   
   if (existingIndex !== -1) {
-    // Update existing icon
-    savedIcons[existingIndex] = iconConfig;
+    // Update existing icon - preserve position and other properties
+    const existingIcon = savedIcons[existingIndex];
+    savedIcons[existingIndex] = {
+      ...existingIcon, // Preserve all existing properties (including x, y position)
+      ...iconConfig, // Override with new content and timestamp
+      x: existingIcon.x || iconConfig.x, // Preserve existing position
+      y: existingIcon.y || iconConfig.y, // Preserve existing position
+      appProps: {
+        ...existingIcon.appProps,
+        content: content, // Update content
+      },
+    };
   } else {
     // Add new icon
     savedIcons.push(iconConfig);
