@@ -76,7 +76,8 @@ import { cubeStore } from '@/stores/cubeStore';
 import { useEditorCommands } from './WordComponents/composables/useEditorCommands.js';
 import { useFonts } from './WordComponents/composables/useFonts.js';
 import { useFileOperations } from './WordComponents/composables/useFileOperations.js';
-import { DOMParser } from 'prosemirror-model';
+import { getState } from './WordComponents/PagedEditor/scripts/service.js';
+import { generateId, getPageContentHeight } from './WordComponents/PagedEditor/scripts/helpers.js';
 
 const props = defineProps({
   content: {
@@ -248,13 +249,7 @@ async function handlePaste() {
   } catch (error) {
     // Fallback: try to trigger a paste event on the editor
     console.warn('Clipboard API failed, trying fallback:', error);
-    const pasteEvent = new ClipboardEvent('paste', {
-      bubbles: true,
-      cancelable: true,
-      clipboardData: new DataTransfer(),
-    });
-    
-    // Try to get clipboard data via execCommand fallback
+      // Try to get clipboard data via execCommand fallback
     try {
       // Create a temporary textarea to capture paste
       const textarea = document.createElement('textarea');
@@ -290,17 +285,27 @@ function handleReset() {
     // Reset editor content to original
     editorContent.value = originalContent.value;
     
-    // Update the editor view with original content
+    // Update the editor view with original content using the same mechanism as PagedEditor
     const view = editorRef.value?.getEditorView();
     if (view) {
-      const schema = editorRef.value.getSchema();
-      if (schema) {
-        const parser = DOMParser.fromSchema(schema);
-        const dom = new DOMParser().parseFromString(originalContent.value, 'text/html');
-        const doc = parser.parse(dom);
-        const tr = view.state.tr.replace(0, view.state.doc.content.size, doc.content);
-        view.dispatch(tr);
-      }
+      // Use getState to properly parse and structure the content
+      const getPageHeight = () => getPageContentHeight('1in', '1in'); // Default margins
+      
+      const newState = getState(originalContent.value || '', {
+        generateId,
+        getPageContentHeight: getPageHeight,
+        editorViewRef: { current: view },
+      });
+      
+      // Update the view with the new state
+      view.updateState(newState);
+    }
+    
+    // Delete the modified version from localStorage if it exists
+    if (!props.isCustom && props.originalTitle) {
+      const fileName = props.originalTitle.replace('.doc', '');
+      const modifiedKey = `r_wordDocument_modified_${fileName}`;
+      localStorage.removeItem(modifiedKey);
     }
   }
 }
