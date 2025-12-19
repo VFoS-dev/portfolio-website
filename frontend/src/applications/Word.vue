@@ -655,15 +655,20 @@ function toggleFileMenu() {
 function handleSave() {
   showFileMenu.value = false;
   const content = editorRef.value?.getContent() || editorContent.value;
-  localStorage.setItem('wordDocument', content);
   
-  // Also save to icon storage
-  const iconData = {
-    type: 'word',
+  // Use default name if no title is set
+  const defaultName = 'Document';
+  const fileName = defaultName;
+  
+  // Save document content
+  localStorage.setItem(`wordDocument_${fileName}`, JSON.stringify({
+    name: fileName,
     content: content,
     timestamp: Date.now(),
-  };
-  localStorage.setItem('wordIconData', JSON.stringify(iconData));
+  }));
+  
+  // Create or update icon entry
+  createOrUpdateWordIcon(fileName, content);
   
   alert('Document saved!');
 }
@@ -673,23 +678,66 @@ function handleSaveAs() {
   const fileName = prompt('Enter file name:', 'document');
   if (fileName) {
     const content = editorRef.value?.getContent() || editorContent.value;
-    const data = {
+    
+    // Save document content
+    localStorage.setItem(`wordDocument_${fileName}`, JSON.stringify({
       name: fileName,
       content: content,
       timestamp: Date.now(),
-    };
-    localStorage.setItem(`wordDocument_${fileName}`, JSON.stringify(data));
+    }));
     
-    // Also save to icon storage
-    const iconData = {
-      type: 'word',
-      content: content,
-      timestamp: Date.now(),
-    };
-    localStorage.setItem('wordIconData', JSON.stringify(iconData));
+    // Create or update icon entry
+    createOrUpdateWordIcon(fileName, content);
     
     alert(`Document saved as "${fileName}"!`);
   }
+}
+
+function createOrUpdateWordIcon(fileName, content) {
+  // Load existing saved icons
+  let savedIcons = [];
+  try {
+    const savedIconsJson = localStorage.getItem('savedWordIcons');
+    if (savedIconsJson) {
+      savedIcons = JSON.parse(savedIconsJson);
+    }
+  } catch (e) {
+    console.warn('Failed to load saved icons', e);
+  }
+  
+  // Create icon title with .doc extension
+  const iconTitle = fileName.endsWith('.doc') ? fileName : `${fileName}.doc`;
+  
+  // Check if icon already exists
+  const existingIndex = savedIcons.findIndex(icon => icon.title === iconTitle);
+  
+  const iconConfig = {
+    title: iconTitle,
+    'desktop-icon': '/images/resume/wordicon_destop.svg',
+    icon: '/images/resume/wordIcon.png',
+    app: 'Word',
+    x: '10px',
+    y: '150px',
+    appProps: {
+      content: content,
+    },
+    isSavedWordDocument: true, // Flag to identify saved documents
+    savedAt: Date.now(),
+  };
+  
+  if (existingIndex !== -1) {
+    // Update existing icon
+    savedIcons[existingIndex] = iconConfig;
+  } else {
+    // Add new icon
+    savedIcons.push(iconConfig);
+  }
+  
+  // Save back to localStorage
+  localStorage.setItem('savedWordIcons', JSON.stringify(savedIcons));
+  
+  // Emit event to refresh desktop icons
+  window.dispatchEvent(new CustomEvent('saved-icons-updated'));
 }
 
 function handleNew() {

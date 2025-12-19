@@ -47,9 +47,17 @@ const useTrashStore = defineStore('trashStore', {
       return null;
     },
     emptyTrash() {
+      // Get all icons that will be permanently deleted
+      const iconsToPermanentlyDelete = [...this.deletedIcons];
+      
       // Move all deleted icons to permanently deleted list
-      this.permanentlyDeletedIcons.push(...this.deletedIcons);
+      this.permanentlyDeletedIcons.push(...iconsToPermanentlyDelete);
       this.deletedIcons = [];
+      
+      // Emit event with icons to permanently delete so ResumeView can clean up localStorage
+      window.dispatchEvent(new CustomEvent('icons-permanently-deleted', {
+        detail: iconsToPermanentlyDelete
+      }));
     },
   },
 });

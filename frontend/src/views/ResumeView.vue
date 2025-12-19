@@ -176,15 +176,87 @@ function handleWindowClose(index) {
 }
 
 function handleNewWindow(windowConfig) {
+  // If this is a saved Word document, load its content from localStorage
+  if (windowConfig.isSavedWordDocument && windowConfig.title) {
+    const fileName = windowConfig.title.replace('.doc', '');
+    try {
+      const savedData = localStorage.getItem(`wordDocument_${fileName}`);
+      if (savedData) {
+        const data = JSON.parse(savedData);
+        windowConfig.appProps = {
+          ...windowConfig.appProps,
+          content: data.content || '',
+        };
+      }
+    } catch (e) {
+      console.warn('Failed to load saved document content', e);
+    }
+  }
+  
   newWindow(windowConfig);
 }
 
 const iconRefreshKey = ref(0);
+const savedIconsRefreshKey = ref(0); // Separate key for saved icons updates
+
+// Load saved icons from localStorage
+function loadSavedIcons() {
+  try {
+    const savedIconsJson = localStorage.getItem('savedWordIcons');
+    if (savedIconsJson) {
+      return JSON.parse(savedIconsJson);
+    }
+  } catch (e) {
+    console.warn('Failed to load saved icons from localStorage', e);
+  }
+  return [];
+}
+
+// Listen for saved icons updates and permanent deletions
+onMounted(() => {
+  window.addEventListener('saved-icons-updated', () => {
+    iconRefreshKey.value++;
+    savedIconsRefreshKey.value++; // Also refresh saved icons
+  });
+  
+  window.addEventListener('icons-permanently-deleted', (event) => {
+    const iconsToDelete = event.detail || [];
+    iconsToDelete.forEach(iconConfig => {
+      permanentlyDeleteIcon(iconConfig);
+    });
+    iconRefreshKey.value++;
+    savedIconsRefreshKey.value++; // Also refresh saved icons
+  });
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener('saved-icons-updated', () => {
+    iconRefreshKey.value++;
+    savedIconsRefreshKey.value++;
+  });
+  
+  window.removeEventListener('icons-permanently-deleted', (event) => {
+    const iconsToDelete = event.detail || [];
+    iconsToDelete.forEach(iconConfig => {
+      permanentlyDeleteIcon(iconConfig);
+    });
+    iconRefreshKey.value++;
+    savedIconsRefreshKey.value++;
+  });
+});
+
+// Get all icons (from config + saved from localStorage)
+// Make it reactive to savedIconsRefreshKey so it re-reads from localStorage when positions are updated
+const allIcons = computed(() => {
+  savedIconsRefreshKey.value; // Make this computed property reactive to saved icons updates
+  const savedIcons = loadSavedIcons();
+  return [...windowConfig.icons, ...savedIcons];
+});
 
 const visibleIcons = computed(() => {
   // Filter out icons that have been deleted (both temporarily and permanently)
   const deletedTitles = trashStore.getAllDeletedIconTitles;
-  const filtered = windowConfig.icons.filter(icon => !deletedTitles.includes(icon.title));
+  const filtered = allIcons.value.filter(icon => !deletedTitles.includes(icon.title));
   // Force reactivity by including refresh key and trash count
   iconRefreshKey.value;
   trashStore.getTrashCount; // Make it reactive to trash count changes
@@ -226,11 +298,23 @@ function handleIconRestored(event) {
     const x = startX + (column * horizontalSpacing);
     const y = `calc(100% - ${taskbarHeight + bottomPadding + iconHeight + (row * verticalSpacing)}px)`;
     
-    // Update the icon's position in windowConfig
-    const configIcon = windowConfig.icons.find(icon => icon.title === restoredIcon.title);
-    if (configIcon) {
-      configIcon.x = `${x}px`;
-      configIcon.y = y;
+    // Update the icon's position in windowConfig or saved icons
+    if (restoredIcon.isSavedWordDocument) {
+      // Update saved icon position
+      const savedIcons = loadSavedIcons();
+      const savedIcon = savedIcons.find(icon => icon.title === restoredIcon.title);
+      if (savedIcon) {
+        savedIcon.x = `${x}px`;
+        savedIcon.y = y;
+        localStorage.setItem('savedWordIcons', JSON.stringify(savedIcons));
+      }
+    } else {
+      // Update windowConfig icon position
+      const configIcon = windowConfig.icons.find(icon => icon.title === restoredIcon.title);
+      if (configIcon) {
+        configIcon.x = `${x}px`;
+        configIcon.y = y;
+      }
     }
   }
   
@@ -327,6 +411,28 @@ function handleTrashDrop(iconConfig) {
   // Force refresh of visible icons
   iconRefreshKey.value++;
   updateTrashCanIcon();
+}
+
+// Function to permanently delete an icon (called when emptying trash)
+function permanentlyDeleteIcon(iconConfig) {
+  // Remove from localStorage if it's a saved Word document
+  if (iconConfig.isSavedWordDocument) {
+    const savedIcons = loadSavedIcons();
+    const updatedIcons = savedIcons.filter(icon => icon.title !== iconConfig.title);
+    localStorage.setItem('savedWordIcons', JSON.stringify(updatedIcons));
+  }
+  
+  // Also remove any associated localStorage entries
+  if (iconConfig.title) {
+    // Remove wordDocument entries
+    localStorage.removeItem(`wordDocument_${iconConfig.title}`);
+    // Check for wordDocument entries with the title
+    Object.keys(localStorage).forEach(key => {
+      if (key.startsWith('wordDocument_') && key.includes(iconConfig.title)) {
+        localStorage.removeItem(key);
+      }
+    });
+  }
 }
 
 function handleDesktopMouseDown(e) {
@@ -579,11 +685,22 @@ function saveIconPositions() {
         const left = iconElement.style.left || getComputedStyle(iconElement).left;
         const top = iconElement.style.top || getComputedStyle(iconElement).top;
         
-        // Find the icon in windowConfig and update its position
-        const configIcon = windowConfig.icons.find(cfgIcon => cfgIcon.title === icon.title);
-        if (configIcon) {
-          configIcon.x = left;
-          configIcon.y = top;
+        // Find the icon in windowConfig or saved icons and update its position
+        if (icon.isSavedWordDocument) {
+          const savedIcons = loadSavedIcons();
+          const savedIcon = savedIcons.find(cfgIcon => cfgIcon.title === icon.title);
+          if (savedIcon) {
+            savedIcon.x = left;
+            savedIcon.y = top;
+            localStorage.setItem('savedWordIcons', JSON.stringify(savedIcons));
+            savedIconsRefreshKey.value++; // Trigger reactivity update
+          }
+        } else {
+          const configIcon = windowConfig.icons.find(cfgIcon => cfgIcon.title === icon.title);
+          if (configIcon) {
+            configIcon.x = left;
+            configIcon.y = top;
+          }
         }
       }
     }
@@ -708,6 +825,19 @@ function handleIconDragEnd(element) {
     const labelElement = element.querySelector('p');
     if (labelElement) {
       const label = labelElement.textContent.trim();
+      
+      // Check if it's a saved Word document icon
+      const savedIcons = loadSavedIcons();
+      const savedIcon = savedIcons.find(icon => icon.title === label);
+      if (savedIcon) {
+        savedIcon.x = left;
+        savedIcon.y = top;
+        localStorage.setItem('savedWordIcons', JSON.stringify(savedIcons));
+        savedIconsRefreshKey.value++; // Trigger reactivity update
+        return;
+      }
+      
+      // Otherwise, check windowConfig icons
       const configIcon = windowConfig.icons.find(icon => icon.title === label);
       if (configIcon) {
         configIcon.x = left;
@@ -775,6 +905,23 @@ function getIconProps(iconConfig, index) {
 }
 
 function handleOpenApp(appConfig) {
+  // If this is a saved Word document, load its content from localStorage
+  if (appConfig.isSavedWordDocument && appConfig.title) {
+    const fileName = appConfig.title.replace('.doc', '');
+    try {
+      const savedData = localStorage.getItem(`wordDocument_${fileName}`);
+      if (savedData) {
+        const data = JSON.parse(savedData);
+        appConfig.appProps = {
+          ...appConfig.appProps,
+          content: data.content || '',
+        };
+      }
+    } catch (e) {
+      console.warn('Failed to load saved document content', e);
+    }
+  }
+  
   newWindow(appConfig);
 }
 
