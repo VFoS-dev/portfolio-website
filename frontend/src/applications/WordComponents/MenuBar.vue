@@ -38,13 +38,13 @@
         </template>
       </div>
     </div>
-    <div class="menu-item">View</div>
-    <div class="menu-item">Insert</div>
-    <div class="menu-item">Format</div>
-    <div class="menu-item">Tools</div>
-    <div class="menu-item">Table</div>
-    <div class="menu-item">Window</div>
-    <div class="menu-item">Help</div>
+    <div class="menu-item disabled">View</div>
+    <div class="menu-item disabled">Insert</div>
+    <div class="menu-item disabled">Format</div>
+    <div class="menu-item disabled">Tools</div>
+    <div class="menu-item disabled">Table</div>
+    <div class="menu-item disabled">Window</div>
+    <div class="menu-item disabled">Help</div>
   </div>
 </template>
 
@@ -162,6 +162,18 @@ function handleReset() {
       background: #316ac5;
       color: white;
       border: 1px solid #003c74;
+    }
+    
+    &.disabled {
+      opacity: 0.5;
+      cursor: default;
+      color: #808080;
+      
+      &:hover {
+        background: transparent;
+        color: #808080;
+        border: 1px solid transparent;
+      }
     }
     
     .menu-dropdown {
