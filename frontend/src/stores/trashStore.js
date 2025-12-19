@@ -14,6 +14,10 @@ const useTrashStore = defineStore('trashStore', {
       const savedPermanentlyDeleted = localStorage.getItem('trashStore_permanentlyDeletedIcons');
       if (savedPermanentlyDeleted) {
         permanentlyDeletedIcons = JSON.parse(savedPermanentlyDeleted);
+        // Filter out any custom saved Word documents (only keep JSON config icons)
+        permanentlyDeletedIcons = permanentlyDeletedIcons.filter(icon => !icon.isCustom);
+        // Save back the filtered list
+        localStorage.setItem('trashStore_permanentlyDeletedIcons', JSON.stringify(permanentlyDeletedIcons));
       }
     } catch (e) {
       console.warn('Failed to load trash store from localStorage', e);
@@ -21,7 +25,7 @@ const useTrashStore = defineStore('trashStore', {
     
     return {
       deletedIcons: deletedIcons, // Array of deleted icon configs with deletion timestamp (can be restored)
-      permanentlyDeletedIcons: permanentlyDeletedIcons, // Array of permanently deleted icons (cannot be restored)
+      permanentlyDeletedIcons: permanentlyDeletedIcons, // Array of permanently deleted icons from JSON config only (cannot be restored)
     };
   },
   getters: {
@@ -70,8 +74,10 @@ const useTrashStore = defineStore('trashStore', {
       // Get all icons that will be permanently deleted
       const iconsToPermanentlyDelete = [...this.deletedIcons];
       
-      // Move all deleted icons to permanently deleted list
-      this.permanentlyDeletedIcons.push(...iconsToPermanentlyDelete);
+      // Only add icons from JSON config (not custom saved Word documents) to permanently deleted list
+      // Custom saved Word documents should be completely removed, not tracked
+      const jsonConfigIcons = iconsToPermanentlyDelete.filter(icon => !icon.isCustom);
+      this.permanentlyDeletedIcons.push(...jsonConfigIcons);
       this.deletedIcons = [];
       
       // Persist to localStorage
@@ -84,9 +90,12 @@ const useTrashStore = defineStore('trashStore', {
     },
     saveToLocalStorage() {
       // Save deleted and permanently deleted icons to localStorage
+      // Only save permanently deleted icons from JSON config (not custom saved Word documents)
       try {
         localStorage.setItem('trashStore_deletedIcons', JSON.stringify(this.deletedIcons));
-        localStorage.setItem('trashStore_permanentlyDeletedIcons', JSON.stringify(this.permanentlyDeletedIcons));
+        // Filter out custom saved Word documents from permanently deleted icons before saving
+        const jsonConfigPermanentlyDeleted = this.permanentlyDeletedIcons.filter(icon => !icon.isCustom);
+        localStorage.setItem('trashStore_permanentlyDeletedIcons', JSON.stringify(jsonConfigPermanentlyDeleted));
       } catch (e) {
         console.warn('Failed to save trash store to localStorage', e);
       }

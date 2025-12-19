@@ -721,7 +721,7 @@ function createOrUpdateWordIcon(fileName, content) {
     appProps: {
       content: content,
     },
-    isSavedWordDocument: true, // Flag to identify saved documents
+    isCustom: true, // Flag to identify custom saved icons (not from JSON config)
     savedAt: Date.now(),
   };
   

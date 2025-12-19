@@ -177,7 +177,7 @@ function handleWindowClose(index) {
 
 function handleNewWindow(windowConfig) {
   // If this is a saved Word document, load its content from localStorage
-  if (windowConfig.isSavedWordDocument && windowConfig.title) {
+  if (windowConfig.isCustom && windowConfig.title) {
     const fileName = windowConfig.title.replace('.doc', '');
     try {
       const savedData = localStorage.getItem(`wordDocument_${fileName}`);
@@ -300,7 +300,7 @@ function handleIconRestored(event) {
     const y = `calc(100% - ${taskbarHeight + bottomPadding + iconHeight + (row * verticalSpacing)}px)`;
     
     // Update the icon's position in windowConfig or saved icons
-    if (restoredIcon.isSavedWordDocument) {
+    if (restoredIcon.isCustom) {
       // Update saved icon position
       const savedIcons = loadSavedIcons();
       const savedIcon = savedIcons.find(icon => icon.title === restoredIcon.title);
@@ -410,6 +410,30 @@ onBeforeUnmount(() => {
 
 function handleTrashDrop(iconConfig) {
   trashStore.deleteIcon(iconConfig);
+  
+  // Remove saved document data from localStorage if it's a custom saved Word document
+  if (iconConfig.isCustom && iconConfig.title) {
+    // Extract fileName by removing .doc extension if present
+    const fileName = iconConfig.title.endsWith('.doc') 
+      ? iconConfig.title.slice(0, -4) 
+      : iconConfig.title;
+    
+    // Remove wordDocument entries
+    localStorage.removeItem(`wordDocument_${fileName}`);
+    
+    // Also check for any wordDocument entries that might match (with or without .doc)
+    Object.keys(localStorage).forEach(key => {
+      if (key.startsWith('wordDocument_')) {
+        const keyFileName = key.replace('wordDocument_', '');
+        // Match if the key fileName matches the icon's fileName (with or without .doc)
+        if (keyFileName === fileName || keyFileName === iconConfig.title || 
+            keyFileName === `${fileName}.doc` || keyFileName === iconConfig.title.replace('.doc', '')) {
+          localStorage.removeItem(key);
+        }
+      }
+    });
+  }
+  
   // Force refresh of visible icons
   iconRefreshKey.value++;
   updateTrashCanIcon();
@@ -418,20 +442,31 @@ function handleTrashDrop(iconConfig) {
 // Function to permanently delete an icon (called when emptying trash)
 function permanentlyDeleteIcon(iconConfig) {
   // Remove from localStorage if it's a saved Word document
-  if (iconConfig.isSavedWordDocument) {
+  if (iconConfig.isCustom) {
     const savedIcons = loadSavedIcons();
     const updatedIcons = savedIcons.filter(icon => icon.title !== iconConfig.title);
     localStorage.setItem('savedWordIcons', JSON.stringify(updatedIcons));
   }
   
-  // Also remove any associated localStorage entries
-  if (iconConfig.title) {
+  // Also remove any associated localStorage entries (document data)
+  if (iconConfig.isCustom && iconConfig.title) {
+    // Extract fileName by removing .doc extension if present
+    const fileName = iconConfig.title.endsWith('.doc') 
+      ? iconConfig.title.slice(0, -4) 
+      : iconConfig.title;
+    
     // Remove wordDocument entries
-    localStorage.removeItem(`wordDocument_${iconConfig.title}`);
-    // Check for wordDocument entries with the title
+    localStorage.removeItem(`wordDocument_${fileName}`);
+    
+    // Also check for any wordDocument entries that might match (with or without .doc)
     Object.keys(localStorage).forEach(key => {
-      if (key.startsWith('wordDocument_') && key.includes(iconConfig.title)) {
-        localStorage.removeItem(key);
+      if (key.startsWith('wordDocument_')) {
+        const keyFileName = key.replace('wordDocument_', '');
+        // Match if the key fileName matches the icon's fileName (with or without .doc)
+        if (keyFileName === fileName || keyFileName === iconConfig.title || 
+            keyFileName === `${fileName}.doc` || keyFileName === iconConfig.title.replace('.doc', '')) {
+          localStorage.removeItem(key);
+        }
       }
     });
   }
@@ -688,7 +723,7 @@ function saveIconPositions() {
         const top = iconElement.style.top || getComputedStyle(iconElement).top;
         
         // Find the icon in windowConfig or saved icons and update its position
-        if (icon.isSavedWordDocument) {
+        if (icon.isCustom) {
           const savedIcons = loadSavedIcons();
           const savedIcon = savedIcons.find(cfgIcon => cfgIcon.title === icon.title);
           if (savedIcon) {
@@ -908,7 +943,7 @@ function getIconProps(iconConfig, index) {
 
 function handleOpenApp(appConfig) {
   // If this is a saved Word document, load its content from localStorage
-  if (appConfig.isSavedWordDocument && appConfig.title) {
+  if (appConfig.isCustom && appConfig.title) {
     const fileName = appConfig.title.replace('.doc', '');
     try {
       const savedData = localStorage.getItem(`wordDocument_${fileName}`);
