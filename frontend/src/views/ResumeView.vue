@@ -419,9 +419,6 @@ function updateSelectedIcons() {
 
   const newSelection = [];
   visibleIcons.value.forEach((icon, index) => {
-    // Don't select trash icon
-    if (icon.isTrash) return;
-
     const iconRef = iconRefs.value[index];
     if (iconRef && iconRef.$el) {
       const iconElement = iconRef.$el.querySelector('.windows-icon');
@@ -553,8 +550,24 @@ function checkSelectionOverTrash() {
   const trashElement = document.querySelector('[data-is-trash="true"]');
   if (!trashElement || selectedIconIndices.value.length === 0) return;
 
+  // Check if trash is in the selection - if so, don't highlight
+  const hasTrashInSelection = selectedIconIndices.value.some(index => {
+    const iconConfig = visibleIcons.value[index];
+    return iconConfig && iconConfig.isTrash;
+  });
+
+  if (hasTrashInSelection) {
+    trashElement.classList.remove('trash-highlight');
+    return;
+  }
+
   let anyOverTrash = false;
+  // Only check non-trash icons for overlap with trash
   selectedIconIndices.value.forEach(index => {
+    const iconConfig = visibleIcons.value[index];
+    // Skip trash icon in the check
+    if (iconConfig && iconConfig.isTrash) return;
+    
     const iconRef = iconRefs.value[index];
     if (iconRef && iconRef.$el) {
       const iconElement = iconRef.$el.querySelector('.windows-icon');
@@ -585,8 +598,27 @@ function handleSelectionTrashDrop() {
   const trashElement = document.querySelector('[data-is-trash="true"]');
   if (!trashElement || selectedIconIndices.value.length === 0) return;
 
+  // Check if trash is in the selection
+  const hasTrashInSelection = selectedIconIndices.value.some(index => {
+    const iconConfig = visibleIcons.value[index];
+    return iconConfig && iconConfig.isTrash;
+  });
+
+  // If trash is in selection, don't delete other icons - just move them
+  if (hasTrashInSelection) {
+    if (trashElement) {
+      trashElement.classList.remove('trash-highlight');
+    }
+    return;
+  }
+
   let anyOverTrash = false;
+  // Only check non-trash icons for overlap with trash
   selectedIconIndices.value.forEach(index => {
+    const iconConfig = visibleIcons.value[index];
+    // Skip trash icon in the check
+    if (iconConfig && iconConfig.isTrash) return;
+    
     const iconRef = iconRefs.value[index];
     if (iconRef && iconRef.$el) {
       const iconElement = iconRef.$el.querySelector('.windows-icon');
@@ -607,7 +639,7 @@ function handleSelectionTrashDrop() {
   });
 
   if (anyOverTrash) {
-    // Delete all selected icons
+    // Delete all selected non-trash icons
     const iconsToDelete = selectedIconIndices.value.map(index => visibleIcons.value[index]);
     iconsToDelete.forEach(iconConfig => {
       if (!iconConfig.isTrash) {
@@ -643,19 +675,16 @@ function handleIconDragEnd(element) {
 
 
 function getIconProps(iconConfig, index) {
-  // Trash icon can be dragged but shouldn't be deletable (can't drop on itself)
+  // Trash icon can be dragged and selected like other icons, but shouldn't be deletable (can't drop on itself)
+  let dragProps;
   if (iconConfig.isTrash) {
-    return {
-      ...onDoubleClick(handleNewWindow, [iconConfig]),
-      ...dragParentElement(true, true, () => {}, '', handleIconDragEnd), // Trash can be dragged
-    };
+    dragProps = dragParentElement(true, true, () => {}, '', handleIconDragEnd); // Trash can be dragged
+  } else {
+    dragProps = dragParentElementWithTrash(true, true, handleTrashDrop, iconConfig, handleIconDragEnd);
   }
-
-  // Get the normal drag props
-  const normalDragProps = dragParentElementWithTrash(true, true, handleTrashDrop, iconConfig, handleIconDragEnd);
   
-  // Wrap the mousedown handler to check for multi-select
-  const originalOnMousedown = normalDragProps.onMousedown;
+  // Wrap the mousedown handler to check for multi-select (applies to all icons including trash)
+  const originalOnMousedown = dragProps.onMousedown;
   const customOnMousedown = function(e) {
     // Check if multiple icons are selected and this is one of them
     if (selectedIconIndices.value.length > 1 && selectedIconIndices.value.includes(index)) {
@@ -679,7 +708,7 @@ function getIconProps(iconConfig, index) {
   };
 
   // Wrap touch handler similarly
-  const originalOnTouchstart = normalDragProps.onTouchstart;
+  const originalOnTouchstart = dragProps.onTouchstart;
   const customOnTouchstart = function(e) {
     if (selectedIconIndices.value.length > 1 && selectedIconIndices.value.includes(index)) {
       e.preventDefault();
@@ -692,9 +721,10 @@ function getIconProps(iconConfig, index) {
     }
   };
 
-  // Regular icons can be dragged and deleted
+  // All icons (including trash) can be dragged and selected
   return {
     ...onDoubleClick(handleNewWindow, [iconConfig]),
+    ...dragProps,
     onMousedown: customOnMousedown,
     onTouchstart: customOnTouchstart,
   };
