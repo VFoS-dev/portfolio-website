@@ -514,7 +514,7 @@ function handleResetAll() {
       localStorage.removeItem(key);
     }
   });
-  
+
   // Reset icon positions to original positions from windowConfig
   windowConfig.icons.forEach(icon => {
     const originalPos = originalIconPositions.get(icon.title);
@@ -523,21 +523,21 @@ function handleResetAll() {
       icon.y = originalPos.y;
     }
   });
-  
+
   // Reset trash store state
   trashStore.deletedIcons = [];
   trashStore.permanentlyDeletedIcons = [];
-  
+
   // Reset desktop background
   desktopBackground.value = defaultBackground;
-  
+
   // Refresh icons and windows
   iconRefreshKey.value++;
   savedIconsRefreshKey.value++;
-  
-  // Close all windows
-  windows.value = [];
-  
+
+  // Don't close open windows - keep apps open
+  // windows.value = [];
+
   alert('All data has been reset!');
 }
 
