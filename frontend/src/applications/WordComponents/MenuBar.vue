@@ -15,6 +15,8 @@
       >
         <div class="menu-option" @click="handleSave">Save</div>
         <div class="menu-option" @click="handleSaveAs">Save As...</div>
+        <div class="menu-separator"></div>
+        <div class="menu-option" @click="handleExport">Export...</div>
       </div>
     </div>
     <div 
@@ -70,7 +72,7 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(['save', 'save-as', 'undo', 'redo', 'reset']);
+const emit = defineEmits(['save', 'save-as', 'export', 'undo', 'redo', 'reset']);
 
 const showFileMenu = ref(false);
 const showEditMenu = ref(false);
@@ -125,6 +127,11 @@ function handleSave() {
 function handleSaveAs() {
   showFileMenu.value = false;
   emit('save-as');
+}
+
+function handleExport() {
+  showFileMenu.value = false;
+  emit('export');
 }
 
 function handleUndo() {

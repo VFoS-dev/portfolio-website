@@ -18,6 +18,7 @@ export function useEditorCommands(editorRef) {
   const isOrderedList = ref(false);
   const canUndo = ref(false);
   const canRedo = ref(false);
+  const selectedHeading = ref('normal');
   const selectedFont = ref('Times New Roman');
   const selectedFontSize = ref(12);
 
@@ -56,15 +57,36 @@ export function useEditorCommands(editorRef) {
     const fontFamilyMark = state.schema.marks.fontFamily?.isInSet(selection.$from.marks());
     if (fontFamilyMark && fontFamilyMark.attrs.family) {
       selectedFont.value = fontFamilyMark.attrs.family;
+    } else {
+      // Default to Times New Roman if no font mark is present
+      selectedFont.value = 'Times New Roman';
     }
     
     // Check font size
     const fontSizeMark = state.schema.marks.fontSize?.isInSet(selection.$from.marks());
+    let currentSize = 12; // Default to 12pt (Normal)
     if (fontSizeMark && fontSizeMark.attrs.size) {
       const sizeMatch = fontSizeMark.attrs.size.match(/(\d+)pt/);
       if (sizeMatch) {
-        selectedFontSize.value = parseInt(sizeMatch[1]);
+        currentSize = parseInt(sizeMatch[1]);
+        selectedFontSize.value = currentSize;
+      } else {
+        selectedFontSize.value = 12;
       }
+    } else {
+      selectedFontSize.value = 12;
+    }
+    
+    // Check heading style based on font size (Windows XP style)
+    // Heading 1: 18pt, Heading 2: 16pt, Heading 3: 14pt, Normal: 12pt or other
+    if (currentSize >= 18) {
+      selectedHeading.value = 'heading1';
+    } else if (currentSize >= 16) {
+      selectedHeading.value = 'heading2';
+    } else if (currentSize >= 14) {
+      selectedHeading.value = 'heading3';
+    } else {
+      selectedHeading.value = 'normal';
     }
     
     // Check alignment
@@ -131,7 +153,7 @@ export function useEditorCommands(editorRef) {
     dispatch(tr);
   }
 
-  function applyFontSize() {
+  function applyFontSize(size) {
     const view = getEditorView();
     if (!view) return;
     
@@ -144,16 +166,73 @@ export function useEditorCommands(editorRef) {
     
     const fontSizeMark = schema.marks.fontSize;
     const tr = state.tr;
-    const fontSizeValue = `${selectedFontSize.value}pt`;
     
-    const existingMark = fontSizeMark.isInSet($from.marks());
-    if (existingMark && existingMark.attrs.size === fontSizeValue) {
-      tr.removeMark($from.pos, $to.pos, fontSizeMark);
+    // Use provided size or current selected size
+    const targetSize = size !== undefined ? size : selectedFontSize.value;
+    const fontSizeValue = `${targetSize}pt`;
+    
+    // Remove existing fontSize marks in the selection
+    const existingMarks = $from.marks();
+    existingMarks.forEach(mark => {
+      if (mark.type === fontSizeMark) {
+        tr.removeMark($from.pos, $to.pos, mark);
+      }
+    });
+    
+    // Apply new font size
+    selectedFontSize.value = targetSize;
+    tr.addMark($from.pos, $to.pos, fontSizeMark.create({ size: fontSizeValue }));
+    dispatch(tr);
+    
+    // Update heading based on font size
+    if (targetSize >= 18) {
+      selectedHeading.value = 'heading1';
+    } else if (targetSize >= 16) {
+      selectedHeading.value = 'heading2';
+    } else if (targetSize >= 14) {
+      selectedHeading.value = 'heading3';
     } else {
-      tr.removeMark($from.pos, $to.pos, fontSizeMark);
-      tr.addMark($from.pos, $to.pos, fontSizeMark.create({ size: fontSizeValue }));
+      selectedHeading.value = 'normal';
+    }
+  }
+
+  function applyHeading(heading) {
+    const view = getEditorView();
+    if (!view) return;
+    
+    const schema = getSchema();
+    if (!schema || !schema.marks.fontSize) return;
+    
+    const { state, dispatch } = view;
+    const { selection } = state;
+    const { $from, $to } = selection;
+    
+    const fontSizeMark = schema.marks.fontSize;
+    
+    // Map heading to font size (Windows XP Word style)
+    let targetSize = 12; // Normal
+    if (heading === 'heading1') {
+      targetSize = 18;
+    } else if (heading === 'heading2') {
+      targetSize = 16;
+    } else if (heading === 'heading3') {
+      targetSize = 14;
     }
     
+    // Remove existing fontSize marks in the selection
+    const tr = state.tr;
+    const existingMarks = $from.marks();
+    existingMarks.forEach(mark => {
+      if (mark.type === fontSizeMark) {
+        tr.removeMark($from.pos, $to.pos, mark);
+      }
+    });
+    
+    // Apply heading font size
+    selectedHeading.value = heading;
+    selectedFontSize.value = targetSize;
+    const fontSizeValue = `${targetSize}pt`;
+    tr.addMark($from.pos, $to.pos, fontSizeMark.create({ size: fontSizeValue }));
     dispatch(tr);
   }
 
@@ -328,6 +407,7 @@ export function useEditorCommands(editorRef) {
     isOrderedList,
     canUndo,
     canRedo,
+    selectedHeading,
     selectedFont,
     selectedFontSize,
     // Functions
@@ -335,6 +415,7 @@ export function useEditorCommands(editorRef) {
     toggleBold,
     toggleItalic,
     toggleUnderline,
+    applyHeading,
     applyFont,
     applyFontSize,
     alignLeft,

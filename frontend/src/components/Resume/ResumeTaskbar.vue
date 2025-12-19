@@ -6,10 +6,10 @@
     </div>
     <div class="applications">
       <div
-        v-for="(window, i) in windows"
-        :key="window.key"
+        v-for="window in windows"
+        :key="window.id"
         :class="['application', { focused: window.state?.focused }]"
-        @click="handleClick(window, i)"
+        @click="handleClick(window)"
       >
         <component
           :is="getIconComponent(window.icon)"
@@ -35,15 +35,14 @@
 import { ref, onMounted, onBeforeUnmount, defineAsyncComponent, computed } from 'vue';
 import StartMenu from './StartMenu.vue';
 import windowConfig from '@/json/windowConfig.json';
+import { windowStore } from '@/stores/windowStore';
 
-defineProps({
-  windows: {
-    type: Array,
-    required: true,
-  },
+const emit = defineEmits(['open-app', 'shutdown']);
+
+// Use window store for windows, but filter out Submittable windows (dialogs)
+const windows = computed(() => {
+  return windowStore.getWindows.filter(window => window.app !== 'Submittable');
 });
-
-const emit = defineEmits(['focus', 'minimize', 'open-app', 'shutdown']);
 
 const startMenuOpen = ref(false);
 
@@ -110,11 +109,11 @@ function updateTime() {
   currentTime.value = getTime();
 }
 
-function handleClick(window, index) {
+function handleClick(window) {
   if (window.state?.focused) {
-    emit('minimize', index);
+    windowStore.minimizeWindow(window.id);
   } else {
-    emit('focus', index);
+    windowStore.focusWindow(window.id);
   }
 }
 

@@ -7,6 +7,7 @@
       :show-reset="!isCustom"
       @save="handleSave"
       @save-as="handleSaveAs"
+      @export="handleExport"
       @undo="handleUndo"
       @redo="handleRedo"
       @reset="handleReset"
@@ -16,7 +17,6 @@
       :can-undo="canUndo"
       :can-redo="canRedo"
       @new="handleNew"
-      @open="handleOpen"
       @save="handleSave"
       @cut="handleCut"
       @copy="handleCopy"
@@ -26,6 +26,7 @@
     />
 
     <FormattingToolbar
+      v-model:selected-heading="selectedHeading"
       v-model:selected-font="selectedFont"
       v-model:selected-font-size="selectedFontSize"
       :available-fonts="availableFonts"
@@ -39,6 +40,7 @@
       :is-justify-align="isJustifyAlign"
       :is-bullet-list="isBulletList"
       :is-ordered-list="isOrderedList"
+      @heading-change="applyHeading"
       @font-change="applyFont"
       @font-size-change="applyFontSize"
       @toggle-bold="toggleBold"
@@ -130,12 +132,14 @@ const {
   isOrderedList,
   canUndo,
   canRedo,
+  selectedHeading,
   selectedFont,
   selectedFontSize,
   updateToolbarState,
   toggleBold,
   toggleItalic,
   toggleUnderline,
+  applyHeading,
   applyFont,
   applyFontSize,
   alignLeft,
@@ -152,7 +156,7 @@ const {
   handleSave,
   handleSaveAs,
   handleNew,
-  handleOpen,
+  handleExport,
 } = useFileOperations(editorRef, editorContent, props);
 
 // Check if document has been modified
@@ -170,12 +174,23 @@ onMounted(async () => {
   if (editorRef.value) {
     editorView = editorRef.value.getEditorView();
     
-    // Set up update interval to check editor state
+    // Update toolbar state immediately
+    updateToolbarState();
+    
+    // Set up update interval to check editor state (more frequent for responsive updates)
     updateInterval = setInterval(() => {
       if (editorView) {
         updateToolbarState();
       }
-    }, 100);
+    }, 50); // Reduced from 100ms to 50ms for more responsive updates
+    
+    // Also update on selection changes for immediate feedback
+    if (editorView && editorView.dom) {
+      editorView.dom.addEventListener('selectionchange', updateToolbarState);
+      // Also listen to mouse and keyboard events for immediate updates
+      editorView.dom.addEventListener('mouseup', updateToolbarState);
+      editorView.dom.addEventListener('keyup', updateToolbarState);
+    }
   }
   
   // Load saved content if available
@@ -194,6 +209,11 @@ onBeforeUnmount(() => {
   if (updateInterval) {
     clearInterval(updateInterval);
   }
+  if (editorView && editorView.dom) {
+    editorView.dom.removeEventListener('selectionchange', updateToolbarState);
+    editorView.dom.removeEventListener('mouseup', updateToolbarState);
+    editorView.dom.removeEventListener('keyup', updateToolbarState);
+  }
   cubeStore.toggleKeyRotate(true);
 });
 
@@ -205,8 +225,60 @@ function handleCopy() {
   document.execCommand('copy');
 }
 
-function handlePaste() {
-  document.execCommand('paste');
+async function handlePaste() {
+  const view = editorRef.value?.getEditorView();
+  if (!view) return;
+  
+  try {
+    // Focus the editor first
+    view.focus();
+    
+    // Read text from clipboard using Clipboard API
+    const text = await navigator.clipboard.readText();
+    
+    if (text) {
+      // Insert text at the current selection/cursor position
+      const { state, dispatch } = view;
+      const { from, to } = state.selection;
+      
+      // Use ProseMirror's insertText command
+      const transaction = state.tr.insertText(text, from, to);
+      dispatch(transaction);
+    }
+  } catch (error) {
+    // Fallback: try to trigger a paste event on the editor
+    console.warn('Clipboard API failed, trying fallback:', error);
+    const pasteEvent = new ClipboardEvent('paste', {
+      bubbles: true,
+      cancelable: true,
+      clipboardData: new DataTransfer(),
+    });
+    
+    // Try to get clipboard data via execCommand fallback
+    try {
+      // Create a temporary textarea to capture paste
+      const textarea = document.createElement('textarea');
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
+      document.body.appendChild(textarea);
+      textarea.focus();
+      
+      // Trigger paste
+      if (document.execCommand('paste')) {
+        const pastedText = textarea.value;
+        if (pastedText) {
+          const { state, dispatch } = view;
+          const { from, to } = state.selection;
+          const transaction = state.tr.insertText(pastedText, from, to);
+          dispatch(transaction);
+        }
+      }
+      
+      document.body.removeChild(textarea);
+    } catch (fallbackError) {
+      console.error('Paste fallback also failed:', fallbackError);
+    }
+  }
 }
 
 function handleReset() {

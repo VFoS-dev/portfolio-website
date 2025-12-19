@@ -31,6 +31,8 @@
 import { ref, computed } from 'vue';
 import { navStore } from '@/stores/navStore';
 import { cubeStore } from '@/stores/cubeStore';
+import { windowStore } from '@/stores/windowStore';
+import ResetAllForm from './ResetAllForm.vue';
 
 const props = defineProps({
   visible: {
@@ -161,10 +163,39 @@ function handleToggleNavbar() {
 }
 
 function handleResetAll() {
-  if (confirm('Are you sure you want to reset all? This will:\n- Remove all modified files\n- Delete all custom saved icons\n- Clear the trash\n- Reset the desktop background\n\nThis action cannot be undone.')) {
-    emit('reset-all');
-    emit('close');
-  }
+  emit('close');
+  
+  // Calculate center position for the window
+  const windowWidth = 320;
+  const windowHeight = 280;
+  const left = (window.innerWidth - windowWidth) / 2;
+  const top = (window.innerHeight - windowHeight) / 2;
+  
+  // Create a Submittable window for reset confirmation
+  const resetWindow = windowStore.createWindow({
+    title: 'Reset All',
+    icon: '/images/resume/system_gear.svg',
+    app: 'Submittable',
+    width: windowWidth,
+    height: windowHeight,
+    left: left,
+    top: top,
+    appProps: {
+      component: ResetAllForm,
+      componentProps: {},
+      initialData: {},
+      validate: () => true, // Always valid, just needs confirmation
+      onSubmit: async () => {
+        // Emit reset-all event to trigger the actual reset
+        emit('reset-all');
+        
+        // Close the Reset All window
+        windowStore.closeWindow(resetWindow.id);
+        
+        return { success: true };
+      },
+    },
+  });
 }
 </script>
 

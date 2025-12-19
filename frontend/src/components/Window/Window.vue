@@ -4,17 +4,18 @@
     :disabled="state.fullscreened" 
     :min-width="minWidth || 150"
     :min-height="minHeight || 150"
+    :window-id="windowId"
     :style="windowStyle"
     :classes="['window', { focused: state.focused, fullscreened: state.fullscreened, minimized: state.minimized }]"
-    @mousedown="$emit('focus', index)">
-    <div class="title-bar" v-bind="titleBarProps" @dblclick="$emit('maximize', index)">
+    @mousedown="$emit('focus', windowId)">
+    <div class="title-bar" v-bind="titleBarProps" @dblclick="$emit('maximize', windowId)">
       <div class="title-bar-text">
         <component :is="iconComponent" v-if="icon && iconComponent" :src="iconSrc" :class="['windowIcon', iconClass]" />
         <span class="title-text">{{ title }}</span>
       </div>
       <div class="title-bar-controls">
-        <button v-for="control in ['minimize', 'maximize', 'close']" :id="`${control}-${index}`" :key="control"
-          :class="control" :aria-label="control" @click="$emit(control, index)" />
+        <button v-for="control in ['minimize', 'maximize', 'close']" :id="`${control}-${windowId}`" :key="control"
+          :class="control" :aria-label="control" @click="$emit(control, windowId)" />
       </div>
     </div>
     <div class="window-content">
@@ -28,6 +29,7 @@ import { computed, defineAsyncComponent, ref, provide } from 'vue';
 import Resizable from './Resizable.vue';
 import { dragParentElement } from '@/utilities/window';
 import App from './App.vue';
+import { windowStore } from '@/stores/windowStore';
 
 const props = defineProps({
   title: {
@@ -54,8 +56,8 @@ const props = defineProps({
     type: Object,
     default: () => ({}),
   },
-  index: {
-    type: Number,
+  windowId: {
+    type: String,
     required: true,
   },
   minWidth: {
@@ -71,6 +73,14 @@ const props = defineProps({
     default: null,
   },
   height: {
+    type: [String, Number],
+    default: null,
+  },
+  left: {
+    type: [String, Number],
+    default: null,
+  },
+  top: {
     type: [String, Number],
     default: null,
   },
@@ -110,14 +120,24 @@ const iconSrc = computed(() => {
 });
 
 function getTitleBarProps() {
-  return dragParentElement(false, false);
+  return dragParentElement(false, false, () => {}, '', (element) => {
+    // On drag end, update store with current position and clear defaults
+    if (element && props.windowId) {
+      const rect = element.getBoundingClientRect();
+      windowStore.updateWindow(props.windowId, {
+        left: rect.left,
+        top: rect.top,
+      });
+      windowStore.clearDefaultPositionAndSize(props.windowId);
+    }
+  });
 }
 
 const titleBarProps = getTitleBarProps();
 
 const resizableRef = ref(null);
 
-// Compute window style with custom width/height if provided
+// Compute window style with custom width/height/left/top if provided
 const windowStyle = computed(() => {
   const style = {};
   if (props.width !== null && props.width !== undefined) {
@@ -129,6 +149,14 @@ const windowStyle = computed(() => {
     const heightValue = typeof props.height === 'number' ? `${props.height}px` : props.height;
     style.height = heightValue;
     style['--custom-height'] = heightValue;
+  }
+  if (props.left !== null && props.left !== undefined) {
+    const leftValue = typeof props.left === 'number' ? `${props.left}px` : props.left;
+    style.left = leftValue;
+  }
+  if (props.top !== null && props.top !== undefined) {
+    const topValue = typeof props.top === 'number' ? `${props.top}px` : props.top;
+    style.top = topValue;
   }
   return Object.keys(style).length > 0 ? style : undefined;
 });
@@ -149,9 +177,18 @@ function setWindowSize(width, height) {
       }
     }
   }
+  
+  // Update the window store so the size persists across re-renders
+  if (props.windowId) {
+    windowStore.updateWindow(props.windowId, {
+      width: width,
+      height: height,
+    });
+  }
 }
 
 provide('setWindowSize', setWindowSize);
+provide('windowId', props.windowId);
 </script>
 
 <style lang="less" scoped>

@@ -1,58 +1,35 @@
 <template>
-  <div ref="resizableRef" class="resizable" :class="computedClasses" v-bind="$attrs">
+  <div ref="resizableRef" class="resizable" :class="classes" v-bind="$attrs">
     <slot />
-    <!-- Resize handles -->
-    <div class="resize-handle-top" @mousedown.stop="startResize($event, 'top')"></div>
-    <div class="resize-handle-bottom" @mousedown.stop="startResize($event, 'bottom')"></div>
-    <div class="resize-handle-left" @mousedown.stop="startResize($event, 'left')"></div>
-    <div class="resize-handle-right" @mousedown.stop="startResize($event, 'right')"></div>
-    <div class="resize-handle-top-left" @mousedown.stop="startResize($event, 'top-left')"></div>
-    <div class="resize-handle-top-right" @mousedown.stop="startResize($event, 'top-right')"></div>
-    <div class="resize-handle-bottom-left" @mousedown.stop="startResize($event, 'bottom-left')"></div>
-    <div class="resize-handle-bottom-right" @mousedown.stop="startResize($event, 'bottom-right')"></div>
+    <div
+      v-for="handle in handles"
+      :id="handle"
+      :key="handle"
+      class="resize-handle"
+      @mousedown.stop="(e) => startResize(e, e.target.id)"
+    />
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onBeforeUnmount } from 'vue';
+import { ref, onBeforeUnmount } from 'vue';
+import { windowStore } from '@/stores/windowStore';
 
 const props = defineProps({
-  disabled: {
-    type: Boolean,
-    default: false,
-  },
-  minWidth: {
-    type: Number,
-    default: 150,
-  },
-  minHeight: {
-    type: Number,
-    default: 150,
-  },
-  classes: {
-    type: [String, Array, Object],
-    default: () => ({}),
-  },
+  disabled: { type: Boolean, default: false },
+  minWidth: { type: Number, default: 150 },
+  minHeight: { type: Number, default: 150 },
+  classes: { type: [String, Array, Object], default: () => ({}) },
+  windowId: { type: String, default: null },
 });
 
+const handles = ['top', 'bottom', 'left', 'right', 'top-left', 'top-right', 'bottom-left', 'bottom-right'];
 const resizableRef = ref(null);
 
-// Expose the ref so parent can access it
-defineExpose({
-  resizableRef,
-});
+defineExpose({ resizableRef });
 
-const computedClasses = computed(() => {
-  if (Array.isArray(props.classes)) {
-    return props.classes;
-  }
-  if (typeof props.classes === 'object') {
-    return props.classes;
-  }
-  return props.classes;
-});
 let isResizing = false;
-let resizeDirection = '';
+let direction = '';
 let startX = 0;
 let startY = 0;
 let startWidth = 0;
@@ -60,11 +37,11 @@ let startHeight = 0;
 let startLeft = 0;
 let startTop = 0;
 
-function startResize(e, direction) {
+function startResize(e, handleId) {
   if (props.disabled || !resizableRef.value) return;
 
   isResizing = true;
-  resizeDirection = direction;
+  direction = handleId;
   startX = e.clientX;
   startY = e.clientY;
 
@@ -84,37 +61,49 @@ function handleResize(e) {
 
   const deltaX = e.clientX - startX;
   const deltaY = e.clientY - startY;
+  const el = resizableRef.value;
 
-  let newWidth = startWidth;
-  let newHeight = startHeight;
-  let newLeft = startLeft;
-  let newTop = startTop;
+  let width = startWidth;
+  let height = startHeight;
+  let left = startLeft;
+  let top = startTop;
 
-  // Handle horizontal resizing
-  if (resizeDirection.includes('right')) {
-    newWidth = Math.max(props.minWidth, startWidth + deltaX);
-  } else if (resizeDirection.includes('left')) {
-    newWidth = Math.max(props.minWidth, startWidth - deltaX);
-    newLeft = startLeft + deltaX;
+  if (direction.includes('right')) {
+    width = Math.max(props.minWidth, startWidth + deltaX);
+  } else if (direction.includes('left')) {
+    width = Math.max(props.minWidth, startWidth - deltaX);
+    left = startLeft + deltaX;
   }
 
-  // Handle vertical resizing
-  if (resizeDirection.includes('bottom')) {
-    newHeight = Math.max(props.minHeight, startHeight + deltaY);
-  } else if (resizeDirection.includes('top')) {
-    newHeight = Math.max(props.minHeight, startHeight - deltaY);
-    newTop = startTop + deltaY;
+  if (direction.includes('bottom')) {
+    height = Math.max(props.minHeight, startHeight + deltaY);
+  } else if (direction.includes('top')) {
+    height = Math.max(props.minHeight, startHeight - deltaY);
+    top = startTop + deltaY;
   }
 
-  resizableRef.value.style.width = `${newWidth}px`;
-  resizableRef.value.style.height = `${newHeight}px`;
-  resizableRef.value.style.left = `${newLeft}px`;
-  resizableRef.value.style.top = `${newTop}px`;
+  el.style.width = `${width}px`;
+  el.style.height = `${height}px`;
+  el.style.left = `${left}px`;
+  el.style.top = `${top}px`;
 }
 
 function stopResize() {
+  if (isResizing && resizableRef.value && props.windowId) {
+    // Update store with final position and size, then clear defaults
+    const el = resizableRef.value;
+    const rect = el.getBoundingClientRect();
+    windowStore.updateWindow(props.windowId, {
+      left: rect.left,
+      top: rect.top,
+      width: rect.width,
+      height: rect.height,
+    });
+    windowStore.clearDefaultPositionAndSize(props.windowId);
+  }
+  
   isResizing = false;
-  resizeDirection = '';
+  direction = '';
   document.removeEventListener('mousemove', handleResize);
   document.removeEventListener('mouseup', stopResize);
 }
@@ -126,14 +115,12 @@ onBeforeUnmount(() => {
 </script>
 
 <style lang="less" scoped>
-div[class|="resize-handle"] {
+.resize-handle {
   position: absolute;
   background: transparent;
   z-index: 10;
-}
 
-.resize-handle {
-  &-top {
+  &#top {
     top: 0;
     left: 0;
     right: 0;
@@ -141,7 +128,7 @@ div[class|="resize-handle"] {
     cursor: ns-resize;
   }
 
-  &-bottom {
+  &#bottom {
     bottom: 0;
     left: 0;
     right: 0;
@@ -149,7 +136,7 @@ div[class|="resize-handle"] {
     cursor: ns-resize;
   }
 
-  &-left {
+  &#left {
     left: 0;
     top: 0;
     bottom: 0;
@@ -157,7 +144,7 @@ div[class|="resize-handle"] {
     cursor: ew-resize;
   }
 
-  &-right {
+  &#right {
     right: 0;
     top: 0;
     bottom: 0;
@@ -165,7 +152,7 @@ div[class|="resize-handle"] {
     cursor: ew-resize;
   }
 
-  &-top-left {
+  &#top-left {
     top: 0;
     left: 0;
     width: 8px;
@@ -173,7 +160,7 @@ div[class|="resize-handle"] {
     cursor: nwse-resize;
   }
 
-  &-top-right {
+  &#top-right {
     top: 0;
     right: 0;
     width: 8px;
@@ -181,7 +168,7 @@ div[class|="resize-handle"] {
     cursor: nesw-resize;
   }
 
-  &-bottom-left {
+  &#bottom-left {
     bottom: 0;
     left: 0;
     width: 8px;
@@ -189,7 +176,7 @@ div[class|="resize-handle"] {
     cursor: nesw-resize;
   }
 
-  &-bottom-right {
+  &#bottom-right {
     bottom: 0;
     right: 0;
     width: 8px;

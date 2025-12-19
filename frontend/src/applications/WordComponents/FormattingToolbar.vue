@@ -1,5 +1,13 @@
 <template>
   <div class="toolbar formatting-toolbar">
+    <!-- Heading Style -->
+    <select v-model="localSelectedHeading" @change="handleHeadingChange" class="heading-selector">
+      <option value="normal">Normal</option>
+      <option value="heading1">Heading 1</option>
+      <option value="heading2">Heading 2</option>
+      <option value="heading3">Heading 3</option>
+    </select>
+
     <!-- Font Type -->
     <select v-model="localSelectedFont" @change="handleFontChange" class="font-selector">
       <optgroup
@@ -113,6 +121,10 @@
 import { ref, watch } from 'vue';
 
 const props = defineProps({
+  selectedHeading: {
+    type: String,
+    default: 'normal',
+  },
   selectedFont: {
     type: String,
     default: 'Times New Roman',
@@ -168,8 +180,10 @@ const props = defineProps({
 });
 
 const emit = defineEmits([
+  'update:selectedHeading',
   'update:selectedFont',
   'update:selectedFontSize',
+  'heading-change',
   'font-change',
   'font-size-change',
   'toggle-bold',
@@ -183,16 +197,32 @@ const emit = defineEmits([
   'toggle-ordered-list',
 ]);
 
+const localSelectedHeading = ref(props.selectedHeading);
 const localSelectedFont = ref(props.selectedFont);
 const localSelectedFontSize = ref(props.selectedFontSize);
 
+watch(() => props.selectedHeading, (newVal) => {
+  if (newVal !== localSelectedHeading.value) {
+    localSelectedHeading.value = newVal;
+  }
+}, { immediate: true });
+
 watch(() => props.selectedFont, (newVal) => {
-  localSelectedFont.value = newVal;
-});
+  if (newVal !== localSelectedFont.value) {
+    localSelectedFont.value = newVal;
+  }
+}, { immediate: true });
 
 watch(() => props.selectedFontSize, (newVal) => {
-  localSelectedFontSize.value = newVal;
-});
+  if (newVal !== localSelectedFontSize.value) {
+    localSelectedFontSize.value = newVal;
+  }
+}, { immediate: true });
+
+function handleHeadingChange() {
+  emit('update:selectedHeading', localSelectedHeading.value);
+  emit('heading-change', localSelectedHeading.value);
+}
 
 function handleFontChange() {
   emit('update:selectedFont', localSelectedFont.value);
@@ -270,6 +300,7 @@ function handleFontSizeChange() {
     margin: 0 4px;
   }
   
+  .heading-selector,
   .font-selector,
   .font-size-selector {
     background: white;
@@ -278,6 +309,10 @@ function handleFontSizeChange() {
     font-size: 11px;
     height: 22px;
     cursor: pointer;
+  }
+  
+  .heading-selector {
+    width: 120px;
   }
   
   .font-selector {

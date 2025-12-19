@@ -3,9 +3,6 @@
     <button class="toolbar-btn" title="New" @click="$emit('new')">
       <span class="icon">📄</span>
     </button>
-    <button class="toolbar-btn" title="Open" @click="$emit('open')">
-      <span class="icon">📁</span>
-    </button>
     <button class="toolbar-btn" title="Save" @click="$emit('save')">
       <span class="icon">💾</span>
     </button>
@@ -51,7 +48,7 @@ defineProps({
   },
 });
 
-defineEmits(['new', 'open', 'save', 'cut', 'copy', 'paste', 'undo', 'redo']);
+defineEmits(['new', 'save', 'cut', 'copy', 'paste', 'undo', 'redo']);
 </script>
 
 <style lang="less" scoped>

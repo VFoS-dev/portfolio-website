@@ -63,45 +63,13 @@
         </div>
       </div>
     </div>
-    <!-- Custom Game Dialog -->
-    <div v-if="showCustomDialog" class="custom-dialog-overlay" @click="closeCustomDialog">
-      <div class="custom-dialog" @click.stop>
-        <div class="dialog-title-bar">
-          <span>Custom Field</span>
-          <button class="dialog-close" @click="closeCustomDialog">×</button>
-        </div>
-        <div class="dialog-content">
-          <div class="dialog-field">
-            <label>Height:</label>
-            <input v-model.number="customRows" type="number" min="9" max="24" class="dialog-input"
-              @input="validateCustomInput" />
-          </div>
-          <div class="dialog-field">
-            <label>Width:</label>
-            <input v-model.number="customCols" type="number" min="9" max="30" class="dialog-input"
-              @input="validateCustomInput" />
-          </div>
-          <div class="dialog-field">
-            <label>Mines:</label>
-            <input v-model.number="customMines" type="number" min="10" :max="maxCustomMines" class="dialog-input"
-              @input="validateCustomInput" />
-            <span class="dialog-hint">(max: {{ maxCustomMines }})</span>
-          </div>
-          <div v-if="customError" class="dialog-error">
-            {{ customError }}
-          </div>
-        </div>
-        <div class="dialog-buttons">
-          <button class="dialog-button" @click="applyCustomSettings">OK</button>
-          <button class="dialog-button" @click="closeCustomDialog">Cancel</button>
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount, nextTick, inject, watch } from 'vue';
+import { windowStore } from '@/stores/windowStore';
+import CustomFieldForm from './MinesweeperComponents/CustomFieldForm.vue';
 
 const difficulties = {
   beginner: { rows: 9, cols: 9, mines: 10 },
@@ -122,11 +90,9 @@ const boardHeight = ref(400);
 const gameMenuOpen = ref(false);
 let menuCloseTimeout = null;
 
-const showCustomDialog = ref(false);
 const customRows = ref(16);
 const customCols = ref(16);
 const customMines = ref(40);
-const customError = ref('');
 
 const currentConfig = computed(() => {
   if (difficulty.value === 'custom') {
@@ -139,9 +105,6 @@ const currentConfig = computed(() => {
   return difficulties[difficulty.value];
 });
 
-const maxCustomMines = computed(() => {
-  return Math.max(10, (customRows.value * customCols.value) - 1);
-});
 const rows = computed(() => currentConfig.value.rows);
 const cols = computed(() => currentConfig.value.cols);
 const totalMines = computed(() => currentConfig.value.mines);
@@ -382,80 +345,71 @@ function setDifficulty(level) {
 }
 
 function openCustomDialog() {
-  // Initialize with current custom values or defaults
-  if (difficulty.value === 'custom') {
-    customRows.value = currentConfig.value.rows;
-    customCols.value = currentConfig.value.cols;
-    customMines.value = currentConfig.value.mines;
-  } else {
-    customRows.value = 16;
-    customCols.value = 16;
-    customMines.value = 40;
-  }
-  customError.value = '';
-  showCustomDialog.value = true;
   gameMenuOpen.value = false;
-}
-
-function closeCustomDialog() {
-  showCustomDialog.value = false;
-  customError.value = '';
-}
-
-function validateCustomInput() {
-  customError.value = '';
-
-  // Clamp rows to valid range
-  if (customRows.value < 9) customRows.value = 9;
-  if (customRows.value > 24) customRows.value = 24;
-
-  // Clamp cols to valid range
-  if (customCols.value < 9) customCols.value = 9;
-  if (customCols.value > 30) customCols.value = 30;
-
-  // Auto-adjust mines if it exceeds max
-  const maxMines = customRows.value * customCols.value - 1;
-  if (customMines.value > maxMines) {
-    customMines.value = maxMines;
-  }
-  if (customMines.value < 10) {
-    customMines.value = 10;
-  }
-
-  // Show error if still invalid (shouldn't happen after clamping, but just in case)
-  if (customRows.value < 9 || customRows.value > 24) {
-    customError.value = 'Height must be between 9 and 24.';
-    return false;
-  }
-
-  if (customCols.value < 9 || customCols.value > 30) {
-    customError.value = 'Width must be between 9 and 30.';
-    return false;
-  }
-
-  if (customMines.value < 10 || customMines.value > maxMines) {
-    customError.value = `Mines must be between 10 and ${maxMines}.`;
-    return false;
-  }
-
-  return true;
-}
-
-function applyCustomSettings() {
-  if (!validateCustomInput()) {
-    return;
-  }
-
-  difficulty.value = 'custom';
-  initializeBoard();
-  gameRestart.value = !gameRestart.value;
-  closeCustomDialog();
-  // Explicitly update window size
-  if (setWindowSize && optimalWindowSize.value) {
-    nextTick(() => {
-      setWindowSize(optimalWindowSize.value.width, optimalWindowSize.value.height);
-    });
-  }
+  
+  // Initialize with current custom values or defaults
+  const initialHeight = difficulty.value === 'custom' ? currentConfig.value.rows : 16;
+  const initialWidth = difficulty.value === 'custom' ? currentConfig.value.cols : 16;
+  const initialMines = difficulty.value === 'custom' ? currentConfig.value.mines : 40;
+  
+  // Calculate center position for the window
+  const windowWidth = 280;
+  const windowHeight = 220;
+  const left = (window.innerWidth - windowWidth) / 2;
+  const top = (window.innerHeight - windowHeight) / 2;
+  
+  // Create a Submittable window for custom field input
+  const customFieldWindow = windowStore.createWindow({
+    title: 'Custom Field',
+    icon: '/images/resume/minesweepericon.svg',
+    app: 'Submittable',
+    width: windowWidth,
+    height: windowHeight,
+    left: left,
+    top: top,
+    appProps: {
+      component: CustomFieldForm,
+      componentProps: {},
+      initialData: {
+        height: initialHeight,
+        width: initialWidth,
+        mines: initialMines,
+      },
+      validate: (data) => {
+        const height = data.height || 0;
+        const width = data.width || 0;
+        const mines = data.mines || 0;
+        const maxMines = Math.max(10, height * width - 1);
+        
+        return (
+          height >= 9 && height <= 24 &&
+          width >= 9 && width <= 30 &&
+          mines >= 10 && mines <= maxMines
+        );
+      },
+      onSubmit: async (data) => {
+        customRows.value = data.height;
+        customCols.value = data.width;
+        customMines.value = data.mines;
+        
+        difficulty.value = 'custom';
+        initializeBoard();
+        gameRestart.value = !gameRestart.value;
+        
+        // Explicitly update window size
+        if (setWindowSize && optimalWindowSize.value) {
+          nextTick(() => {
+            setWindowSize(optimalWindowSize.value.width, optimalWindowSize.value.height);
+          });
+        }
+        
+        // Close the Custom Field window
+        windowStore.closeWindow(customFieldWindow.id);
+        
+        return { success: true };
+      },
+    },
+  });
 }
 
 function newGame() {
@@ -896,139 +850,4 @@ onBeforeUnmount(() => {
   border-top: 1px solid #ffffff;
 }
 
-.custom-dialog-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.3);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.custom-dialog {
-  background-color: #c0c0c0;
-  border: @inset-depth outset #ffffff;
-  border-top-color: @highlight;
-  border-left-color: @highlight;
-  border-right-color: @shadow;
-  border-bottom-color: @shadow;
-  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-  min-width: 280px;
-  font-family: 'MS Sans Serif', 'Tahoma', sans-serif;
-  font-size: 11px;
-}
-
-.dialog-title-bar {
-  background: linear-gradient(180deg, #0997ff, #0053ee 8%, #0050ee 40%, #06f 88%, #06f 93%, #005bff 95%, #003dd7 96%, #003dd7);
-  color: white;
-  padding: 4px 8px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-weight: bold;
-  text-shadow: 1px 1px #0f1089;
-  user-select: none;
-}
-
-.dialog-close {
-  background: transparent;
-  border: none;
-  color: white;
-  font-size: 16px;
-  cursor: pointer;
-  padding: 0 4px;
-  line-height: 1;
-
-  &:hover {
-    background-color: rgba(255, 255, 255, 0.2);
-  }
-}
-
-.dialog-content {
-  padding: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.dialog-field {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-
-  label {
-    min-width: 60px;
-    font-weight: bold;
-  }
-
-  .dialog-input {
-    flex: 1;
-    padding: 4px 6px;
-    border: @inset-depth inset #ffffff;
-    border-top-color: @shadow;
-    border-left-color: @shadow;
-    border-right-color: @highlight;
-    border-bottom-color: @highlight;
-    background-color: #ffffff;
-    font-family: 'MS Sans Serif', 'Tahoma', sans-serif;
-    font-size: 11px;
-    max-width: 80px;
-
-    &:focus {
-      outline: 1px solid #316ac5;
-      outline-offset: -1px;
-    }
-  }
-
-  .dialog-hint {
-    font-size: 10px;
-    color: @shadow;
-    white-space: nowrap;
-  }
-}
-
-.dialog-error {
-  color: #ff0000;
-  font-size: 10px;
-  margin-top: -8px;
-  min-height: 14px;
-}
-
-.dialog-buttons {
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px;
-  padding: 8px 12px;
-  border-top: 1px solid @shadow;
-  background-color: #c0c0c0;
-}
-
-.dialog-button {
-  padding: 4px 16px;
-  border: 2px outset #ffffff;
-  border-top-color: @highlight;
-  border-left-color: @highlight;
-  border-right-color: @shadow;
-  border-bottom-color: @shadow;
-  background: #c0c0c0;
-  cursor: pointer;
-  font-family: 'MS Sans Serif', 'Tahoma', sans-serif;
-  font-size: 11px;
-  min-width: 60px;
-
-  &:active {
-    border: 2px inset #ffffff;
-    border-top-color: @shadow;
-    border-left-color: @shadow;
-    border-right-color: @highlight;
-    border-bottom-color: @highlight;
-  }
-
-  &:hover:not(:active) {
-    background: #d4d0c8;
-  }
-}
 </style>

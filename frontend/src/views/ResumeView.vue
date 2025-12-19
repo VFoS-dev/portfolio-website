@@ -33,25 +33,24 @@
       }"
     ></div>
     <Window
-      v-for="(window, i) in windows"
-      :key="`windows-${window.key}`"
+      v-for="window in windows"
+      :key="`windows-${window.id}`"
       :title="window.title"
       :icon="window.icon"
       :state="window.state"
       :app="window.app"
       :app-props="window.appProps"
-      :index="i"
+      :window-id="window.id"
       :width="window.width"
       :height="window.height"
-      @focus="handleWindowFocus(i)"
-      @minimize="handleWindowMinimize(i)"
-      @maximize="handleWindowMaximize(i)"
-      @close="handleWindowClose(i)"
+      :left="window.left"
+      :top="window.top"
+      @focus="handleWindowFocus(window.id)"
+      @minimize="handleWindowMinimize(window.id)"
+      @maximize="handleWindowMaximize(window.id)"
+      @close="handleWindowClose(window.id)"
     />
     <ResumeTaskbar 
-      :windows="windows" 
-      @focus="(index) => handleWindowFocus(index)" 
-      @minimize="(index) => handleWindowMinimize(index)"
       @open-app="handleOpenApp"
       @shutdown="handleShutdown"
     />
@@ -74,11 +73,12 @@ import ResumeDesktopIcon from '@/components/Resume/ResumeDesktopIcon.vue';
 import Window from '@/components/Window/Window.vue';
 import ResumeTaskbar from '@/components/Resume/ResumeTaskbar.vue';
 import DesktopContextMenu from '@/components/Resume/DesktopContextMenu.vue';
-import { createKey, onDoubleClick, dragParentElement, dragParentElementWithTrash } from '@/utilities/window';
+import { onDoubleClick, dragParentElement, dragParentElementWithTrash } from '@/utilities/window';
 import windowConfig from '@/json/windowConfig.json';
 import { trashStore } from '@/stores/trashStore';
 import { navStore } from '@/stores/navStore';
 import { cubeStore } from '@/stores/cubeStore';
+import { windowStore } from '@/stores/windowStore';
 
 const defaultBackground = 'url(/images/resume/windows_xp_background.webp)';
 const desktopBackground = ref(localStorage.getItem('r_desktopBackground') || defaultBackground);
@@ -122,48 +122,23 @@ function setIconRef(el, index) {
   }
 }
 
-const windows = ref([]);
+// Use window store for windows
+const windows = computed(() => windowStore.getWindows);
 
-function newWindow(windowConfig) {
-  const keys = windows.value.map(function (w) {
-    w.state.focused = false;
-    return w.key;
-  });
-  windows.value.push({
-    ...windowConfig,
-    key: createKey(keys),
-    state: {
-      fullscreened: false,
-      focused: true,
-      minimized: false,
-    },
-  });
+function handleWindowFocus(id) {
+  windowStore.focusWindow(id);
 }
 
-function handleWindowFocus(index) {
-  windows.value[index].state.minimized = false;
-  windows.value = windows.value.map(function (w, i) {
-    return {
-      ...w,
-      state: {
-        ...w.state,
-        focused: i === index,
-      },
-    };
-  });
+function handleWindowMinimize(id) {
+  windowStore.minimizeWindow(id);
 }
 
-function handleWindowMinimize(index) {
-  windows.value[index].state.focused = false;
-  windows.value[index].state.minimized = !windows.value[index].state.minimized;
+function handleWindowMaximize(id) {
+  windowStore.maximizeWindow(id);
 }
 
-function handleWindowMaximize(index) {
-  windows.value[index].state.fullscreened = !windows.value[index].state.fullscreened;
-}
-
-function handleWindowClose(index) {
-  windows.value.splice(index, 1);
+function handleWindowClose(id) {
+  windowStore.closeWindow(id);
 }
 
 function handleNewWindow(windowConfig) {
@@ -243,7 +218,7 @@ function handleNewWindow(windowConfig) {
     }
   }
   
-  newWindow(windowConfig);
+  windowStore.createWindow(windowConfig);
 }
 
 const iconRefreshKey = ref(0);
@@ -537,8 +512,6 @@ function handleResetAll() {
 
   // Don't close open windows - keep apps open
   // windows.value = [];
-
-  alert('All data has been reset!');
 }
 
 function handleDocumentClick(e) {
@@ -1203,7 +1176,7 @@ function handleOpenApp(appConfig) {
       }
   }
   
-  newWindow(appConfig);
+  windowStore.createWindow(appConfig);
 }
 
 function handleShutdown() {
@@ -1227,6 +1200,10 @@ function handleShutdown() {
   position: relative;
   transform-origin: center;
   transition: transform 0.25s ease-out;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 }
 
 .desktop-icons-container {
