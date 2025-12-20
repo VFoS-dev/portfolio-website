@@ -8,13 +8,13 @@
     :style="windowStyle"
     :classes="['window', { focused: state.focused, fullscreened: state.fullscreened, minimized: state.minimized }]"
     @mousedown="$emit('focus', windowId)">
-    <div class="title-bar" v-bind="titleBarProps" @dblclick="$emit('maximize', windowId)">
+    <div class="title-bar" v-bind="titleBarProps" @dblclick="props.app !== 'Submittable' && $emit('maximize', windowId)">
       <div class="title-bar-text">
         <component :is="iconComponent" v-if="icon && iconComponent" :src="iconSrc" :class="['windowIcon', iconClass]" />
         <span class="title-text">{{ title }}</span>
       </div>
       <div class="title-bar-controls">
-        <button v-for="control in ['minimize', 'maximize', 'close']" :id="`${control}-${windowId}`" :key="control"
+        <button v-for="control in windowControls" :id="`${control}-${windowId}`" :key="control"
           :class="control" :aria-label="control" @click="$emit(control, windowId)" />
       </div>
     </div>
@@ -147,6 +147,16 @@ function getTitleBarProps() {
 const titleBarProps = getTitleBarProps();
 
 const resizableRef = ref(null);
+
+// Determine which window controls to show based on app type
+const windowControls = computed(() => {
+  // Submittable windows should only have close button
+  if (props.app === 'Submittable') {
+    return ['close'];
+  }
+  // All other windows have minimize, maximize, and close
+  return ['minimize', 'maximize', 'close'];
+});
 
 // Compute window style with custom width/height/left/top if provided
 const windowStyle = computed(() => {
