@@ -19,7 +19,7 @@
       "x": "calc(50% - 35px)",
       "y": "calc(50% - 40px)",
       "appProps": {
-        "content": "Hi Bye"
+        "content": "<p style='text-align: left;'><span style='font-size: 18pt;'>Hi Bye</span></p>"
       }
     },
     {
