@@ -29,8 +29,8 @@
       "app": "Minesweeper",
       "x": "10px",
       "y": "calc(100% - 120px)",
-      "width": "400px",
-      "height": "528px"
+      "width": "266px",
+      "height": "395px"
     },
     {
       "title": "Trash",
