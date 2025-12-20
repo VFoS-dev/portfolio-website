@@ -1,21 +1,17 @@
 <template>
-  <Resizable 
-    ref="resizableRef" 
-    :disabled="state.fullscreened" 
-    :min-width="minWidth || 150"
-    :min-height="minHeight || 150"
-    :window-id="windowId"
-    :style="windowStyle"
+  <Resizable ref="resizableRef" :disabled="state.fullscreened" :min-width="minWidth || 150"
+    :min-height="minHeight || 150" :window-id="windowId" :style="windowStyle"
     :classes="['window', { focused: state.focused, fullscreened: state.fullscreened, minimized: state.minimized }]"
-    @mousedown="$emit('focus', windowId)">
-    <div class="title-bar" v-bind="titleBarProps" @dblclick="props.app !== 'Submittable' && $emit('maximize', windowId)">
+    @mousedown="windowStore.focusWindow(windowId)">
+    <div class="title-bar" v-bind="titleBarProps"
+      @dblclick="props.app !== 'Submittable' && handleControlClick('maximize')">
       <div class="title-bar-text">
         <component :is="iconComponent" v-if="icon && iconComponent" :src="iconSrc" :class="['windowIcon', iconClass]" />
         <span class="title-text">{{ title }}</span>
       </div>
       <div class="title-bar-controls">
-        <button v-for="control in windowControls" :id="`${control}-${windowId}`" :key="control"
-          :class="control" :aria-label="control" @click="$emit(control, windowId)" />
+        <button v-for="control in windowControls" :id="`${control}-${windowId}`" :key="control" :class="control"
+          :aria-label="control" @click="handleControlClick(control)" />
       </div>
     </div>
     <div class="window-content">
@@ -86,7 +82,6 @@ const props = defineProps({
   },
 });
 
-defineEmits(['focus', 'minimize', 'maximize', 'close']);
 
 const iconComponent = computed(() => {
   if (!props.icon) return null;
@@ -120,11 +115,17 @@ const iconSrc = computed(() => {
 });
 
 function getTitleBarProps() {
-  return dragParentElement(false, false, () => {}, '', (element) => {
+  return dragParentElement(false, false, () => { }, '', (element) => {
     // On drag end, update store with current position and dimensions
     // Use requestAnimationFrame to ensure DOM has updated before reading position
     if (element && props.windowId) {
       requestAnimationFrame(() => {
+        // Don't update if window is minimized (display: none causes getBoundingClientRect to return 0)
+        const window = windowStore.getWindowById(props.windowId);
+        if (window?.state?.minimized || props.state.minimized) {
+          return;
+        }
+
         const rect = element.getBoundingClientRect();
         // Ensure we capture the actual computed position from the DOM
         const computedLeft = rect.left;
@@ -157,6 +158,17 @@ const windowControls = computed(() => {
   // All other windows have minimize, maximize, and close
   return ['minimize', 'maximize', 'close'];
 });
+
+// Handle window control button clicks
+function handleControlClick(control) {
+  if (control === 'minimize') {
+    windowStore.minimizeWindow(props.windowId);
+  } else if (control === 'maximize') {
+    windowStore.maximizeWindow(props.windowId);
+  } else if (control === 'close') {
+    windowStore.closeWindow(props.windowId);
+  }
+}
 
 // Compute window style with custom width/height/left/top if provided
 const windowStyle = computed(() => {
@@ -198,7 +210,7 @@ function setWindowSize(width, height) {
       }
     }
   }
-  
+
   // Update the window store so the size persists across re-renders
   if (props.windowId) {
     windowStore.updateWindow(props.windowId, {

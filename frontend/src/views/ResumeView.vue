@@ -45,10 +45,6 @@
       :height="window.height"
       :left="window.left"
       :top="window.top"
-      @focus="handleWindowFocus(window.id)"
-      @minimize="handleWindowMinimize(window.id)"
-      @maximize="handleWindowMaximize(window.id)"
-      @close="handleWindowClose(window.id)"
     />
     <ResumeTaskbar 
       @open-app="handleOpenApp"
@@ -125,21 +121,6 @@ function setIconRef(el, index) {
 // Use window store for windows
 const windows = computed(() => windowStore.getWindows);
 
-function handleWindowFocus(id) {
-  windowStore.focusWindow(id);
-}
-
-function handleWindowMinimize(id) {
-  windowStore.minimizeWindow(id);
-}
-
-function handleWindowMaximize(id) {
-  windowStore.maximizeWindow(id);
-}
-
-function handleWindowClose(id) {
-  windowStore.closeWindow(id);
-}
 
 function handleNewWindow(windowConfig) {
   // If this is a saved Word document, load its content from localStorage

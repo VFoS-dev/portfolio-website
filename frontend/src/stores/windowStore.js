@@ -168,11 +168,31 @@ const useWindowStore = defineStore('windowStore', {
 
     /**
      * Toggle minimize state of a window by unique ID
+     * Saves the window's current position before minimizing so it can be restored
      * @param {string} id - Window unique ID
      */
     minimizeWindow(id) {
       const window = this.windows[id];
+
       if (window) {
+        // If window is about to be minimized (not already minimized), save its position
+        if (!window.state.minimized) {
+          // Find the window element and save its current position
+          const minimizeButton = document.getElementById(`minimize-${id}`);
+          if (minimizeButton) {
+            const windowElement = minimizeButton.closest('.window');
+            if (windowElement) {
+              const rect = windowElement.getBoundingClientRect();
+              this.updateWindow(id, {
+                left: rect.left,
+                top: rect.top,
+                width: rect.width,
+                height: rect.height,
+              });
+            }
+          }
+        }
+        
         window.state.focused = false;
         window.state.minimized = !window.state.minimized;
       }
