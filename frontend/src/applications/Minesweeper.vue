@@ -619,7 +619,7 @@ onBeforeUnmount(() => {
   align-items: center;
   overflow: hidden;
   background-color: #c0c0c0;
-  border: @inset-depth-large outset #ffffff;
+  border: @inset-depth outset #ffffff;
   border-right-color: @shadow;
   border-bottom-color: @shadow;
   text-align: center;
