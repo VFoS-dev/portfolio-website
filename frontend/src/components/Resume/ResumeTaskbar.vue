@@ -17,7 +17,7 @@
           :src="getIconSrc(window.icon)"
           :class="['taskbar-icon', window.iconClass]"
         />
-        <div class="txt">{{ window.title || 'Jon Kido Resume 20XX Rough Draft - Microsoft Word' }}</div>
+        <div class="txt">{{ window.title }}</div>
       </div>
     </div>
     <div id="time" ref="timeEle">{{ currentTime }}</div>
@@ -50,11 +50,11 @@ const menuItems = computed(() => {
   // Create menu items: Word, Minesweeper, and Resume
   const items = [];
   
-  // Add Word (use first Word entry)
+  // Add Microsoft Word (use first Word entry)
   const wordIcon = windowConfig.icons.find(icon => icon.app === 'Word');
   if (wordIcon) {
     items.push({
-      title: 'Word',
+      title: 'Microsoft Word',
       icon: wordIcon.icon,
       app: 'Word',
       appProps: {},

@@ -82,8 +82,6 @@ export function useFileOperations(editorRef, editorContent, props) {
           // Create or update icon entry
           createOrUpdateWordIcon(fileName, content);
           
-          // Create icon title with .doc extension
-          const iconTitle = fileName.endsWith('.doc') ? fileName : `${fileName}.doc`;
           
           // Update the current window's title and appProps using the injected windowId
           if (windowId) {
@@ -95,7 +93,7 @@ export function useFileOperations(editorRef, editorContent, props) {
                 ...currentWindow.appProps,
                 content: content,
                 isCustom: true,
-                originalTitle: iconTitle,
+                originalTitle: fileName,
               };
               
               // Only preserve originalContent if it existed before
@@ -104,7 +102,7 @@ export function useFileOperations(editorRef, editorContent, props) {
               }
               
               windowStore.updateWindow(windowId, {
-                title: iconTitle,
+                title: fileName,
                 appProps: updatedAppProps,
               });
               // Refocus the Word window
@@ -132,12 +130,8 @@ export function useFileOperations(editorRef, editorContent, props) {
     } catch (e) {
       console.warn('Failed to load saved icons', e);
     }
-    
-    // Create icon title with .doc extension
-    const iconTitle = fileName.endsWith('.doc') ? fileName : `${fileName}.doc`;
-    
     // Check if icon already exists
-    const existingIndex = savedIcons.findIndex(icon => icon.title === iconTitle);
+    const existingIndex = savedIcons.findIndex(icon => icon.title === fileName);
     
     // Calculate unique position for new icons (using same grid logic as ResumeView)
     function calculateIconPosition(iconCount) {
@@ -161,7 +155,7 @@ export function useFileOperations(editorRef, editorContent, props) {
     }
     
     const iconConfig = {
-      title: iconTitle,
+      title: fileName,
       'desktop-icon': '/images/resume/wordicon_destop.svg',
       icon: '/images/resume/wordIcon.png',
       app: 'Word',
@@ -203,23 +197,17 @@ export function useFileOperations(editorRef, editorContent, props) {
   }
 
   function handleNew() {
-    if (confirm('Create a new document? Unsaved changes will be lost.')) {
-      editorContent.value = '';
-      const view = editorRef.value?.getEditorView();
-      if (view) {
-        const schema = editorRef.value.getSchema();
-        if (schema) {
-          // Import EditorState dynamically to avoid unused import warning
-          import('prosemirror-state').then(({ EditorState }) => {
-            const state = EditorState.create({
-              schema,
-              plugins: view.state.plugins,
-            });
-            view.updateState(state);
-          });
-        }
-      }
-    }
+     // Create a new Word window with "Untitled document" title
+     // The "- Microsoft Word" suffix will be added automatically by the window store
+    windowStore.createWindow({
+      title: 'Untitled document',
+      icon: '/images/resume/wordIcon.png',
+      app: 'Word',
+      appProps: {
+        content: '',
+        isCustom: true,
+      },
+    });
   }
 
   function handleExport() {

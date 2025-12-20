@@ -99,9 +99,19 @@ const useWindowStore = defineStore('windowStore', {
       // Check for saved layout for this window ID (in case window was reopened)
       const savedLayout = this.savedLayouts[id];
       
+      // Automatically add "- Microsoft Word" suffix to Word application titles
+      // Only add suffix if title doesn't already start with "Microsoft Word"
+      let windowTitle = windowConfig.title || '';
+      if (windowConfig.app === 'Word' && !windowTitle.startsWith('Microsoft Word')) {
+        if (!windowTitle.endsWith(' - Microsoft Word')) {
+          windowTitle = `${windowTitle} - Microsoft Word`;
+        }
+      }
+      
       // Use saved layout if available, otherwise use provided config
       const finalConfig = {
         ...windowConfig,
+        title: windowTitle,
         ...(savedLayout && {
           width: savedLayout.width,
           height: savedLayout.height,
@@ -229,6 +239,14 @@ const useWindowStore = defineStore('windowStore', {
     updateWindow(id, updates) {
       const window = this.windows[id];
       if (window) {
+        // Automatically add "- Microsoft Word" suffix to Word application titles when updating
+        // Only add suffix if title doesn't already start with "Microsoft Word"
+        if (updates.title !== undefined && window.app === 'Word' && !updates.title.startsWith('Microsoft Word')) {
+          if (!updates.title.endsWith(' - Microsoft Word')) {
+            updates.title = `${updates.title} - Microsoft Word`;
+          }
+        }
+        
         // Save position and dimensions BEFORE updating, using the new values from updates
         // This ensures we save the correct values even if clearDefaultPositionAndSize is called after
         if (updates.width !== undefined || updates.height !== undefined || 

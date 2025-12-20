@@ -1,7 +1,7 @@
 {
   "icons": [
     {
-      "title": "Jon Kido Resume 20XX Rough Draft - Microsoft Word",
+      "title": "Jon Kido Resume 20XX Rough Draft",
       "desktop-icon": "/images/resume/wordicon_destop.svg",
       "icon": "/images/resume/wordIcon.png",
       "app": "Word",
@@ -12,7 +12,7 @@
       }
     },
     {
-      "title": "Flavored Resume 20XX Rough Draft - Microsoft Word",
+      "title": "Flavored Resume 20XX Rough Draft",
       "desktop-icon": "/images/resume/wordicon_destop.svg",
       "icon": "/images/resume/wordIcon.png",
       "app": "Word",
@@ -43,6 +43,6 @@
     }
   ],
   "defaultWindow": {
-    "iconTitle": "Jon Kido Resume 20XX Rough Draft - Microsoft Word"
+    "iconTitle": "Jon Kido Resume 20XX Rough Draft"
   }
 }
