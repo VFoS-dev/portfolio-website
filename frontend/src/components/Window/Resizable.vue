@@ -90,16 +90,27 @@ function handleResize(e) {
 
 function stopResize() {
   if (isResizing && resizableRef.value && props.windowId) {
-    // Update store with final position and size, then clear defaults
-    const el = resizableRef.value;
-    const rect = el.getBoundingClientRect();
-    windowStore.updateWindow(props.windowId, {
-      left: rect.left,
-      top: rect.top,
-      width: rect.width,
-      height: rect.height,
+    // Update store with final position and size
+    // Use requestAnimationFrame to ensure DOM has updated before reading position
+    requestAnimationFrame(() => {
+      const el = resizableRef.value;
+      if (el) {
+        const rect = el.getBoundingClientRect();
+        // Ensure we capture the actual computed position from the DOM
+        const computedLeft = rect.left;
+        const computedTop = rect.top;
+        const computedWidth = rect.width;
+        const computedHeight = rect.height;
+        
+        windowStore.updateWindow(props.windowId, {
+          left: computedLeft,
+          top: computedTop,
+          width: computedWidth,
+          height: computedHeight,
+        });
+        // Don't clear defaults - keep the values in the window object so they persist
+      }
     });
-    windowStore.clearDefaultPositionAndSize(props.windowId);
   }
   
   isResizing = false;

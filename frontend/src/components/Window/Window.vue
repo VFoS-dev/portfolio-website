@@ -121,14 +121,25 @@ const iconSrc = computed(() => {
 
 function getTitleBarProps() {
   return dragParentElement(false, false, () => {}, '', (element) => {
-    // On drag end, update store with current position and clear defaults
+    // On drag end, update store with current position and dimensions
+    // Use requestAnimationFrame to ensure DOM has updated before reading position
     if (element && props.windowId) {
-      const rect = element.getBoundingClientRect();
-      windowStore.updateWindow(props.windowId, {
-        left: rect.left,
-        top: rect.top,
+      requestAnimationFrame(() => {
+        const rect = element.getBoundingClientRect();
+        // Ensure we capture the actual computed position from the DOM
+        const computedLeft = rect.left;
+        const computedTop = rect.top;
+        const computedWidth = rect.width;
+        const computedHeight = rect.height;
+        
+        windowStore.updateWindow(props.windowId, {
+          left: computedLeft,
+          top: computedTop,
+          width: computedWidth,
+          height: computedHeight,
+        });
+        // Don't clear defaults - keep the values in the window object so they persist
       });
-      windowStore.clearDefaultPositionAndSize(props.windowId);
     }
   });
 }

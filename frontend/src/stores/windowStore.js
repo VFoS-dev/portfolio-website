@@ -30,9 +30,23 @@ import { createKey } from '@/utilities/window';
  * ```
  */
 const useWindowStore = defineStore('windowStore', {
-  state: () => ({
-    windows: {}, // Object with unique IDs as keys
-  }),
+  state: () => {
+    // Load saved window positions and dimensions from localStorage
+    let savedWindowLayouts = {};
+    try {
+      const saved = localStorage.getItem('r_windowLayouts');
+      if (saved) {
+        savedWindowLayouts = JSON.parse(saved);
+      }
+    } catch (e) {
+      console.warn('Failed to load saved window layouts:', e);
+    }
+
+    return {
+      windows: {}, // Object with unique IDs as keys
+      savedLayouts: savedWindowLayouts, // Saved positions/dimensions keyed by window ID
+    };
+  },
   getters: {
     /**
      * Get all windows as an array (for iteration)
@@ -82,9 +96,23 @@ const useWindowStore = defineStore('windowStore', {
       const existingIds = Object.keys(this.windows);
       const id = createKey(existingIds);
 
+      // Check for saved layout for this window ID (in case window was reopened)
+      const savedLayout = this.savedLayouts[id];
+      
+      // Use saved layout if available, otherwise use provided config
+      const finalConfig = {
+        ...windowConfig,
+        ...(savedLayout && {
+          width: savedLayout.width,
+          height: savedLayout.height,
+          left: savedLayout.left,
+          top: savedLayout.top,
+        }),
+      };
+
       // Create new window
       const newWindow = {
-        ...windowConfig,
+        ...finalConfig,
         id, // Use 'id' as the unique identifier
         state: {
           fullscreened: false,
@@ -95,6 +123,19 @@ const useWindowStore = defineStore('windowStore', {
 
       // Store window in object with ID as key
       this.windows[id] = newWindow;
+      
+      // Save initial dimensions if provided (and no saved layout exists)
+      // This ensures new windows with explicit dimensions are saved
+      if (!savedLayout && (finalConfig.width !== undefined || finalConfig.height !== undefined || 
+          finalConfig.left !== undefined || finalConfig.top !== undefined)) {
+        this.saveWindowLayout(id, {
+          width: finalConfig.width,
+          height: finalConfig.height,
+          left: finalConfig.left,
+          top: finalConfig.top,
+        });
+      }
+      
       return newWindow;
     },
 
@@ -145,6 +186,16 @@ const useWindowStore = defineStore('windowStore', {
     closeWindow(id) {
       if (this.windows[id]) {
         delete this.windows[id];
+        // Remove saved layout for this window when it's closed
+        if (this.savedLayouts[id]) {
+          delete this.savedLayouts[id];
+          // Persist the updated layouts to localStorage
+          try {
+            localStorage.setItem('r_windowLayouts', JSON.stringify(this.savedLayouts));
+          } catch (e) {
+            console.warn('Failed to save window layouts after closing window:', e);
+          }
+        }
       }
     },
 
@@ -156,8 +207,18 @@ const useWindowStore = defineStore('windowStore', {
       ids.forEach(id => {
         if (this.windows[id]) {
           delete this.windows[id];
+          // Remove saved layout for this window
+          if (this.savedLayouts[id]) {
+            delete this.savedLayouts[id];
+          }
         }
       });
+      // Persist the updated layouts to localStorage after closing all windows
+      try {
+        localStorage.setItem('r_windowLayouts', JSON.stringify(this.savedLayouts));
+      } catch (e) {
+        console.warn('Failed to save window layouts after closing windows:', e);
+      }
     },
 
     /**
@@ -168,6 +229,20 @@ const useWindowStore = defineStore('windowStore', {
     updateWindow(id, updates) {
       const window = this.windows[id];
       if (window) {
+        // Save position and dimensions BEFORE updating, using the new values from updates
+        // This ensures we save the correct values even if clearDefaultPositionAndSize is called after
+        if (updates.width !== undefined || updates.height !== undefined || 
+            updates.left !== undefined || updates.top !== undefined) {
+          // Use values from updates, falling back to current window values if not in updates
+          this.saveWindowLayout(id, {
+            width: updates.width !== undefined ? updates.width : window.width,
+            height: updates.height !== undefined ? updates.height : window.height,
+            left: updates.left !== undefined ? updates.left : window.left,
+            top: updates.top !== undefined ? updates.top : window.top,
+          });
+        }
+        
+        // Now update the window with the new values
         Object.assign(window, updates);
       }
     },
@@ -192,12 +267,46 @@ const useWindowStore = defineStore('windowStore', {
     clearDefaultPositionAndSize(id) {
       const window = this.windows[id];
       if (window) {
+        // Get current DOM position/size before clearing defaults
+        // This will be handled by the Resizable component's stopResize
         // Remove default values so window uses current DOM position/size
         delete window.left;
         delete window.top;
         delete window.width;
         delete window.height;
       }
+    },
+
+    /**
+     * Save window layout (position and dimensions) for a window ID
+     * @param {string} windowId - Window unique ID
+     * @param {Object} layout - Layout object with width, height, left, top
+     */
+    saveWindowLayout(windowId, layout) {
+      if (!windowId) return;
+      
+      this.savedLayouts[windowId] = {
+        width: layout.width,
+        height: layout.height,
+        left: layout.left,
+        top: layout.top,
+      };
+      
+      // Persist to localStorage
+      try {
+        localStorage.setItem('r_windowLayouts', JSON.stringify(this.savedLayouts));
+      } catch (e) {
+        console.warn('Failed to save window layout:', e);
+      }
+    },
+
+    /**
+     * Get saved window layout for a window ID
+     * @param {string} windowId - Window unique ID
+     * @returns {Object|null} Saved layout or null if not found
+     */
+    getSavedLayout(windowId) {
+      return this.savedLayouts[windowId] || null;
     },
   },
 });

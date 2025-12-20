@@ -54,11 +54,11 @@
         <div v-for="(row, x) in cells" :key="x + 'row'" class="board-row">
           <div v-for="(cell, y) in row" :id="`${x} ${y}`" :key="`${x} ${y}col`" :class="getCellClass(cell)" class="cell"
             @click="minesweep(`${x} ${y}`)" @contextmenu.prevent="flagCell($event)">
-          <div v-if="cell && cell.revealed && cell.proximity > 0" :class="`c-${cell.proximity}`" class="cell-number">
-            {{ cell.proximity }}
-          </div>
-          <span v-if="cell && cell.flagged && !cell.revealed" class="flag-icon">🚩</span>
-          <span v-if="cell && cell.revealed && cell.proximity < 0" class="mine-icon">💣</span>
+            <div v-if="cell && cell.revealed && cell.proximity > 0" :class="`c-${cell.proximity}`" class="cell-number">
+              {{ cell.proximity }}
+            </div>
+            <span v-if="cell && cell.flagged && !cell.revealed" class="flag-icon">🚩</span>
+            <span v-if="cell && cell.revealed && cell.proximity < 0" class="mine-icon">💣</span>
           </div>
         </div>
       </div>
@@ -114,40 +114,25 @@ const setWindowSize = inject('setWindowSize', null);
 
 // Calculate optimal window size based on board dimensions
 const optimalWindowSize = computed(() => {
-  // Menu bar: ~22px, Header: ~60px, Padding: ~16px, Borders: ~4px
-  const menuBarHeight = 22;
-  const headerHeight = 60;
-  const padding = 16;
-  const borders = 4;
-  const verticalSpace = menuBarHeight + headerHeight + padding + borders;
+  const vSizes = 170;
+  const hSizes = 42;
 
-  // Calculate a reasonable cell size (aim for 25-30px for good visibility)
-  // This ensures the window is sized appropriately for the board
-  const targetCellSize = 25;
-
-  // Calculate required board dimensions
-  const boardWidth = cols.value * targetCellSize;
-  const boardHeight = rows.value * targetCellSize;
-
-  // Add padding and borders to get total window size
-  const windowWidth = boardWidth + padding + borders;
-  const windowHeight = boardHeight + verticalSpace;
+  const width = cols.value * 25 + hSizes;
+  const height = rows.value * 25 + vSizes;
 
   return {
-    width: Math.max(300, windowWidth), // Minimum window width
-    height: Math.max(300, windowHeight), // Minimum window height
+    width,
+    height,
   };
 });
 
 // Watch for changes in rows/cols and update window size
 watch([rows, cols, difficulty], () => {
-  if (setWindowSize) {
-    nextTick(() => {
-      if (optimalWindowSize.value) {
-        setWindowSize(optimalWindowSize.value.width, optimalWindowSize.value.height);
-      }
-    });
-  }
+  nextTick(() => {
+    if (optimalWindowSize.value) {
+      setWindowSize(optimalWindowSize.value.width, optimalWindowSize.value.height);
+    }
+  });
 }, { immediate: true });
 
 
@@ -336,31 +321,25 @@ function setDifficulty(level) {
   initializeBoard();
   gameRestart.value = !gameRestart.value;
   gameMenuOpen.value = false;
-  // Explicitly update window size
-  if (setWindowSize && optimalWindowSize.value) {
-    nextTick(() => {
-      setWindowSize(optimalWindowSize.value.width, optimalWindowSize.value.height);
-    });
-  }
 }
 
 function openCustomDialog() {
   gameMenuOpen.value = false;
-  
+
   // Initialize with current custom values or defaults
   const initialHeight = difficulty.value === 'custom' ? currentConfig.value.rows : 16;
   const initialWidth = difficulty.value === 'custom' ? currentConfig.value.cols : 16;
   const initialMines = difficulty.value === 'custom' ? currentConfig.value.mines : 40;
-  
+
   // Calculate center position for the window
   const windowWidth = 280;
-  const windowHeight = 220;
+  const windowHeight = 232;
   const left = (window.innerWidth - windowWidth) / 2;
   const top = (window.innerHeight - windowHeight) / 2;
-  
+
   // Create a Submittable window for custom field input
   const customFieldWindow = windowStore.createWindow({
-    title: 'Custom Field',
+    title: 'Custom Size',
     icon: '/images/resume/minesweepericon.svg',
     app: 'Submittable',
     width: windowWidth,
@@ -380,7 +359,7 @@ function openCustomDialog() {
         const width = data.width || 0;
         const mines = data.mines || 0;
         const maxMines = Math.max(10, height * width - 1);
-        
+
         return (
           height >= 9 && height <= 24 &&
           width >= 9 && width <= 30 &&
@@ -391,21 +370,14 @@ function openCustomDialog() {
         customRows.value = data.height;
         customCols.value = data.width;
         customMines.value = data.mines;
-        
+
         difficulty.value = 'custom';
         initializeBoard();
         gameRestart.value = !gameRestart.value;
-        
-        // Explicitly update window size
-        if (setWindowSize && optimalWindowSize.value) {
-          nextTick(() => {
-            setWindowSize(optimalWindowSize.value.width, optimalWindowSize.value.height);
-          });
-        }
-        
+
         // Close the Custom Field window
         windowStore.closeWindow(customFieldWindow.id);
-        
+
         return { success: true };
       },
     },
@@ -496,22 +468,6 @@ let resizeObserver = null;
 onMounted(() => {
   initializeBoard();
 
-  // Set initial window size - use setTimeout to ensure window is fully rendered
-  if (setWindowSize) {
-    setTimeout(() => {
-      if (optimalWindowSize.value) {
-        setWindowSize(optimalWindowSize.value.width, optimalWindowSize.value.height);
-      }
-    }, 100);
-
-    // Also try in nextTick as backup
-    nextTick(() => {
-      if (optimalWindowSize.value) {
-        setWindowSize(optimalWindowSize.value.width, optimalWindowSize.value.height);
-      }
-    });
-  }
-
   if (typeof window !== 'undefined') {
     window.addEventListener('resize', handleResize);
     // Also listen for clicks outside menu to close it
@@ -533,7 +489,7 @@ onMounted(() => {
       resizeObserver = new ResizeObserver(() => {
         handleResize();
       });
-      
+
       // Observe the board container
       const container = boardRef.value.parentElement?.parentElement;
       if (container) {
@@ -849,5 +805,4 @@ onBeforeUnmount(() => {
   margin: 2px 0;
   border-top: 1px solid #ffffff;
 }
-
 </style>
