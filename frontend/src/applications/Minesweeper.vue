@@ -634,7 +634,7 @@ onBeforeUnmount(() => {
   &.in {
     background-color: #c0c0c0;
     border: @inset-depth outset #ffffff;
-    border-right-color: #5e5e5e;
+    border-right-color: @shadow;
     border-bottom-color: @shadow;
     box-shadow:
       inset 1px 1px 0 0 @shadow,
