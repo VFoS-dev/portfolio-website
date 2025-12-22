@@ -18,7 +18,7 @@ function generateElements() {
   return img;
 }
 
-export function fruitNinja(activePage = false, checkAchievement = () => {}) {
+export function fruitNinja(activePage = false, checkAchievement = () => {}, onLivesUpdate = null, onGameEnd = null) {
   const GRAVITY = 1;
   const SIZE = 4;
   const TAIL_MAX = 5;
@@ -41,10 +41,49 @@ export function fruitNinja(activePage = false, checkAchievement = () => {}) {
   let sliced = [];
   let fruits = [];
   let queue = [];
+  let lives = 3;
+  let onLivesChange = onLivesUpdate;
+  let onGameOver = onGameEnd;
 
   function gameStart() {
     imgSet = generateElements();
+    // Add bomb image
+    const bombImg = document.createElement('img');
+    bombImg.id = 'canvas-img';
+    // Try webp first, then svg, then fallback to canvas
+    bombImg.src = '/images/socials/game/bomb.webp';
+    bombImg.onerror = () => {
+      bombImg.src = '/images/socials/game/bomb.svg';
+      bombImg.onerror = () => {
+        // If bomb image doesn't exist, create a simple canvas representation
+        const canvas = document.createElement('canvas');
+        canvas.width = DIAMETER * 2;
+        canvas.height = DIAMETER * 2;
+        const ctx = canvas.getContext('2d');
+        // Draw a simple bomb (black circle with fuse)
+        ctx.fillStyle = '#000';
+        ctx.beginPath();
+        ctx.arc(DIAMETER, DIAMETER, DIAMETER * 0.8, 0, Math.PI * 2);
+        ctx.fill();
+        // Draw fuse
+        ctx.strokeStyle = '#ff6b00';
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        ctx.moveTo(DIAMETER, DIAMETER * 0.2);
+        ctx.lineTo(DIAMETER * 0.7, DIAMETER * 0.1);
+        ctx.stroke();
+        // Draw spark
+        ctx.fillStyle = '#ffeb3b';
+        ctx.beginPath();
+        ctx.arc(DIAMETER * 0.7, DIAMETER * 0.1, 3, 0, Math.PI * 2);
+        ctx.fill();
+        bombImg.src = canvas.toDataURL();
+      };
+    };
+    imgSet['bomb'] = bombImg;
     gameState = true;
+    lives = 3;
+    if (onLivesChange) onLivesChange(lives);
   }
 
   const gameEnd = () => {
@@ -81,14 +120,19 @@ export function fruitNinja(activePage = false, checkAchievement = () => {}) {
     const side = canvas.width / 2 >= left;
     const maxY = canvas.height / 60;
     const chances = Object.keys(fruitData);
+    
+    // 10% chance to spawn a bomb
+    const isBomb = Math.random() < 0.1;
 
-    fruitSliced++;
-    checkAchievement('fruitCheck1', fruitSliced);
-    checkAchievement('fruitCheck2', fruitSliced);
-    checkAchievement('fruitCheck3', fruitSliced);
+    if (!isBomb) {
+      fruitSliced++;
+      checkAchievement('fruitCheck1', fruitSliced);
+      checkAchievement('fruitCheck2', fruitSliced);
+      checkAchievement('fruitCheck3', fruitSliced);
+    }
 
     fruits.push({
-      type: chances[Math.floor(Math.random() * chances.length)].split('-')[0],
+      type: isBomb ? 'bomb' : chances[Math.floor(Math.random() * chances.length)].split('-')[0],
       top: canvas.height + diameter,
       diameter,
       left,
@@ -97,6 +141,7 @@ export function fruitNinja(activePage = false, checkAchievement = () => {}) {
       rot: 360 * Math.random(),
       velZ: (Math.random() * 2 - 1) * 5,
       frame: 0,
+      isBomb,
     });
   }
 
@@ -148,6 +193,7 @@ export function fruitNinja(activePage = false, checkAchievement = () => {}) {
     const [{ x: x1, y: y1 }, { x: x2, y: y2 }] = path;
     let update = false;
     const indexes = [];
+    let hasBomb = false;
 
     for (let [i, fruit] of fruits.entries()) {
       const { left: Cx, top: Cy } = fruit;
@@ -158,6 +204,20 @@ export function fruitNinja(activePage = false, checkAchievement = () => {}) {
       );
 
       if (isNaN(distance) || distance > fruit.diameter) continue;
+
+      // Check if it's a bomb
+      if (fruit.isBomb) {
+        hasBomb = true;
+        lives--;
+        if (onLivesChange) onLivesChange(lives);
+        if (lives <= 0) {
+          gameState = false;
+          if (onGameOver) onGameOver();
+        }
+        // Remove bomb without slicing animation
+        fruits.splice(i, 1);
+        continue;
+      }
 
       checkAchievement('fruitcomplete', fruit.type);
 
@@ -317,6 +377,7 @@ export function fruitNinja(activePage = false, checkAchievement = () => {}) {
         loopControl.start();
       }
     },
+    getLives: () => lives,
   };
 }
 
