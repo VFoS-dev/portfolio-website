@@ -1,30 +1,20 @@
 <template>
   <canvas id="slash" class="sticky-overlay" ref="canvasRef"></canvas>
-  <FruitNinja v-if="gameStarted" :active="cubeStore.state.socials && gameStarted" />
-  <div class="socials" :class="{ hidden: gameStarted }">
+  <div class="socials">
+    <FruitNinja v-if="gameStarted" :active="cubeStore.state.socials && gameStarted && !showMenu"
+      :on-game-over="handleGameOver" :show-menu="showMenu" />
     <div class="navpadding"></div>
-    <div :class="['links', { toGame: toGame }]" @animationend="handleAnimationEnd">
-      <div
-        v-for="(item, index) in socialsData"
-        :key="`option-${item.name}`"
-        class="option"
-        :style="{ backgroundImage: `url(${item.shadow})` }"
-      >
+    <div :class="['links', { toGame: toGame, hidden: gameStarted && !showMenu }]" @animationend="handleAnimationEnd">
+      <div v-for="(item, index) in socialsData" :key="`option-${item.name}`" class="option"
+        :style="{ backgroundImage: `url(${item.shadow})` }">
         <div class="option-group">
           <div class="circle" :style="{ '--rot': `${item.startRot}deg` }">
             <svg class="text" viewBox="0 0 168 168" xmlns="http://www.w3.org/2000/svg">
-              <path
-                id="upper"
-                fill="none"
-                transform="translate(19.7999976778584, 84) scale(1,-1)"
-                d="M0 -1.26218e-29C-3.33663e-14 22.9365 12.2365 44.1306 32.1 55.5988C51.9636 67.0671 76.4365 67.0671 96.3 55.5988C116.164 44.1306 128.4 22.9365 128.4 1.09118e-13"
-              />
-              <path
-                id="lower"
-                fill="none"
+              <path id="upper" fill="none" transform="translate(19.7999976778584, 84) scale(1,-1)"
+                d="M0 -1.26218e-29C-3.33663e-14 22.9365 12.2365 44.1306 32.1 55.5988C51.9636 67.0671 76.4365 67.0671 96.3 55.5988C116.164 44.1306 128.4 22.9365 128.4 1.09118e-13" />
+              <path id="lower" fill="none"
                 transform="matrix(-0.999980871067792 0.00618381781983816 -0.00618381781983816 -0.999980871067792 148.19877424465 83.6029988816068)  scale(1,-1)"
-                d="M0 1.77501e-13C1.05879e-13 35.4567 28.7433 64.2 64.2 64.2C99.6567 64.2 128.4 35.4567 128.4 2.29597e-13"
-              />
+                d="M0 1.77501e-13C1.05879e-13 35.4567 28.7433 64.2 64.2 64.2C99.6567 64.2 128.4 35.4567 128.4 2.29597e-13" />
               <text class="fnFont" alignment-baseline="top">
                 <textPath href="#upper" :fill="item.upper.fill" :stroke="item.upper.stroke">
                   {{ item.name }}
@@ -36,12 +26,7 @@
             </svg>
             <img class="decor" :src="item.ring" />
           </div>
-          <img
-            class="gif"
-            :src="item.gif"
-            :id="index"
-            @click="openLink(index)"
-          />
+          <img class="gif" :src="item.gif" :id="index" @click="openLink(index)" />
         </div>
       </div>
     </div>
@@ -58,6 +43,7 @@ import socialsDataRaw from '@/json/socialsData.json';
 const canvasRef = ref(null);
 const toGame = ref(false);
 const gameStarted = ref(false);
+const showMenu = ref(false);
 let slashEffect = null;
 
 // Generate random rotations for each social item
@@ -71,7 +57,19 @@ const socialsData = computed(() => {
 function openLink(index) {
   const item = socialsData.value[index];
   if (item.href === 'game-start') {
-    toGame.value = true;
+    if (gameStarted.value) {
+      // If game is already started, restart it
+      gameStarted.value = false;
+      showMenu.value = false;
+      toGame.value = true;
+      setTimeout(() => {
+        gameStarted.value = true;
+      }, 150);
+    } else {
+      // First time starting
+      showMenu.value = false;
+      toGame.value = true;
+    }
   } else {
     window.open(item.href, '_blank');
   }
@@ -80,7 +78,16 @@ function openLink(index) {
 function handleAnimationEnd() {
   if (toGame.value) {
     gameStarted.value = true;
+    showMenu.value = false;
+    toGame.value = false;
   }
+}
+
+function handleGameOver() {
+  // Show menu again while keeping game visible in background
+  showMenu.value = true;
+  // Reset animation state for next game start
+  toGame.value = false;
 }
 
 onMounted(() => {
@@ -122,9 +129,10 @@ onBeforeUnmount(() => {
   letter-spacing: 0.15rem;
 }
 
-.socials.hidden {
+.links.hidden {
   display: none;
 }
+
 
 .sticky-overlay {
   position: fixed;
@@ -132,7 +140,7 @@ onBeforeUnmount(() => {
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 1;
+  z-index: 5;
   pointer-events: none;
   cursor: crosshair;
 }
@@ -145,6 +153,7 @@ onBeforeUnmount(() => {
   from {
     rotate: calc(var(--rot, 0deg) + 360deg);
   }
+
   to {
     rotate: calc(var(--rot, 0deg) + 0deg);
   }
@@ -157,6 +166,8 @@ onBeforeUnmount(() => {
   justify-content: space-around;
   gap: 5%;
   padding: 2rem;
+  position: relative;
+  z-index: 3;
 }
 
 .option {
@@ -178,7 +189,7 @@ onBeforeUnmount(() => {
   z-index: 1;
 }
 
-.option-group .circle > * {
+.option-group .circle>* {
   pointer-events: none;
   position: absolute;
   top: 50%;
@@ -217,6 +228,7 @@ onBeforeUnmount(() => {
     opacity: 1;
     pointer-events: none;
   }
+
   to {
     opacity: 0;
     display: none;

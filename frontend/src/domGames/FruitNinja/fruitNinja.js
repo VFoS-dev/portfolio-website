@@ -3,6 +3,8 @@ import { distanceSegmentToPoint } from '@/utilities/math';
 import { gameLoop } from '@/utilities/game';
 
 const DIAMETER = 100;
+const MIN_DIAMETER = 60;
+const MAX_DIAMETER = 140;
 
 function generateElements() {
   const img = {};
@@ -18,7 +20,7 @@ function generateElements() {
   return img;
 }
 
-export function fruitNinja(activePage = false, checkAchievement = () => {}, onLivesUpdate = null, onGameEnd = null) {
+export function fruitNinja(activePage = false, checkAchievement = () => {}, onLivesUpdate = null, onGameEnd = null, onScoreUpdate = null) {
   const GRAVITY = 1;
   const SIZE = 4;
   const TAIL_MAX = 5;
@@ -42,8 +44,11 @@ export function fruitNinja(activePage = false, checkAchievement = () => {}, onLi
   let fruits = [];
   let queue = [];
   let lives = 3;
+  let score = 0;
+  let frozen = false; // Freeze game state but keep drawing
   let onLivesChange = onLivesUpdate;
   let onGameOver = onGameEnd;
+  let onScoreChange = onScoreUpdate;
 
   function gameStart() {
     imgSet = generateElements();
@@ -82,8 +87,17 @@ export function fruitNinja(activePage = false, checkAchievement = () => {}, onLi
     };
     imgSet['bomb'] = bombImg;
     gameState = true;
+    frozen = false;
     lives = 3;
+    score = 0;
+    // Reset game arrays
+    fruits = [];
+    sliced = [];
+    splats = [];
+    path = [];
+    queue = [];
     if (onLivesChange) onLivesChange(lives);
+    if (onScoreChange) onScoreChange(score);
   }
 
   const gameEnd = () => {
@@ -115,7 +129,8 @@ export function fruitNinja(activePage = false, checkAchievement = () => {}, onLi
   }
 
   function generateFruit() {
-    const diameter = DIAMETER;
+    // Random diameter between MIN and MAX for size variation
+    const diameter = Math.random() * (MAX_DIAMETER - MIN_DIAMETER) + MIN_DIAMETER;
     const left = Math.random() * canvas.width;
     const side = canvas.width / 2 >= left;
     const maxY = canvas.height / 60;
@@ -153,6 +168,11 @@ export function fruitNinja(activePage = false, checkAchievement = () => {}, onLi
         // loose health here
         fruitMissed++;
         checkAchievement('fruitEscape', fruitMissed);
+        // Decrement score only if it's not a bomb
+        if (!fruit.isBomb) {
+          score = Math.max(0, score - 1);
+          if (onScoreChange) onScoreChange(score);
+        }
         continue;
       }
       fruits[i] = {
@@ -193,7 +213,6 @@ export function fruitNinja(activePage = false, checkAchievement = () => {}, onLi
     const [{ x: x1, y: y1 }, { x: x2, y: y2 }] = path;
     let update = false;
     const indexes = [];
-    let hasBomb = false;
 
     for (let [i, fruit] of fruits.entries()) {
       const { left: Cx, top: Cy } = fruit;
@@ -207,14 +226,14 @@ export function fruitNinja(activePage = false, checkAchievement = () => {}, onLi
 
       // Check if it's a bomb
       if (fruit.isBomb) {
-        hasBomb = true;
         lives--;
         if (onLivesChange) onLivesChange(lives);
         if (lives <= 0) {
           gameState = false;
+          frozen = true; // Freeze the game state
           if (onGameOver) onGameOver();
         }
-        // Remove bomb without slicing animation
+        // Remove bomb without slicing animation (no score change)
         fruits.splice(i, 1);
         continue;
       }
@@ -226,6 +245,20 @@ export function fruitNinja(activePage = false, checkAchievement = () => {}, onLi
     }
 
     if (update) {
+      // Calculate score based on fruit size - smaller fruits give more points
+      // Score formula: base score * (MAX_DIAMETER / fruit diameter)
+      // This means smaller fruits (lower diameter) give higher scores
+      let pointsEarned = 0;
+      indexes.forEach(i => {
+        const fruit = fruits[i];
+        // Calculate points: smaller fruits = more points
+        // Base score of 2, multiplied by size ratio (larger ratio for smaller fruits)
+        const sizeMultiplier = MAX_DIAMETER / fruit.diameter;
+        const fruitPoints = Math.max(1, Math.floor(2 * sizeMultiplier));
+        pointsEarned += fruitPoints;
+      });
+      score += pointsEarned;
+      if (onScoreChange) onScoreChange(score);
       const slope = (y1 - y2) / (x1 - x2);
       updateSlice(fruits, indexes, slope);
     }
@@ -348,17 +381,21 @@ export function fruitNinja(activePage = false, checkAchievement = () => {}, onLi
   function gameTick(delta) {
     deltaTime = delta;
 
-    if ((tick = !tick)) path.pop();
+    if ((tick = !tick) && !frozen) path.pop();
 
     const { clientWidth, clientHeight } = document.documentElement;
     canvas.width = clientWidth;
     canvas.height = clientHeight;
     ctx.clearRect(0, 0, clientWidth, clientHeight);
 
-    updateData();
-    if (gameState) populateFruit();
+    // Only update if not frozen
+    if (!frozen) {
+      updateData();
+      if (gameState) populateFruit();
+    }
+    // Always draw the current state
     drawFruit();
-    if (path.length > 1) drawSlice();
+    if (path.length > 1 && !frozen) drawSlice();
     if (exiting) {
       loopControl?.stop();
       return;
@@ -370,7 +407,11 @@ export function fruitNinja(activePage = false, checkAchievement = () => {}, onLi
     gameEnd,
     gameStart,
     dismount,
-    pause: () => loopControl?.stop(),
+    pause: () => {
+      if (loopControl) {
+        loopControl.stop();
+      }
+    },
     unpause: () => {
       if (loopControl && !exiting) {
         // Use start() which works whether loop was started or not
@@ -378,6 +419,8 @@ export function fruitNinja(activePage = false, checkAchievement = () => {}, onLi
       }
     },
     getLives: () => lives,
+    getScore: () => score,
+    isFrozen: () => frozen,
   };
 }
 
