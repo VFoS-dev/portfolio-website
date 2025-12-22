@@ -22,7 +22,6 @@ function generateElements() {
 
 export function fruitNinja(activePage = false, checkAchievement = () => {}, onLivesUpdate = null, onGameEnd = null, onScoreUpdate = null) {
   const GRAVITY = 1;
-  const SIZE = 4;
   const TAIL_MAX = 5;
   const RANDOM_DELAY = 1250;
 
@@ -50,9 +49,7 @@ export function fruitNinja(activePage = false, checkAchievement = () => {}, onLi
   let onGameOver = onGameEnd;
   let onScoreChange = onScoreUpdate;
 
-  function gameStart() {
-    imgSet = generateElements();
-    // Add bomb image
+  function createBombImage() {
     const bombImg = document.createElement('img');
     bombImg.id = 'canvas-img';
     // Try webp first, then svg, then fallback to canvas
@@ -85,7 +82,68 @@ export function fruitNinja(activePage = false, checkAchievement = () => {}, onLi
         bombImg.src = canvas.toDataURL();
       };
     };
-    imgSet['bomb'] = bombImg;
+    return bombImg;
+  }
+
+  function createScorchMarkImage() {
+    const scorchImg = document.createElement('img');
+    scorchImg.id = 'canvas-img';
+    // Create scorch mark using canvas (black/burnt appearance)
+    const canvas = document.createElement('canvas');
+    canvas.width = DIAMETER * 2.5;
+    canvas.height = DIAMETER * 2.5;
+    const ctx = canvas.getContext('2d');
+    
+    // Draw scorch mark (dark, charred appearance)
+    const gradient = ctx.createRadialGradient(
+      DIAMETER * 1.25, DIAMETER * 1.25, 0,
+      DIAMETER * 1.25, DIAMETER * 1.25, DIAMETER * 1.25
+    );
+    gradient.addColorStop(0, '#1a1a1a'); // Very dark center
+    gradient.addColorStop(0.2, '#2d2d2d'); // Dark gray
+    gradient.addColorStop(0.5, '#3d3d3d'); // Medium dark gray
+    gradient.addColorStop(0.8, '#4a4a4a'); // Lighter gray edges
+    gradient.addColorStop(1, 'rgba(74, 74, 74, 0)'); // Fade to transparent
+    
+    ctx.fillStyle = gradient;
+    ctx.beginPath();
+    ctx.arc(DIAMETER * 1.25, DIAMETER * 1.25, DIAMETER * 1.25, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Add some irregular char marks for texture
+    ctx.fillStyle = '#0a0a0a';
+    for (let i = 0; i < 12; i++) {
+      const angle = (Math.PI * 2 * i) / 12;
+      const distance = DIAMETER * (0.3 + Math.random() * 0.5);
+      const x = DIAMETER * 1.25 + Math.cos(angle) * distance;
+      const y = DIAMETER * 1.25 + Math.sin(angle) * distance;
+      const size = 3 + Math.random() * 5;
+      ctx.beginPath();
+      ctx.arc(x, y, size, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    
+    // Add some darker spots for depth
+    ctx.fillStyle = '#000000';
+    for (let i = 0; i < 6; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const distance = DIAMETER * (0.2 + Math.random() * 0.4);
+      const x = DIAMETER * 1.25 + Math.cos(angle) * distance;
+      const y = DIAMETER * 1.25 + Math.sin(angle) * distance;
+      ctx.beginPath();
+      ctx.arc(x, y, 2, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    
+    scorchImg.src = canvas.toDataURL();
+    return scorchImg;
+  }
+
+  function gameStart() {
+    imgSet = generateElements();
+    // Add bomb images
+    imgSet['bomb'] = createBombImage();
+    imgSet['bomb-scorch'] = createScorchMarkImage();
     gameState = true;
     frozen = false;
     lives = 3;
@@ -110,8 +168,23 @@ export function fruitNinja(activePage = false, checkAchievement = () => {}, onLi
     canvas = _canvas;
     ctx = canvas.getContext('2d');
     if (activePage) {
-      document.onmousemove = addVector;
-      document.ontouchmove = addVectorTouch;
+      // Store existing listeners (from slash effect) to chain them
+      const existingMouseMove = document.onmousemove;
+      const existingTouchMove = document.ontouchmove;
+      
+      // Set up game's listeners that also call existing ones
+      document.onmousemove = (e) => {
+        addVector(e);
+        if (existingMouseMove && existingMouseMove !== addVector) {
+          existingMouseMove(e);
+        }
+      };
+      document.ontouchmove = (e) => {
+        addVectorTouch(e);
+        if (existingTouchMove && existingTouchMove !== addVectorTouch) {
+          existingTouchMove(e);
+        }
+      };
       const { start, stop, restart } = gameLoop(gameTick, () => (exiting = true));
       loopControl = { start, stop, restart };
     }
@@ -119,8 +192,8 @@ export function fruitNinja(activePage = false, checkAchievement = () => {}, onLi
 
   function dismount() {
     if (activePage) {
-      document.onmousemove = null;
-      document.ontouchmove = null;
+      // Don't clear document listeners - let slash effect keep them
+      // The slash effect should always be active
       exiting = true;
       if (loopControl) {
         loopControl.stop();
@@ -233,8 +306,15 @@ export function fruitNinja(activePage = false, checkAchievement = () => {}, onLi
           frozen = true; // Freeze the game state
           if (onGameOver) onGameOver();
         }
-        // Remove bomb without slicing animation (no score change)
-        fruits.splice(i, 1);
+        // Create scorch mark effect (no separation, just a burnt mark)
+        const bomb = fruits.splice(i, 1)[0];
+        
+        // Add scorch mark splatter (longer lasting than fruit splatter)
+        splats.push({
+          ...bomb,
+          type: 'bomb-scorch',
+          tick: 400, // Longer lasting scorch mark
+        });
         continue;
       }
 
@@ -309,44 +389,6 @@ export function fruitNinja(activePage = false, checkAchievement = () => {}, onLi
     if (path.length > 1) slicedCheck();
   }
 
-  function drawSlice() {
-    const colors = ['#4d4d4d', '#6e6e6e', '#969696', '#ffffff'];
-    ctx.lineJoin = 'round';
-
-    const vector = [];
-
-    let x = path[0].x;
-    let y = path[0].y;
-
-    path.forEach(function (v, index) {
-      const { x: dx, y: dy } = path[index + 1] || path[0];
-
-      v.x = x;
-      v.y = y;
-
-      vector.push({ x, y });
-
-      x += (dx - v.x) * 0.6;
-      y += (dy - v.y) * 0.6;
-    });
-
-    vector.reverse();
-
-    colors.forEach((color, index) => {
-      ctx.strokeStyle = color;
-      ctx.lineCap = 'round';
-
-      vector.forEach((set, vIndex, sets) => {
-        ctx.beginPath();
-        ctx.lineTo(set.x, set.y);
-        if (vIndex) ctx.lineTo(sets[vIndex - 1].x, sets[vIndex - 1].y);
-        ctx.lineWidth =
-          SIZE + ((10 * (colors.length - index)) / colors.length) * 2 * ((vIndex + 1) / vector.length);
-        ctx.stroke();
-      });
-    });
-  }
-
   function populateFruit() {
     const count = delaySpawnCount(deltaTime);
     checkAchievement('fruitCatapult', count);
@@ -395,7 +437,7 @@ export function fruitNinja(activePage = false, checkAchievement = () => {}, onLi
     }
     // Always draw the current state
     drawFruit();
-    if (path.length > 1 && !frozen) drawSlice();
+    // Don't draw slice - slash effect handles its own rendering
     if (exiting) {
       loopControl?.stop();
       return;
