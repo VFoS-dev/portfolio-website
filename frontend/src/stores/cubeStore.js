@@ -73,12 +73,21 @@ const useCubeStore = defineStore('cubeStore', {
         ...this.scrolls,
         ...this.scrolls.defaults,
       };
-      this.current = this[name];
-      this.updateFocus(name);
-
+      
+      // On first mount, set rotation instantly without animation
       if (this.fromMound) {
+        this.state.instant = true;
+        this.current = this[name];
+        this.updateFocus(name);
         this.fromMound = false;
         this.state.expand = true;
+        // Reset instant flag after a brief moment to allow normal animations
+        setTimeout(() => {
+          this.state.instant = false;
+        }, 0);
+      } else {
+        this.current = this[name];
+        this.updateFocus(name);
       }
       
       // Reset the resetting flag after navigation completes
