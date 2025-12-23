@@ -35,8 +35,8 @@
 
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount, watch, nextTick } from 'vue';
-import FruitNinja from '@/domGames/FruitNinja/FruitNinja.vue';
-import { setupSlashEffect } from '@/domGames/FruitNinja/slashEffect';
+import FruitNinja from '@/games/FruitNinja/FruitNinja.vue';
+import { setupSlashEffect } from '@/games/FruitNinja/slashEffect';
 import { cubeStore } from '@/stores/cubeStore';
 import socialsDataRaw from '@/json/socialsData.json';
 

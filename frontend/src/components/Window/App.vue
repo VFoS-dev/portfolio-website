@@ -20,7 +20,13 @@ const props = defineProps({
 
 const appComponent = computed(() => {
   return defineAsyncComponent({
-    loader: () => import(`@/applications/${props.app}.vue`),
+    loader: () => import(`@/applications/${props.app}.vue`).catch(() => {
+      // If not found in applications, try games folder (with subfolder structure)
+      return import(`@/games/${props.app}/${props.app}.vue`).catch(() => {
+        // Fallback to root games file for games that don't use subfolders
+        return import(`@/games/${props.app}.vue`);
+      });
+    }),
     errorComponent: Fragment,
     loadingComponent: () => h(XPLoading, { appName: props.app }),
   });

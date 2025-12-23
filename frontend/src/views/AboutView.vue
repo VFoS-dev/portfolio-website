@@ -11,7 +11,7 @@
 import { aboutStore } from '@/stores/aboutStore';
 import StringToHTML from '@/components/StringToHTML.vue';
 import Wrapper from '@/components/Wrapper.vue';
-import DuckHunt from '@/domGames/DuckHunt/DuckHunt.vue';
+import DuckHunt from '@/games/DuckHunt/DuckHunt.vue';
 import { cubeStore } from '@/stores/cubeStore';
 </script>
 

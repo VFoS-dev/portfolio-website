@@ -23,7 +23,7 @@
 <script setup>
 import { onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue';
 import Duck from './Duck.vue';
-import { duckHuntSetup } from '@/domGames/DuckHunt/duckHunt';
+import { duckHuntSetup } from '@/games/DuckHunt/duckHunt';
 import Score from './Score.vue';
 import ActiveBirds from './ActiveBirds.vue';
 import Dog from './Dog.vue';
