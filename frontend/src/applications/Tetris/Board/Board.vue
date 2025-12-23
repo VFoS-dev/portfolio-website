@@ -9,7 +9,7 @@
         />
       </slot>
     </div>
-    <div>
+    <div class="sidebar">
       <Queue :items="props.queue" style="--size: 20px" />
       <slot name="settings"> </slot>
     </div>
@@ -78,6 +78,13 @@ const props = defineProps({
     inset 1px 1px 0 0 @shadow,
     inset -1px -1px 0 0 @highlight;
   padding: 2px;
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100px;
 }
 </style>
 

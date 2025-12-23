@@ -280,7 +280,10 @@ export function clearLines(setPeices, bounds) {
     }
   }
   
-  return { setPeices: newSetPeices };
+  return { 
+    setPeices: newSetPeices,
+    linesCleared: fullRows.length
+  };
 }
 
 export function moveShape(setPeices, currentShape, bounds) {

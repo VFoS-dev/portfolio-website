@@ -38,7 +38,9 @@
       "icon": "/images/resume/tetrisicon.svg",
       "app": "Tetris",
       "x": "10px",
-      "y": "calc(100% - 200px)"
+      "y": "calc(100% - 200px)",
+      "height": "815px",
+      "width": "610px"
     },
     {
       "title": "Trash",

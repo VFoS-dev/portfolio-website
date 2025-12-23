@@ -11,7 +11,7 @@
 
 .ui {
   width: calc(var(--size) * 5);
-  padding: calc(var(--size) / 2) 0;
+  padding: 2px;
   min-height: calc(var(--size) * 3);
   background-color: #000000;
   border: @inset-depth inset @highlight;
@@ -25,6 +25,7 @@
   gap: calc(var(--size) / 2);
   align-items: center;
   justify-content: center;
+  box-sizing: border-box;
 }
 </style>
 

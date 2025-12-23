@@ -9,7 +9,8 @@ export function tetrisSetup(game = { blocks: [], queue: [], hold: {} }, gameEnde
   let gameActive = false;
   const bounds = { yMax: 23, xMax: 9, xMin: 0, yMin: 0, xMid: 4 };
   let heldShape = null;
-  let tick = 500; // Slower tick for better gameplay
+  let baseTick = 500; // Base tick speed
+  let tick = baseTick; // Current tick speed (changes with level)
   let time = 0;
   let canHold = true;
 
@@ -39,6 +40,19 @@ export function tetrisSetup(game = { blocks: [], queue: [], hold: {} }, gameEnde
       if (!currentShape) {
         const cleared = clearLines(setPeices, bounds);
         setPeices = cleared.setPeices;
+        
+        // Update score based on lines cleared
+        if (cleared.linesCleared > 0) {
+          const lineScores = [0, 100, 300, 500, 800]; // 0, 1, 2, 3, 4 lines
+          const baseScore = lineScores[cleared.linesCleared] || 0;
+          game.score += baseScore * game.level;
+          game.lines += cleared.linesCleared;
+          // Level up every 10 lines
+          game.level = Math.floor(game.lines / 10) + 1;
+          // Increase speed slightly with level (faster = lower tick)
+          tick = Math.max(50, baseTick - (game.level - 1) * 50);
+        }
+        
         // Force immediate update after clearing
         const clearedBlocks = Object.values(setPeices).flat();
         game.blocks = clearedBlocks.length > 0 ? [...clearedBlocks] : [];
@@ -106,6 +120,17 @@ export function tetrisSetup(game = { blocks: [], queue: [], hold: {} }, gameEnde
         if (!currentShape) {
           const cleared = clearLines(setPeices, bounds);
           setPeices = cleared.setPeices;
+          
+          // Update score
+          if (cleared.linesCleared > 0) {
+            const lineScores = [0, 100, 300, 500, 800];
+            const baseScore = lineScores[cleared.linesCleared] || 0;
+            game.score += baseScore * game.level;
+            game.lines += cleared.linesCleared;
+            game.level = Math.floor(game.lines / 10) + 1;
+            tick = Math.max(50, baseTick - (game.level - 1) * 50);
+          }
+          
           // Update display immediately after clearing - create new array
           game.blocks = [...Object.values(setPeices).flat()];
         } else {
@@ -158,6 +183,10 @@ export function tetrisSetup(game = { blocks: [], queue: [], hold: {} }, gameEnde
     setPeices = {};
     game.blocks = [];
     game.hold = { item: '', color: '' };
+    game.score = 0;
+    game.level = 1;
+    game.lines = 0;
+    tick = baseTick;
     time = 0;
     canHold = true;
   }
