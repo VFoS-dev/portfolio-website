@@ -3,8 +3,9 @@
 </template>
 
 <script setup>
-import { defineAsyncComponent, computed } from 'vue';
+import { defineAsyncComponent, computed, h } from 'vue';
 import Fragment from '@/components/Fragment.vue';
+import XPLoading from './XPLoading.vue';
 
 const props = defineProps({
   app: {
@@ -21,7 +22,7 @@ const appComponent = computed(() => {
   return defineAsyncComponent({
     loader: () => import(`@/applications/${props.app}.vue`),
     errorComponent: Fragment,
-    loadingComponent: Fragment,
+    loadingComponent: () => h(XPLoading, { appName: props.app }),
   });
 });
 </script>
