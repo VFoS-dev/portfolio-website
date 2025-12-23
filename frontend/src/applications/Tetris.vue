@@ -9,6 +9,7 @@
             <p>Arrow Keys / WASD: Move</p>
             <p>Up/W: Rotate</p>
             <p>Space: Drop</p>
+            <p>C: Hold Piece</p>
           </div>
         </div>
       </template>
