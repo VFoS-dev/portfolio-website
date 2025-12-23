@@ -1,15 +1,11 @@
 <template>
   <canvas ref="canvasRef" :class="{ 'menu-visible': props.showMenu }"></canvas>
-  <div v-if="lives > 0" class="score-display">
-    <div class="score">Score: {{ score }}</div>
-  </div>
-  <div v-if="lives > 0" class="lives-display">
-    <span v-for="i in lives" :key="i" class="life">❤️</span>
-  </div>
-  <div v-if="lives <= 0" class="game-over">
-    <h2>Game Over!</h2>
-    <div class="final-score">Final Score: {{ score }}</div>
-  </div>
+  <div v-if="score" class="score-display">
+    <div class="score"> Score: {{ score }}</div>
+    </div>
+    <div v-if="lives > 0" class="lives-display">
+      <span v-for="i in lives" :key="i" class="life">❤️</span>
+    </div>
 </template>
 
 <script setup>
@@ -59,7 +55,7 @@ function handleKeyPress(e) {
 
 onMounted(() => {
   if (canvasRef.value) {
-    game.value = fruitNinja(true, () => {}, handleLivesUpdate, handleGameOver, handleScoreUpdate);
+    game.value = fruitNinja(true, () => { }, handleLivesUpdate, handleGameOver, handleScoreUpdate);
     game.value.setup(canvasRef.value);
     game.value.gameStart();
     cubeStore.activeGame(true);
@@ -75,7 +71,7 @@ watch(
   state => {
     setTimeout(() => {
       if (!game.value && canvasRef.value) {
-        game.value = fruitNinja(true, () => {}, handleLivesUpdate, handleGameOver, handleScoreUpdate);
+        game.value = fruitNinja(true, () => { }, handleLivesUpdate, handleGameOver, handleScoreUpdate);
         game.value.setup(canvasRef.value);
         game.value.gameStart();
         cubeStore.activeGame(true);
@@ -128,11 +124,10 @@ canvas.menu-visible {
 
 .score-display {
   position: fixed;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
+  bottom: 20px;
+  right: 20px;
   z-index: 10;
-  text-align: center;
+  text-align: right;
 }
 
 .score {
@@ -175,10 +170,12 @@ canvas.menu-visible {
   }
 
   .final-score {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
     font-size: 32px;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    text-align: right;
   }
 }
-
 </style>
-
