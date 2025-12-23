@@ -12,7 +12,7 @@
 </template>
 
 <script setup>
-import { setupStarField } from '@/canvas/starfield';
+import { setupStarField } from '@/canvas/StarField/starfield';
 import Canvas from '@/components/Canvas.vue';
 import SkillGroup from '@/components/SkillGroup.vue';
 import { cubeStore } from '@/stores/cubeStore';

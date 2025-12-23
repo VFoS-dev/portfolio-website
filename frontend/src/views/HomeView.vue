@@ -13,7 +13,7 @@
 </template>
 
 <script setup>
-import { snakeGameSetup } from '@/canvas/snake';
+import { snakeGameSetup } from '@/games/Snake/snake';
 import Canvas from '@/components/Canvas.vue';
 import StyledButton from '@/components/Buttons/StyledButton.vue';
 import router from '@/router';

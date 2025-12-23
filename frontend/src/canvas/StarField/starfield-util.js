@@ -107,3 +107,4 @@ export function drawStars(stars, canvas, width, height, mouseX, mouseY, focalX, 
 
   ctx.globalAlpha = 1; // Reset opacity to default after drawing
 }
+

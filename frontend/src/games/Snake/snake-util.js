@@ -66,7 +66,7 @@ export function generateBoard(canvas) {
   };
 }
 
-export function fullDraw(canvas, board, cellSize, sizeRem) {
+export function fullDraw(canvas, board, cellSize, sizeRem, snakeColors = ['green', 'gold', -1]) {
   const ctx = canvas.getContext('2d');
   const halfSize = cellSize / 2;
   board.forEach((col, ix) => {
@@ -292,3 +292,4 @@ export default {
   movePlayer,
   populateFood,
 };
+
