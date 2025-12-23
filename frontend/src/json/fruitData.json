@@ -1,117 +1,21 @@
-{
-  "gapple": {
-    "base": "/images/socials/game/gapplew.webp",
-    "top": "/images/socials/game/gapplet.webp",
-    "bottom": "/images/socials/game/gappleb.webp",
-    "splat": "/images/socials/game/splat.webp"
-  },
-  "rapple": {
-    "base": "/images/socials/game/rapplew.webp",
-    "top": "/images/socials/game/rapplet.webp",
-    "bottom": "/images/socials/game/rappleb.webp",
-    "splat": "/images/socials/game/splat.webp"
-  },
-  "banana": {
-    "base": "/images/socials/game/bananaw.webp",
-    "top": "/images/socials/game/bananat.webp",
-    "bottom": "/images/socials/game/bananab.webp",
-    "splat": "/images/socials/game/splat.webp"
-  },
-  "coconut": {
-    "base": "/images/socials/game/coconutw.webp",
-    "top": "/images/socials/game/coconutt.webp",
-    "bottom": "/images/socials/game/coconutb.webp",
-    "splat": "/images/socials/game/splat.webp"
-  },
-  "honeydew": {
-    "base": "/images/socials/game/honeydeww.webp",
-    "top": "/images/socials/game/honeydewt.webp",
-    "bottom": "/images/socials/game/honeydewb.webp",
-    "splat": "/images/socials/game/splat.webp"
-  },
-  "kiwi": {
-    "base": "/images/socials/game/kiwiw.webp",
-    "top": "/images/socials/game/kiwit.webp",
-    "bottom": "/images/socials/game/kiwib.webp",
-    "splat": "/images/socials/game/splat.webp"
-  },
-  "lemon": {
-    "base": "/images/socials/game/lemonw.webp",
-    "top": "/images/socials/game/lemont.webp",
-    "bottom": "/images/socials/game/lemonb.webp",
-    "splat": "/images/socials/game/splat.webp"
-  },
-  "lime": {
-    "base": "/images/socials/game/limew.webp",
-    "top": "/images/socials/game/limet.webp",
-    "bottom": "/images/socials/game/limeb.webp",
-    "splat": "/images/socials/game/splat.webp"
-  },
-  "orange": {
-    "base": "/images/socials/game/orangew.webp",
-    "top": "/images/socials/game/oranget.webp",
-    "bottom": "/images/socials/game/orangeb.webp",
-    "splat": "/images/socials/game/splat.webp"
-  },
-  "pear": {
-    "base": "/images/socials/game/pearw.webp",
-    "top": "/images/socials/game/peart.webp",
-    "bottom": "/images/socials/game/pearb.webp",
-    "splat": "/images/socials/game/splat.webp"
-  },
-  "gpepper": {
-    "base": "/images/socials/game/gpepperw.webp",
-    "top": "/images/socials/game/gpeppert.webp",
-    "bottom": "/images/socials/game/gpepperb.webp",
-    "splat": "/images/socials/game/splat.webp"
-  },
-  "ppepper": {
-    "base": "/images/socials/game/ppepperw.webp",
-    "top": "/images/socials/game/ppeppert.webp",
-    "bottom": "/images/socials/game/ppepperb.webp",
-    "splat": "/images/socials/game/splat.webp"
-  },
-  "rpepper": {
-    "base": "/images/socials/game/rpepperw.webp",
-    "top": "/images/socials/game/rpeppert.webp",
-    "bottom": "/images/socials/game/rpepperb.webp",
-    "splat": "/images/socials/game/splat.webp"
-  },
-  "pineapple": {
-    "base": "/images/socials/game/pineapplew.webp",
-    "top": "/images/socials/game/pineapplet.webp",
-    "bottom": "/images/socials/game/pineappleb.webp",
-    "splat": "/images/socials/game/splat.webp"
-  },
-  "plum": {
-    "base": "/images/socials/game/plumw.webp",
-    "top": "/images/socials/game/plumt.webp",
-    "bottom": "/images/socials/game/plumb.webp",
-    "splat": "/images/socials/game/splat.webp"
-  },
-  "pomegranate": {
-    "base": "/images/socials/game/pomegranatew.webp",
-    "top": "/images/socials/game/pomegranatet.webp",
-    "bottom": "/images/socials/game/pomegranateb.webp",
-    "splat": "/images/socials/game/splat.webp"
-  },
-  "strawberry": {
-    "base": "/images/socials/game/strawberryw.webp",
-    "top": "/images/socials/game/strawberryt.webp",
-    "bottom": "/images/socials/game/strawberryb.webp",
-    "splat": "/images/socials/game/splat.webp"
-  },
-  "tomato": {
-    "base": "/images/socials/game/tomatow.webp",
-    "top": "/images/socials/game/tomatot.webp",
-    "bottom": "/images/socials/game/tomatob.webp",
-    "splat": "/images/socials/game/splat.webp"
-  },
-  "watermelon": {
-    "base": "/images/socials/game/watermelonw.webp",
-    "top": "/images/socials/game/watermelont.webp",
-    "bottom": "/images/socials/game/watermelonb.webp",
-    "splat": "/images/socials/game/splat.webp"
-  }
-}
-
+[
+  "apple-green",
+  "apple-red",
+  "banana",
+  "coconut",
+  "honeydew",
+  "kiwi",
+  "lemon",
+  "lime",
+  "orange",
+  "pear",
+  "pepper-green",
+  "pepper-purple",
+  "pepper-red",
+  "pineapple",
+  "plum",
+  "pomegranate",
+  "strawberry",
+  "tomato",
+  "watermelon"
+]

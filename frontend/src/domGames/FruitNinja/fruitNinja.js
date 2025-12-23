@@ -8,14 +8,35 @@ const MAX_DIAMETER = 140;
 
 function generateElements() {
   const img = {};
-  Object.keys(fruitData).forEach((d) => {
-    for (const t of Object.keys(fruitData[d])) {
-      const name = t !== 'base' ? `${d}-${t}` : d;
-      const test = document.createElement('img');
-      test.id = 'canvas-img';
-      test.src = fruitData[d][t];
-      img[name] = test;
-    }
+  const defaultSplatPath = '/images/socials/game/splat.webp';
+  const basePath = '/images/socials/game/fruit';
+  const imageTypes = ['whole', 'top', 'bottom'];
+  
+  fruitData.forEach((fruitName) => {
+    // Create images for whole, top, and bottom
+    imageTypes.forEach((type) => {
+      const imageName = type !== 'whole' ? `${fruitName}-${type}` : fruitName;
+      const imgElement = document.createElement('img');
+      imgElement.id = 'canvas-img';
+      imgElement.src = `${basePath}/${fruitName}/${type}.webp`;
+      img[imageName] = imgElement;
+    });
+    
+    // Create splat image with fallback logic
+    const splatImg = document.createElement('img');
+    splatImg.id = 'canvas-img';
+    const fruitSplatPath = `${basePath}/${fruitName}/splat.webp`;
+    
+    // Try fruit-specific splat first, fallback to default
+    splatImg.onerror = function() {
+      // Only fallback if we haven't already tried the default
+      if (this.src !== defaultSplatPath) {
+        this.src = defaultSplatPath;
+      }
+    };
+    splatImg.src = fruitSplatPath;
+    
+    img[`${fruitName}-splat`] = splatImg;
   });
   return img;
 }
@@ -207,7 +228,7 @@ export function fruitNinja(activePage = false, checkAchievement = () => {}, onLi
     const left = Math.random() * canvas.width;
     const side = canvas.width / 2 >= left;
     const maxY = canvas.height / 60;
-    const chances = Object.keys(fruitData);
+    const chances = fruitData;
     
     // 10% chance to spawn a bomb
     const isBomb = Math.random() < 0.1;
@@ -410,12 +431,15 @@ export function fruitNinja(activePage = false, checkAchievement = () => {}, onLi
 
   function drawFruit() {
     for (const { type, top, left, diameter, rot } of [splats, sliced, fruits].flat()) {
-      if (!imgSet[type] || !imgSet[type].complete) continue;
+      if (!imgSet[type]) continue;
+      const img = imgSet[type];
+      // Check if image is loaded and not broken
+      if (!img.complete || img.naturalWidth === 0 || img.naturalHeight === 0) continue;
       const radius = diameter;
       ctx.save();
       ctx.translate(left, top);
       ctx.rotate((rot * Math.PI) / 180);
-      ctx.drawImage(imgSet[type], -radius, -radius);
+      ctx.drawImage(img, -radius, -radius);
       ctx.restore();
     }
   }
