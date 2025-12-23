@@ -108,6 +108,11 @@ onBeforeUnmount(() => {
 </script>
 
 <style lang="less" scoped>
+@font-face {
+  font-family: 'go3v2';
+  src: url(/fonts/go3v2.ttf);
+}
+
 canvas {
   position: fixed;
   top: 0;
@@ -132,9 +137,21 @@ canvas.menu-visible {
 
 .score {
   color: #fff;
+  font-family: go3v2, sans-serif;
   font-size: 32px;
   font-weight: bold;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  letter-spacing: 0.15rem;
+  -webkit-text-stroke: 2px black;
+  text-shadow: 
+    -1px -1px 0 black,
+    1px -1px 0 black,
+    -1px 1px 0 black,
+    1px 1px 0 black,
+    0 0 2px black,
+    0 0 4px rgba(0, 0, 0, 0.5),
+    2px 2px 4px rgba(0, 0, 0, 0.8),
+    3px 3px 6px rgba(0, 0, 0, 0.6);
+  paint-order: stroke fill;
 }
 
 .lives-display {
@@ -163,9 +180,21 @@ canvas.menu-visible {
   pointer-events: none;
 
   h2 {
+    font-family: go3v2, sans-serif;
     font-size: 48px;
     font-weight: bold;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    letter-spacing: 0.15rem;
+    -webkit-text-stroke: 2px black;
+    text-shadow: 
+      -1px -1px 0 black,
+      1px -1px 0 black,
+      -1px 1px 0 black,
+      1px 1px 0 black,
+      0 0 2px black,
+      0 0 4px rgba(0, 0, 0, 0.5),
+      3px 3px 6px rgba(0, 0, 0, 0.8),
+      4px 4px 8px rgba(0, 0, 0, 0.6);
+    paint-order: stroke fill;
     margin-bottom: 1rem;
   }
 
@@ -173,8 +202,20 @@ canvas.menu-visible {
     position: fixed;
     bottom: 20px;
     right: 20px;
+    font-family: go3v2, sans-serif;
     font-size: 32px;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    letter-spacing: 0.15rem;
+    -webkit-text-stroke: 2px black;
+    text-shadow: 
+      -1px -1px 0 black,
+      1px -1px 0 black,
+      -1px 1px 0 black,
+      1px 1px 0 black,
+      0 0 2px black,
+      0 0 4px rgba(0, 0, 0, 0.5),
+      2px 2px 4px rgba(0, 0, 0, 0.8),
+      3px 3px 6px rgba(0, 0, 0, 0.6);
+    paint-order: stroke fill;
     text-align: right;
   }
 }

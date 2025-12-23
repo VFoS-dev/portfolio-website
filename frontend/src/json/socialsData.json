@@ -1,6 +1,6 @@
 [
   {
-    "name": "Endless Mode",
+    "name": "Play Fruit Ninja",
     "href": "game-start",
     "gif": "/images/socials/pineapple.gif",
     "ring": "/images/socials/svg/endless.svg",
@@ -34,15 +34,6 @@
     "shadow": "/images/socials/svg/shadow.svg",
     "upper": { "fill": "#dce6fc", "stroke": "#002d8f" },
     "lower": { "fill": "#dce6fc", "stroke": "#002d8f" }
-  },
-  {
-    "name": "LeetCode",
-    "gif": "/images/socials/leetcode.gif",
-    "href": "https://leetcode.com/VFoS/",
-    "ring": "/images/socials/svg/leetcode.svg",
-    "shadow": "/images/socials/svg/shadow.svg",
-    "upper": { "fill": "yellow", "stroke": "#700000" },
-    "lower": { "fill": "yellow", "stroke": "#700000" }
   }
 ]
 
