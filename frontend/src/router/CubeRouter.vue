@@ -19,6 +19,7 @@
         @animationend="panelHasShrunk"
         @transitionend="panelHasExpanded"
       >
+        <div class="cube-label">{{ capitalize(key) }}</div>
         <slot :name="key">
           <div class="empty">{{ key }}</div>
         </slot>
@@ -30,6 +31,7 @@
 <script setup>
 import { cubeStore } from '@/stores/cubeStore';
 import { reactive, computed, onMounted, ref } from 'vue';
+import { capitalize } from '@/utilities/conversions';
 
 const style = computed(() => ({ '--transfrom': cubeStore.getTransformation() }));
 const animating = reactive([false, false]);
@@ -163,6 +165,43 @@ function teleportDisabled(side) {
     &.in {
       animation: side-in 0.5s forwards ease;
     }
+  }
+
+  .cube-label {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    font-weight: 900;
+    color: #ffffff;
+    text-transform: capitalize;
+    text-shadow: 
+      0 0 20px rgba(0, 0, 0, 1),
+      0 0 40px rgba(0, 0, 0, 0.8),
+      0 0 60px rgba(0, 0, 0, 0.6),
+      3px 3px 6px rgba(0, 0, 0, 1),
+      -1px -1px 0 rgba(0, 0, 0, 0.8),
+      1px 1px 0 rgba(0, 0, 0, 0.8),
+      -1px 1px 0 rgba(0, 0, 0, 0.8),
+      1px -1px 0 rgba(0, 0, 0, 0.8);
+    pointer-events: none;
+    z-index: 9999;
+    font-family: 'Avenir Next Bold', 'Avenir Next', sans-serif;
+    letter-spacing: 0.15em;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+    -webkit-text-stroke: 2px rgba(0, 0, 0, 0.5);
+    text-stroke: 2px rgba(0, 0, 0, 0.5);
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.3));
+  }
+
+  &.expand > section .cube-label {
+    opacity: 0;
+  }
+
+  & > section.in .cube-label {
+    opacity: 0;
   }
 
   &.expand.home > section#home,
