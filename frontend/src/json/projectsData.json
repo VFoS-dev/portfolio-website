@@ -1,0 +1,455 @@
+[
+  {
+    "id": "project_kuro",
+    "title": "Project Kuro",
+    "img": "/images/projects/projectkuro.webp",
+    "description": "I have been planning this project for a long time. It was inspired by many tabletop RPG games I played with my friends. I plan to convert some of the stories that arose from my turn-by-turn tabletop games into a realtime third-person game.",
+    "stack": ["Unreal Engine 5", "C++", "Blender", "Krita", "Substance Painter"],
+    "keyFeatures": [
+      "3D modeled a character for the game",
+      "Implemented day and night cycles and character movement"
+    ],
+    "startDate": "January 1, 2023",
+    "endDate": "Present",
+    "category": "personal",
+    "rarity": "holo-rare",
+    "links": {},
+    "cardNumber": 1
+  },
+  {
+    "id": "portfolio_website",
+    "title": "Portfolio Website",
+    "img": "/images/projects/portfolioSite.webp",
+    "description": "This project was originally a class project. You are currently looking at the 3rd and probably final update.",
+    "stack": ["React", "Vue", "Javascript", "Blender", "Krita", "Markdown", "HTML5 Canvas"],
+    "keyFeatures": [
+      "Created custom navigation that parses the url to 'rotate' to the selected page",
+      "Simulated a CSS cube. To save RAM & CPU usage, pages aren't rendered in the HTML if they aren't being used",
+      "I created all minigames in JavaScript, although I am not the original creator of the game concepts",
+      "Minigames are: Duck hunt, Minesweeper, Snake, Fruit Ninja",
+      "References of: Windows XP, and Star Wars",
+      "Added achievements and even more functionality"
+    ],
+    "startDate": "October 26, 2022",
+    "endDate": "September 2, 2023",
+    "category": "personal",
+    "rarity": "holo-rare",
+    "links": {
+      "website": "/"
+    },
+    "cardNumber": 2
+  },
+  {
+    "id": "resume_builder",
+    "title": "Resume Builder",
+    "img": "/images/projects/resumebuilder.webp",
+    "description": "I am lazy and didn't want to make a resume manually so I incorporated my website to create my resume for me.",
+    "stack": ["React", "HTML", "Javascript", "CSS"],
+    "keyFeatures": [
+      "Populated the resume with information gathered from the data used in my portfolio website",
+      "Created custom CSS formatting",
+      "Made the resume preview editable",
+      "Included toggle between eye-friendly and print-friendly versions",
+      "Added configurations like converting it to a one page document, page outlines, hiding sections, and more",
+      "Implemented print to pdf"
+    ],
+    "startDate": "August 30, 2022",
+    "endDate": "Present",
+    "category": "personal",
+    "rarity": "rare",
+    "links": {
+      "website": "https://vfos.dev/resume?create=1"
+    },
+    "cardNumber": 3
+  },
+  {
+    "id": "venture_title",
+    "title": "Venture Title",
+    "img": "/images/projects/ventureidaho.webp",
+    "description": "This is a website I worked on for a title and escrow company.",
+    "stack": ["PHP", "SQL", "JQuery"],
+    "keyFeatures": [
+      "Added, adjusted, and redesigned responsive css styling",
+      "Made the website mobile friendly without a mobile wireframe"
+    ],
+    "startDate": "May 3, 2023",
+    "endDate": "August 11, 2023",
+    "category": "matraex",
+    "rarity": "uncommon",
+    "links": {
+      "website": "https://ventureidaho.com"
+    },
+    "cardNumber": 4
+  },
+  {
+    "id": "hbv",
+    "title": "H.B.V.",
+    "img": "/images/projects/hbv.webp",
+    "description": "This web portal was created to keep track of sales and invoices for health businesses.",
+    "stack": ["PHP", "SQL"],
+    "keyFeatures": [
+      "Implemented export of iif files for Quickbooks",
+      "Adjusted functionality based on client feedback"
+    ],
+    "startDate": "August 1, 2023",
+    "endDate": "August 7, 2023",
+    "category": "matraex",
+    "rarity": "uncommon",
+    "links": {
+      "website": "https://venturesys.org"
+    },
+    "cardNumber": 5
+  },
+  {
+    "id": "high_call_rodeo",
+    "title": "High Call Rodeo",
+    "img": "/images/projects/highcall.webp",
+    "description": "This website is designed to allow rodeo associations to promote their rodeos and handle contestant applications and payments.",
+    "stack": ["React", "Meteor", "Mongodb"],
+    "keyFeatures": [
+      "Audited the client's original codebase prior to beginning work",
+      "Did a gap analysis of where the project currently was and how much more was desired by the client",
+      "Documented my discoveries",
+      "Reviewed the client's cloud services to increase security"
+    ],
+    "startDate": "July 14, 2023",
+    "endDate": "July 31, 2023",
+    "category": "matraex",
+    "rarity": "rare",
+    "links": {
+      "website": "https://app.highcallrodeo.com"
+    },
+    "cardNumber": 6
+  },
+  {
+    "id": "sales_trak",
+    "title": "Sales Trak",
+    "img": "/images/projects/salestrak.webp",
+    "description": "This web portal was designed to streamline sales processes for companies, initially a roofing company.",
+    "stack": ["PHP", "SQL", "JQuery"],
+    "keyFeatures": [
+      "Refactored and optimized several pages and API calls",
+      "Made custom JavaScript solutions that worked for both mouse and touch",
+      "Added custom CSS animations",
+      "Created many dynamic and reusable features that are used in various places in the app",
+      "Documented the project for offboarding to the client",
+      "Made the site desktop and phone friendly with only an iPad design"
+    ],
+    "startDate": "January 26, 2023",
+    "endDate": "July 31, 2023",
+    "category": "matraex",
+    "rarity": "rare",
+    "links": {
+      "website": "https://salestrak.io",
+      "about": "https://bartlettroofs.com/"
+    },
+    "cardNumber": 7
+  },
+  {
+    "id": "bronco_beam",
+    "title": "Bronco Beam",
+    "img": "/images/projects/BroncoBeam.webp",
+    "description": "Bronco BEAM is a multi-year project of GIMM Works that is a location-based app for universities. I was asked to join the team for the V2 revamp. I refactored the server and made a web admin portal so the app is customizable and dynamic for different universities.",
+    "stack": ["React", "React Native", "Javascript", "CSS", "Socket.io", "Express.js", "AWS S3", "MongoDB", "OneSignal"],
+    "keyFeatures": [
+      "Refactored existing Node.js server to be more scalable and secure",
+      "Created web admin portal using Google Maps API to allow universities to create and manage custom campus tours",
+      "Wrote a tour pathfinding algorithm for the mobile app based on the user's available time for a tour",
+      "Converted functional React Native app to a class-based implementation with Expo"
+    ],
+    "startDate": "December 21, 2020",
+    "endDate": "July 30, 2022",
+    "category": "gimmworks",
+    "rarity": "holo-rare",
+    "links": {
+      "website": "https://broncobeam.com",
+      "android": "https://play.google.com/store/apps/details?id=com.broncobeam_mobile&hl=en_US&gl=US",
+      "apple": "https://apps.apple.com/us/app/beam-tours/id1588971126"
+    },
+    "cardNumber": 8
+  },
+  {
+    "id": "all_in_favor",
+    "title": "All in Favor",
+    "img": "/images/projects/AllinFavor.webp",
+    "description": "I hopped onto this project towards the end of it. When I joined it wasn't in the best place for security, and there was no networking for the game. The first thing that I did for this project was remove the saving of the user's password locally, and instead converted it to a JSON Web Token that contains no critical user data.",
+    "stack": ["React", "Javascript", "CSS", "Socket.io", "Express.js", "MongoDB"],
+    "keyFeatures": [
+      "Wrote a custom networking system for the game in Node.js using Socket.IO, including the ability to reconnect to current games",
+      "Minimized the amount of information bouncing from client to server to improve performance",
+      "Worked with front-end developers to help them patch up security"
+    ],
+    "startDate": "September 4, 2021",
+    "endDate": "January 6, 2022",
+    "category": "gimmworks",
+    "rarity": "rare",
+    "links": {
+      "website": "https://www.allinfavor.org"
+    },
+    "cardNumber": 9
+  },
+  {
+    "id": "planet_destroyer",
+    "title": "Planet Destroyer",
+    "img": "/images/projects/PD-v1.7.webp",
+    "description": "This project was made as the final project for GIMM 490. This project was started in GIMM 290.",
+    "stack": ["Unity", "C#", "Blender"],
+    "keyFeatures": [
+      "Individual project with all original code and art that was made with the Unity game engine",
+      "Iterated multiple times throughout the process of designing the game to give it a better UX"
+    ],
+    "startDate": "December 5, 2020",
+    "endDate": "April 15, 2021",
+    "category": "games",
+    "rarity": "rare",
+    "links": {},
+    "cardNumber": 10
+  },
+  {
+    "id": "abc_stories",
+    "title": "ABC Stories",
+    "img": "/images/projects/abcStories.webp",
+    "description": "This project was the first project that I got put on after getting hired by GIMM Works. The team was creating an app to help students who were struggling with writing.",
+    "stack": ["React", "Javascript", "Express.js", "MongoDB", "Swift", "SQLite"],
+    "keyFeatures": [
+      "Created an API for the website and app",
+      "Wrote algorithms to compute statistics about users' performance within the app",
+      "Secured data using bcrypt and jwt tokens",
+      "Designed an account hierarchy so that accounts can manage and view accounts under them",
+      "Linked the server with a SMTP server to help with account management through email"
+    ],
+    "startDate": "April 12, 2020",
+    "endDate": "December 23, 2020",
+    "category": "gimmworks",
+    "rarity": "rare",
+    "links": {
+      "website": "https://www.abcstories.org/about",
+      "apple": "https://apps.apple.com/us/app/abc-stories/id1539194514"
+    },
+    "cardNumber": 11
+  },
+  {
+    "id": "rio_genesis",
+    "title": "Rio Genesis",
+    "img": "/images/projects/riogenesis.webp",
+    "description": "This is a website for a real estate company that I did some quality-of-life work on.",
+    "stack": ["PHP", "SQL", "React"],
+    "keyFeatures": [
+      "Created a script that would automatically upgrade the codebase to PHP8",
+      "Worked through warnings and errors that were remaining after the upgrade",
+      "Implemented ecommerce using the USAePay API"
+    ],
+    "startDate": "June 19, 2023",
+    "endDate": "July 17, 2023",
+    "category": "matraex",
+    "rarity": "uncommon",
+    "links": {
+      "website": "https://riogenesis.com"
+    },
+    "cardNumber": 12
+  },
+  {
+    "id": "black_sage_tech",
+    "title": "Black Sage Tech",
+    "img": "/images/projects/blacksage.webp",
+    "description": "The DefenseOS app is the front end for an API that was designed to track and monitor drones and activate defense protocols. The company has since been acquired by High Point Aerotech.",
+    "stack": ["React"],
+    "keyFeatures": [
+      "Created responsive visual features within the app",
+      "Integrated API calls from Black Sage's back end",
+      "Found, documented, and notified Black Sage of vulnerabilities in the app",
+      "Created a React component that worked well with class and functional hooks"
+    ],
+    "startDate": "January 17, 2023",
+    "endDate": "February 28, 2023",
+    "category": "matraex",
+    "rarity": "rare",
+    "links": {
+      "about": "https://blacksagetech.com"
+    },
+    "cardNumber": 13
+  },
+  {
+    "id": "motorpool_services",
+    "title": "MotorPool Services",
+    "img": "/images/projects/motorpool.webp",
+    "description": "This project is a website for Boise State's Transportation Department. This website is designed to streamline test taking and certificate signing for employees who will be driving vans. I wrote the server, applied the front-end designed by other teammates, and added PDF creation functionality for certificates.",
+    "stack": ["React", "Javascript", "Express.js", "MongoDB", "Stripe"],
+    "keyFeatures": [
+      "Created the test functionality",
+      "Added the ability for users to create dynamic quizzes",
+      "Implemented UI/UX designs from team members",
+      "Added PDF creation and signing",
+      "Implemented password recovery via the server sending automated emails"
+    ],
+    "startDate": "August 25, 2022",
+    "endDate": "January 13, 2023",
+    "category": "gimmworks",
+    "rarity": "rare",
+    "links": {
+      "website": "https://motorpooldrivercertification.com"
+    },
+    "cardNumber": 14
+  },
+  {
+    "id": "the_simple_ring_alpha",
+    "title": "The Simple Ring Alpha",
+    "img": "/images/projects/TheSimpleRing.webp",
+    "description": "This project was made for The Simple Ring Company. I worked as an independant contractor initially to develop a database to store custom rings created in an app, and allow them to be shareable by a url. This slowly evolved into website alternative from the app. This project ended before it reached launch.",
+    "stack": ["Unity WebGL", "C#", "React", "Javascript", "Firebase"],
+    "keyFeatures": [
+      "Worked for the founders of The Simple Ring on a consumer based mobile app",
+      "Wrote the backend data storage structure, designed and implemented the frontend UI, and integrated Firebase into the app",
+      "Prompted improvements in code quality and structure that affected both the frontend and the backend"
+    ],
+    "startDate": "October 8, 2020",
+    "endDate": "December 24, 2021",
+    "category": "personal",
+    "rarity": "rare",
+    "links": {
+      "demo": "https://ringtesting.jonathankido.com",
+      "about": "https://thesimplering.com"
+    },
+    "cardNumber": 15
+  },
+  {
+    "id": "minesweeper_solver",
+    "title": "Minesweeper Solver",
+    "img": "/images/projects/minesweeper.webp",
+    "description": "This project was a side project. I had challenged myself to create a minesweeper solver. It uses basic knowledge and flags the 100% bomb spots, and clears the the spots that it calculates cannot have a bomb. There are some occasions where it is unclear and has to use a probiblity calcualation based on the array of neigboring cells. The algorithm first clicks any spots where it has a 0% probiblity of a bomb being there and then repeats. If there isn't a valid direction it will click the flag in the location with the highest possiblity of there being a bomb and continue.",
+    "stack": ["Unity", "C#"],
+    "keyFeatures": [
+      "Wrote an algorithm that iteratively generates a probability field to make an educated guess"
+    ],
+    "startDate": "November 1, 2020",
+    "endDate": "December 4, 2020",
+    "category": "personal",
+    "rarity": "uncommon",
+    "links": {},
+    "cardNumber": 16
+  },
+  {
+    "id": "cash_n_slash",
+    "title": "Cash n' Slash",
+    "img": "/images/projects/CashnSlash.webp",
+    "description": "Cash n' Slash was a VR project made for Idaho Central Credit Union while I worked for GIMM Works. ICCU wanted a VR cash tornado alternative. I worked with a team of other people to create a VR game. I focused on a custom physics system and a VR suitable keyboard.",
+    "stack": ["Unity", "C#", "Blender"],
+    "keyFeatures": [
+      "Implemented a custom physics system with altered gravity to simulate a tornado",
+      "Created 3D models and animations for the environment",
+      "Built a VR-compatible keyboard with my own interaction design"
+    ],
+    "startDate": "September 14, 2020",
+    "endDate": "November 17, 2020",
+    "category": "gimmworks",
+    "rarity": "rare",
+    "links": {},
+    "cardNumber": 17
+  },
+  {
+    "id": "swordwhip",
+    "title": "Swordwhip",
+    "img": "/images/projects/swordwhip.webp",
+    "description": "This project was created during the first few days of Cash n' Slash. Orignially the project was going to have weapons but later it was changed so that the player had to grab the cash and there would be no weapons in the game at all after that point. I later used this in a school project. This was my take on a weapon.It was inspired by Soul Calibur character Ivy's weapon. This project was made using Unity's Hinge Joint component, with a script attached so that the length could increase and decrease. While the length was decreasing it would also reduce the hinges' swing distance so it would not move while it was fully retracted.",
+    "stack": ["Unity", "C#", "Blender"],
+    "keyFeatures": [
+      "Modeled the sword in Blender",
+      "Made a sword creator tool in Unity to customize the number of sword segments and other configurations",
+      "Used Unity physics to make the whip functional",
+      "Wrote a script with an animation to make it toggle between a sword and a swordwhip"
+    ],
+    "startDate": "September 15, 2020",
+    "endDate": "September 16, 2020",
+    "category": "games",
+    "rarity": "uncommon",
+    "links": {},
+    "cardNumber": 18
+  },
+  {
+    "id": "deadline",
+    "title": "Deadline",
+    "img": "/images/projects/deadline.webp",
+    "description": "Deadline was a project I made during a challenge for Dev Club. The challenge was to make a game where the player had to compete a task before a countdown timer was up. These challenges were open for a week, with the results displayed to the rest of the club at the end of the week.",
+    "stack": ["Adobe Animate", "Flash", "ActionScript 3"],
+    "keyFeatures": [
+      "Created state-based animations for the player",
+      "Integrated hitboxes with animations",
+      "Incorporated a dash mechanic",
+      "Implemented missles that follow the player"
+    ],
+    "startDate": "September 6, 2018",
+    "endDate": "September 13, 2018",
+    "category": "games",
+    "rarity": "common",
+    "links": {},
+    "cardNumber": 19
+  },
+  {
+    "id": "defend",
+    "title": "Defend",
+    "img": "/images/projects/defend.webp",
+    "description": "Defend was a side project I made towards the end of GIMM 260, and during my first year as a peer mentor. This project was made with the goal in mind of becoming another game template for Professor Ellertson to have available for the incoming freshman.",
+    "stack": ["Adobe Animate", "Flash", "ActionScript 3"],
+    "keyFeatures": [
+      "Made a vector path-following entity",
+      "Created different types of towers and field traps, each with a unique mechanic"
+    ],
+    "startDate": "August 3, 2018",
+    "endDate": "August 18, 2018",
+    "category": "games",
+    "rarity": "common",
+    "links": {},
+    "cardNumber": 20
+  },
+  {
+    "id": "uno_ai",
+    "title": "UNO AI",
+    "img": "/images/projects/uno.webp",
+    "description": "Uno AI was a side project that I created towards the end of GIMM 110. The AI is coded to sort its hand in view, create an array of available options and then choose a random card to play or draw one if no plays are possible.",
+    "stack": ["Adobe Animate", "Flash", "ActionScript 3"],
+    "keyFeatures": [
+      "Implemented a rule-based AI that can play Uno",
+      "Created a dynamic hand of cards that smoothly animates whenever cards are added or removed"
+    ],
+    "startDate": "November 21, 2017",
+    "endDate": "December 10, 2017",
+    "category": "games",
+    "rarity": "common",
+    "links": {},
+    "cardNumber": 21
+  },
+  {
+    "id": "survive",
+    "title": "Survive",
+    "img": "/images/projects/survive.webp",
+    "description": "Survive was the first individual game I created in GIMM 110 and my first game ever. The assignment was to create a game based off of a very basic template. The template I based mine on was a space shooter with the player's ship locked in the center of the screen. I changed the ship from being stagnant to be able to move with player input subject to gravity, added the ability to change weapon types (one a charged attack and the other a fully automatic attack with reload) by pressing w, and created my own graphics.",
+    "stack": ["Adobe Animate", "Flash", "ActionScript 3"],
+    "keyFeatures": [
+      "Made the graphics for the game",
+      "Implemented player movement and weapon swapping"
+    ],
+    "startDate": "September 18, 2017",
+    "endDate": "October 31, 2017",
+    "category": "games",
+    "rarity": "common",
+    "links": {},
+    "cardNumber": 22
+  },
+  {
+    "id": "original_logo_animation",
+    "title": "Original Logo Animation",
+    "img": "/images/projects/OriginalLogoAnimation.webp",
+    "description": "This was a simple project in high school, and actually my first animation using Blender. At the time I was thinking I would be a YouTuber and this would be my short intro before every video.",
+    "stack": ["Blender"],
+    "keyFeatures": [
+      "This is the first project I did that involved modeling and animating something without assistance"
+    ],
+    "startDate": "June 13, 2015",
+    "endDate": "June 13, 2015",
+    "category": "personal",
+    "rarity": "common",
+    "links": {},
+    "cardNumber": 23
+  }
+]
+
