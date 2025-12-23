@@ -200,12 +200,12 @@ function teleportDisabled(side) {
 }
 
 #socials {
-  --background: green;
+  --background: rgb(134, 72, 42);
   transform: rotate3d(1, 0, 0, 90deg) translateZ(var(--half-size));
 }
 
 #resume {
-  --background: yellow;
+  --background: rgb(0, 0, 0);
   transform: rotate3d(0, 1, 0, 90deg) translateZ(var(--half-size));
 }
 
@@ -221,7 +221,7 @@ function teleportDisabled(side) {
 }
 
 #projects {
-  --background: orange;
+  --background: #1a1a2e;
   transform: rotate3d(1, 0, 0, -90deg) translateZ(var(--half-size));
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
   <div ref="cardRef"
-    :class="['trading-card', `mana-${getPrimaryManaType()}`, { foil: true, 'rainbow-foil': isPersonal, deprecated: isDeprecated, floating: isFloating, selected: isSelected }]"
+    :class="['trading-card', `mana-${getPrimaryManaType()}`, { foil: true, 'rainbow-foil': true, deprecated: isDeprecated, floating: isFloating, selected: isSelected }]"
     :style="cardStyle" @click="handleClick" @mouseenter="handleMouseEnter" @mouseleave="handleMouseLeave"
     @mousemove="handleMouseMove">
     <div class="card-inner">
@@ -97,11 +97,6 @@ const formattedCardNumber = computed(() => {
   
   // Format with appropriate padding
   return String(props.cardNumber).padStart(digits, '0');
-});
-
-// Check if card is personal
-const isPersonal = computed(() => {
-  return props.project.secondaryType === 'Personal';
 });
 
 // Check if card is deprecated
@@ -234,37 +229,19 @@ const foilStyle = computed(() => {
   const centerPos = distance * 50;
   const spread = 40; // Wider spread for more coverage
 
-  let gradient;
-
-  if (isPersonal.value) {
-    // Rainbow colors for personal cards
-    gradient = `linear-gradient(${angle}deg, 
-      transparent 0%, 
-      transparent ${Math.max(0, centerPos - spread - 10)}%, 
-      rgba(255, 50, 180, 0.6) ${Math.max(0, centerPos - spread)}%, 
-      rgba(255, 120, 50, 0.7) ${Math.max(0, centerPos - spread * 0.6)}%, 
-      rgba(255, 220, 80, 0.8) ${Math.max(0, centerPos - spread * 0.3)}%, 
-      rgba(255, 255, 150, 0.85) ${centerPos}%, 
-      rgba(80, 255, 150, 0.8) ${Math.min(100, centerPos + spread * 0.3)}%, 
-      rgba(50, 180, 255, 0.7) ${Math.min(100, centerPos + spread * 0.6)}%, 
-      rgba(180, 50, 255, 0.6) ${Math.min(100, centerPos + spread)}%, 
-      transparent ${Math.min(100, centerPos + spread + 10)}%, 
-      transparent 100%)`;
-  } else {
-    // Silver/blue foil for professional cards
-    gradient = `linear-gradient(${angle}deg, 
-      transparent 0%, 
-      transparent ${Math.max(0, centerPos - spread - 10)}%, 
-      rgba(200, 220, 255, 0.5) ${Math.max(0, centerPos - spread)}%, 
-      rgba(220, 240, 255, 0.6) ${Math.max(0, centerPos - spread * 0.6)}%, 
-      rgba(240, 250, 255, 0.7) ${Math.max(0, centerPos - spread * 0.3)}%, 
-      rgba(255, 255, 255, 0.75) ${centerPos}%, 
-      rgba(240, 250, 255, 0.7) ${Math.min(100, centerPos + spread * 0.3)}%, 
-      rgba(220, 240, 255, 0.6) ${Math.min(100, centerPos + spread * 0.6)}%, 
-      rgba(200, 220, 255, 0.5) ${Math.min(100, centerPos + spread)}%, 
-      transparent ${Math.min(100, centerPos + spread + 10)}%, 
-      transparent 100%)`;
-  }
+  // Rainbow colors for all cards
+  const gradient = `linear-gradient(${angle}deg, 
+    transparent 0%, 
+    transparent ${Math.max(0, centerPos - spread - 10)}%, 
+    rgba(255, 50, 180, 0.6) ${Math.max(0, centerPos - spread)}%, 
+    rgba(255, 120, 50, 0.7) ${Math.max(0, centerPos - spread * 0.6)}%, 
+    rgba(255, 220, 80, 0.8) ${Math.max(0, centerPos - spread * 0.3)}%, 
+    rgba(255, 255, 150, 0.85) ${centerPos}%, 
+    rgba(80, 255, 150, 0.8) ${Math.min(100, centerPos + spread * 0.3)}%, 
+    rgba(50, 180, 255, 0.7) ${Math.min(100, centerPos + spread * 0.6)}%, 
+    rgba(180, 50, 255, 0.6) ${Math.min(100, centerPos + spread)}%, 
+    transparent ${Math.min(100, centerPos + spread + 10)}%, 
+    transparent 100%)`;
 
   // Base opacity when not hovering, higher when hovering
   const distanceOpacity = isHovering.value ? Math.min(1, distance * 2) : 0.2;
@@ -636,11 +613,13 @@ function getTechIcon(tech) {
 <style lang="less" scoped>
 .trading-card {
   width: 100%;
-  max-width: 280px;
-  height: 390px;
-  perspective: 1000px;
+  max-width: 380px;
+  height: 480px;
+  perspective: 1200px;
   cursor: pointer;
-  margin: 1rem;
+  margin: 0;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), 
+              box-shadow 0.3s ease;
 
   &.foil {
     .card-border {
@@ -693,14 +672,19 @@ function getTechIcon(tech) {
   .card-border {
     width: 100%;
     height: 100%;
-    padding: 8px;
+    padding: 10px;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
     position: relative;
     overflow: hidden;
-    border: 2px solid #000;
-    border-radius: 11px;
+    border: 3px solid #1a1a1a;
+    border-radius: 14px;
+    box-shadow: 
+      0 4px 12px rgba(0, 0, 0, 0.15),
+      0 2px 4px rgba(0, 0, 0, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
 
     // MTG-style black border
     &::before {
@@ -710,8 +694,8 @@ function getTechIcon(tech) {
       left: 0;
       right: 0;
       bottom: 0;
-      border: 1px solid #000;
-      border-radius: 10px;
+      border: 1px solid rgba(0, 0, 0, 0.3);
+      border-radius: 12px;
       pointer-events: none;
     }
   }
@@ -808,6 +792,7 @@ function getTechIcon(tech) {
     min-width: 0; // Allow text to shrink
     flex-shrink: 1;
     line-height: 1;
+    font-size: 1rem;
   }
 
   .mana-costs {
@@ -898,12 +883,16 @@ function getTechIcon(tech) {
 
   .card-art-container {
     width: 100%;
-    height: 185px;
-    margin: 4px 0;
+    height: 220px;
+    margin: 6px 0;
     position: relative;
-    border: 2px solid #000;
+    border: 2px solid #1a1a1a;
+    border-radius: 4px;
     background: #000;
     overflow: hidden;
+    box-shadow: 
+      inset 0 2px 4px rgba(0, 0, 0, 0.3),
+      0 1px 2px rgba(0, 0, 0, 0.2);
   }
 
   .art-border {
@@ -928,17 +917,18 @@ function getTechIcon(tech) {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: linear-gradient(180deg, #f5f5dc 0%, #e8e8d0 100%);
-    border: 1px solid #000;
-    border-radius: 2px;
-    padding: 2px 6px;
-    margin: 4px 0;
-    height: 18px;
-    font-size: 0.75rem;
+    background: linear-gradient(180deg, #f8f8e8 0%, #f0f0d8 100%);
+    border: 1.5px solid #1a1a1a;
+    border-radius: 3px;
+    padding: 4px 10px;
+    margin: 5px 0;
+    height: 24px;
+    font-size: 0.85rem;
     font-weight: bold;
-    color: #000;
+    color: #1a1a1a;
     font-family: 'Times New Roman', serif;
     font-style: italic;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
   }
 
   .card-type {
@@ -954,13 +944,14 @@ function getTechIcon(tech) {
 
   .text-box {
     flex: 1;
-    background: linear-gradient(180deg, #f5f5dc 0%, #e8e8d0 50%, #d8d8c0 100%);
-    border: 1px solid #000;
-    border-radius: 2px;
-    padding: 6px;
-    margin: 4px 0;
-    min-height: 60px;
+    background: linear-gradient(180deg, #f8f8e8 0%, #f0f0d8 50%, #e8e8d0 100%);
+    border: 1.5px solid #1a1a1a;
+    border-radius: 3px;
+    padding: 10px;
+    margin: 5px 0;
+    min-height: 90px;
     position: relative;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
   }
 
   .text-box-inner {
@@ -972,15 +963,15 @@ function getTechIcon(tech) {
   }
 
   .ability-text {
-    font-size: 0.7rem;
-    line-height: 1.4;
-    color: #000;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    color: #1a1a1a;
     font-family: 'Times New Roman', serif;
     text-align: left;
     overflow: hidden;
     display: -webkit-box;
-    -webkit-line-clamp: 4;
-    line-clamp: 4;
+    -webkit-line-clamp: 5;
+    line-clamp: 5;
     -webkit-box-orient: vertical;
     word-wrap: break-word;
   }
@@ -1049,19 +1040,19 @@ function getTechIcon(tech) {
 
   .status-bar {
     background: linear-gradient(180deg, #f5f5dc 0%, #e8e8d0 100%);
-    border: 1px solid #000;
-    border-radius: 2px;
-    padding: 2px 6px;
-    height: 18px;
+    border: 1.5px solid #1a1a1a;
+    border-radius: 3px;
+    padding: 4px 8px;
+    height: 22px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    font-size: 0.65rem;
+    font-size: 0.75rem;
     font-weight: bold;
-    color: #000;
+    color: #1a1a1a;
     font-family: 'Times New Roman', serif;
     margin-top: 4px;
-    gap: 6px;
+    gap: 8px;
 
     .rarity-badge {
       font-weight: bold;
@@ -1262,27 +1253,34 @@ function getTechIcon(tech) {
 
 // Hover effect with mouse following
 .trading-card:not(.floating) {
-  transition: transform 0.3s ease-out, box-shadow 0.3s ease;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), 
+              box-shadow 0.3s ease;
 
   &:hover {
+    transform: translateY(-8px) scale(1.02);
+
     .card-border {
       box-shadow:
-        0 8px 16px rgba(0, 0, 0, 0.3),
-        0 0 0 2px rgba(255, 255, 255, 0.1);
+        0 12px 24px rgba(0, 0, 0, 0.25),
+        0 6px 12px rgba(0, 0, 0, 0.15),
+        0 0 0 3px rgba(255, 255, 255, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
     }
 
     &.foil .card-border {
       box-shadow:
-        0 8px 20px rgba(200, 220, 255, 0.6),
-        0 0 0 2px rgba(255, 255, 255, 0.2),
-        inset 0 0 30px rgba(255, 255, 255, 0.15);
+        0 14px 28px rgba(200, 220, 255, 0.4),
+        0 8px 16px rgba(200, 220, 255, 0.3),
+        0 0 0 3px rgba(255, 255, 255, 0.25),
+        inset 0 0 40px rgba(255, 255, 255, 0.2);
     }
 
     &.rainbow-foil .card-border {
       box-shadow:
-        0 8px 25px rgba(255, 100, 200, 0.8),
-        0 0 0 2px rgba(255, 255, 255, 0.3),
-        inset 0 0 35px rgba(255, 255, 255, 0.2);
+        0 16px 32px rgba(255, 100, 200, 0.5),
+        0 10px 20px rgba(255, 100, 200, 0.4),
+        0 0 0 3px rgba(255, 255, 255, 0.3),
+        inset 0 0 45px rgba(255, 255, 255, 0.25);
     }
   }
 }
@@ -1294,8 +1292,28 @@ function getTechIcon(tech) {
 
   .card-border {
     box-shadow:
-      0 20px 40px rgba(0, 0, 0, 0.5),
-      0 0 0 4px rgba(255, 255, 255, 0.2);
+      0 24px 48px rgba(0, 0, 0, 0.4),
+      0 12px 24px rgba(0, 0, 0, 0.3),
+      0 0 0 4px rgba(255, 255, 255, 0.25),
+      inset 0 2px 0 rgba(255, 255, 255, 0.3);
+    animation: floatGlow 3s ease-in-out infinite;
+  }
+}
+
+@keyframes floatGlow {
+  0%, 100% {
+    box-shadow:
+      0 24px 48px rgba(0, 0, 0, 0.4),
+      0 12px 24px rgba(0, 0, 0, 0.3),
+      0 0 0 4px rgba(255, 255, 255, 0.25),
+      inset 0 2px 0 rgba(255, 255, 255, 0.3);
+  }
+  50% {
+    box-shadow:
+      0 28px 56px rgba(0, 0, 0, 0.45),
+      0 14px 28px rgba(0, 0, 0, 0.35),
+      0 0 0 5px rgba(255, 255, 255, 0.3),
+      inset 0 2px 0 rgba(255, 255, 255, 0.35);
   }
 }
 </style>
