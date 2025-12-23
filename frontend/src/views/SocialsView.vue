@@ -4,7 +4,7 @@
     <FruitNinja v-if="gameStarted" :active="cubeStore.state.socials && gameStarted && !showMenu"
       :on-game-over="handleGameOver" :show-menu="showMenu" />
     <div class="navpadding"></div>
-    <div :class="['links', { toGame: toGame, hidden: gameStarted && !showMenu }]" @animationend="handleAnimationEnd">
+    <div ref="linksRef" :class="['links', { toGame: toGame, hidden: gameStarted && !showMenu, paused: !cubeStore.state.socials }]" @animationend="handleAnimationEnd">
       <div v-for="(item, index) in socialsData" :key="`option-${item.name}`" class="option"
         :style="{ backgroundImage: `url(${item.shadow})` }">
         <div class="option-group">
@@ -26,7 +26,7 @@
             </svg>
             <img class="decor" :src="item.ring" />
           </div>
-          <img class="gif" :src="item.gif" :id="index" @click="openLink(index)" />
+          <img class="gif" :src="item.gif" :data-src="item.gif" :id="index" @click="openLink(index)" />
         </div>
       </div>
     </div>
@@ -34,7 +34,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
+import { ref, computed, onMounted, onBeforeUnmount, watch, nextTick } from 'vue';
 import FruitNinja from '@/domGames/FruitNinja/FruitNinja.vue';
 import { setupSlashEffect } from '@/domGames/FruitNinja/slashEffect';
 import { cubeStore } from '@/stores/cubeStore';
@@ -45,6 +45,10 @@ const toGame = ref(false);
 const gameStarted = ref(false);
 const showMenu = ref(false);
 let slashEffect = null;
+const linksRef = ref(null);
+
+// Transparent 1x1 pixel data URL to pause GIFs
+const pausedGifSrc = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
 
 // Generate random rotations for each social item
 const socialsData = computed(() => {
@@ -90,10 +94,38 @@ function handleGameOver() {
   toGame.value = false;
 }
 
+function pauseGifs(pause) {
+  nextTick(() => {
+    if (!linksRef.value) return;
+    const gifImages = linksRef.value.querySelectorAll('.gif');
+    gifImages.forEach((img) => {
+      if (pause) {
+        // Store original src if not already stored
+        if (!img.dataset.originalSrc) {
+          img.dataset.originalSrc = img.src;
+        }
+        img.src = pausedGifSrc;
+      } else {
+        // Restore original src
+        if (img.dataset.originalSrc) {
+          img.src = img.dataset.originalSrc;
+        }
+      }
+    });
+  });
+}
+
+// Watch for socials active state changes
+watch(() => cubeStore.state.socials, (isActive) => {
+  pauseGifs(!isActive);
+}, { immediate: true });
+
 onMounted(() => {
   if (canvasRef.value) {
     slashEffect = setupSlashEffect(canvasRef.value);
   }
+  // Initial pause state
+  pauseGifs(!cubeStore.state.socials);
 });
 
 onBeforeUnmount(() => {
@@ -206,6 +238,10 @@ onBeforeUnmount(() => {
   width: 100%;
   top: 50%;
   scale: 1.5;
+}
+
+.links.paused .option-group .circle {
+  animation-play-state: paused;
 }
 
 .option-group .gif {
