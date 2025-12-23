@@ -5,7 +5,7 @@
 </template>
 
 <script setup>
-import Tetris from '@/domGames/Tetris/Tetris.vue';
+import Tetris from '@/applications/Tetris.vue';
 import { cubeStore } from '@/stores/cubeStore';
 </script>
 

@@ -33,6 +33,14 @@
       "height": "395px"
     },
     {
+      "title": "Tetris",
+      "desktop-icon": "/images/resume/tetrisicon.svg",
+      "icon": "/images/resume/tetrisicon.svg",
+      "app": "Tetris",
+      "x": "10px",
+      "y": "calc(100% - 200px)"
+    },
+    {
       "title": "Trash",
       "desktop-icon": "/images/resume/recyclebin_empty.svg",
       "icon": "/images/resume/recyclebin_empty.svg",
