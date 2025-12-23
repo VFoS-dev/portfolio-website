@@ -10,7 +10,7 @@ const useProjectStore = defineStore('projectStore', {
       scroll: 0,
       projects: projectsData,
       filters: {
-        category: null,
+        company: null,
         rarity: null,
         type: null,
         search: '',
@@ -24,9 +24,9 @@ const useProjectStore = defineStore('projectStore', {
     getFilteredProjects(state) {
       let filtered = [...state.projects];
 
-      // Filter by category
-      if (state.filters.category) {
-        filtered = filtered.filter(p => p.category === state.filters.category);
+      // Filter by company
+      if (state.filters.company) {
+        filtered = filtered.filter(p => p.company === state.filters.company);
       }
 
       // Filter by rarity
@@ -60,13 +60,12 @@ const useProjectStore = defineStore('projectStore', {
       });
       return Array.from(types).sort();
     },
-    getCategories() {
+    getCompanies() {
       return [
         { label: 'All', value: null },
-        { label: 'Gen 1: Personal', value: 'personal' },
-        { label: 'Gen 2: Matraex', value: 'matraex' },
-        { label: 'Gen 3: GIMM Works', value: 'gimmworks' },
-        { label: 'Gen 4: Games', value: 'games' },
+        { label: 'VFoS', value: 'VFoS' },
+        { label: 'Matraex', value: 'matraex' },
+        { label: 'GIMM Works', value: 'gimmworks' },
       ];
     },
     getRarities() {
@@ -85,7 +84,7 @@ const useProjectStore = defineStore('projectStore', {
     },
     clearFilters() {
       this.filters = {
-        category: null,
+        company: null,
         rarity: null,
         type: null,
         search: '',

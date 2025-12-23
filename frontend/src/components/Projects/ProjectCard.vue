@@ -1,7 +1,7 @@
 <template>
   <div
     ref="cardRef"
-    :class="['pokemon-card', `rarity-${rarity}`, { holo: rarity === 'holo-rare', floating: isFloating, selected: isSelected }]"
+    :class="['pokemon-card', `mana-${getPrimaryManaType()}`, { holo: rarity === 'holo-rare', floating: isFloating, selected: isSelected }]"
     :style="cardStyle"
     @click="handleClick"
     @mouseenter="handleMouseEnter"
@@ -27,24 +27,35 @@
           
           <!-- Card Header with Mana Cost -->
           <div class="card-header">
-            <div class="card-name-bar">
-              <span class="card-name">{{ project.title }}</span>
+            <div ref="nameBarRef" class="card-name-bar">
+              <span class="card-name" :style="nameStyle">{{ project.title }}</span>
             </div>
-            <div class="mana-cost">
-              <span class="set-symbol">{{ categorySymbol }}</span>
+            <div class="mana-costs">
+              <div
+                v-if="project.stack.length > 3"
+                class="mana-cost mana-generic"
+              >
+                <span class="mana-symbol-text">{{ project.stack.length - 3 }}</span>
+              </div>
+              <div
+                v-for="(tech, index) in project.stack.slice(0, 3)"
+                :key="index"
+                :class="['mana-cost', getTypeClass(tech)]"
+              >
+                <img :src="getTechIcon(tech)" :alt="tech" class="tech-icon" />
+              </div>
             </div>
           </div>
           
           <!-- Artwork Area -->
           <div class="card-art-container">
-            <div class="art-border"></div>
             <img :src="project.img" :alt="project.title" class="card-image" />
           </div>
-          
+           
           <!-- Type Line -->
           <div class="type-line">
-            <span class="card-type">{{ getCardType() }}</span>
-            <span class="card-number">#{{ cardNumber }}</span>
+            <span class="card-type">{{ getPrimaryType() }} — {{ getSecondaryType() }}</span>
+            <img :src="getCompanyLogo()" :alt="project.company" class="company-logo" />
           </div>
           
           <!-- Text Box -->
@@ -57,7 +68,7 @@
                     :key="index"
                     :class="['mana-symbol', getTypeClass(type)]"
                   >
-                    {{ getTechSymbol(type) }}
+                    <img :src="getTechIcon(type)" :alt="type" class="tech-icon-small" />
                   </span>
                 </div>
               </div>
@@ -66,7 +77,10 @@
           
           <!-- Status Bar -->
           <div class="status-bar">
-            <span class="status-label">{{ getStatus() }}</span>
+            <span class="rarity-badge">{{ getRarityLabel() }}</span>
+            <span class="card-number-bottom">#{{ cardNumber }}</span>
+            <span class="set-name">{{ project.company || 'VFoS' }}</span>
+            <span class="date-range">{{ formatDateRange() }}</span>
           </div>
         </div>
       </div>
@@ -75,7 +89,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onBeforeUnmount } from 'vue';
+import { ref, computed, onBeforeUnmount, watch, nextTick, onMounted } from 'vue';
 
 const props = defineProps({
   project: {
@@ -104,20 +118,19 @@ const props = defineProps({
 const emit = defineEmits(['click']);
 
 const cardRef = ref(null);
+const nameBarRef = ref(null);
 const mouseX = ref(0.5);
 const mouseY = ref(0.5);
 const lastMouseX = ref(0.5);
 const lastMouseY = ref(0.5);
 const isHovering = ref(false);
+const nameFontSize = ref(0.9);
 
-const categorySymbol = computed(() => {
-  const symbols = {
-    personal: '★',
-    matraex: 'M',
-    gimmworks: 'G',
-    games: '🎮',
+// Calculate dynamic font size for project name
+const nameStyle = computed(() => {
+  return {
+    fontSize: `${nameFontSize.value}rem`,
   };
-  return symbols[props.project.category] || '?';
 });
 
 // Calculate card tilt based on mouse position
@@ -208,30 +221,114 @@ function handleMouseMove(event) {
   mouseY.value = (event.clientY - rect.top) / rect.height;
 }
 
+function adjustFontSize() {
+  if (!nameBarRef.value || !cardRef.value || props.isFloating) return;
+
+  const nameBar = nameBarRef.value;
+  const nameElement = nameBar.querySelector('.card-name');
+  if (!nameElement) return;
+
+  // Get available width (accounting for padding)
+  const availableWidth = nameBar.offsetWidth - 12; // -12 for padding (6px each side)
+
+  const text = props.project.title;
+  const baseFontSize = 0.9;
+  let fontSize = baseFontSize;
+
+  // Create a temporary element to measure text width
+  const temp = document.createElement('span');
+  temp.style.visibility = 'hidden';
+  temp.style.position = 'absolute';
+  temp.style.fontSize = `${baseFontSize}rem`;
+  temp.style.fontFamily = 'Times New Roman, serif';
+  temp.style.fontWeight = 'bold';
+  temp.style.textTransform = 'uppercase';
+  temp.style.letterSpacing = '0.5px';
+  temp.style.whiteSpace = 'nowrap';
+  temp.textContent = text;
+  document.body.appendChild(temp);
+
+  const textWidth = temp.offsetWidth;
+  document.body.removeChild(temp);
+
+  // If text is wider than available space, reduce font size
+  if (textWidth > availableWidth) {
+    fontSize = (availableWidth / textWidth) * baseFontSize;
+    // Set minimum font size
+    fontSize = Math.max(0.55, fontSize);
+  }
+
+  nameFontSize.value = fontSize;
+}
+
+
 function handleClick() {
   if (!props.isFloating) {
     emit('click', props.project);
   }
 }
 
+onMounted(() => {
+  nextTick(() => {
+    adjustFontSize();
+    // Watch for window resize
+    window.addEventListener('resize', adjustFontSize);
+  });
+});
+
 onBeforeUnmount(() => {
   isHovering.value = false;
+  window.removeEventListener('resize', adjustFontSize);
+});
+
+// Adjust font size when project changes
+watch(() => props.project.title, () => {
+  nextTick(() => {
+    adjustFontSize();
+  });
 });
 
 function getTypeClass(type) {
   // Map tech stack to type colors
   const typeMap = {
     React: 'type-fire',
+    'React Native': 'type-fire',
     Vue: 'type-water',
     'Unreal Engine 5': 'type-electric',
     Unity: 'type-electric',
+    'Unity WebGL': 'type-electric',
     PHP: 'type-ground',
     SQL: 'type-rock',
+    SQLite: 'type-rock',
     Python: 'type-grass',
     Javascript: 'type-psychic',
     'C++': 'type-steel',
     'C#': 'type-steel',
     Blender: 'type-fairy',
+    Krita: 'type-fairy',
+    'Substance Painter': 'type-fairy',
+    HTML: 'type-normal',
+    CSS: 'type-normal',
+    Markdown: 'type-normal',
+    'HTML5 Canvas': 'type-normal',
+    'Express.js': 'type-psychic',
+    Express: 'type-psychic',
+    MongoDB: 'type-grass',
+    Mongodb: 'type-grass',
+    Firebase: 'type-fire',
+    Swift: 'type-water',
+    'Socket.io': 'type-psychic',
+    Socket: 'type-psychic',
+    'AWS S3': 'type-electric',
+    AWS: 'type-electric',
+    Meteor: 'type-fire',
+    JQuery: 'type-normal',
+    OneSignal: 'type-psychic',
+    Stripe: 'type-normal',
+    Algorithm: 'type-psychic',
+    Flash: 'type-fire',
+    'ActionScript 3': 'type-fire',
+    'Adobe Animate': 'type-fire',
   };
 
   // Try to find a match (case-insensitive)
@@ -244,47 +341,271 @@ function getTypeClass(type) {
   return 'type-normal';
 }
 
-
-function getStatus() {
-  if (props.project.endDate === 'Present' || props.project.endDate.toLowerCase().includes('present')) {
-    return 'Active';
+function getPrimaryManaType() {
+  // Get the primary mana type from the first tech stack
+  if (props.project.stack && props.project.stack.length > 0) {
+    const firstTech = props.project.stack[0];
+    const typeClass = getTypeClass(firstTech);
+    // Extract the type name (e.g., 'type-fire' -> 'fire')
+    return typeClass.replace('type-', '');
   }
-  return 'Complete';
+  return 'normal';
 }
 
-function getCardType() {
-  const types = {
-    personal: 'Personal Project',
-    matraex: 'Client Project',
-    gimmworks: 'Team Project',
-    games: 'Game Project',
+
+function getRarityLabel() {
+  const rarityMap = {
+    'common': 'C',
+    'uncommon': 'U',
+    'rare': 'R',
+    'holo-rare': 'HR',
   };
-  return types[props.project.category] || 'Project';
+  return rarityMap[props.rarity] || 'C';
 }
 
-function getTechSymbol(tech) {
-  // Return first letter or a symbol for tech stack
-  const symbols = {
-    React: '⚛',
-    Vue: 'V',
-    'Unreal Engine 5': 'UE',
-    Unity: 'U',
-    PHP: 'P',
-    SQL: 'S',
-    Python: 'Py',
-    Javascript: 'JS',
-    'C++': 'C++',
-    'C#': 'C#',
-    Blender: 'B',
+
+function formatDateRange() {
+  const start = props.project.startDate || '';
+  const end = props.project.endDate || '';
+  
+  // Extract year from dates if they're full dates
+  const getYear = (dateStr) => {
+    if (!dateStr) return '';
+    // Try to extract year (look for 4-digit year)
+    const yearMatch = dateStr.match(/\b(19|20)\d{2}\b/);
+    if (yearMatch) {
+      return yearMatch[0];
+    }
+    return dateStr;
   };
   
-  const lowerTech = tech.toLowerCase();
-  for (const [key, value] of Object.entries(symbols)) {
-    if (lowerTech.includes(key.toLowerCase())) {
-      return value;
-    }
+  const startYear = getYear(start);
+  const endYear = end.toLowerCase().includes('present') ? 'Present' : getYear(end);
+  
+  if (startYear && endYear) {
+    return `${startYear} - ${endYear}`;
   }
-  return tech.charAt(0).toUpperCase();
+  if (startYear) {
+    return startYear;
+  }
+  return '';
+}
+
+function getPrimaryType() {
+  // Primary type: Personal or Professional
+  const company = props.project.company || '';
+  if (company === 'gimmworks' || company === 'matraex') {
+    return 'Professional';
+  }
+  // Everything else (VFoS) is personal
+  return 'Personal';
+}
+
+function getCompanyLogo() {
+  const company = props.project.company || 'VFoS';
+  const logoMap = {
+    'VFoS': '/images/companies/vfos.svg',
+    'matraex': '/images/companies/matraex.png',
+    'gimmworks': '/images/companies/gimmworks.png',
+    'GIMM Works': '/images/companies/gimmworks.png',
+  };
+  // Fallback to webp if png doesn't exist
+  if (company === 'matraex' && !logoMap['matraex']) {
+    return '/images/projects/Matraex.webp';
+  }
+  return logoMap[company] || logoMap['VFoS'];
+}
+
+function getSecondaryType() {
+  // Secondary type: Game, Website, App, etc.
+  // Check if project has a type field, otherwise infer from stack
+  if (props.project.type) {
+    const typeMap = {
+      website: 'Website',
+      webapp: 'Web App',
+      app: 'App',
+      game: 'Game',
+      tool: 'Tool',
+      api: 'API',
+      other: 'Project',
+    };
+    return typeMap[props.project.type.toLowerCase()] || props.project.type;
+  }
+  
+  // Infer from tech stack
+  const stack = props.project.stack.map(s => s.toLowerCase()).join(' ');
+  if (stack.includes('unity') || stack.includes('unreal') || stack.includes('game') || stack.includes('adobe animate') || stack.includes('flash')) {
+    return 'Game';
+  }
+  if (stack.includes('react native') || stack.includes('swift') || stack.includes('mobile')) {
+    return 'App';
+  }
+  if (stack.includes('react') || stack.includes('vue') || stack.includes('html') || stack.includes('website')) {
+    return 'Website';
+  }
+  
+  return 'Project';
+}
+
+function getTechIcon(tech) {
+  // Return path to SVG icon for tech stack based on their logos
+  const lowerTech = tech.toLowerCase();
+  
+  // React - Atom symbol
+  if (lowerTech.includes('react')) {
+    if (lowerTech.includes('native')) {
+      return '/images/tech-icons/reactnative.svg';
+    }
+    return '/images/tech-icons/react.svg';
+  }
+  
+  // Vue - V shape
+  if (lowerTech.includes('vue')) {
+    return '/images/tech-icons/vue.svg';
+  }
+  
+  // JavaScript - JS letters
+  if (lowerTech.includes('javascript') || lowerTech.includes('js')) {
+    return '/images/tech-icons/javascript.svg';
+  }
+  
+  // Python - Snake
+  if (lowerTech.includes('python')) {
+    return '/images/tech-icons/python.svg';
+  }
+  
+  // C++ - C with plus
+  if (lowerTech.includes('c++')) {
+    return '/images/tech-icons/cpp.svg';
+  }
+  
+  // C# - C with sharp
+  if (lowerTech.includes('c#')) {
+    return '/images/tech-icons/csharp.svg';
+  }
+  
+  // Unity - Cube
+  if (lowerTech.includes('unity')) {
+    if (lowerTech.includes('webgl')) {
+      return '/images/tech-icons/webgl.svg';
+    }
+    return '/images/tech-icons/unity.svg';
+  }
+  
+  // Unreal Engine - U shape
+  if (lowerTech.includes('unreal')) {
+    return '/images/tech-icons/unreal.svg';
+  }
+  
+  // PHP - Elephant
+  if (lowerTech.includes('php')) {
+    return '/images/tech-icons/php.svg';
+  }
+  
+  // SQL - Database
+  if (lowerTech.includes('sql')) {
+    if (lowerTech.includes('sqlite')) {
+      return '/images/tech-icons/sqlite.svg';
+    }
+    return '/images/tech-icons/sql.svg';
+  }
+  
+  // Blender - B logo
+  if (lowerTech.includes('blender')) {
+    return '/images/tech-icons/blender.svg';
+  }
+  
+  // HTML - H with brackets
+  if (lowerTech.includes('html')) {
+    if (lowerTech.includes('canvas')) {
+      return '/images/tech-icons/canvas.svg';
+    }
+    return '/images/tech-icons/html.svg';
+  }
+  
+  // CSS - C with brackets
+  if (lowerTech.includes('css')) {
+    return '/images/tech-icons/css.svg';
+  }
+  
+  // Express.js - E
+  if (lowerTech.includes('express')) {
+    return '/images/tech-icons/express.svg';
+  }
+  
+  // MongoDB - Leaf
+  if (lowerTech.includes('mongo')) {
+    return '/images/tech-icons/mongodb.svg';
+  }
+  
+  // Firebase - Flame
+  if (lowerTech.includes('firebase')) {
+    return '/images/tech-icons/firebase.svg';
+  }
+  
+  // Swift - Bird
+  if (lowerTech.includes('swift')) {
+    return '/images/tech-icons/swift.svg';
+  }
+  
+  // Socket.io - S
+  if (lowerTech.includes('socket')) {
+    return '/images/tech-icons/socketio.svg';
+  }
+  
+  // AWS S3 - Cloud
+  if (lowerTech.includes('aws') || lowerTech.includes('s3')) {
+    return '/images/tech-icons/aws.svg';
+  }
+  
+  // Krita - K
+  if (lowerTech.includes('krita')) {
+    return '/images/tech-icons/krita.svg';
+  }
+  
+  // Substance Painter - Brush
+  if (lowerTech.includes('substance')) {
+    return '/images/tech-icons/substance.svg';
+  }
+  
+  // Meteor - Star
+  if (lowerTech.includes('meteor')) {
+    return '/images/tech-icons/meteor.svg';
+  }
+  
+  // JQuery - JQ
+  if (lowerTech.includes('jquery')) {
+    return '/images/tech-icons/jquery.svg';
+  }
+  
+  // OneSignal - 1S
+  if (lowerTech.includes('onesignal')) {
+    return '/images/tech-icons/onesignal.svg';
+  }
+  
+  // Stripe - S
+  if (lowerTech.includes('stripe')) {
+    return '/images/tech-icons/stripe.svg';
+  }
+  
+  // Markdown - M
+  if (lowerTech.includes('markdown')) {
+    return '/images/tech-icons/markdown.svg';
+  }
+  
+  // Algorithm - A
+  if (lowerTech.includes('algorithm')) {
+    return '/images/tech-icons/algorithm.svg';
+  }
+  
+  // Flash/Adobe Animate - Lightning
+  if (lowerTech.includes('flash') || lowerTech.includes('animate') || lowerTech.includes('actionscript')) {
+    return '/images/tech-icons/flash.svg';
+  }
+  
+  // Default - Return a placeholder or first letter
+  // For now, return a generic icon path (you could create a default.svg)
+  return '/images/tech-icons/markdown.svg'; // Using markdown as fallback
 }
 </script>
 
@@ -358,23 +679,51 @@ function getTechSymbol(tech) {
     }
   }
 
-  // Rarity-based frame colors (MTG style)
-  &.rarity-common .card-border {
+  // Mana-based frame colors (MTG style)
+  &.mana-fire .card-border {
+    background: linear-gradient(180deg, #ff6b6b 0%, #ee5a5a 50%, #dd4a4a 100%);
+  }
+
+  &.mana-water .card-border {
+    background: linear-gradient(180deg, #4dabf7 0%, #3d9be7 50%, #2d8bd7 100%);
+  }
+
+  &.mana-electric .card-border {
+    background: linear-gradient(180deg, #ffd43b 0%, #ffc92b 50%, #ffbe1b 100%);
+  }
+
+  &.mana-grass .card-border {
+    background: linear-gradient(180deg, #51cf66 0%, #40bf55 50%, #2faf44 100%);
+  }
+
+  &.mana-ground .card-border {
+    background: linear-gradient(180deg, #a98467 0%, #987456 50%, #876445 100%);
+  }
+
+  &.mana-rock .card-border {
+    background: linear-gradient(180deg, #8b6f47 0%, #7a5f36 50%, #694f25 100%);
+  }
+
+  &.mana-psychic .card-border {
+    background: linear-gradient(180deg, #f06292 0%, #e05282 50%, #d04272 100%);
+  }
+
+  &.mana-steel .card-border {
+    background: linear-gradient(180deg, #748b9c 0%, #637b8c 50%, #526b7c 100%);
+  }
+
+  &.mana-fairy .card-border {
+    background: linear-gradient(180deg, #f48fb1 0%, #e47fa1 50%, #d46f91 100%);
+  }
+
+  &.mana-normal .card-border {
     background: linear-gradient(180deg, #c9c9c9 0%, #b8b8b8 50%, #a8a8a8 100%);
   }
 
-  &.rarity-uncommon .card-border {
-    background: linear-gradient(180deg, #4a9b4a 0%, #3d8b3d 50%, #2d7a2d 100%);
-  }
-
-  &.rarity-rare .card-border {
-    background: linear-gradient(180deg, #4a7ba7 0%, #3d6b97 50%, #2d5a87 100%);
-  }
-
-  &.rarity-holo-rare .card-border {
-    background: linear-gradient(180deg, #9c4aa7 0%, #8d3a97 50%, #7d2a87 100%);
+  // Holo-rare cards get an extra glow effect
+  &.holo .card-border {
     box-shadow: 
-      0 0 15px rgba(156, 74, 167, 0.6),
+      0 0 15px rgba(255, 255, 255, 0.3),
       inset 0 0 20px rgba(255, 255, 255, 0.1);
   }
 }
@@ -472,10 +821,13 @@ function getTechSymbol(tech) {
     height: 24px;
     position: relative;
     z-index: 2;
+    gap: 4px;
+    min-width: 0; // Allow flex children to shrink
   }
 
   .card-name-bar {
     flex: 1;
+    min-width: 0; // Allow shrinking
     background: linear-gradient(180deg, #f5f5dc 0%, #e8e8d0 100%);
     border: 1px solid #000;
     border-radius: 2px;
@@ -483,33 +835,94 @@ function getTechSymbol(tech) {
     height: 100%;
     display: flex;
     align-items: center;
+    overflow: hidden;
   }
 
   .card-name {
-    font-size: 0.9rem;
     font-weight: bold;
     color: #000;
     font-family: 'Times New Roman', serif;
-    text-transform: uppercase;
     letter-spacing: 0.5px;
     white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    min-width: 0; // Allow text to shrink
+    flex-shrink: 1;
+    line-height: 1;
+  }
+
+  .mana-costs {
+    display: flex;
+    gap: 2px;
+    align-items: center;
+    flex-shrink: 0; // Prevent mana costs from shrinking
+    min-width: fit-content;
   }
 
   .mana-cost {
-    width: 24px;
-    height: 24px;
-    background: linear-gradient(135deg, #f5f5dc 0%, #e8e8d0 100%);
+    width: 18px;
+    height: 18px;
     border: 1px solid #000;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-left: 4px;
     font-weight: bold;
-    font-size: 0.85rem;
-    color: #000;
+    font-size: 0.6rem;
+    color: #fff;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+
+    .mana-symbol-text {
+      position: relative;
+      z-index: 1;
+      line-height: 1;
+    }
+
+    .tech-icon {
+      width: 12px;
+      height: 12px;
+      object-fit: contain;
+      position: relative;
+      z-index: 1;
+      filter: brightness(0) invert(1);
+    }
+
+    // Type-based colors for mana symbols
+    &.type-fire {
+      background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
+    }
+    &.type-water {
+      background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
+    }
+    &.type-electric {
+      background: linear-gradient(135deg, #ffc107 0%, #f57c00 100%);
+    }
+    &.type-grass {
+      background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);
+    }
+    &.type-ground {
+      background: linear-gradient(135deg, #8d6e63 0%, #6d4c41 100%);
+    }
+    &.type-rock {
+      background: linear-gradient(135deg, #795548 0%, #5d4037 100%);
+    }
+    &.type-psychic {
+      background: linear-gradient(135deg, #e91e63 0%, #c2185b 100%);
+    }
+    &.type-steel {
+      background: linear-gradient(135deg, #607d8b 0%, #455a64 100%);
+    }
+    &.type-fairy {
+      background: linear-gradient(135deg, #f48fb1 0%, #e91e63 100%);
+    }
+    &.type-normal {
+      background: linear-gradient(135deg, #9e9e9e 0%, #757575 100%);
+    }
+    &.mana-generic {
+      background: linear-gradient(135deg, #9e9e9e 0%, #757575 100%);
+      color: #fff;
+    }
   }
 
   .card-art-container {
@@ -561,9 +974,11 @@ function getTechSymbol(tech) {
     text-transform: capitalize;
   }
 
-  .card-number {
-    font-size: 0.7rem;
-    opacity: 0.7;
+  .company-logo {
+    height: 16px;
+    width: auto;
+    object-fit: contain;
+    opacity: 0.8;
   }
 
   .text-box {
@@ -612,6 +1027,13 @@ function getTechSymbol(tech) {
     font-size: 0.65rem;
     font-weight: bold;
     color: #fff;
+
+    .tech-icon-small {
+      width: 14px;
+      height: 14px;
+      object-fit: contain;
+      filter: brightness(0) invert(1);
+    }
     text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
 
     &.type-fire {
@@ -651,15 +1073,38 @@ function getTechSymbol(tech) {
     border: 1px solid #000;
     border-radius: 2px;
     padding: 2px 6px;
-    height: 16px;
+    height: 18px;
     display: flex;
     align-items: center;
-    justify-content: center;
-    font-size: 0.7rem;
+    justify-content: space-between;
+    font-size: 0.65rem;
     font-weight: bold;
     color: #000;
     font-family: 'Times New Roman', serif;
     margin-top: 4px;
+    gap: 6px;
+
+    .rarity-badge {
+      font-weight: bold;
+      min-width: 20px;
+    }
+
+    .card-number-bottom {
+      font-weight: normal;
+      opacity: 0.8;
+    }
+
+    .set-name {
+      flex: 1;
+      text-align: center;
+      font-style: italic;
+    }
+
+    .date-range {
+      font-weight: normal;
+      font-size: 0.6rem;
+      opacity: 0.9;
+    }
   }
 }
 

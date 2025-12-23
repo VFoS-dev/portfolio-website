@@ -11,7 +11,7 @@
     ],
     "startDate": "January 1, 2023",
     "endDate": "Present",
-    "category": "personal",
+    "company": "VFoS",
     "rarity": "holo-rare",
     "links": {},
     "cardNumber": 1
@@ -32,7 +32,7 @@
     ],
     "startDate": "October 26, 2022",
     "endDate": "September 2, 2023",
-    "category": "personal",
+    "company": "VFoS",
     "rarity": "holo-rare",
     "links": {
       "website": "/"
@@ -55,7 +55,7 @@
     ],
     "startDate": "August 30, 2022",
     "endDate": "Present",
-    "category": "personal",
+    "company": "VFoS",
     "rarity": "rare",
     "links": {
       "website": "https://vfos.dev/resume?create=1"
@@ -74,7 +74,7 @@
     ],
     "startDate": "May 3, 2023",
     "endDate": "August 11, 2023",
-    "category": "matraex",
+    "company": "matraex",
     "rarity": "uncommon",
     "links": {
       "website": "https://ventureidaho.com"
@@ -93,7 +93,7 @@
     ],
     "startDate": "August 1, 2023",
     "endDate": "August 7, 2023",
-    "category": "matraex",
+    "company": "matraex",
     "rarity": "uncommon",
     "links": {
       "website": "https://venturesys.org"
@@ -114,7 +114,7 @@
     ],
     "startDate": "July 14, 2023",
     "endDate": "July 31, 2023",
-    "category": "matraex",
+    "company": "matraex",
     "rarity": "rare",
     "links": {
       "website": "https://app.highcallrodeo.com"
@@ -137,7 +137,7 @@
     ],
     "startDate": "January 26, 2023",
     "endDate": "July 31, 2023",
-    "category": "matraex",
+    "company": "matraex",
     "rarity": "rare",
     "links": {
       "website": "https://salestrak.io",
@@ -159,7 +159,7 @@
     ],
     "startDate": "December 21, 2020",
     "endDate": "July 30, 2022",
-    "category": "gimmworks",
+    "company": "gimmworks",
     "rarity": "holo-rare",
     "links": {
       "website": "https://broncobeam.com",
@@ -181,7 +181,7 @@
     ],
     "startDate": "September 4, 2021",
     "endDate": "January 6, 2022",
-    "category": "gimmworks",
+    "company": "gimmworks",
     "rarity": "rare",
     "links": {
       "website": "https://www.allinfavor.org"
@@ -200,7 +200,7 @@
     ],
     "startDate": "December 5, 2020",
     "endDate": "April 15, 2021",
-    "category": "games",
+    "company": "VFoS",
     "rarity": "rare",
     "links": {},
     "cardNumber": 10
@@ -220,7 +220,7 @@
     ],
     "startDate": "April 12, 2020",
     "endDate": "December 23, 2020",
-    "category": "gimmworks",
+    "company": "gimmworks",
     "rarity": "rare",
     "links": {
       "website": "https://www.abcstories.org/about",
@@ -241,7 +241,7 @@
     ],
     "startDate": "June 19, 2023",
     "endDate": "July 17, 2023",
-    "category": "matraex",
+    "company": "matraex",
     "rarity": "uncommon",
     "links": {
       "website": "https://riogenesis.com"
@@ -262,7 +262,7 @@
     ],
     "startDate": "January 17, 2023",
     "endDate": "February 28, 2023",
-    "category": "matraex",
+    "company": "matraex",
     "rarity": "rare",
     "links": {
       "about": "https://blacksagetech.com"
@@ -284,7 +284,7 @@
     ],
     "startDate": "August 25, 2022",
     "endDate": "January 13, 2023",
-    "category": "gimmworks",
+    "company": "gimmworks",
     "rarity": "rare",
     "links": {
       "website": "https://motorpooldrivercertification.com"
@@ -304,7 +304,7 @@
     ],
     "startDate": "October 8, 2020",
     "endDate": "December 24, 2021",
-    "category": "personal",
+    "company": "VFoS",
     "rarity": "rare",
     "links": {
       "demo": "https://ringtesting.jonathankido.com",
@@ -323,7 +323,7 @@
     ],
     "startDate": "November 1, 2020",
     "endDate": "December 4, 2020",
-    "category": "personal",
+    "company": "VFoS",
     "rarity": "uncommon",
     "links": {},
     "cardNumber": 16
@@ -341,7 +341,7 @@
     ],
     "startDate": "September 14, 2020",
     "endDate": "November 17, 2020",
-    "category": "gimmworks",
+    "company": "gimmworks",
     "rarity": "rare",
     "links": {},
     "cardNumber": 17
@@ -360,7 +360,7 @@
     ],
     "startDate": "September 15, 2020",
     "endDate": "September 16, 2020",
-    "category": "games",
+    "company": "VFoS",
     "rarity": "uncommon",
     "links": {},
     "cardNumber": 18
@@ -379,7 +379,7 @@
     ],
     "startDate": "September 6, 2018",
     "endDate": "September 13, 2018",
-    "category": "games",
+    "company": "VFoS",
     "rarity": "common",
     "links": {},
     "cardNumber": 19
@@ -396,7 +396,7 @@
     ],
     "startDate": "August 3, 2018",
     "endDate": "August 18, 2018",
-    "category": "games",
+    "company": "VFoS",
     "rarity": "common",
     "links": {},
     "cardNumber": 20
@@ -413,7 +413,7 @@
     ],
     "startDate": "November 21, 2017",
     "endDate": "December 10, 2017",
-    "category": "games",
+    "company": "VFoS",
     "rarity": "common",
     "links": {},
     "cardNumber": 21
@@ -430,7 +430,7 @@
     ],
     "startDate": "September 18, 2017",
     "endDate": "October 31, 2017",
-    "category": "games",
+    "company": "VFoS",
     "rarity": "common",
     "links": {},
     "cardNumber": 22
@@ -446,7 +446,7 @@
     ],
     "startDate": "June 13, 2015",
     "endDate": "June 13, 2015",
-    "category": "personal",
+    "company": "VFoS",
     "rarity": "common",
     "links": {},
     "cardNumber": 23

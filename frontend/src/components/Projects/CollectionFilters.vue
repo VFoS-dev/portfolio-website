@@ -134,7 +134,7 @@ function clearFilters() {
 
 function emitFilter() {
   emit('filter', {
-    category: selectedCategory.value,
+    company: selectedCategory.value,
     rarity: selectedRarity.value,
     type: selectedType.value,
     search: searchQuery.value.toLowerCase(),

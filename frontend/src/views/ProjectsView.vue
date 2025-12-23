@@ -14,7 +14,7 @@
 
         <!-- Filters -->
         <CollectionFilters
-          :categories="projectStore.getCategories"
+          :categories="projectStore.getCompanies"
           :rarities="projectStore.getRarities"
           :available-types="projectStore.getAvailableTypes"
           @filter="handleFilter"
@@ -62,7 +62,7 @@
           <div class="panel-content">
             <h1 class="panel-title">{{ selectedProject.title }}</h1>
             <div class="panel-meta">
-              <span class="panel-category">{{ getCategoryName(selectedProject.category) }}</span>
+              <span class="panel-category">{{ selectedProject.company }}</span>
               <span class="panel-dates">{{ selectedProject.startDate }} - {{ selectedProject.endDate }}</span>
             </div>
             
@@ -141,15 +141,6 @@ function closeDetail() {
   selectedProject.value = null;
 }
 
-function getCategoryName(category) {
-  const names = {
-    personal: 'Personal Projects',
-    matraex: 'Matraex Inc.',
-    gimmworks: 'GIMM Works',
-    games: 'Game Projects',
-  };
-  return names[category] || 'Projects';
-}
 
 function hasLinks(project) {
   return project.links && Object.keys(project.links).length > 0;
