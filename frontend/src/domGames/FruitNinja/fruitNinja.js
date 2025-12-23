@@ -430,7 +430,12 @@ export function fruitNinja(activePage = false, checkAchievement = () => {}, onLi
   }
 
   function drawFruit() {
-    for (const { type, top, left, diameter, rot } of [splats, sliced, fruits].flat()) {
+    // Sort splats by tick (ascending) so older splats (lower tick) are drawn first (behind)
+    const sortedSplats = [...splats].sort((a, b) => (a.tick || 0) - (b.tick || 0));
+    
+    // Draw in order: splats (background, sorted by age), sliced (middle), fruits (foreground)
+    // In canvas, things drawn later appear on top, so fruits will be above splats
+    for (const { type, top, left, diameter, rot } of [sortedSplats, sliced, fruits].flat()) {
       if (!imgSet[type]) continue;
       const img = imgSet[type];
       // Check if image is loaded and not broken
