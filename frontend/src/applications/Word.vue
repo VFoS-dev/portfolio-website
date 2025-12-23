@@ -68,16 +68,16 @@
 
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount, nextTick, watch } from 'vue';
-import PagedEditor from './WordComponents/PagedEditor/PagedEditor.vue';
-import MenuBar from './WordComponents/MenuBar.vue';
-import StandardToolbar from './WordComponents/StandardToolbar.vue';
-import FormattingToolbar from './WordComponents/FormattingToolbar.vue';
+import PagedEditor from './Word/PagedEditor/PagedEditor.vue';
+import MenuBar from './Word/MenuBar.vue';
+import StandardToolbar from './Word/StandardToolbar.vue';
+import FormattingToolbar from './Word/FormattingToolbar.vue';
 import { cubeStore } from '@/stores/cubeStore';
-import { useEditorCommands } from './WordComponents/composables/useEditorCommands.js';
-import { useFonts } from './WordComponents/composables/useFonts.js';
-import { useFileOperations } from './WordComponents/composables/useFileOperations.js';
-import { getState } from './WordComponents/PagedEditor/scripts/service.js';
-import { generateId, getPageContentHeight } from './WordComponents/PagedEditor/scripts/helpers.js';
+import { useEditorCommands } from './Word/composables/useEditorCommands.js';
+import { useFonts } from './Word/composables/useFonts.js';
+import { useFileOperations } from './Word/composables/useFileOperations.js';
+import { getState } from './Word/PagedEditor/scripts/service.js';
+import { generateId, getPageContentHeight } from './Word/PagedEditor/scripts/helpers.js';
 
 const props = defineProps({
   content: {
