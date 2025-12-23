@@ -9,14 +9,47 @@ export function setupSlashEffect(canvas) {
   let exiting = false;
   let tick = true;
 
+  // Initialize with current mouse position or center of screen
+  function initializePath() {
+    const { clientWidth, clientHeight } = document.documentElement;
+    const initialX = window.mouseX ?? clientWidth / 2;
+    const initialY = window.mouseY ?? clientHeight / 2;
+    
+    // Start with at least 2 points (required for drawing) at the current/cursor position
+    // Duplicate the point so there's always something to draw
+    path = [
+      { x: initialX, y: initialY },
+      { x: initialX, y: initialY }
+    ];
+  }
+
+  // Initialize path immediately
+  initializePath();
+
   function addVectorTouch(e) {
+    const newPoint = { x: e.targetTouches[0].clientX, y: e.targetTouches[0].clientY };
     if (path.length > TAIL_MAX) path.shift();
-    path = [{ x: e.targetTouches[0].clientX, y: e.targetTouches[0].clientY }, ...path];
+    path = [newPoint, ...path];
+    
+    // Ensure we always have at least 2 points for drawing
+    if (path.length === 1) {
+      path.push({ ...newPoint });
+    }
   }
 
   function addVector(e) {
+    // Store mouse position globally for initialization
+    window.mouseX = e.pageX;
+    window.mouseY = e.pageY;
+    
+    const newPoint = { x: e.pageX, y: e.pageY };
     if (path.length > TAIL_MAX) path.shift();
-    path = [{ x: e.pageX, y: e.pageY }, ...path];
+    path = [newPoint, ...path];
+    
+    // Ensure we always have at least 2 points for drawing
+    if (path.length === 1) {
+      path.push({ ...newPoint });
+    }
   }
 
   function drawSlice() {

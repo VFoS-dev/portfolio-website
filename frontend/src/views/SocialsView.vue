@@ -115,9 +115,36 @@ function pauseGifs(pause) {
   });
 }
 
+// Initialize slashEffect
+function initializeSlashEffect() {
+  if (!canvasRef.value) {
+    // If canvas isn't ready, try again on next tick
+    nextTick(() => {
+      if (canvasRef.value && !slashEffect) {
+        slashEffect = setupSlashEffect(canvasRef.value);
+      }
+    });
+    return;
+  }
+  
+  // If effect already exists, stop it first
+  if (slashEffect) {
+    slashEffect.stop();
+    slashEffect = null;
+  }
+  
+  // Initialize new effect
+  slashEffect = setupSlashEffect(canvasRef.value);
+}
+
 // Watch for socials active state changes
 watch(() => cubeStore.state.socials, (isActive, wasActive) => {
   pauseGifs(!isActive);
+  
+  // Ensure slashEffect is initialized when socials becomes active
+  if (isActive && !slashEffect) {
+    initializeSlashEffect();
+  }
   
   // If socials loses focus while game is active, return to menu
   if (!isActive && wasActive !== undefined && wasActive && gameStarted.value && !showMenu.value) {
@@ -126,9 +153,8 @@ watch(() => cubeStore.state.socials, (isActive, wasActive) => {
 }, { immediate: true });
 
 onMounted(() => {
-  if (canvasRef.value) {
-    slashEffect = setupSlashEffect(canvasRef.value);
-  }
+  // Initialize slashEffect when component mounts
+  initializeSlashEffect();
   // Initial pause state
   pauseGifs(!cubeStore.state.socials);
 });
@@ -136,6 +162,7 @@ onMounted(() => {
 onBeforeUnmount(() => {
   if (slashEffect) {
     slashEffect.stop();
+    slashEffect = null;
   }
 });
 
