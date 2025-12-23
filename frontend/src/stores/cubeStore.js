@@ -88,6 +88,17 @@ const useCubeStore = defineStore('cubeStore', {
       } else {
         this.current = this[name];
         this.updateFocus(name);
+        // Set expand to true after rotation completes
+        // If instant mode, expand immediately; otherwise wait for transition
+        if (this.state.instant) {
+          this.state.expand = true;
+        } else {
+          // Set expand after transition duration as a backup
+          // reset() will also set it when transition ends, but this ensures it happens
+          setTimeout(() => {
+            this.state.expand = true;
+          }, 500); // Match the transition duration (0.5s)
+        }
       }
       
       // Reset the resetting flag after navigation completes
