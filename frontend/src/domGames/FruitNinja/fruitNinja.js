@@ -66,6 +66,7 @@ export function fruitNinja(activePage = false, checkAchievement = () => {}, onLi
   let lives = 3;
   let score = 0;
   let frozen = false; // Freeze game state but keep drawing
+  let freezeDelay = 0; // Delay before freezing to show bomb explosion
   let onLivesChange = onLivesUpdate;
   let onGameOver = onGameEnd;
   let onScoreChange = onScoreUpdate;
@@ -109,54 +110,8 @@ export function fruitNinja(activePage = false, checkAchievement = () => {}, onLi
   function createScorchMarkImage() {
     const scorchImg = document.createElement('img');
     scorchImg.id = 'canvas-img';
-    // Create scorch mark using canvas (black/burnt appearance)
-    const canvas = document.createElement('canvas');
-    canvas.width = DIAMETER * 2.5;
-    canvas.height = DIAMETER * 2.5;
-    const ctx = canvas.getContext('2d');
-    
-    // Draw scorch mark (dark, charred appearance)
-    const gradient = ctx.createRadialGradient(
-      DIAMETER * 1.25, DIAMETER * 1.25, 0,
-      DIAMETER * 1.25, DIAMETER * 1.25, DIAMETER * 1.25
-    );
-    gradient.addColorStop(0, '#1a1a1a'); // Very dark center
-    gradient.addColorStop(0.2, '#2d2d2d'); // Dark gray
-    gradient.addColorStop(0.5, '#3d3d3d'); // Medium dark gray
-    gradient.addColorStop(0.8, '#4a4a4a'); // Lighter gray edges
-    gradient.addColorStop(1, 'rgba(74, 74, 74, 0)'); // Fade to transparent
-    
-    ctx.fillStyle = gradient;
-    ctx.beginPath();
-    ctx.arc(DIAMETER * 1.25, DIAMETER * 1.25, DIAMETER * 1.25, 0, Math.PI * 2);
-    ctx.fill();
-    
-    // Add some irregular char marks for texture
-    ctx.fillStyle = '#0a0a0a';
-    for (let i = 0; i < 12; i++) {
-      const angle = (Math.PI * 2 * i) / 12;
-      const distance = DIAMETER * (0.3 + Math.random() * 0.5);
-      const x = DIAMETER * 1.25 + Math.cos(angle) * distance;
-      const y = DIAMETER * 1.25 + Math.sin(angle) * distance;
-      const size = 3 + Math.random() * 5;
-      ctx.beginPath();
-      ctx.arc(x, y, size, 0, Math.PI * 2);
-      ctx.fill();
-    }
-    
-    // Add some darker spots for depth
-    ctx.fillStyle = '#000000';
-    for (let i = 0; i < 6; i++) {
-      const angle = Math.random() * Math.PI * 2;
-      const distance = DIAMETER * (0.2 + Math.random() * 0.4);
-      const x = DIAMETER * 1.25 + Math.cos(angle) * distance;
-      const y = DIAMETER * 1.25 + Math.sin(angle) * distance;
-      ctx.beginPath();
-      ctx.arc(x, y, 2, 0, Math.PI * 2);
-      ctx.fill();
-    }
-    
-    scorchImg.src = canvas.toDataURL();
+    // Load SVG scorch mark
+    scorchImg.src = '/images/socials/game/bomb-scorch.svg';
     return scorchImg;
   }
 
@@ -167,6 +122,7 @@ export function fruitNinja(activePage = false, checkAchievement = () => {}, onLi
     imgSet['bomb-scorch'] = createScorchMarkImage();
     gameState = true;
     frozen = false;
+    freezeDelay = 0;
     lives = 3;
     score = 0;
     // Reset game arrays
@@ -322,11 +278,6 @@ export function fruitNinja(activePage = false, checkAchievement = () => {}, onLi
       if (fruit.isBomb) {
         lives--;
         if (onLivesChange) onLivesChange(lives);
-        if (lives <= 0) {
-          gameState = false;
-          frozen = true; // Freeze the game state
-          if (onGameOver) onGameOver();
-        }
         // Create scorch mark effect (no separation, just a burnt mark)
         const bomb = fruits.splice(i, 1)[0];
         
@@ -336,6 +287,18 @@ export function fruitNinja(activePage = false, checkAchievement = () => {}, onLi
           type: 'bomb-scorch',
           tick: 400, // Longer lasting scorch mark
         });
+        
+        if (lives <= 0) {
+          gameState = false;
+          // Delay freezing to show bomb explosion animation
+          freezeDelay = 300; // 300ms delay to see the explosion
+          if (onGameOver) {
+            // Delay the game over callback slightly
+            setTimeout(() => {
+              if (onGameOver) onGameOver();
+            }, freezeDelay);
+          }
+        }
         continue;
       }
 
@@ -452,17 +415,28 @@ export function fruitNinja(activePage = false, checkAchievement = () => {}, onLi
   function gameTick(delta) {
     deltaTime = delta;
 
-    if ((tick = !tick) && !frozen) path.pop();
+    // Handle freeze delay for bomb explosion
+    if (freezeDelay > 0) {
+      freezeDelay -= delta;
+      if (freezeDelay <= 0) {
+        frozen = true; // Freeze after delay
+      }
+    }
+
+    if ((tick = !tick) && !frozen && freezeDelay <= 0) path.pop();
 
     const { clientWidth, clientHeight } = document.documentElement;
     canvas.width = clientWidth;
     canvas.height = clientHeight;
     ctx.clearRect(0, 0, clientWidth, clientHeight);
 
-    // Only update if not frozen
-    if (!frozen) {
+    // Update animations during freeze delay (to show bomb explosion), but stop spawning
+    if (!frozen || freezeDelay > 0) {
       updateData();
-      if (gameState) populateFruit();
+      // Only spawn new fruits if game is active and not in freeze delay
+      if (gameState && freezeDelay <= 0) {
+        populateFruit();
+      }
     }
     // Always draw the current state
     drawFruit();
@@ -479,6 +453,10 @@ export function fruitNinja(activePage = false, checkAchievement = () => {}, onLi
     gameStart,
     dismount,
     pause: () => {
+      // Don't pause if there's a freeze delay active (bomb explosion animation)
+      if (freezeDelay > 0) {
+        return;
+      }
       if (loopControl) {
         loopControl.stop();
       }

@@ -116,8 +116,13 @@ function pauseGifs(pause) {
 }
 
 // Watch for socials active state changes
-watch(() => cubeStore.state.socials, (isActive) => {
+watch(() => cubeStore.state.socials, (isActive, wasActive) => {
   pauseGifs(!isActive);
+  
+  // If socials loses focus while game is active, return to menu
+  if (!isActive && wasActive !== undefined && wasActive && gameStarted.value && !showMenu.value) {
+    showMenu.value = true;
+  }
 }, { immediate: true });
 
 onMounted(() => {

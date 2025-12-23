@@ -1,6 +1,6 @@
 <template>
   <canvas ref="canvasRef" :class="{ 'menu-visible': props.showMenu }"></canvas>
-  <div class="score-display">
+  <div v-if="cubeStore.state.socials" class="score-display">
     <div class="score">Score: {{ score }}</div>
     <div class="high-score">High Score: {{ highScore }}</div>
   </div>
