@@ -1,11 +1,12 @@
 <template>
   <canvas ref="canvasRef" :class="{ 'menu-visible': props.showMenu }"></canvas>
-  <div v-if="score" class="score-display">
-    <div class="score"> Score: {{ score }}</div>
-    </div>
-    <div v-if="lives > 0" class="lives-display">
-      <span v-for="i in lives" :key="i" class="life">❤️</span>
-    </div>
+  <div class="score-display">
+    <div class="score">Score: {{ score }}</div>
+    <div class="high-score">High Score: {{ highScore }}</div>
+  </div>
+  <div v-if="lives > 0" class="lives-display">
+    <span v-for="i in lives" :key="i" class="life">❤️</span>
+  </div>
 </template>
 
 <script setup>
@@ -22,6 +23,22 @@ const props = defineProps({
 const game = ref();
 const lives = ref(3);
 const score = ref(0);
+const highScore = ref(0);
+
+const STORAGE_KEY = 'fruitNinjaHighScore';
+
+// Load high score from localStorage on mount
+function loadHighScore() {
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved) {
+    highScore.value = parseInt(saved, 10) || 0;
+  }
+}
+
+// Save high score to localStorage
+function saveHighScore() {
+  localStorage.setItem(STORAGE_KEY, highScore.value.toString());
+}
 
 function handleLivesUpdate(newLives) {
   lives.value = newLives;
@@ -29,11 +46,21 @@ function handleLivesUpdate(newLives) {
 
 function handleScoreUpdate(newScore) {
   score.value = newScore;
+  // Update high score if current score is higher
+  if (newScore > highScore.value) {
+    highScore.value = newScore;
+    saveHighScore();
+  }
 }
 
 function handleGameOver() {
   lives.value = 0;
   game.value?.pause?.();
+  // Check if final score is a new high score
+  if (score.value > highScore.value) {
+    highScore.value = score.value;
+    saveHighScore();
+  }
   cubeStore.activeGame(false); // Re-enable WASD when game ends
   // Notify parent to show menu
   if (props.onGameOver) {
@@ -54,6 +81,7 @@ function handleKeyPress(e) {
 }
 
 onMounted(() => {
+  loadHighScore();
   if (canvasRef.value) {
     game.value = fruitNinja(true, () => { }, handleLivesUpdate, handleGameOver, handleScoreUpdate);
     game.value.setup(canvasRef.value);
@@ -84,6 +112,7 @@ watch(
           game.value.gameStart();
           lives.value = 3;
           score.value = 0;
+          loadHighScore(); // Reload high score in case it was updated
         }
         if (state && lives.value > 0) {
           game.value.unpause?.();
@@ -133,9 +162,13 @@ canvas.menu-visible {
   right: 20px;
   z-index: 10;
   text-align: right;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
-.score {
+.score,
+.high-score {
   color: #fff;
   font-family: go3v2, sans-serif;
   font-size: 32px;
