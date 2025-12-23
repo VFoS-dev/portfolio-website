@@ -128,17 +128,33 @@ section{
 }
 
 #mobile-nav {
-  position: absolute;
+  position: fixed;
   top: 0;
   right: 0;
-  width: min(100%, 300px);
-  padding: 1rem;
-  background: grey;
+  width: min(85%, 320px);
+  padding: 2rem 1.5rem;
+  padding-top: 5rem;
+  background: linear-gradient(135deg, rgba(26, 26, 46, 0.98) 0%, rgba(22, 33, 62, 0.98) 100%);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   z-index: var(--nav-mobile-z);
-  height: 100%;
-  border-left: black solid 1px;
+  height: 100vh;
+  box-shadow: -4px 0 24px rgba(0, 0, 0, 0.5), -2px 0 8px rgba(0, 0, 0, 0.3);
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
   transform: translateX(100%);
-  transition: transform 0.5s;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow-y: auto;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 80px;
+    background: linear-gradient(180deg, rgba(1, 1, 1, 0.4) 0%, transparent 100%);
+    pointer-events: none;
+  }
 
   &.open {
     transform: translateX(0%);
@@ -146,7 +162,22 @@ section{
 
   ul {
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    transition: transform 0.2s ease;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &:active {
+      transform: translateX(-4px);
+    }
   }
 }
 
@@ -164,10 +195,10 @@ section{
   cursor: pointer;
   z-index: var(--nav-backdrop-z);
   position: absolute;
-  background: black;
+  background: rgba(0, 0, 0, 0.6);
   width: 100dvw;
   height: 100dvh;
-  transition: opacity 0.5s;
+  transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   opacity: 0;
 }
 
@@ -179,7 +210,8 @@ section{
 
 #app:has(#mobile-nav.open)::before {
   pointer-events: all;
-  opacity: 0.75;
-  backdrop-filter: blur(100px);
+  opacity: 1;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 </style>
