@@ -14,6 +14,7 @@ const useProjectStore = defineStore('projectStore', {
         rarity: null,
         type: null,
         search: '',
+        showDeprecated: false,
       },
     };
   },
@@ -23,6 +24,11 @@ const useProjectStore = defineStore('projectStore', {
     },
     getFilteredProjects(state) {
       let filtered = [...state.projects];
+
+      // Filter out deprecated projects unless showDeprecated is true
+      if (!state.filters.showDeprecated) {
+        filtered = filtered.filter(p => !p.deprecated);
+      }
 
       // Filter by company
       if (state.filters.company) {
@@ -64,8 +70,8 @@ const useProjectStore = defineStore('projectStore', {
       return [
         { label: 'All', value: null },
         { label: 'VFoS', value: 'VFoS' },
-        { label: 'Matraex', value: 'matraex' },
-        { label: 'GIMM Works', value: 'gimmworks' },
+        { label: 'Matraex Inc.', value: 'Matraex Inc.' },
+        { label: 'GIMM Works', value: 'GIMM Works' },
       ];
     },
     getRarities() {
@@ -74,8 +80,12 @@ const useProjectStore = defineStore('projectStore', {
         { label: 'Common', value: 'common' },
         { label: 'Uncommon', value: 'uncommon' },
         { label: 'Rare', value: 'rare' },
-        { label: 'Holo Rare', value: 'holo-rare' },
+        { label: 'Mythic', value: 'mythic' },
       ];
+    },
+    getHighestCardNumber(state) {
+      if (state.projects.length === 0) return 0;
+      return Math.max(...state.projects.map(p => p.cardNumber || 0));
     },
   },
   actions: {
@@ -88,6 +98,7 @@ const useProjectStore = defineStore('projectStore', {
         rarity: null,
         type: null,
         search: '',
+        showDeprecated: false,
       };
     },
     updateScroll({ scroll, percent, mount }) {

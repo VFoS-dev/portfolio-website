@@ -1,25 +1,8 @@
 <template>
   <div class="collection-background"></div>
   <Wrapper :scroll-top="projectStore.scroll" @scroll="projectStore.updateScroll">
-    <div class="pokemon-collection">
+    <div class="trading-card-collection">
       <div class="collection-container">
-        <!-- Collection Header -->
-        <div class="collection-header">
-          <h1>Project Collection</h1>
-          <CollectionStats
-            :projects="projectStore.getProjects"
-            :filtered-count="projectStore.getFilteredProjects.length"
-          />
-        </div>
-
-        <!-- Filters -->
-        <CollectionFilters
-          :categories="projectStore.getCompanies"
-          :rarities="projectStore.getRarities"
-          :available-types="projectStore.getAvailableTypes"
-          @filter="handleFilter"
-        />
-
         <!-- Card Grid -->
         <div class="card-binder" :class="{ blurred: selectedProject }">
           <ProjectCard
@@ -35,8 +18,7 @@
 
         <!-- Empty State -->
         <div v-if="projectStore.getFilteredProjects.length === 0" class="empty-state">
-          <p>No projects found matching your filters.</p>
-          <button class="clear-button" @click="clearFilters">Clear Filters</button>
+          <p>No projects found.</p>
         </div>
       </div>
     </div>
@@ -119,19 +101,9 @@
 import { ref } from 'vue';
 import { projectStore } from '@/stores/projectStore';
 import ProjectCard from '@/components/Projects/ProjectCard.vue';
-import CollectionFilters from '@/components/Projects/CollectionFilters.vue';
-import CollectionStats from '@/components/Projects/CollectionStats.vue';
 import Wrapper from '@/components/Wrapper.vue';
 
 const selectedProject = ref(null);
-
-function handleFilter(filters) {
-  projectStore.setFilters(filters);
-}
-
-function clearFilters() {
-  projectStore.clearFilters();
-}
 
 function selectCard(project) {
   selectedProject.value = project;
@@ -186,7 +158,7 @@ function getLinkLabel(key) {
   z-index: 0;
 }
 
-.pokemon-collection {
+.trading-card-collection {
   width: 100%;
   min-height: 100%;
   position: relative;

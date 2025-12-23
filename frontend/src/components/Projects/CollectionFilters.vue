@@ -58,6 +58,17 @@
       />
     </div>
 
+    <div class="filter-group">
+      <label class="filter-checkbox">
+        <input
+          v-model="showDeprecated"
+          type="checkbox"
+          @change="updateDeprecated"
+        />
+        <span>Show Deprecated Projects</span>
+      </label>
+    </div>
+
     <button v-if="hasActiveFilters" class="clear-filters" @click="clearFilters">
       Clear Filters
     </button>
@@ -73,8 +84,8 @@ const props = defineProps({
     default: () => [
       { label: 'All', value: null },
       { label: 'Gen 1: Personal', value: 'personal' },
-      { label: 'Gen 2: Matraex', value: 'matraex' },
-      { label: 'Gen 3: GIMM Works', value: 'gimmworks' },
+      { label: 'Gen 2: Matraex Inc.', value: 'Matraex Inc.' },
+      { label: 'Gen 3: GIMM Works', value: 'GIMM Works' },
       { label: 'Gen 4: Games', value: 'games' },
     ],
   },
@@ -85,7 +96,7 @@ const props = defineProps({
       { label: 'Common', value: 'common' },
       { label: 'Uncommon', value: 'uncommon' },
       { label: 'Rare', value: 'rare' },
-      { label: 'Holo Rare', value: 'holo-rare' },
+      { label: 'Mythic', value: 'mythic' },
     ],
   },
   availableTypes: {
@@ -100,9 +111,10 @@ const selectedCategory = ref(null);
 const selectedRarity = ref(null);
 const selectedType = ref(null);
 const searchQuery = ref('');
+const showDeprecated = ref(false);
 
 const hasActiveFilters = computed(() => {
-  return selectedCategory.value !== null || selectedRarity.value !== null || selectedType.value !== null || searchQuery.value !== '';
+  return selectedCategory.value !== null || selectedRarity.value !== null || selectedType.value !== null || searchQuery.value !== '' || showDeprecated.value;
 });
 
 function updateCategory(category) {
@@ -124,11 +136,16 @@ function handleSearch() {
   emitFilter();
 }
 
+function updateDeprecated() {
+  emitFilter();
+}
+
 function clearFilters() {
   selectedCategory.value = null;
   selectedRarity.value = null;
   selectedType.value = null;
   searchQuery.value = '';
+  showDeprecated.value = false;
   emitFilter();
 }
 
@@ -138,6 +155,7 @@ function emitFilter() {
     rarity: selectedRarity.value,
     type: selectedType.value,
     search: searchQuery.value.toLowerCase(),
+    showDeprecated: showDeprecated.value,
   });
 }
 </script>
@@ -214,7 +232,7 @@ function emitFilter() {
     border-color: #2196f3;
   }
 
-  &.rarity-holo-rare.active {
+  &.rarity-mythic.active {
     background: #9c27b0;
     border-color: #9c27b0;
     box-shadow: 0 2px 8px rgba(156, 39, 176, 0.4);
@@ -237,6 +255,27 @@ function emitFilter() {
   &:focus {
     outline: none;
     border-color: #2196f3;
+  }
+}
+
+.filter-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: #333;
+  user-select: none;
+
+  input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: #2196f3;
+  }
+
+  span {
+    font-weight: 500;
   }
 }
 

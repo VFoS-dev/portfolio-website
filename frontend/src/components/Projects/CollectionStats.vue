@@ -44,7 +44,7 @@ const rarityCounts = computed(() => {
     common: 0,
     uncommon: 0,
     rare: 0,
-    'holo-rare': 0,
+    'mythic': 0,
   };
 
   props.projects.forEach(project => {
@@ -61,7 +61,7 @@ function getRarityLabel(rarity) {
     common: 'Common',
     uncommon: 'Uncommon',
     rare: 'Rare',
-    'holo-rare': 'Holo',
+    'mythic': 'Mythic',
   };
   return labels[rarity] || rarity;
 }
@@ -123,7 +123,7 @@ function getRarityLabel(rarity) {
     background: #2196f3;
   }
 
-  &.rarity-holo-rare {
+  &.rarity-mythic {
     background: #9c27b0;
     box-shadow: 0 2px 4px rgba(156, 39, 176, 0.3);
   }

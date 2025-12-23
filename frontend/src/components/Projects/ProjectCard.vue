@@ -1,84 +1,54 @@
 <template>
-  <div
-    ref="cardRef"
-    :class="['pokemon-card', `mana-${getPrimaryManaType()}`, { holo: rarity === 'holo-rare', floating: isFloating, selected: isSelected }]"
-    :style="cardStyle"
-    @click="handleClick"
-    @mouseenter="handleMouseEnter"
-    @mouseleave="handleMouseLeave"
-    @mousemove="handleMouseMove"
-  >
+  <div ref="cardRef"
+    :class="['trading-card', `mana-${getPrimaryManaType()}`, { foil: true, 'rainbow-foil': isPersonal, deprecated: isDeprecated, floating: isFloating, selected: isSelected }]"
+    :style="cardStyle" @click="handleClick" @mouseenter="handleMouseEnter" @mouseleave="handleMouseLeave"
+    @mousemove="handleMouseMove">
     <div class="card-inner">
       <!-- Front of Card -->
       <div class="card-front">
         <div class="card-border">
           <!-- Foil effect overlay for entire card -->
-          <div
-            v-if="rarity === 'holo-rare'"
-            class="holo-shimmer"
-            :style="holoStyle"
-          ></div>
-          
-          <!-- Ornate corner decorations -->
-          <div class="corner-decoration corner-tl"></div>
-          <div class="corner-decoration corner-tr"></div>
-          <div class="corner-decoration corner-bl"></div>
-          <div class="corner-decoration corner-br"></div>
-          
+          <div class="foil-shimmer" :style="foilStyle"></div>
+
           <!-- Card Header with Mana Cost -->
           <div class="card-header">
             <div ref="nameBarRef" class="card-name-bar">
               <span class="card-name" :style="nameStyle">{{ project.title }}</span>
             </div>
             <div class="mana-costs">
-              <div
-                v-if="project.stack.length > 3"
-                class="mana-cost mana-generic"
-              >
+              <div v-if="project.stack.length > 3" class="mana-cost mana-generic">
                 <span class="mana-symbol-text">{{ project.stack.length - 3 }}</span>
               </div>
-              <div
-                v-for="(tech, index) in project.stack.slice(0, 3)"
-                :key="index"
-                :class="['mana-cost', getTypeClass(tech)]"
-              >
+              <div v-for="(tech, index) in project.stack.slice(0, 3)" :key="index"
+                :class="['mana-cost', getTypeClass(tech)]">
                 <img :src="getTechIcon(tech)" :alt="tech" class="tech-icon" />
               </div>
             </div>
           </div>
-          
+
           <!-- Artwork Area -->
           <div class="card-art-container">
             <img :src="project.img" :alt="project.title" class="card-image" />
           </div>
-           
+
           <!-- Type Line -->
           <div class="type-line">
-            <span class="card-type">{{ getPrimaryType() }} — {{ getSecondaryType() }}</span>
-            <img :src="getCompanyLogo()" :alt="project.company" class="company-logo" />
+            <span class="card-type">{{ project.type }} — {{ project.secondaryType }}</span>
+            <img :src="project.companyLogo" :alt="project.company" class="company-logo" />
           </div>
-          
+
           <!-- Text Box -->
           <div class="text-box">
-            <div class="text-box-inner">
               <div class="ability-text">
-                <div class="tech-stack">
-                  <span
-                    v-for="(type, index) in project.stack.slice(0, 3)"
-                    :key="index"
-                    :class="['mana-symbol', getTypeClass(type)]"
-                  >
-                    <img :src="getTechIcon(type)" :alt="type" class="tech-icon-small" />
-                  </span>
-                </div>
+                {{ projectSummary }}
               </div>
-            </div>
           </div>
-          
+
           <!-- Status Bar -->
           <div class="status-bar">
             <span class="rarity-badge">{{ getRarityLabel() }}</span>
-            <span class="card-number-bottom">#{{ cardNumber }}</span>
+            <span v-if="isDeprecated" class="deprecated-badge">DEPRECATED</span>
+            <span class="card-number-bottom">#{{ formattedCardNumber }}</span>
             <span class="set-name">{{ project.company || 'VFoS' }}</span>
             <span class="date-range">{{ formatDateRange() }}</span>
           </div>
@@ -90,6 +60,7 @@
 
 <script setup>
 import { ref, computed, onBeforeUnmount, watch, nextTick, onMounted } from 'vue';
+import { projectStore } from '@/stores/projectStore';
 
 const props = defineProps({
   project: {
@@ -99,7 +70,7 @@ const props = defineProps({
   rarity: {
     type: String,
     default: 'common',
-    validator: (value) => ['common', 'uncommon', 'rare', 'holo-rare'].includes(value),
+    validator: (value) => ['common', 'uncommon', 'rare', 'mythic'].includes(value),
   },
   cardNumber: {
     type: Number,
@@ -116,6 +87,104 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['click']);
+
+// Calculate padding based on highest card number
+const formattedCardNumber = computed(() => {
+  const maxCardNumber = projectStore.getHighestCardNumber;
+  
+  // Calculate number of digits needed
+  const digits = maxCardNumber > 0 ? Math.floor(Math.log10(maxCardNumber)) + 1 : 1;
+  
+  // Format with appropriate padding
+  return String(props.cardNumber).padStart(digits, '0');
+});
+
+// Check if card is personal
+const isPersonal = computed(() => {
+  return props.project.secondaryType === 'Personal';
+});
+
+// Check if card is deprecated
+const isDeprecated = computed(() => {
+  return props.project.deprecated === true;
+});
+
+// Get project summary (use summary field if available, otherwise truncate description)
+const projectSummary = computed(() => {
+  if (props.project.summary) {
+    return props.project.summary;
+  }
+  
+  // Use description and truncate to fit card
+  const description = props.project.description || '';
+  const maxLength = 120; // Adjust based on card size
+  
+  if (description.length <= maxLength) {
+    return description;
+  }
+  
+  // Truncate and add ellipsis
+  return description.substring(0, maxLength).trim() + '...';
+});
+
+// Calculate project duration in months
+function calculateDurationMonths(startDateStr, endDateStr) {
+  if (!startDateStr) return 0;
+  
+  // Parse start date
+  const startDate = new Date(startDateStr);
+  if (isNaN(startDate.getTime())) return 0;
+  
+  // Parse end date (or use current date if "Present")
+  let endDate;
+  if (!endDateStr || endDateStr.toLowerCase().includes('present')) {
+    endDate = new Date();
+  } else {
+    endDate = new Date(endDateStr);
+    if (isNaN(endDate.getTime())) {
+      endDate = new Date();
+    }
+  }
+  
+  // Calculate months difference
+  const yearsDiff = endDate.getFullYear() - startDate.getFullYear();
+  const monthsDiff = endDate.getMonth() - startDate.getMonth();
+  let totalMonths = yearsDiff * 12 + monthsDiff;
+  
+  // If end date day is before start date day, we haven't completed that month yet
+  if (endDate.getDate() < startDate.getDate()) {
+    totalMonths--;
+  }
+  
+  // Always return at least 0, but if dates are in the same month, return 1 if end is after start
+  if (totalMonths === 0 && endDate >= startDate) {
+    // Check if it's at least a few days (consider it a month if it's been at least 15 days)
+    const daysDiff = Math.floor((endDate - startDate) / (1000 * 60 * 60 * 24));
+    if (daysDiff >= 15) {
+      return 1;
+    }
+  }
+  
+  return Math.max(0, totalMonths);
+}
+
+// Calculate rarity based on duration in months
+const calculatedRarity = computed(() => {
+  const months = calculateDurationMonths(props.project.startDate, props.project.endDate);
+  
+  if (months >= 12) {
+    return 'mythic';
+  } else if (months >= 6) {
+    return 'rare';
+  } else if (months >= 3) {
+    return 'uncommon';
+  } else {
+    return 'common';
+  }
+});
+
+// Use calculated rarity instead of prop
+const effectiveRarity = computed(() => calculatedRarity.value);
 
 const cardRef = ref(null);
 const nameBarRef = ref(null);
@@ -152,45 +221,56 @@ const cardStyle = computed(() => {
   };
 });
 
-// Calculate holo shimmer position based on mouse
-const holoStyle = computed(() => {
-  if (props.rarity !== 'holo-rare') {
-    return {
-      opacity: 0,
-      transition: 'opacity 1.5s ease-out, background 1.5s ease-out',
-    };
-  }
-
+// Calculate foil shimmer position based on mouse
+const foilStyle = computed(() => {
   // Convert mouse position (0-1) to gradient position
   // Use current position if hovering, otherwise use last saved position
   const currentX = mouseX.value;
   const currentY = mouseY.value;
-  
+
   const angle = Math.atan2(currentY - 0.5, currentX - 0.5) * (180 / Math.PI) + 90;
   const distance = Math.sqrt(Math.pow(currentX - 0.5, 2) + Math.pow(currentY - 0.5, 2)) * 2;
 
-  // Rainbow colors for foil effect - wider spread
   const centerPos = distance * 50;
   const spread = 40; // Wider spread for more coverage
-  
-  const rainbowGradient = `linear-gradient(${angle}deg, 
-    transparent 0%, 
-    transparent ${Math.max(0, centerPos - spread - 10)}%, 
-    rgba(255, 50, 180, 0.6) ${Math.max(0, centerPos - spread)}%, 
-    rgba(255, 120, 50, 0.7) ${Math.max(0, centerPos - spread * 0.6)}%, 
-    rgba(255, 220, 80, 0.8) ${Math.max(0, centerPos - spread * 0.3)}%, 
-    rgba(255, 255, 150, 0.85) ${centerPos}%, 
-    rgba(80, 255, 150, 0.8) ${Math.min(100, centerPos + spread * 0.3)}%, 
-    rgba(50, 180, 255, 0.7) ${Math.min(100, centerPos + spread * 0.6)}%, 
-    rgba(180, 50, 255, 0.6) ${Math.min(100, centerPos + spread)}%, 
-    transparent ${Math.min(100, centerPos + spread + 10)}%, 
-    transparent 100%)`;
+
+  let gradient;
+
+  if (isPersonal.value) {
+    // Rainbow colors for personal cards
+    gradient = `linear-gradient(${angle}deg, 
+      transparent 0%, 
+      transparent ${Math.max(0, centerPos - spread - 10)}%, 
+      rgba(255, 50, 180, 0.6) ${Math.max(0, centerPos - spread)}%, 
+      rgba(255, 120, 50, 0.7) ${Math.max(0, centerPos - spread * 0.6)}%, 
+      rgba(255, 220, 80, 0.8) ${Math.max(0, centerPos - spread * 0.3)}%, 
+      rgba(255, 255, 150, 0.85) ${centerPos}%, 
+      rgba(80, 255, 150, 0.8) ${Math.min(100, centerPos + spread * 0.3)}%, 
+      rgba(50, 180, 255, 0.7) ${Math.min(100, centerPos + spread * 0.6)}%, 
+      rgba(180, 50, 255, 0.6) ${Math.min(100, centerPos + spread)}%, 
+      transparent ${Math.min(100, centerPos + spread + 10)}%, 
+      transparent 100%)`;
+  } else {
+    // Silver/blue foil for professional cards
+    gradient = `linear-gradient(${angle}deg, 
+      transparent 0%, 
+      transparent ${Math.max(0, centerPos - spread - 10)}%, 
+      rgba(200, 220, 255, 0.5) ${Math.max(0, centerPos - spread)}%, 
+      rgba(220, 240, 255, 0.6) ${Math.max(0, centerPos - spread * 0.6)}%, 
+      rgba(240, 250, 255, 0.7) ${Math.max(0, centerPos - spread * 0.3)}%, 
+      rgba(255, 255, 255, 0.75) ${centerPos}%, 
+      rgba(240, 250, 255, 0.7) ${Math.min(100, centerPos + spread * 0.3)}%, 
+      rgba(220, 240, 255, 0.6) ${Math.min(100, centerPos + spread * 0.6)}%, 
+      rgba(200, 220, 255, 0.5) ${Math.min(100, centerPos + spread)}%, 
+      transparent ${Math.min(100, centerPos + spread + 10)}%, 
+      transparent 100%)`;
+  }
 
   // Base opacity when not hovering, higher when hovering
-  const distanceOpacity = isHovering.value ? Math.min(1, distance * 2) : 0.25;
+  const distanceOpacity = isHovering.value ? Math.min(1, distance * 2) : 0.2;
 
   return {
-    background: rainbowGradient,
+    background: gradient,
     opacity: distanceOpacity,
     transition: 'opacity 1.5s ease-in-out, background 0.3s ease',
   };
@@ -358,16 +438,16 @@ function getRarityLabel() {
     'common': 'C',
     'uncommon': 'U',
     'rare': 'R',
-    'holo-rare': 'HR',
+    'mythic': 'M',
   };
-  return rarityMap[props.rarity] || 'C';
+  return rarityMap[effectiveRarity.value] || 'C';
 }
 
 
 function formatDateRange() {
   const start = props.project.startDate || '';
   const end = props.project.endDate || '';
-  
+
   // Extract year from dates if they're full dates
   const getYear = (dateStr) => {
     if (!dateStr) return '';
@@ -378,10 +458,10 @@ function formatDateRange() {
     }
     return dateStr;
   };
-  
+
   const startYear = getYear(start);
   const endYear = end.toLowerCase().includes('present') ? 'Present' : getYear(end);
-  
+
   if (startYear && endYear) {
     return `${startYear} - ${endYear}`;
   }
@@ -391,66 +471,10 @@ function formatDateRange() {
   return '';
 }
 
-function getPrimaryType() {
-  // Primary type: Personal or Professional
-  const company = props.project.company || '';
-  if (company === 'gimmworks' || company === 'matraex') {
-    return 'Professional';
-  }
-  // Everything else (VFoS) is personal
-  return 'Personal';
-}
-
-function getCompanyLogo() {
-  const company = props.project.company || 'VFoS';
-  const logoMap = {
-    'VFoS': '/images/companies/vfos.svg',
-    'matraex': '/images/companies/matraex.png',
-    'gimmworks': '/images/companies/gimmworks.png',
-    'GIMM Works': '/images/companies/gimmworks.png',
-  };
-  // Fallback to webp if png doesn't exist
-  if (company === 'matraex' && !logoMap['matraex']) {
-    return '/images/projects/Matraex.webp';
-  }
-  return logoMap[company] || logoMap['VFoS'];
-}
-
-function getSecondaryType() {
-  // Secondary type: Game, Website, App, etc.
-  // Check if project has a type field, otherwise infer from stack
-  if (props.project.type) {
-    const typeMap = {
-      website: 'Website',
-      webapp: 'Web App',
-      app: 'App',
-      game: 'Game',
-      tool: 'Tool',
-      api: 'API',
-      other: 'Project',
-    };
-    return typeMap[props.project.type.toLowerCase()] || props.project.type;
-  }
-  
-  // Infer from tech stack
-  const stack = props.project.stack.map(s => s.toLowerCase()).join(' ');
-  if (stack.includes('unity') || stack.includes('unreal') || stack.includes('game') || stack.includes('adobe animate') || stack.includes('flash')) {
-    return 'Game';
-  }
-  if (stack.includes('react native') || stack.includes('swift') || stack.includes('mobile')) {
-    return 'App';
-  }
-  if (stack.includes('react') || stack.includes('vue') || stack.includes('html') || stack.includes('website')) {
-    return 'Website';
-  }
-  
-  return 'Project';
-}
-
 function getTechIcon(tech) {
   // Return path to SVG icon for tech stack based on their logos
   const lowerTech = tech.toLowerCase();
-  
+
   // React - Atom symbol
   if (lowerTech.includes('react')) {
     if (lowerTech.includes('native')) {
@@ -458,32 +482,32 @@ function getTechIcon(tech) {
     }
     return '/images/tech-icons/react.svg';
   }
-  
+
   // Vue - V shape
   if (lowerTech.includes('vue')) {
     return '/images/tech-icons/vue.svg';
   }
-  
+
   // JavaScript - JS letters
   if (lowerTech.includes('javascript') || lowerTech.includes('js')) {
     return '/images/tech-icons/javascript.svg';
   }
-  
+
   // Python - Snake
   if (lowerTech.includes('python')) {
     return '/images/tech-icons/python.svg';
   }
-  
+
   // C++ - C with plus
   if (lowerTech.includes('c++')) {
     return '/images/tech-icons/cpp.svg';
   }
-  
+
   // C# - C with sharp
   if (lowerTech.includes('c#')) {
     return '/images/tech-icons/csharp.svg';
   }
-  
+
   // Unity - Cube
   if (lowerTech.includes('unity')) {
     if (lowerTech.includes('webgl')) {
@@ -491,17 +515,17 @@ function getTechIcon(tech) {
     }
     return '/images/tech-icons/unity.svg';
   }
-  
+
   // Unreal Engine - U shape
   if (lowerTech.includes('unreal')) {
     return '/images/tech-icons/unreal.svg';
   }
-  
+
   // PHP - Elephant
   if (lowerTech.includes('php')) {
     return '/images/tech-icons/php.svg';
   }
-  
+
   // SQL - Database
   if (lowerTech.includes('sql')) {
     if (lowerTech.includes('sqlite')) {
@@ -509,12 +533,12 @@ function getTechIcon(tech) {
     }
     return '/images/tech-icons/sql.svg';
   }
-  
+
   // Blender - B logo
   if (lowerTech.includes('blender')) {
     return '/images/tech-icons/blender.svg';
   }
-  
+
   // HTML - H with brackets
   if (lowerTech.includes('html')) {
     if (lowerTech.includes('canvas')) {
@@ -522,87 +546,87 @@ function getTechIcon(tech) {
     }
     return '/images/tech-icons/html.svg';
   }
-  
+
   // CSS - C with brackets
   if (lowerTech.includes('css')) {
     return '/images/tech-icons/css.svg';
   }
-  
+
   // Express.js - E
   if (lowerTech.includes('express')) {
     return '/images/tech-icons/express.svg';
   }
-  
+
   // MongoDB - Leaf
   if (lowerTech.includes('mongo')) {
     return '/images/tech-icons/mongodb.svg';
   }
-  
+
   // Firebase - Flame
   if (lowerTech.includes('firebase')) {
     return '/images/tech-icons/firebase.svg';
   }
-  
+
   // Swift - Bird
   if (lowerTech.includes('swift')) {
     return '/images/tech-icons/swift.svg';
   }
-  
+
   // Socket.io - S
   if (lowerTech.includes('socket')) {
     return '/images/tech-icons/socketio.svg';
   }
-  
+
   // AWS S3 - Cloud
   if (lowerTech.includes('aws') || lowerTech.includes('s3')) {
     return '/images/tech-icons/aws.svg';
   }
-  
+
   // Krita - K
   if (lowerTech.includes('krita')) {
     return '/images/tech-icons/krita.svg';
   }
-  
+
   // Substance Painter - Brush
   if (lowerTech.includes('substance')) {
     return '/images/tech-icons/substance.svg';
   }
-  
+
   // Meteor - Star
   if (lowerTech.includes('meteor')) {
     return '/images/tech-icons/meteor.svg';
   }
-  
+
   // JQuery - JQ
   if (lowerTech.includes('jquery')) {
     return '/images/tech-icons/jquery.svg';
   }
-  
+
   // OneSignal - 1S
   if (lowerTech.includes('onesignal')) {
     return '/images/tech-icons/onesignal.svg';
   }
-  
+
   // Stripe - S
   if (lowerTech.includes('stripe')) {
     return '/images/tech-icons/stripe.svg';
   }
-  
+
   // Markdown - M
   if (lowerTech.includes('markdown')) {
     return '/images/tech-icons/markdown.svg';
   }
-  
+
   // Algorithm - A
   if (lowerTech.includes('algorithm')) {
     return '/images/tech-icons/algorithm.svg';
   }
-  
+
   // Flash/Adobe Animate - Lightning
   if (lowerTech.includes('flash') || lowerTech.includes('animate') || lowerTech.includes('actionscript')) {
     return '/images/tech-icons/flash.svg';
   }
-  
+
   // Default - Return a placeholder or first letter
   // For now, return a generic icon path (you could create a default.svg)
   return '/images/tech-icons/markdown.svg'; // Using markdown as fallback
@@ -610,7 +634,7 @@ function getTechIcon(tech) {
 </script>
 
 <style lang="less" scoped>
-.pokemon-card {
+.trading-card {
   width: 100%;
   max-width: 280px;
   height: 390px;
@@ -618,13 +642,13 @@ function getTechIcon(tech) {
   cursor: pointer;
   margin: 1rem;
 
-  &.holo {
+  &.foil {
     .card-border {
       position: relative;
       overflow: hidden;
     }
 
-    .holo-shimmer {
+    .foil-shimmer {
       position: absolute;
       top: 0;
       left: 0;
@@ -634,7 +658,6 @@ function getTechIcon(tech) {
       z-index: 10;
       mix-blend-mode: overlay;
       border-radius: 10px;
-      opacity: 0;
     }
   }
 
@@ -653,6 +676,20 @@ function getTechIcon(tech) {
     z-index: 100;
   }
 
+  &.deprecated {
+    opacity: 0.6;
+    filter: grayscale(0.7);
+
+    .card-border {
+      border-color: #999;
+      background: linear-gradient(180deg, #d0d0d0 0%, #b8b8b8 50%, #a0a0a0 100%);
+    }
+
+    .foil-shimmer {
+      opacity: 0.1;
+    }
+  }
+
   .card-border {
     width: 100%;
     height: 100%;
@@ -664,7 +701,7 @@ function getTechIcon(tech) {
     overflow: hidden;
     border: 2px solid #000;
     border-radius: 11px;
-    
+
     // MTG-style black border
     &::before {
       content: '';
@@ -720,94 +757,18 @@ function getTechIcon(tech) {
     background: linear-gradient(180deg, #c9c9c9 0%, #b8b8b8 50%, #a8a8a8 100%);
   }
 
-  // Holo-rare cards get an extra glow effect
-  &.holo .card-border {
-    box-shadow: 
+  // Foil cards get an extra glow effect
+  &.foil .card-border {
+    box-shadow:
       0 0 15px rgba(255, 255, 255, 0.3),
       inset 0 0 20px rgba(255, 255, 255, 0.1);
   }
-}
 
-// Ornate corner decorations
-.corner-decoration {
-  position: absolute;
-  width: 20px;
-  height: 20px;
-  z-index: 3;
-  
-  &::before,
-  &::after {
-    content: '';
-    position: absolute;
-    background: #000;
-  }
-  
-  &.corner-tl {
-    top: 6px;
-    left: 6px;
-    &::before {
-      width: 12px;
-      height: 2px;
-      top: 0;
-      left: 0;
-    }
-    &::after {
-      width: 2px;
-      height: 12px;
-      top: 0;
-      left: 0;
-    }
-  }
-  
-  &.corner-tr {
-    top: 6px;
-    right: 6px;
-    &::before {
-      width: 12px;
-      height: 2px;
-      top: 0;
-      right: 0;
-    }
-    &::after {
-      width: 2px;
-      height: 12px;
-      top: 0;
-      right: 0;
-    }
-  }
-  
-  &.corner-bl {
-    bottom: 6px;
-    left: 6px;
-    &::before {
-      width: 12px;
-      height: 2px;
-      bottom: 0;
-      left: 0;
-    }
-    &::after {
-      width: 2px;
-      height: 12px;
-      bottom: 0;
-      left: 0;
-    }
-  }
-  
-  &.corner-br {
-    bottom: 6px;
-    right: 6px;
-    &::before {
-      width: 12px;
-      height: 2px;
-      bottom: 0;
-      right: 0;
-    }
-    &::after {
-      width: 2px;
-      height: 12px;
-      bottom: 0;
-      right: 0;
-    }
+  // Rainbow foil cards get enhanced glow
+  &.rainbow-foil .card-border {
+    box-shadow:
+      0 0 20px rgba(255, 100, 200, 0.4),
+      inset 0 0 25px rgba(255, 255, 255, 0.15);
   }
 }
 
@@ -892,33 +853,43 @@ function getTechIcon(tech) {
     &.type-fire {
       background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
     }
+
     &.type-water {
       background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
     }
+
     &.type-electric {
       background: linear-gradient(135deg, #ffc107 0%, #f57c00 100%);
     }
+
     &.type-grass {
       background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);
     }
+
     &.type-ground {
       background: linear-gradient(135deg, #8d6e63 0%, #6d4c41 100%);
     }
+
     &.type-rock {
       background: linear-gradient(135deg, #795548 0%, #5d4037 100%);
     }
+
     &.type-psychic {
       background: linear-gradient(135deg, #e91e63 0%, #c2185b 100%);
     }
+
     &.type-steel {
       background: linear-gradient(135deg, #607d8b 0%, #455a64 100%);
     }
+
     &.type-fairy {
       background: linear-gradient(135deg, #f48fb1 0%, #e91e63 100%);
     }
+
     &.type-normal {
       background: linear-gradient(135deg, #9e9e9e 0%, #757575 100%);
     }
+
     &.mana-generic {
       background: linear-gradient(135deg, #9e9e9e 0%, #757575 100%);
       color: #fff;
@@ -1001,19 +972,17 @@ function getTechIcon(tech) {
   }
 
   .ability-text {
-    font-size: 0.75rem;
-    line-height: 1.3;
+    font-size: 0.7rem;
+    line-height: 1.4;
     color: #000;
     font-family: 'Times New Roman', serif;
-  }
-
-  .tech-stack {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4px;
-    justify-content: center;
-    align-items: center;
-    min-height: 40px;
+    text-align: left;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    line-clamp: 4;
+    -webkit-box-orient: vertical;
+    word-wrap: break-word;
   }
 
   .mana-symbol {
@@ -1034,35 +1003,45 @@ function getTechIcon(tech) {
       object-fit: contain;
       filter: brightness(0) invert(1);
     }
+
     text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
 
     &.type-fire {
       background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
     }
+
     &.type-water {
       background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
     }
+
     &.type-electric {
       background: linear-gradient(135deg, #ffc107 0%, #f57c00 100%);
     }
+
     &.type-grass {
       background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);
     }
+
     &.type-ground {
       background: linear-gradient(135deg, #8d6e63 0%, #6d4c41 100%);
     }
+
     &.type-rock {
       background: linear-gradient(135deg, #795548 0%, #5d4037 100%);
     }
+
     &.type-psychic {
       background: linear-gradient(135deg, #e91e63 0%, #c2185b 100%);
     }
+
     &.type-steel {
       background: linear-gradient(135deg, #607d8b 0%, #455a64 100%);
     }
+
     &.type-fairy {
       background: linear-gradient(135deg, #f48fb1 0%, #e91e63 100%);
     }
+
     &.type-normal {
       background: linear-gradient(135deg, #9e9e9e 0%, #757575 100%);
     }
@@ -1087,6 +1066,18 @@ function getTechIcon(tech) {
     .rarity-badge {
       font-weight: bold;
       min-width: 20px;
+    }
+
+    .deprecated-badge {
+      background: #f44336;
+      color: white;
+      padding: 1px 4px;
+      border-radius: 2px;
+      font-size: 0.55rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border: 1px solid #d32f2f;
     }
 
     .card-number-bottom {
@@ -1193,6 +1184,7 @@ function getTechIcon(tech) {
       li {
         margin-bottom: 2px;
         line-height: 1.3;
+
         &::marker {
           color: #000;
         }
@@ -1269,35 +1261,41 @@ function getTechIcon(tech) {
 }
 
 // Hover effect with mouse following
-.pokemon-card:not(.floating) {
+.trading-card:not(.floating) {
   transition: transform 0.3s ease-out, box-shadow 0.3s ease;
 
   &:hover {
     .card-border {
-      box-shadow: 
+      box-shadow:
         0 8px 16px rgba(0, 0, 0, 0.3),
         0 0 0 2px rgba(255, 255, 255, 0.1);
     }
-    
-    &.rarity-holo-rare .card-border {
-      box-shadow: 
-        0 8px 20px rgba(156, 74, 167, 0.8),
+
+    &.foil .card-border {
+      box-shadow:
+        0 8px 20px rgba(200, 220, 255, 0.6),
         0 0 0 2px rgba(255, 255, 255, 0.2),
         inset 0 0 30px rgba(255, 255, 255, 0.15);
+    }
+
+    &.rainbow-foil .card-border {
+      box-shadow:
+        0 8px 25px rgba(255, 100, 200, 0.8),
+        0 0 0 2px rgba(255, 255, 255, 0.3),
+        inset 0 0 35px rgba(255, 255, 255, 0.2);
     }
   }
 }
 
 // Floating card styles
-.pokemon-card.floating {
+.trading-card.floating {
   position: relative;
   z-index: 1001;
-  
+
   .card-border {
-    box-shadow: 
+    box-shadow:
       0 20px 40px rgba(0, 0, 0, 0.5),
       0 0 0 4px rgba(255, 255, 255, 0.2);
   }
 }
 </style>
-
