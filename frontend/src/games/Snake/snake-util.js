@@ -520,7 +520,151 @@ function countAvailable(cycle, snake, fruit, gamefield) {
   return dir;
 }
 
-// Find next direction using Hamiltonian path (React algorithm)
+// Look ahead to check if a path is safe (simulates shorter distance, allows natural movement)
+function lookAheadSafe(cycle, startX, startY, direction, foodPos, board, snakeLength, boardSize) {
+  // For natural movement, only look ahead a shorter distance (not full snake length)
+  // This allows more freedom while still preventing immediate traps
+  const lookAheadSteps = Math.min(snakeLength + 1, Math.max(5, Math.floor(snakeLength / 2) + 3));
+  
+  let currentX = startX;
+  let currentY = startY;
+  let steps = 0;
+  let currentSnakeLength = snakeLength; // Track current length (grows when eating)
+  
+  // Move along the path for lookAheadSteps
+  while (steps < lookAheadSteps) {
+    // Get next position - allow natural movement toward food, not just Hamiltonian path
+    let nextX, nextY;
+    
+    if (steps === 0) {
+      // First step: use the given direction
+      const { dx, dy } = REACT_MOVE[direction];
+      nextX = currentX + dx;
+      nextY = currentY + dy;
+    } else {
+      // Subsequent steps: try to move toward food naturally, fallback to Hamiltonian path
+      const dx = foodPos[0] - currentX;
+      const dy = foodPos[1] - currentY;
+      
+      // Try natural direction toward food
+      let naturalDir = null;
+      if (Math.abs(dx) > Math.abs(dy)) {
+        naturalDir = dx > 0 ? 'right' : 'left';
+      } else if (dy !== 0) {
+        naturalDir = dy > 0 ? 'bottom' : 'top';
+      }
+      
+      if (naturalDir) {
+        const { dx: nDx, dy: nDy } = REACT_MOVE[naturalDir];
+        const testX = currentX + nDx;
+        const testY = currentY + nDy;
+        
+        // Check if natural direction is valid
+        if (inBounds({ x: testX, y: testY }, { xMax: board.length - 1, yMax: board[0].length - 1 })) {
+          const testState = board[testX][testY];
+          const isFood = testX === foodPos[0] && testY === foodPos[1];
+          const isBody = typeof testState === 'number';
+          
+          // Calculate which tail segment will be at this position when we reach it
+          // After 'steps' moves, tail has moved forward 'steps' times
+          // So segments with index >= (currentSnakeLength - 1 - steps) will have moved
+          const minTailIndexAtStep = currentSnakeLength - 1 - steps;
+          
+          if (isFood || testState === BOARD_STATES.unset || (isBody && testState >= minTailIndexAtStep)) {
+            nextX = testX;
+            nextY = testY;
+          } else {
+            // Natural direction blocked, use Hamiltonian path
+            if (!cycle[currentX] || !cycle[currentX][currentY]) return false;
+            const nextDir = dirToMoveDir(cycle[currentX][currentY].dir);
+            nextX = currentX + nextDir.dx;
+            nextY = currentY + nextDir.dy;
+          }
+        } else {
+          // Natural direction out of bounds, use Hamiltonian path
+          if (!cycle[currentX] || !cycle[currentX][currentY]) return false;
+          const nextDir = dirToMoveDir(cycle[currentX][currentY].dir);
+          nextX = currentX + nextDir.dx;
+          nextY = currentY + nextDir.dy;
+        }
+      } else {
+        // No natural direction, use Hamiltonian path
+        if (!cycle[currentX] || !cycle[currentX][currentY]) return false;
+        const nextDir = dirToMoveDir(cycle[currentX][currentY].dir);
+        nextX = currentX + nextDir.dx;
+        nextY = currentY + nextDir.dy;
+      }
+    }
+    
+    // Check bounds
+    if (!inBounds({ x: nextX, y: nextY }, { xMax: board.length - 1, yMax: board[0].length - 1 })) {
+      return false;
+    }
+    
+    // Check if we reached food (snake grows)
+    const isFood = nextX === foodPos[0] && nextY === foodPos[1];
+    if (isFood) {
+      currentSnakeLength++; // Snake grows when eating
+    }
+    
+    // Check if cell is available (accounting for tail movement)
+    const cellState = board[nextX][nextY];
+    
+    // If it's the snake body, check if it's the tail that will move
+    if (typeof cellState === 'number') {
+      // After 'steps' moves, the tail has moved forward 'steps' times
+      // So segments with index >= (currentSnakeLength - 1 - steps) will have moved
+      // Note: currentSnakeLength already accounts for food eaten during this look-ahead
+      const minTailIndexAtThisStep = currentSnakeLength - 1 - steps;
+      
+      if (cellState < minTailIndexAtThisStep) {
+        // This is body that won't move, collision!
+        return false;
+      }
+    } else if (cellState !== BOARD_STATES.unset && !isFood) {
+      // Blocked by something else
+      return false;
+    }
+    
+    // Move to next position
+    currentX = nextX;
+    currentY = nextY;
+    steps++;
+  }
+  
+  // After lookAheadSteps, check if we have enough space to continue
+  // Use a simpler check - just verify there's at least one valid direction
+  const finalLength = currentSnakeLength; // Use the final length after all steps
+  const hasEnoughSpace = Object.keys(REACT_MOVE).some(dir => {
+    const { dx, dy } = REACT_MOVE[dir];
+    const checkX = currentX + dx;
+    const checkY = currentY + dy;
+    if (!inBounds({ x: checkX, y: checkY }, { xMax: board.length - 1, yMax: board[0].length - 1 })) {
+      return false;
+    }
+    const cellState = board[checkX][checkY];
+    // Check if cell is available or is tail that will move
+    return cellState === BOARD_STATES.unset || cellState === BOARD_STATES.food || 
+           (typeof cellState === 'number' && cellState >= finalLength - 1);
+  });
+  
+  return hasEnoughSpace;
+}
+
+// Get direct direction to food (for natural movement when small)
+function getDirectDirection(head, foodPos) {
+  const dx = foodPos[0] - head.x;
+  const dy = foodPos[1] - head.y;
+  
+  if (dx > 0) return 'right';
+  if (dx < 0) return 'left';
+  if (dy > 0) return 'bottom';
+  if (dy < 0) return 'top';
+  
+  return null;
+}
+
+// Find next direction using Hamiltonian path (React algorithm with natural movement for small snakes)
 export function getNextDirectionFromPath(cycle, head, segments, board) {
   if (!cycle || !cycle[head.x] || !cycle[head.x][head.y]) {
     return '+x'; // fallback
@@ -559,10 +703,84 @@ export function getNextDirectionFromPath(cycle, head, segments, board) {
     segments: segments || [],
   };
 
-  // Count available cells in each direction
+  const snakeLength = snake.segments.length;
+  const boardSize = board.length * board[0].length;
+  const snakePercentage = (snakeLength / boardSize) * 100;
+  
+  // Count available cells in each direction (needed for all strategies)
   const counts = countAvailable(cycle, snake, foodPos, board);
   
-  // Find closest direction to food
+  // Use natural movement based on board size percentage
+  // Larger boards allow natural movement for longer snakes
+  // Threshold: snake < 50% of board size for natural movement (stricter - allows longer snakes)
+  // For very natural movement: snake < 30% of board size
+  const naturalMovementThreshold = 0.50; // 50% of board - allows natural movement for longer snakes
+  const veryNaturalThreshold = 0.30; // 30% of board - very natural movement
+  
+  if (snakePercentage < naturalMovementThreshold * 100) {
+    // Try direct path to food if it's safe and has enough space
+    const directDir = getDirectDirection(head, foodPos);
+    if (directDir) {
+      const { dx, dy } = REACT_MOVE[directDir];
+      const nextX = head.x + dx;
+      const nextY = head.y + dy;
+      
+      // Check bounds
+      if (inBounds({ x: nextX, y: nextY }, { xMax: board.length - 1, yMax: board[0].length - 1 })) {
+        const cellState = board[nextX][nextY];
+        // If it's food or unset, check look-ahead safety before taking direct path
+        if (cellState === BOARD_STATES.food || cellState === BOARD_STATES.unset) {
+          // Look ahead (snakeLength + 1) steps to ensure we won't trap ourselves
+          if (lookAheadSafe(cycle, head.x, head.y, directDir, foodPos, board, snakeLength, boardSize) &&
+              counts[directDir] >= snakeLength + 1) {
+            return reactDirToDir(directDir);
+          }
+        }
+      }
+    }
+    
+    // For very natural movement (< 30% of board), also try directions that get closer to food
+    if (snakePercentage < veryNaturalThreshold * 100) {
+      const dx = foodPos[0] - head.x;
+      const dy = foodPos[1] - head.y;
+      
+      // Try horizontal movement if food is horizontally aligned
+      if (Math.abs(dx) > Math.abs(dy)) {
+        const horizontalDir = dx > 0 ? 'right' : 'left';
+        const { dx: hDx, dy: hDy } = REACT_MOVE[horizontalDir];
+        const nextX = head.x + hDx;
+        const nextY = head.y + hDy;
+        
+        if (inBounds({ x: nextX, y: nextY }, { xMax: board.length - 1, yMax: board[0].length - 1 })) {
+          const cellState = board[nextX][nextY];
+          if ((cellState === BOARD_STATES.food || cellState === BOARD_STATES.unset) && 
+              lookAheadSafe(cycle, head.x, head.y, horizontalDir, foodPos, board, snakeLength, boardSize) &&
+              counts[horizontalDir] >= snakeLength + 1) {
+            return reactDirToDir(horizontalDir);
+          }
+        }
+      }
+      
+      // Try vertical movement if food is vertically aligned
+      if (Math.abs(dy) > Math.abs(dx)) {
+        const verticalDir = dy > 0 ? 'bottom' : 'top';
+        const { dx: vDx, dy: vDy } = REACT_MOVE[verticalDir];
+        const nextX = head.x + vDx;
+        const nextY = head.y + vDy;
+        
+        if (inBounds({ x: nextX, y: nextY }, { xMax: board.length - 1, yMax: board[0].length - 1 })) {
+          const cellState = board[nextX][nextY];
+          if ((cellState === BOARD_STATES.food || cellState === BOARD_STATES.unset) && 
+              lookAheadSafe(cycle, head.x, head.y, verticalDir, foodPos, board, snakeLength, boardSize) &&
+              counts[verticalDir] >= snakeLength + 1) {
+            return reactDirToDir(verticalDir);
+          }
+        }
+      }
+    }
+  }
+  
+  // Find closest direction to food along Hamiltonian path
   let closest = checkPath(cycle, snake.head, foodPos, board, 
     ({ fruitIndex, dirIndex, closeIndex, dir }) => 
       counts[dir] >= snake.segments.length && fruitIndex >= dirIndex && (closeIndex < dirIndex || !closeIndex));

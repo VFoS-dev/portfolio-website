@@ -173,6 +173,17 @@ export function snakeGameSetup(canvas, gameEnded = fn) {
     gameStart(true); // Start as bot
   }
 
+  function resumeAI() {
+    if (isPlayer) return; // Don't resume AI if player is playing
+    if (alive && !isPlayer) {
+      // AI was playing and is still alive, just resume the game loop
+      start();
+    } else if (!isPlayer) {
+      // AI was playing but died or never started, restart it
+      startAI();
+    }
+  }
+
   function resized() {
     ({ update, board, cellSize, sizeRem } = sUtil.generateBoard(canvas));
     stop();
@@ -205,8 +216,8 @@ export function snakeGameSetup(canvas, gameEnded = fn) {
       if (isPlayer && alive) {
         start();
       } else if (!isPlayer) {
-        // If AI was playing, restart it
-        startAI();
+        // If AI was playing, resume it (or restart if it died)
+        resumeAI();
       }
     },
     unmount() {

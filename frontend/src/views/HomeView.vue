@@ -29,10 +29,8 @@ const gameState = computed(() => {
   const state = cubeStore.state.home;
   if (state) {
     game.value.unpause?.();
-    // Start AI when home view is in focus and player is not playing
-    if (!playingGame.value) {
-      game.value.startAI?.();
-    }
+    // unpause() will handle resuming AI if it was already playing
+    // Only start AI if game hasn't been initialized yet (handled by unpause)
   } else {
     game.value.pause?.();
   }
