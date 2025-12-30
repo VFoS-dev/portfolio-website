@@ -4,7 +4,10 @@ const router = express.Router();
 // root
 router.get('/', require('./rootRoutes.js'));
 
-// data routes
+// auth routes (public)
+router.use('/api/auth', require('./authRoutes.js'));
+
+// data routes (GET is public, CUD requires auth)
 router.use('/api/icons', require('./iconRoutes.js'));
 router.use('/api/default-window', require('./defaultWindowRoutes.js'));
 router.use('/api/about', require('./aboutRoutes.js'));

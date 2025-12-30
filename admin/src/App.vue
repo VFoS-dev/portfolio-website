@@ -1,10 +1,19 @@
 <script setup>
-import { RouterLink, RouterView } from 'vue-router'
+import { RouterLink, RouterView, useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
+
+const router = useRouter()
+const authStore = useAuthStore()
+
+const handleLogout = () => {
+  authStore.logout()
+  router.push('/login')
+}
 </script>
 
 <template>
   <div class="app">
-    <header>
+    <header v-if="authStore.isAuthenticated">
       <div class="header-content">
         <h1>Portfolio Admin</h1>
         <nav>
@@ -16,6 +25,8 @@ import { RouterLink, RouterView } from 'vue-router'
           <RouterLink to="/colors">Colors</RouterLink>
           <RouterLink to="/socials">Socials</RouterLink>
           <RouterLink to="/default-window">Default Window</RouterLink>
+          <RouterLink to="/change-password">Change Password</RouterLink>
+          <button @click="handleLogout" class="btn-logout">Logout</button>
         </nav>
       </div>
     </header>
@@ -77,6 +88,22 @@ nav a:hover {
 nav a.router-link-exact-active {
   background-color: #3498db;
   font-weight: bold;
+}
+
+.btn-logout {
+  padding: 0.5rem 1rem;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s;
+  margin-left: 0.5rem;
+}
+
+.btn-logout:hover {
+  background-color: #c82333;
 }
 
 main {

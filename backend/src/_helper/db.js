@@ -18,4 +18,5 @@ module.exports = {
   Skill: require('../_models/Skill'),
   Color: require('../_models/Color'),
   Social: require('../_models/Social'),
+  User: require('../_models/User'),
 };

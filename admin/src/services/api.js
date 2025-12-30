@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { useAuthStore } from '@/stores/auth'
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001'
 
@@ -8,6 +9,37 @@ const api = axios.create({
     'Content-Type': 'application/json',
   },
 })
+
+// Add token to requests
+api.interceptors.request.use(
+  (config) => {
+    const authStore = useAuthStore()
+    const token = authStore.getToken()
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`
+    }
+    return config
+  },
+  (error) => {
+    return Promise.reject(error)
+  }
+)
+
+// Handle 401 errors (unauthorized)
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      const authStore = useAuthStore()
+      authStore.logout()
+      // Redirect to login if not already there
+      if (window.location.pathname !== '/login') {
+        window.location.href = '/login'
+      }
+    }
+    return Promise.reject(error)
+  }
+)
 
 // Helper to format response
 const formatResponse = (response) => {
@@ -23,6 +55,20 @@ const formatResponse = (response) => {
 
 // API methods for each model
 export const apiService = {
+  // Auth
+  async login(credentials) {
+    const response = await api.post('/api/auth/login', credentials)
+    return formatResponse(response)
+  },
+  async verifyToken(token) {
+    const response = await api.post('/api/auth/verify', { token })
+    return formatResponse(response)
+  },
+  async changePassword(data) {
+    const response = await api.post('/api/auth/change-password', data)
+    return formatResponse(response)
+  },
+
   // Icons
   async getIcons() {
     const response = await api.get('/api/icons')
