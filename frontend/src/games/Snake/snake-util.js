@@ -353,8 +353,175 @@ export function generateHamiltonianCycleSync(width, height) {
   return result;
 }
 
-// Find next direction using Hamiltonian path
-export function getNextDirectionFromPath(cycle, head, food, board, snakeLength) {
+// Convert direction string to React-style direction
+function dirToReactDir(dir) {
+  const map = {
+    '+x': 'right',
+    '-x': 'left',
+    '+y': 'bottom',
+    '-y': 'top',
+  };
+  return map[dir] || 'right';
+}
+
+// Convert React-style direction to direction string
+function reactDirToDir(reactDir) {
+  const map = {
+    'right': '+x',
+    'left': '-x',
+    'bottom': '+y',
+    'top': '-y',
+  };
+  return map[reactDir] || '+x';
+}
+
+// React-style move directions
+const REACT_MOVE = {
+  left: { dx: -1, dy: 0 },
+  right: { dx: 1, dy: 0 },
+  top: { dx: 0, dy: -1 },
+  bottom: { dx: 0, dy: 1 },
+};
+
+// Check path to food (React algorithm)
+function checkPath(cycle, snakeHead, fruit, gamefield, callback = () => {}) {
+  const { x: _x, y: _y } = snakeHead;
+  const [fx, fy] = fruit;
+  const boardSize = gamefield.length * gamefield[0].length;
+  const headIndex = cycle[_x][_y].index;
+  let fruitIndex = (cycle[fx][fy].index - headIndex) % boardSize;
+  if (fruitIndex < 0) fruitIndex += boardSize;
+  
+  let closest = { index: 0, dir: dirToReactDir(cycle[_x][_y].dir) };
+  
+  Object.keys(REACT_MOVE).forEach(m => {
+    const { dx, dy } = REACT_MOVE[m];
+    const x = _x + dx;
+    const y = _y + dy;
+    
+    try {
+      const spotData = gamefield[x][y];
+      if (spotData !== BOARD_STATES.unset && spotData !== BOARD_STATES.food) return;
+    } catch {
+      return;
+    }
+
+    if (!cycle[x] || !cycle[x][y] || typeof cycle[x][y].index === 'undefined') return;
+
+    let dirIndex = (cycle[x][y].index - headIndex) % boardSize;
+    if (dirIndex < 0) dirIndex += boardSize;
+    
+    if (callback({ fruitIndex, dirIndex, closeIndex: closest.index, dir: m })) {
+      closest = {
+        index: dirIndex,
+        dir: m,
+      };
+    }
+  });
+  
+  return closest;
+}
+
+// Count available cells recursively (React algorithm)
+function countRecursive(cycle, _x, _y, gamefield = [], fruit, endif = 0, currentSet = new Set()) {
+  currentSet.add(`${_x},${_y}`);
+  if (currentSet.size < endif) {
+    try {
+      let closest = checkPath2(cycle, { x: _x, y: _y }, fruit, gamefield, currentSet,
+        ({ fruitIndex, dirIndex, closeIndex }) => fruitIndex >= dirIndex && (closeIndex < dirIndex || !closeIndex));
+      if (!closest.index) {
+        closest = checkPath2(cycle, { x: _x, y: _y }, fruit, gamefield, currentSet,
+          ({ dirIndex, closeIndex }) => closeIndex < dirIndex);
+      }
+
+      const { dx, dy } = REACT_MOVE[closest.dir];
+      let x = _x + dx;
+      let y = _y + dy;
+
+      switch (gamefield[x][y]) {
+        case BOARD_STATES.food:
+          if (!currentSet.has(`${x},${y}`)) endif++;
+          // fall through
+        case BOARD_STATES.unset:
+          if (!currentSet.has(`${x},${y}`) && gamefield[x][y] === BOARD_STATES.unset) {
+            currentSet = new Set([...currentSet, ...countRecursive(cycle, x, y, gamefield, fruit, endif, currentSet)]);
+          }
+          break;
+        default:
+          break;
+      }
+    } catch {
+      return currentSet;
+    }
+  }
+  return currentSet;
+}
+
+// Check path 2 (React algorithm)
+function checkPath2(cycle, snakeHead, fruit, gamefield, currentSet, callback = () => {}) {
+  const { x: _x, y: _y } = snakeHead;
+  const [fx, fy] = fruit;
+  const boardSize = gamefield.length * gamefield[0].length;
+  const headIndex = cycle[_x][_y].index;
+  let fruitIndex = (cycle[fx][fy].index - headIndex) % boardSize;
+  if (fruitIndex < 0) fruitIndex += boardSize;
+  
+  let closest = { index: 0, dir: dirToReactDir(cycle[_x][_y].dir) };
+  
+  Object.keys(REACT_MOVE).forEach(m => {
+    const { dx, dy } = REACT_MOVE[m];
+    const x = _x + dx;
+    const y = _y + dy;
+    
+    try {
+      const spotData = gamefield[x][y];
+      if (spotData !== BOARD_STATES.unset && spotData !== BOARD_STATES.food || !currentSet.has(`${x},${y}`)) return;
+    } catch {
+      return;
+    }
+
+    if (!cycle[x] || !cycle[x][y] || typeof cycle[x][y].index === 'undefined') return;
+
+    let dirIndex = (cycle[x][y].index - headIndex) % boardSize;
+    if (dirIndex < 0) dirIndex += boardSize;
+    
+    if (callback({ fruitIndex, dirIndex, closeIndex: closest.index })) {
+      closest = {
+        index: dirIndex,
+        dir: m,
+      };
+    }
+  });
+  
+  return closest;
+}
+
+// Count available cells in each direction (React algorithm)
+function countAvailable(cycle, snake, fruit, gamefield) {
+  const { head: { x: _x, y: _y }, segments } = snake;
+  let mustHave = segments.length + 5;
+  let dir = { max: { count: 0 } };
+  
+  Object.keys(REACT_MOVE).forEach(m => {
+    const { dx, dy } = REACT_MOVE[m];
+    let x = _x + dx;
+    let y = _y + dy;
+    let set = new Set([`${_x},${_y}`, `${x},${y}`, ...segments.map(({ x, y }) => `${x},${y}`)]);
+    
+    if (x < 0 || x >= gamefield.length || y < 0 || y >= gamefield[0].length || 
+        (gamefield[x][y] !== BOARD_STATES.unset && gamefield[x][y] !== BOARD_STATES.food)) {
+      return dir[m] = 0;
+    }
+    
+    dir[m] = countRecursive(cycle, x, y, gamefield, fruit, mustHave, set).size - 1;
+    if (dir.max.count < dir[m]) dir.max = { count: dir[m], dir: m };
+  });
+  
+  return dir;
+}
+
+// Find next direction using Hamiltonian path (React algorithm)
+export function getNextDirectionFromPath(cycle, head, segments, board) {
   if (!cycle || !cycle[head.x] || !cycle[head.x][head.y]) {
     return '+x'; // fallback
   }
@@ -367,68 +534,50 @@ export function getNextDirectionFromPath(cycle, head, food, board, snakeLength) 
     return headCell.dir || '+x';
   }
 
-  const boardSize = board.length * board[0].length;
-  const headIndex = headCell.index;
-  
-  // Find food index in cycle
-  let foodIndex = -1;
+  // Find food position
+  let foodPos = null;
   for (let x = 0; x < board.length; x++) {
     for (let y = 0; y < board[0].length; y++) {
       if (board[x][y] === BOARD_STATES.food) {
         if (cycle[x] && cycle[x][y] && typeof cycle[x][y].index !== 'undefined') {
-          foodIndex = cycle[x][y].index;
+          foodPos = [x, y];
           break;
         }
       }
     }
-    if (foodIndex !== -1) break;
+    if (foodPos) break;
   }
 
-  if (foodIndex === -1) {
+  if (!foodPos) {
     // No food found, just follow the path
     return headCell.dir;
   }
 
-  // Calculate distance to food along the cycle
-  let fruitIndex = (foodIndex - headIndex + boardSize) % boardSize;
-  if (fruitIndex < 0) fruitIndex += boardSize;
+  // Create snake object in React format
+  const snake = {
+    head: { x: head.x, y: head.y },
+    segments: segments || [],
+  };
 
-  // Check all possible directions
-  let bestDir = cycle[head.x][head.y].dir;
-  let bestIndex = Infinity;
-
-  for (const [dir, move] of Object.entries(MOVE_DIRECTIONS)) {
-    const newX = head.x + move.dx;
-    const newY = head.y + move.dy;
-
-    // Check bounds
-    if (!inBounds({ x: newX, y: newY }, { xMax: board.length - 1, yMax: board[0].length - 1 })) {
-      continue;
-    }
-
-    // Check if cell is available (not snake body)
-    const cellState = board[newX][newY];
-    if (cellState !== BOARD_STATES.unset && cellState !== BOARD_STATES.food) {
-      // Check if it's the tail (which will move)
-      const isTail = typeof cellState === 'number' && cellState >= snakeLength - 1;
-      if (!isTail) continue;
-    }
-
-    // Get index in cycle for this direction
-    if (!cycle[newX] || !cycle[newX][newY] || typeof cycle[newX][newY].index === 'undefined') continue;
-    
-    let dirIndex = (cycle[newX][newY].index - headIndex + boardSize) % boardSize;
-    if (dirIndex < 0) dirIndex += boardSize;
-
-    // Prefer direction that gets us closer to food
-    if (dirIndex <= fruitIndex && dirIndex < bestIndex) {
-      bestIndex = dirIndex;
-      bestDir = dir;
-    }
+  // Count available cells in each direction
+  const counts = countAvailable(cycle, snake, foodPos, board);
+  
+  // Find closest direction to food
+  let closest = checkPath(cycle, snake.head, foodPos, board, 
+    ({ fruitIndex, dirIndex, closeIndex, dir }) => 
+      counts[dir] >= snake.segments.length && fruitIndex >= dirIndex && (closeIndex < dirIndex || !closeIndex));
+  
+  if (!closest.index) {
+    closest = checkPath(cycle, snake.head, foodPos, board, 
+      ({ dirIndex, closeIndex }) => closeIndex < dirIndex);
   }
 
-  // If no good direction found, use the path direction
-  return bestDir;
+  // If chosen direction doesn't have enough space, use direction with max space
+  if (counts[closest.dir] < snake.segments.length + 1) {
+    closest.dir = counts.max.dir ?? closest.dir;
+  }
+
+  return reactDirToDir(closest.dir);
 }
 
 export default {

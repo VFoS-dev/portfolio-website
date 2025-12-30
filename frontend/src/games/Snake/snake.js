@@ -101,9 +101,8 @@ export function snakeGameSetup(canvas, gameEnded = fn) {
     const nextDir = sUtil.getNextDirectionFromPath(
       hamiltonianCycle,
       head,
-      null, // food position will be found in the function
-      board,
-      segments.length + 1
+      segments,
+      board
     );
     
     aiPlayer.direction(nextDir, false);
