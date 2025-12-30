@@ -36,6 +36,19 @@ export function drawStars(stars, canvas, width, height, mouseX, mouseY, focalX, 
 
   ctx.clearRect(0, 0, width, height);
 
+  // Pre-calculate constants
+  const maxOpacityDistance = width * 0.8;
+  const minOpacityDistance = width;
+  const opacityRange = minOpacityDistance - maxOpacityDistance;
+  
+  // Viewport bounds with padding for stars that might be slightly off-screen
+  // Increased padding to allow longer trails to be visible
+  const padding = 200;
+  const minX = -padding;
+  const maxX = width + padding;
+  const minY = -padding;
+  const maxY = height + padding;
+
   for (let i = 0; i < stars.length; i++) {
     let star = stars[i];
 
@@ -58,50 +71,59 @@ export function drawStars(stars, canvas, width, height, mouseX, mouseY, focalX, 
     let prevX = (star.x - focalX) * prevScale + focalX;
     let prevY = (star.y - focalY) * prevScale + focalY;
 
-    let maxOpacityDistance = width * 0.8;
-    let minOpacityDistance = width;
+    // Early exit: skip stars only if both current and previous positions are off-screen
+    // This allows trails that extend into or out of the viewport to be drawn
+    const currentInBounds = x >= minX && x <= maxX && y >= minY && y <= maxY;
+    const prevInBounds = prevX >= minX && prevX <= maxX && prevY >= minY && prevY <= maxY;
+    if (!currentInBounds && !prevInBounds) {
+      continue;
+    }
 
     let clampedZ = Math.min(Math.max(star.z, maxOpacityDistance), minOpacityDistance);
-
-    let opacity = (minOpacityDistance - clampedZ) / (minOpacityDistance - maxOpacityDistance);
+    let opacity = (minOpacityDistance - clampedZ) / opacityRange;
     opacity = Math.max(0, Math.min(opacity, 1));
 
     if (!opacity) continue;
 
     let trailSegments = getTrailSegments(star.z, width);
 
-    ctx.beginPath();
-    ctx.globalAlpha = opacity;
+    // Set common styles once per star
+    ctx.strokeStyle = 'white';
+    ctx.fillStyle = 'white';
 
     let nextInterpX, nextInterpY, lineWidth;
+    let lastOpacity = -1;
+    
+    // Draw trail segments - optimize by reducing state changes
     for (let j = 0; j < trailSegments; j++) {
       let t = j / (trailSegments - 1);
+      let nextT = (j + 1) / (trailSegments - 1);
 
       let interpX = prevX + (x - prevX) * t;
       let interpY = prevY + (y - prevY) * t;
-
-      lineWidth = Math.max(star.size * scale * t, 0.01);
-
-      let trailOpacity = opacity * Math.max(0.1, t);
-
-      ctx.globalAlpha = trailOpacity;
-
-      ctx.lineWidth = lineWidth;
-      ctx.strokeStyle = 'white';
-
-      let nextT = (j + 1) / (trailSegments - 1);
       nextInterpX = prevX + (x - prevX) * nextT;
       nextInterpY = prevY + (y - prevY) * nextT;
 
+      lineWidth = Math.max(star.size * scale * t, 0.01);
+      let trailOpacity = opacity * Math.max(0.1, t);
+
+      // Only update globalAlpha if it changed significantly (reduces state changes)
+      if (Math.abs(lastOpacity - trailOpacity) > 0.01) {
+        ctx.globalAlpha = trailOpacity;
+        lastOpacity = trailOpacity;
+      }
+
+      ctx.lineWidth = lineWidth;
       ctx.beginPath();
       ctx.moveTo(interpX, interpY);
       ctx.lineTo(nextInterpX, nextInterpY);
       ctx.stroke();
     }
 
+    // Draw star point
+    ctx.globalAlpha = opacity;
     ctx.beginPath();
     ctx.arc(nextInterpX, nextInterpY, lineWidth / 2, 0, Math.PI * 2);
-    ctx.fillStyle = 'white';
     ctx.fill();
   }
 

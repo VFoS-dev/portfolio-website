@@ -5,17 +5,27 @@ export function setupStarField(canvas) {
   let width,
     height,
     stars = [],
-    starCount = 500,
+    starCount = 250, // Reduced from 500 to 250 for better performance
     mouseX,
     mouseY;
   let focalX = window.innerWidth / 2;
   let focalY = window.innerHeight / 2;
+  
+  // FPS throttling - target 30fps instead of 60fps
+  let lastFrameTime = 0;
+  const targetFPS = 30;
+  const frameInterval = 1000 / targetFPS;
+  
   resize();
   ({ stars } = initStars(width, height, starCount));
   drawStars(stars, canvas, width, height, mouseX, mouseY, focalX, focalY);
 
-  const { start, stop } = gameLoop(() => {
-    drawStars(stars, canvas, width, height, mouseX, mouseY, focalX, focalY);
+  const { start, stop } = gameLoop((deltaTime) => {
+    const currentTime = performance.now();
+    if (currentTime - lastFrameTime >= frameInterval) {
+      drawStars(stars, canvas, width, height, mouseX, mouseY, focalX, focalY);
+      lastFrameTime = currentTime;
+    }
   });
 
   function resize() {
@@ -33,21 +43,34 @@ export function setupStarField(canvas) {
   }
 
   addEventListener('resize', resize);
-  addEventListener('mousemove', trackMouse);
+  // Don't add mouse tracking listener initially - only when unpaused
+  let isMouseTracking = false;
 
   return {
     pause() {
       stop();
+      if (isMouseTracking) {
+        removeEventListener('mousemove', trackMouse);
+        isMouseTracking = false;
+      }
       console.log('star pause');
     },
     unpause() {
+      lastFrameTime = performance.now();
+      if (!isMouseTracking) {
+        addEventListener('mousemove', trackMouse);
+        isMouseTracking = true;
+      }
       start();
       console.log('star unpause');
     },
     unmount() {
       stop();
       removeEventListener('resize', resize);
-      removeEventListener('mousemove', trackMouse);
+      if (isMouseTracking) {
+        removeEventListener('mousemove', trackMouse);
+        isMouseTracking = false;
+      }
     },
   };
 }
