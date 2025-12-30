@@ -2,7 +2,7 @@ const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
 async function fetchFromAPI(endpoint) {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/data/${endpoint}`);
+    const response = await fetch(`${API_BASE_URL}/api/${endpoint}`);
     if (!response.ok) {
       throw new Error(`Failed to fetch ${endpoint}: ${response.statusText}`);
     }
