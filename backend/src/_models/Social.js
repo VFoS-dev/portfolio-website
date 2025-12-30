@@ -15,6 +15,10 @@ const schema = new Schema({
     fill: String,
     stroke: String,
   },
+  deactivated: {
+    type: Boolean,
+    default: false,
+  },
 }, { timestamps: true });
 
 schema.set('toJSON', { virtuals: true });

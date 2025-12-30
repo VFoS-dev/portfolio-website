@@ -1,7 +1,8 @@
 const { DefaultWindow } = require('../_helper/db');
 
-async function getDefaultWindow() {
-  const data = await DefaultWindow.findOne().sort({ createdAt: -1 });
+async function getDefaultWindow({ beta }) {
+  const query = beta === '1' || beta === 1 ? {} : { deactivated: { $ne: true } };
+  const data = await DefaultWindow.findOne(query).sort({ createdAt: -1 });
   if (!data) {
     return { status: 404, message: 'DefaultWindow not found' };
   }

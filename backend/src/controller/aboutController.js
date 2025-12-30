@@ -1,7 +1,8 @@
 const { AboutData } = require('../_helper/db');
 
-async function getAbout() {
-  const data = await AboutData.findOne().sort({ createdAt: -1 });
+async function getAbout({ beta }) {
+  const query = beta === '1' || beta === 1 ? {} : { deactivated: { $ne: true } };
+  const data = await AboutData.findOne(query).sort({ createdAt: -1 });
   if (!data) {
     return { status: 404, message: 'AboutData not found' };
   }

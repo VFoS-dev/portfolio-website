@@ -6,6 +6,10 @@ const schema = new Schema({
     type: String,
     required: true,
   },
+  deactivated: {
+    type: Boolean,
+    default: false,
+  },
 }, { timestamps: true });
 
 schema.set('toJSON', { virtuals: true });

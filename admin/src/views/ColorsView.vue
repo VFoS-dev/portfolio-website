@@ -71,9 +71,13 @@
             <h3>Color Scheme</h3>
             <div class="card-actions">
               <button @click="startEdit(color)" class="btn btn-edit">Edit</button>
+              <button @click="toggleDeactivated(color)" class="btn" :class="color.deactivated ? 'btn-activate' : 'btn-deactivate'">
+                {{ color.deactivated ? 'Activate' : 'Deactivate' }}
+              </button>
               <button @click="handleDelete(color)" class="btn btn-delete">Delete</button>
             </div>
           </div>
+          <p v-if="color.deactivated" class="deactivated-badge">⚠️ Deactivated</p>
           <p><strong>Light Color:</strong> {{ color.lightColor }}</p>
           <p><strong>Aura Color:</strong> {{ color.auraColor }}</p>
           <p><strong>Inner Color:</strong> {{ color.innerColor }}</p>
@@ -166,6 +170,34 @@ const handleUpdate = async () => {
 
 const cancelEdit = () => {
   editingColor.value = null
+}
+
+const toggleDeactivated = async (color) => {
+  if (!color._id) return
+  
+  const action = color.deactivated ? 'activate' : 'deactivate'
+  if (!confirm(`Are you sure you want to ${action} this color scheme?`)) {
+    return
+  }
+  
+  loading.value = true
+  error.value = null
+  try {
+    const response = await apiService.updateColor(color._id, {
+      ...color,
+      deactivated: !color.deactivated,
+    })
+    if (response.status === 200) {
+      await loadColors()
+      alert(`Color ${action}d successfully!`)
+    } else {
+      error.value = response.message || `Failed to ${action} color`
+    }
+  } catch (err) {
+    error.value = err.message || `Error ${action}ing color`
+  } finally {
+    loading.value = false
+  }
 }
 
 const handleDelete = async (color) => {
@@ -421,6 +453,38 @@ onMounted(() => {
 
 .btn-delete:hover {
   background-color: #c82333;
+}
+
+.btn-deactivate {
+  background-color: #ffc107;
+  color: #000;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+}
+
+.btn-deactivate:hover {
+  background-color: #e0a800;
+}
+
+.btn-activate {
+  background-color: #28a745;
+  color: white;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+}
+
+.btn-activate:hover {
+  background-color: #218838;
+}
+
+.deactivated-badge {
+  color: #856404;
+  background-color: #fff3cd;
+  padding: 0.5rem;
+  border-radius: 4px;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  display: inline-block;
 }
 
 .color-details p {

@@ -12,6 +12,10 @@ const schema = new Schema({
   height: String,
   isTrash: Boolean,
   appProps: Schema.Types.Mixed,
+  deactivated: {
+    type: Boolean,
+    default: false,
+  },
 }, { timestamps: true });
 
 schema.set('toJSON', { virtuals: true });

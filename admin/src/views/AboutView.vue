@@ -43,9 +43,13 @@
         <h2>Current About Data</h2>
         <div class="card-actions">
           <button @click="startEdit" class="btn btn-edit">Edit</button>
+          <button @click="toggleDeactivated" class="btn" :class="aboutData.deactivated ? 'btn-activate' : 'btn-deactivate'">
+            {{ aboutData.deactivated ? 'Activate' : 'Deactivate' }}
+          </button>
           <button @click="handleDelete" class="btn btn-delete">Delete</button>
         </div>
       </div>
+      <div v-if="aboutData.deactivated" class="deactivated-badge">⚠️ Deactivated</div>
       <div class="text-list">
         <div v-for="(text, index) in aboutData.text" :key="index" class="text-item">
           {{ text }}
@@ -144,6 +148,34 @@ const handleUpdate = async () => {
 const cancelEdit = () => {
   editingAbout.value = null
   editingTextInput.value = ''
+}
+
+const toggleDeactivated = async () => {
+  if (!aboutData.value || !aboutData.value._id) return
+  
+  const action = aboutData.value.deactivated ? 'activate' : 'deactivate'
+  if (!confirm(`Are you sure you want to ${action} this about data?`)) {
+    return
+  }
+  
+  loading.value = true
+  error.value = null
+  try {
+    const response = await apiService.updateAbout(aboutData.value._id, {
+      ...aboutData.value,
+      deactivated: !aboutData.value.deactivated,
+    })
+    if (response.status === 200) {
+      await loadAbout()
+      alert(`About data ${action}d successfully!`)
+    } else {
+      error.value = response.message || `Failed to ${action} about data`
+    }
+  } catch (err) {
+    error.value = err.message || `Error ${action}ing about data`
+  } finally {
+    loading.value = false
+  }
 }
 
 const handleDelete = async () => {
@@ -361,6 +393,38 @@ onMounted(() => {
 
 .btn-delete:hover {
   background-color: #c82333;
+}
+
+.btn-deactivate {
+  background-color: #ffc107;
+  color: #000;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+}
+
+.btn-deactivate:hover {
+  background-color: #e0a800;
+}
+
+.btn-activate {
+  background-color: #28a745;
+  color: white;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+}
+
+.btn-activate:hover {
+  background-color: #218838;
+}
+
+.deactivated-badge {
+  color: #856404;
+  background-color: #fff3cd;
+  padding: 0.5rem;
+  border-radius: 4px;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  display: inline-block;
 }
 
 .about-display h2 {

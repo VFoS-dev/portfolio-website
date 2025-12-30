@@ -1,7 +1,8 @@
 const { Color } = require('../_helper/db');
 
-async function getColors() {
-  const colors = await Color.find().sort({ createdAt: -1 });
+async function getColors({ beta }) {
+  const query = beta === '1' || beta === 1 ? {} : { deactivated: { $ne: true } };
+  const colors = await Color.find(query).sort({ createdAt: -1 });
   if (!colors || colors.length === 0) {
     return { status: 404, message: 'Colors not found' };
   }

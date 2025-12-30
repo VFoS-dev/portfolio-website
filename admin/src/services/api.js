@@ -71,7 +71,7 @@ export const apiService = {
 
   // Icons
   async getIcons() {
-    const response = await api.get('/api/icons')
+    const response = await api.get('/api/icons?beta=1')
     return formatResponse(response)
   },
   async createIcon(data) {
@@ -89,7 +89,7 @@ export const apiService = {
 
   // Projects
   async getProjects() {
-    const response = await api.get('/api/projects')
+    const response = await api.get('/api/projects?beta=1')
     return formatResponse(response)
   },
   async createProject(data) {
@@ -107,7 +107,7 @@ export const apiService = {
 
   // About
   async getAbout() {
-    const response = await api.get('/api/about')
+    const response = await api.get('/api/about?beta=1')
     return formatResponse(response)
   },
   async createAbout(data) {
@@ -125,7 +125,7 @@ export const apiService = {
 
   // Skills
   async getSkills() {
-    const response = await api.get('/api/skills')
+    const response = await api.get('/api/skills?beta=1')
     return formatResponse(response)
   },
   async createSkill(data) {
@@ -143,7 +143,7 @@ export const apiService = {
 
   // Colors
   async getColors() {
-    const response = await api.get('/api/colors')
+    const response = await api.get('/api/colors?beta=1')
     return formatResponse(response)
   },
   async createColor(data) {
@@ -161,7 +161,7 @@ export const apiService = {
 
   // Socials
   async getSocials() {
-    const response = await api.get('/api/socials')
+    const response = await api.get('/api/socials?beta=1')
     return formatResponse(response)
   },
   async createSocial(data) {
@@ -179,7 +179,7 @@ export const apiService = {
 
   // Default Window
   async getDefaultWindow() {
-    const response = await api.get('/api/default-window')
+    const response = await api.get('/api/default-window?beta=1')
     return formatResponse(response)
   },
   async createDefaultWindow(data) {

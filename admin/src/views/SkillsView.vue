@@ -62,9 +62,13 @@
             <h3>{{ skill.name }}</h3>
             <div class="card-actions">
               <button @click="startEdit(skill)" class="btn btn-edit">Edit</button>
+              <button @click="toggleDeactivated(skill)" class="btn" :class="skill.deactivated ? 'btn-activate' : 'btn-deactivate'">
+                {{ skill.deactivated ? 'Activate' : 'Deactivate' }}
+              </button>
               <button @click="handleDelete(skill)" class="btn btn-delete">Delete</button>
             </div>
           </div>
+          <p v-if="skill.deactivated" class="deactivated-badge">⚠️ Deactivated</p>
           <p><strong>Group:</strong> {{ skill.group }}</p>
           <p><strong>Percent:</strong> {{ skill.percent }}%</p>
         </div>
@@ -154,6 +158,34 @@ const handleUpdate = async () => {
 
 const cancelEdit = () => {
   editingSkill.value = null
+}
+
+const toggleDeactivated = async (skill) => {
+  if (!skill._id) return
+  
+  const action = skill.deactivated ? 'activate' : 'deactivate'
+  if (!confirm(`Are you sure you want to ${action} "${skill.name}"?`)) {
+    return
+  }
+  
+  loading.value = true
+  error.value = null
+  try {
+    const response = await apiService.updateSkill(skill._id, {
+      ...skill,
+      deactivated: !skill.deactivated,
+    })
+    if (response.status === 200) {
+      await loadSkills()
+      alert(`Skill ${action}d successfully!`)
+    } else {
+      error.value = response.message || `Failed to ${action} skill`
+    }
+  } catch (err) {
+    error.value = err.message || `Error ${action}ing skill`
+  } finally {
+    loading.value = false
+  }
 }
 
 const handleDelete = async (skill) => {
@@ -397,6 +429,38 @@ onMounted(() => {
 
 .btn-delete:hover {
   background-color: #c82333;
+}
+
+.btn-deactivate {
+  background-color: #ffc107;
+  color: #000;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+}
+
+.btn-deactivate:hover {
+  background-color: #e0a800;
+}
+
+.btn-activate {
+  background-color: #28a745;
+  color: white;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+}
+
+.btn-activate:hover {
+  background-color: #218838;
+}
+
+.deactivated-badge {
+  color: #856404;
+  background-color: #fff3cd;
+  padding: 0.5rem;
+  border-radius: 4px;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  display: inline-block;
 }
 
 .skill-card h3 {

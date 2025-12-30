@@ -161,10 +161,14 @@
           <h3>{{ project.title }}</h3>
           <div class="card-actions">
             <button @click="startEdit(project)" class="btn btn-edit">Edit</button>
+            <button @click="toggleDeactivated(project)" class="btn" :class="project.deactivated ? 'btn-activate' : 'btn-deactivate'">
+              {{ project.deactivated ? 'Activate' : 'Deactivate' }}
+            </button>
             <button @click="handleDelete(project)" class="btn btn-delete">Delete</button>
           </div>
         </div>
         <p><strong>ID:</strong> {{ project.id }}</p>
+        <p v-if="project.deactivated" class="deactivated-badge">⚠️ Deactivated</p>
         <p><strong>Company:</strong> {{ project.company }}</p>
         <p><strong>Type:</strong> {{ project.type }}</p>
         <p><strong>Card Number:</strong> {{ project.cardNumber }}</p>
@@ -297,6 +301,34 @@ const cancelEdit = () => {
   editingProject.value = null
   editingStackInput.value = ''
   editingFeaturesInput.value = ''
+}
+
+const toggleDeactivated = async (project) => {
+  if (!project._id) return
+  
+  const action = project.deactivated ? 'activate' : 'deactivate'
+  if (!confirm(`Are you sure you want to ${action} "${project.title}"?`)) {
+    return
+  }
+  
+  loading.value = true
+  error.value = null
+  try {
+    const response = await apiService.updateProject(project._id, {
+      ...project,
+      deactivated: !project.deactivated,
+    })
+    if (response.status === 200) {
+      await loadProjects()
+      alert(`Project ${action}d successfully!`)
+    } else {
+      error.value = response.message || `Failed to ${action} project`
+    }
+  } catch (err) {
+    error.value = err.message || `Error ${action}ing project`
+  } finally {
+    loading.value = false
+  }
 }
 
 const handleDelete = async (project) => {
@@ -557,6 +589,38 @@ onMounted(() => {
 
 .btn-delete:hover {
   background-color: #c82333;
+}
+
+.btn-deactivate {
+  background-color: #ffc107;
+  color: #000;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+}
+
+.btn-deactivate:hover {
+  background-color: #e0a800;
+}
+
+.btn-activate {
+  background-color: #28a745;
+  color: white;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+}
+
+.btn-activate:hover {
+  background-color: #218838;
+}
+
+.deactivated-badge {
+  color: #856404;
+  background-color: #fff3cd;
+  padding: 0.5rem;
+  border-radius: 4px;
+  font-weight: bold;
+  margin-top: 0.5rem;
+  display: inline-block;
 }
 
 .project-card p {

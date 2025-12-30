@@ -1,7 +1,8 @@
 const { Skill } = require('../_helper/db');
 
-async function getSkills() {
-  const skills = await Skill.find().sort({ createdAt: -1 });
+async function getSkills({ beta }) {
+  const query = beta === '1' || beta === 1 ? {} : { deactivated: { $ne: true } };
+  const skills = await Skill.find(query).sort({ createdAt: -1 });
   if (!skills || skills.length === 0) {
     return { status: 404, message: 'Skills not found' };
   }

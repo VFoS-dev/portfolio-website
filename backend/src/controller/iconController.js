@@ -1,7 +1,8 @@
 const { Icon } = require('../_helper/db');
 
-async function getIcons() {
-  const icons = await Icon.find().sort({ createdAt: -1 });
+async function getIcons({ beta }) {
+  const query = beta === '1' || beta === 1 ? {} : { deactivated: { $ne: true } };
+  const icons = await Icon.find(query).sort({ createdAt: -1 });
   if (!icons || icons.length === 0) {
     return { status: 404, message: 'Icons not found' };
   }

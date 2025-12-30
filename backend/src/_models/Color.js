@@ -6,6 +6,10 @@ const schema = new Schema({
   auraColor: String,
   innerColor: String,
   textColor: String,
+  deactivated: {
+    type: Boolean,
+    default: false,
+  },
 }, { timestamps: true });
 
 schema.set('toJSON', { virtuals: true });

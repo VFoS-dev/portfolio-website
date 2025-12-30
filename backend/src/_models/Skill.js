@@ -5,6 +5,10 @@ const schema = new Schema({
   group: String,
   name: String,
   percent: Number,
+  deactivated: {
+    type: Boolean,
+    default: false,
+  },
 }, { timestamps: true });
 
 schema.set('toJSON', { virtuals: true });

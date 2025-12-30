@@ -18,6 +18,10 @@ const schema = new Schema({
   companyLogo: String,
   deprecated: Boolean,
   rarity: String,
+  deactivated: {
+    type: Boolean,
+    default: false,
+  },
 }, { timestamps: true });
 
 schema.set('toJSON', { virtuals: true });

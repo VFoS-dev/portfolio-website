@@ -1,7 +1,8 @@
 const { Social } = require('../_helper/db');
 
-async function getSocials() {
-  const socials = await Social.find().sort({ createdAt: -1 });
+async function getSocials({ beta }) {
+  const query = beta === '1' || beta === 1 ? {} : { deactivated: { $ne: true } };
+  const socials = await Social.find(query).sort({ createdAt: -1 });
   if (!socials || socials.length === 0) {
     return { status: 404, message: 'Socials not found' };
   }

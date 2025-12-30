@@ -113,9 +113,13 @@
           <h3>{{ social.name }}</h3>
           <div class="card-actions">
             <button @click="startEdit(social)" class="btn btn-edit">Edit</button>
+            <button @click="toggleDeactivated(social)" class="btn" :class="social.deactivated ? 'btn-activate' : 'btn-deactivate'">
+              {{ social.deactivated ? 'Activate' : 'Deactivate' }}
+            </button>
             <button @click="handleDelete(social)" class="btn btn-delete">Delete</button>
           </div>
         </div>
+        <p v-if="social.deactivated" class="deactivated-badge">⚠️ Deactivated</p>
         <p><strong>Href:</strong> <a :href="social.href" target="_blank">{{ social.href }}</a></p>
         <p v-if="social.gif"><strong>GIF:</strong> {{ social.gif }}</p>
         <p v-if="social.ring"><strong>Ring:</strong> {{ social.ring }}</p>
@@ -228,6 +232,34 @@ const handleUpdate = async () => {
 
 const cancelEdit = () => {
   editingSocial.value = null
+}
+
+const toggleDeactivated = async (social) => {
+  if (!social._id) return
+  
+  const action = social.deactivated ? 'activate' : 'deactivate'
+  if (!confirm(`Are you sure you want to ${action} "${social.name}"?`)) {
+    return
+  }
+  
+  loading.value = true
+  error.value = null
+  try {
+    const response = await apiService.updateSocial(social._id, {
+      ...social,
+      deactivated: !social.deactivated,
+    })
+    if (response.status === 200) {
+      await loadSocials()
+      alert(`Social ${action}d successfully!`)
+    } else {
+      error.value = response.message || `Failed to ${action} social`
+    }
+  } catch (err) {
+    error.value = err.message || `Error ${action}ing social`
+  } finally {
+    loading.value = false
+  }
 }
 
 const handleDelete = async (social) => {
@@ -485,6 +517,38 @@ onMounted(() => {
 
 .btn-delete:hover {
   background-color: #c82333;
+}
+
+.btn-deactivate {
+  background-color: #ffc107;
+  color: #000;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+}
+
+.btn-deactivate:hover {
+  background-color: #e0a800;
+}
+
+.btn-activate {
+  background-color: #28a745;
+  color: white;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+}
+
+.btn-activate:hover {
+  background-color: #218838;
+}
+
+.deactivated-badge {
+  color: #856404;
+  background-color: #fff3cd;
+  padding: 0.5rem;
+  border-radius: 4px;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  display: inline-block;
 }
 
 .social-card h3 {
