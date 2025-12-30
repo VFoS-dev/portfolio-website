@@ -1,21 +1,29 @@
 <template>
-  <div class="about-view">
-    <h1>About Data Management</h1>
+  <div class="skills-view">
+    <h1>Skills Management</h1>
     
     <div class="actions">
-      <button @click="loadAbout" class="btn btn-primary">Refresh</button>
-      <button @click="showCreateForm = true" class="btn btn-success">Create New About Data</button>
+      <button @click="loadSkills" class="btn btn-primary">Refresh</button>
+      <button @click="showCreateForm = true" class="btn btn-success">Create New Skill</button>
     </div>
 
     <div v-if="loading" class="loading">Loading...</div>
     <div v-if="error" class="error">{{ error }}</div>
 
-    <div v-if="editingAbout" class="form-container">
-      <h2>Edit About Data</h2>
+    <div v-if="editingSkill" class="form-container">
+      <h2>Edit Skill</h2>
       <form @submit.prevent="handleUpdate">
         <div class="form-group">
-          <label>Text (one per line):</label>
-          <textarea v-model="editingTextInput" rows="10" placeholder="Enter text, one item per line"></textarea>
+          <label>Group:</label>
+          <input v-model="editingSkill.group" type="text" required />
+        </div>
+        <div class="form-group">
+          <label>Name:</label>
+          <input v-model="editingSkill.name" type="text" required />
+        </div>
+        <div class="form-group">
+          <label>Percent:</label>
+          <input v-model.number="editingSkill.percent" type="number" min="0" max="100" required />
         </div>
         <div class="form-actions">
           <button type="submit" class="btn btn-primary">Update</button>
@@ -25,11 +33,19 @@
     </div>
 
     <div v-if="showCreateForm" class="form-container">
-      <h2>Create New About Data</h2>
+      <h2>Create New Skill</h2>
       <form @submit.prevent="handleCreate">
         <div class="form-group">
-          <label>Text (one per line):</label>
-          <textarea v-model="textInput" rows="10" placeholder="Enter text, one item per line"></textarea>
+          <label>Group:</label>
+          <input v-model="newSkill.group" type="text" required />
+        </div>
+        <div class="form-group">
+          <label>Name:</label>
+          <input v-model="newSkill.name" type="text" required />
+        </div>
+        <div class="form-group">
+          <label>Percent:</label>
+          <input v-model.number="newSkill.percent" type="number" min="0" max="100" required />
         </div>
         <div class="form-actions">
           <button type="submit" class="btn btn-primary">Create</button>
@@ -38,56 +54,54 @@
       </form>
     </div>
 
-    <div v-if="aboutData" class="about-display">
-      <div class="display-header">
-        <h2>Current About Data</h2>
-        <div class="card-actions">
-          <button @click="startEdit" class="btn btn-edit">Edit</button>
-          <button @click="handleDelete" class="btn btn-delete">Delete</button>
-        </div>
-      </div>
-      <div class="text-list">
-        <div v-for="(text, index) in aboutData.text" :key="index" class="text-item">
-          {{ text }}
+    <div v-if="skills && skills.length > 0" class="skills-list">
+      <h2>Existing Skills ({{ skills.length }})</h2>
+      <div class="skills-grid">
+        <div v-for="skill in skills" :key="skill._id" class="skill-card">
+          <div class="card-header">
+            <h3>{{ skill.name }}</h3>
+            <div class="card-actions">
+              <button @click="startEdit(skill)" class="btn btn-edit">Edit</button>
+              <button @click="handleDelete(skill)" class="btn btn-delete">Delete</button>
+            </div>
+          </div>
+          <p><strong>Group:</strong> {{ skill.group }}</p>
+          <p><strong>Percent:</strong> {{ skill.percent }}%</p>
         </div>
       </div>
     </div>
-    <div v-else-if="!loading" class="no-data">No about data found</div>
+    <div v-else-if="!loading" class="no-data">No skills found</div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted } from 'vue'
 import apiService from '@/services/api'
 
-const aboutData = ref(null)
+const skills = ref([])
 const loading = ref(false)
 const error = ref(null)
 const showCreateForm = ref(false)
-const editingAbout = ref(null)
-const textInput = ref('')
-const editingTextInput = ref('')
+const editingSkill = ref(null)
 
-const newAbout = ref({
-  text: [],
+const newSkill = ref({
+  group: '',
+  name: '',
+  percent: 0,
 })
 
-watch(textInput, (val) => {
-  newAbout.value.text = val ? val.split('\n').map(t => t.trim()).filter(t => t) : []
-})
-
-const loadAbout = async () => {
+const loadSkills = async () => {
   loading.value = true
   error.value = null
   try {
-    const response = await apiService.getAbout()
+    const response = await apiService.getSkills()
     if (response.status === 200) {
-      aboutData.value = response.data
+      skills.value = Array.isArray(response.data) ? response.data : [response.data]
     } else {
-      error.value = response.message || 'Failed to load about data'
+      error.value = response.message || 'Failed to load skills'
     }
   } catch (err) {
-    error.value = err.message || 'Error loading about data'
+    error.value = err.message || 'Error loading skills'
   } finally {
     loading.value = false
   }
@@ -97,74 +111,70 @@ const handleCreate = async () => {
   loading.value = true
   error.value = null
   try {
-    const response = await apiService.createAbout(newAbout.value)
+    const response = await apiService.createSkill(newSkill.value)
     if (response.status === 201) {
-      await loadAbout()
+      await loadSkills()
       cancelCreate()
-      alert('About data created successfully!')
+      alert('Skill created successfully!')
     } else {
-      error.value = response.message || 'Failed to create about data'
+      error.value = response.message || 'Failed to create skill'
     }
   } catch (err) {
-    error.value = err.message || 'Error creating about data'
+    error.value = err.message || 'Error creating skill'
   } finally {
     loading.value = false
   }
 }
 
-const startEdit = () => {
-  if (!aboutData.value) return
-  editingAbout.value = { ...aboutData.value }
-  editingTextInput.value = aboutData.value.text ? aboutData.value.text.join('\n') : ''
+const startEdit = (skill) => {
+  editingSkill.value = { ...skill }
   showCreateForm.value = false
 }
 
 const handleUpdate = async () => {
-  if (!editingAbout.value._id) return
+  if (!editingSkill.value._id) return
   
   loading.value = true
   error.value = null
   try {
-    const textArray = editingTextInput.value ? editingTextInput.value.split('\n').map(t => t.trim()).filter(t => t) : []
-    const response = await apiService.updateAbout(editingAbout.value._id, { text: textArray })
+    const response = await apiService.updateSkill(editingSkill.value._id, editingSkill.value)
     if (response.status === 200) {
-      await loadAbout()
+      await loadSkills()
       cancelEdit()
-      alert('About data updated successfully!')
+      alert('Skill updated successfully!')
     } else {
-      error.value = response.message || 'Failed to update about data'
+      error.value = response.message || 'Failed to update skill'
     }
   } catch (err) {
-    error.value = err.message || 'Error updating about data'
+    error.value = err.message || 'Error updating skill'
   } finally {
     loading.value = false
   }
 }
 
 const cancelEdit = () => {
-  editingAbout.value = null
-  editingTextInput.value = ''
+  editingSkill.value = null
 }
 
-const handleDelete = async () => {
-  if (!aboutData.value || !aboutData.value._id) return
+const handleDelete = async (skill) => {
+  if (!skill._id) return
   
-  if (!confirm('Are you sure you want to delete this about data? This action cannot be undone.')) {
+  if (!confirm(`Are you sure you want to delete "${skill.name}"? This action cannot be undone.`)) {
     return
   }
   
   loading.value = true
   error.value = null
   try {
-    const response = await apiService.deleteAbout(aboutData.value._id)
+    const response = await apiService.deleteSkill(skill._id)
     if (response.status === 200) {
-      aboutData.value = null
-      alert('About data deleted successfully!')
+      await loadSkills()
+      alert('Skill deleted successfully!')
     } else {
-      error.value = response.message || 'Failed to delete about data'
+      error.value = response.message || 'Failed to delete skill'
     }
   } catch (err) {
-    error.value = err.message || 'Error deleting about data'
+    error.value = err.message || 'Error deleting skill'
   } finally {
     loading.value = false
   }
@@ -172,17 +182,20 @@ const handleDelete = async () => {
 
 const cancelCreate = () => {
   showCreateForm.value = false
-  newAbout.value = { text: [] }
-  textInput.value = ''
+  newSkill.value = {
+    group: '',
+    name: '',
+    percent: 0,
+  }
 }
 
 onMounted(() => {
-  loadAbout()
+  loadSkills()
 })
 </script>
 
 <style scoped>
-.about-view {
+.skills-view {
   padding: 2rem;
   max-width: 1200px;
   margin: 0 auto;
@@ -191,7 +204,7 @@ onMounted(() => {
   min-height: calc(100vh - 100px);
 }
 
-.about-view h1 {
+.skills-view h1 {
   color: var(--color-heading);
   margin-bottom: 1rem;
   font-size: 2rem;
@@ -293,7 +306,7 @@ onMounted(() => {
   font-size: 0.95rem;
 }
 
-.form-group textarea {
+.form-group input {
   width: 100%;
   padding: 0.75rem;
   border: 1px solid var(--color-border);
@@ -302,11 +315,9 @@ onMounted(() => {
   background-color: var(--color-background);
   color: var(--color-text);
   transition: border-color 0.2s, box-shadow 0.2s;
-  font-family: inherit;
-  resize: vertical;
 }
 
-.form-group textarea:focus {
+.form-group input:focus {
   outline: none;
   border-color: #007bff;
   box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
@@ -319,21 +330,46 @@ onMounted(() => {
   flex-wrap: wrap;
 }
 
-.about-display {
+.skills-list {
   margin-top: 2rem;
 }
 
-.display-header {
+.skills-list h2 {
+  color: var(--color-heading);
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+}
+
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1rem;
+}
+
+.skill-card {
+  background: var(--color-background-soft);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 1.5rem;
+  transition: box-shadow 0.2s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.skill-card:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1rem;
 }
 
-.display-header h2 {
+.card-header h3 {
   margin: 0;
   color: var(--color-heading);
-  font-size: 1.5rem;
+  font-size: 1.25rem;
 }
 
 .btn-edit {
@@ -363,29 +399,22 @@ onMounted(() => {
   background-color: #c82333;
 }
 
-.about-display h2 {
-  color: var(--color-heading);
+.skill-card h3 {
+  margin-top: 0;
   margin-bottom: 1rem;
-  font-size: 1.5rem;
+  color: var(--color-heading);
+  font-size: 1.25rem;
 }
 
-.text-list {
-  background: var(--color-background-soft);
-  border: 1px solid var(--color-border);
-  border-radius: 8px;
-  padding: 1.5rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
-
-.text-item {
-  padding: 0.75rem 0;
-  border-bottom: 1px solid var(--color-border);
+.skill-card p {
+  margin: 0.5rem 0;
   color: var(--color-text);
   line-height: 1.6;
 }
 
-.text-item:last-child {
-  border-bottom: none;
+.skill-card strong {
+  color: var(--color-heading);
+  font-weight: 600;
 }
 
 .no-data {
@@ -398,3 +427,4 @@ onMounted(() => {
   border: 1px dashed var(--color-border);
 }
 </style>
+

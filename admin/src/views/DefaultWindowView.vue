@@ -1,21 +1,21 @@
 <template>
-  <div class="about-view">
-    <h1>About Data Management</h1>
+  <div class="default-window-view">
+    <h1>Default Window Management</h1>
     
     <div class="actions">
-      <button @click="loadAbout" class="btn btn-primary">Refresh</button>
-      <button @click="showCreateForm = true" class="btn btn-success">Create New About Data</button>
+      <button @click="loadDefaultWindow" class="btn btn-primary">Refresh</button>
+      <button @click="showCreateForm = true" class="btn btn-success">Create New Default Window</button>
     </div>
 
     <div v-if="loading" class="loading">Loading...</div>
     <div v-if="error" class="error">{{ error }}</div>
 
-    <div v-if="editingAbout" class="form-container">
-      <h2>Edit About Data</h2>
+    <div v-if="editingDefaultWindow" class="form-container">
+      <h2>Edit Default Window</h2>
       <form @submit.prevent="handleUpdate">
         <div class="form-group">
-          <label>Text (one per line):</label>
-          <textarea v-model="editingTextInput" rows="10" placeholder="Enter text, one item per line"></textarea>
+          <label>Icon Title (required):</label>
+          <input v-model="editingDefaultWindow.iconTitle" type="text" required />
         </div>
         <div class="form-actions">
           <button type="submit" class="btn btn-primary">Update</button>
@@ -25,11 +25,11 @@
     </div>
 
     <div v-if="showCreateForm" class="form-container">
-      <h2>Create New About Data</h2>
+      <h2>Create New Default Window</h2>
       <form @submit.prevent="handleCreate">
         <div class="form-group">
-          <label>Text (one per line):</label>
-          <textarea v-model="textInput" rows="10" placeholder="Enter text, one item per line"></textarea>
+          <label>Icon Title (required):</label>
+          <input v-model="newDefaultWindow.iconTitle" type="text" required />
         </div>
         <div class="form-actions">
           <button type="submit" class="btn btn-primary">Create</button>
@@ -38,56 +38,48 @@
       </form>
     </div>
 
-    <div v-if="aboutData" class="about-display">
+    <div v-if="defaultWindow" class="default-window-display">
       <div class="display-header">
-        <h2>Current About Data</h2>
+        <h2>Current Default Window</h2>
         <div class="card-actions">
           <button @click="startEdit" class="btn btn-edit">Edit</button>
           <button @click="handleDelete" class="btn btn-delete">Delete</button>
         </div>
       </div>
-      <div class="text-list">
-        <div v-for="(text, index) in aboutData.text" :key="index" class="text-item">
-          {{ text }}
-        </div>
+      <div class="window-card">
+        <p><strong>Icon Title:</strong> {{ defaultWindow.iconTitle }}</p>
       </div>
     </div>
-    <div v-else-if="!loading" class="no-data">No about data found</div>
+    <div v-else-if="!loading" class="no-data">No default window found</div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted } from 'vue'
 import apiService from '@/services/api'
 
-const aboutData = ref(null)
+const defaultWindow = ref(null)
 const loading = ref(false)
 const error = ref(null)
 const showCreateForm = ref(false)
-const editingAbout = ref(null)
-const textInput = ref('')
-const editingTextInput = ref('')
+const editingDefaultWindow = ref(null)
 
-const newAbout = ref({
-  text: [],
+const newDefaultWindow = ref({
+  iconTitle: '',
 })
 
-watch(textInput, (val) => {
-  newAbout.value.text = val ? val.split('\n').map(t => t.trim()).filter(t => t) : []
-})
-
-const loadAbout = async () => {
+const loadDefaultWindow = async () => {
   loading.value = true
   error.value = null
   try {
-    const response = await apiService.getAbout()
+    const response = await apiService.getDefaultWindow()
     if (response.status === 200) {
-      aboutData.value = response.data
+      defaultWindow.value = response.data
     } else {
-      error.value = response.message || 'Failed to load about data'
+      error.value = response.message || 'Failed to load default window'
     }
   } catch (err) {
-    error.value = err.message || 'Error loading about data'
+    error.value = err.message || 'Error loading default window'
   } finally {
     loading.value = false
   }
@@ -97,74 +89,71 @@ const handleCreate = async () => {
   loading.value = true
   error.value = null
   try {
-    const response = await apiService.createAbout(newAbout.value)
+    const response = await apiService.createDefaultWindow(newDefaultWindow.value)
     if (response.status === 201) {
-      await loadAbout()
+      await loadDefaultWindow()
       cancelCreate()
-      alert('About data created successfully!')
+      alert('Default window created successfully!')
     } else {
-      error.value = response.message || 'Failed to create about data'
+      error.value = response.message || 'Failed to create default window'
     }
   } catch (err) {
-    error.value = err.message || 'Error creating about data'
+    error.value = err.message || 'Error creating default window'
   } finally {
     loading.value = false
   }
 }
 
 const startEdit = () => {
-  if (!aboutData.value) return
-  editingAbout.value = { ...aboutData.value }
-  editingTextInput.value = aboutData.value.text ? aboutData.value.text.join('\n') : ''
+  if (!defaultWindow.value) return
+  editingDefaultWindow.value = { ...defaultWindow.value }
   showCreateForm.value = false
 }
 
 const handleUpdate = async () => {
-  if (!editingAbout.value._id) return
+  if (!editingDefaultWindow.value._id) return
   
   loading.value = true
   error.value = null
   try {
-    const textArray = editingTextInput.value ? editingTextInput.value.split('\n').map(t => t.trim()).filter(t => t) : []
-    const response = await apiService.updateAbout(editingAbout.value._id, { text: textArray })
+    const response = await apiService.updateDefaultWindow(editingDefaultWindow.value._id, editingDefaultWindow.value)
     if (response.status === 200) {
-      await loadAbout()
+      await loadDefaultWindow()
       cancelEdit()
-      alert('About data updated successfully!')
+      alert('Default window updated successfully!')
     } else {
-      error.value = response.message || 'Failed to update about data'
+      error.value = response.message || 'Failed to update default window'
     }
   } catch (err) {
-    error.value = err.message || 'Error updating about data'
+    error.value = err.message || 'Error updating default window'
   } finally {
     loading.value = false
   }
 }
 
 const cancelEdit = () => {
-  editingAbout.value = null
-  editingTextInput.value = ''
+  editingDefaultWindow.value = null
 }
 
 const handleDelete = async () => {
-  if (!aboutData.value || !aboutData.value._id) return
+  if (!defaultWindow.value || !defaultWindow.value._id) return
   
-  if (!confirm('Are you sure you want to delete this about data? This action cannot be undone.')) {
+  if (!confirm('Are you sure you want to delete this default window? This action cannot be undone.')) {
     return
   }
   
   loading.value = true
   error.value = null
   try {
-    const response = await apiService.deleteAbout(aboutData.value._id)
+    const response = await apiService.deleteDefaultWindow(defaultWindow.value._id)
     if (response.status === 200) {
-      aboutData.value = null
-      alert('About data deleted successfully!')
+      defaultWindow.value = null
+      alert('Default window deleted successfully!')
     } else {
-      error.value = response.message || 'Failed to delete about data'
+      error.value = response.message || 'Failed to delete default window'
     }
   } catch (err) {
-    error.value = err.message || 'Error deleting about data'
+    error.value = err.message || 'Error deleting default window'
   } finally {
     loading.value = false
   }
@@ -172,17 +161,18 @@ const handleDelete = async () => {
 
 const cancelCreate = () => {
   showCreateForm.value = false
-  newAbout.value = { text: [] }
-  textInput.value = ''
+  newDefaultWindow.value = {
+    iconTitle: '',
+  }
 }
 
 onMounted(() => {
-  loadAbout()
+  loadDefaultWindow()
 })
 </script>
 
 <style scoped>
-.about-view {
+.default-window-view {
   padding: 2rem;
   max-width: 1200px;
   margin: 0 auto;
@@ -191,7 +181,7 @@ onMounted(() => {
   min-height: calc(100vh - 100px);
 }
 
-.about-view h1 {
+.default-window-view h1 {
   color: var(--color-heading);
   margin-bottom: 1rem;
   font-size: 2rem;
@@ -293,7 +283,7 @@ onMounted(() => {
   font-size: 0.95rem;
 }
 
-.form-group textarea {
+.form-group input {
   width: 100%;
   padding: 0.75rem;
   border: 1px solid var(--color-border);
@@ -302,11 +292,9 @@ onMounted(() => {
   background-color: var(--color-background);
   color: var(--color-text);
   transition: border-color 0.2s, box-shadow 0.2s;
-  font-family: inherit;
-  resize: vertical;
 }
 
-.form-group textarea:focus {
+.form-group input:focus {
   outline: none;
   border-color: #007bff;
   box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
@@ -319,7 +307,7 @@ onMounted(() => {
   flex-wrap: wrap;
 }
 
-.about-display {
+.default-window-display {
   margin-top: 2rem;
 }
 
@@ -363,13 +351,13 @@ onMounted(() => {
   background-color: #c82333;
 }
 
-.about-display h2 {
+.default-window-display h2 {
   color: var(--color-heading);
   margin-bottom: 1rem;
   font-size: 1.5rem;
 }
 
-.text-list {
+.window-card {
   background: var(--color-background-soft);
   border: 1px solid var(--color-border);
   border-radius: 8px;
@@ -377,15 +365,16 @@ onMounted(() => {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
-.text-item {
-  padding: 0.75rem 0;
-  border-bottom: 1px solid var(--color-border);
+.window-card p {
+  margin: 0.5rem 0;
   color: var(--color-text);
+  font-size: 1.1rem;
   line-height: 1.6;
 }
 
-.text-item:last-child {
-  border-bottom: none;
+.window-card strong {
+  color: var(--color-heading);
+  font-weight: 600;
 }
 
 .no-data {
@@ -398,3 +387,4 @@ onMounted(() => {
   border: 1px dashed var(--color-border);
 }
 </style>
+

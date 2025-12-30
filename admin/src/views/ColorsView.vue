@@ -1,21 +1,33 @@
 <template>
-  <div class="about-view">
-    <h1>About Data Management</h1>
+  <div class="colors-view">
+    <h1>Colors Management</h1>
     
     <div class="actions">
-      <button @click="loadAbout" class="btn btn-primary">Refresh</button>
-      <button @click="showCreateForm = true" class="btn btn-success">Create New About Data</button>
+      <button @click="loadColors" class="btn btn-primary">Refresh</button>
+      <button @click="showCreateForm = true" class="btn btn-success">Create New Color</button>
     </div>
 
     <div v-if="loading" class="loading">Loading...</div>
     <div v-if="error" class="error">{{ error }}</div>
 
-    <div v-if="editingAbout" class="form-container">
-      <h2>Edit About Data</h2>
+    <div v-if="editingColor" class="form-container">
+      <h2>Edit Color</h2>
       <form @submit.prevent="handleUpdate">
         <div class="form-group">
-          <label>Text (one per line):</label>
-          <textarea v-model="editingTextInput" rows="10" placeholder="Enter text, one item per line"></textarea>
+          <label>Light Color:</label>
+          <input v-model="editingColor.lightColor" type="text" />
+        </div>
+        <div class="form-group">
+          <label>Aura Color:</label>
+          <input v-model="editingColor.auraColor" type="text" />
+        </div>
+        <div class="form-group">
+          <label>Inner Color:</label>
+          <input v-model="editingColor.innerColor" type="text" />
+        </div>
+        <div class="form-group">
+          <label>Text Color:</label>
+          <input v-model="editingColor.textColor" type="text" />
         </div>
         <div class="form-actions">
           <button type="submit" class="btn btn-primary">Update</button>
@@ -25,11 +37,23 @@
     </div>
 
     <div v-if="showCreateForm" class="form-container">
-      <h2>Create New About Data</h2>
+      <h2>Create New Color</h2>
       <form @submit.prevent="handleCreate">
         <div class="form-group">
-          <label>Text (one per line):</label>
-          <textarea v-model="textInput" rows="10" placeholder="Enter text, one item per line"></textarea>
+          <label>Light Color:</label>
+          <input v-model="newColor.lightColor" type="text" />
+        </div>
+        <div class="form-group">
+          <label>Aura Color:</label>
+          <input v-model="newColor.auraColor" type="text" />
+        </div>
+        <div class="form-group">
+          <label>Inner Color:</label>
+          <input v-model="newColor.innerColor" type="text" />
+        </div>
+        <div class="form-group">
+          <label>Text Color:</label>
+          <input v-model="newColor.textColor" type="text" />
         </div>
         <div class="form-actions">
           <button type="submit" class="btn btn-primary">Create</button>
@@ -38,56 +62,58 @@
       </form>
     </div>
 
-    <div v-if="aboutData" class="about-display">
-      <div class="display-header">
-        <h2>Current About Data</h2>
-        <div class="card-actions">
-          <button @click="startEdit" class="btn btn-edit">Edit</button>
-          <button @click="handleDelete" class="btn btn-delete">Delete</button>
-        </div>
-      </div>
-      <div class="text-list">
-        <div v-for="(text, index) in aboutData.text" :key="index" class="text-item">
-          {{ text }}
+    <div v-if="colors && colors.length > 0" class="colors-list">
+      <h2>Existing Colors ({{ colors.length }})</h2>
+      <div v-for="color in colors" :key="color._id" class="color-card">
+        <div class="color-preview" :style="{ backgroundColor: color.lightColor || '#fff' }"></div>
+        <div class="color-details">
+          <div class="card-header">
+            <h3>Color Scheme</h3>
+            <div class="card-actions">
+              <button @click="startEdit(color)" class="btn btn-edit">Edit</button>
+              <button @click="handleDelete(color)" class="btn btn-delete">Delete</button>
+            </div>
+          </div>
+          <p><strong>Light Color:</strong> {{ color.lightColor }}</p>
+          <p><strong>Aura Color:</strong> {{ color.auraColor }}</p>
+          <p><strong>Inner Color:</strong> {{ color.innerColor }}</p>
+          <p><strong>Text Color:</strong> {{ color.textColor }}</p>
         </div>
       </div>
     </div>
-    <div v-else-if="!loading" class="no-data">No about data found</div>
+    <div v-else-if="!loading" class="no-data">No colors found</div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted } from 'vue'
 import apiService from '@/services/api'
 
-const aboutData = ref(null)
+const colors = ref([])
 const loading = ref(false)
 const error = ref(null)
 const showCreateForm = ref(false)
-const editingAbout = ref(null)
-const textInput = ref('')
-const editingTextInput = ref('')
+const editingColor = ref(null)
 
-const newAbout = ref({
-  text: [],
+const newColor = ref({
+  lightColor: '',
+  auraColor: '',
+  innerColor: '',
+  textColor: '',
 })
 
-watch(textInput, (val) => {
-  newAbout.value.text = val ? val.split('\n').map(t => t.trim()).filter(t => t) : []
-})
-
-const loadAbout = async () => {
+const loadColors = async () => {
   loading.value = true
   error.value = null
   try {
-    const response = await apiService.getAbout()
+    const response = await apiService.getColors()
     if (response.status === 200) {
-      aboutData.value = response.data
+      colors.value = Array.isArray(response.data) ? response.data : [response.data]
     } else {
-      error.value = response.message || 'Failed to load about data'
+      error.value = response.message || 'Failed to load colors'
     }
   } catch (err) {
-    error.value = err.message || 'Error loading about data'
+    error.value = err.message || 'Error loading colors'
   } finally {
     loading.value = false
   }
@@ -97,74 +123,70 @@ const handleCreate = async () => {
   loading.value = true
   error.value = null
   try {
-    const response = await apiService.createAbout(newAbout.value)
+    const response = await apiService.createColor(newColor.value)
     if (response.status === 201) {
-      await loadAbout()
+      await loadColors()
       cancelCreate()
-      alert('About data created successfully!')
+      alert('Color created successfully!')
     } else {
-      error.value = response.message || 'Failed to create about data'
+      error.value = response.message || 'Failed to create color'
     }
   } catch (err) {
-    error.value = err.message || 'Error creating about data'
+    error.value = err.message || 'Error creating color'
   } finally {
     loading.value = false
   }
 }
 
-const startEdit = () => {
-  if (!aboutData.value) return
-  editingAbout.value = { ...aboutData.value }
-  editingTextInput.value = aboutData.value.text ? aboutData.value.text.join('\n') : ''
+const startEdit = (color) => {
+  editingColor.value = { ...color }
   showCreateForm.value = false
 }
 
 const handleUpdate = async () => {
-  if (!editingAbout.value._id) return
+  if (!editingColor.value._id) return
   
   loading.value = true
   error.value = null
   try {
-    const textArray = editingTextInput.value ? editingTextInput.value.split('\n').map(t => t.trim()).filter(t => t) : []
-    const response = await apiService.updateAbout(editingAbout.value._id, { text: textArray })
+    const response = await apiService.updateColor(editingColor.value._id, editingColor.value)
     if (response.status === 200) {
-      await loadAbout()
+      await loadColors()
       cancelEdit()
-      alert('About data updated successfully!')
+      alert('Color updated successfully!')
     } else {
-      error.value = response.message || 'Failed to update about data'
+      error.value = response.message || 'Failed to update color'
     }
   } catch (err) {
-    error.value = err.message || 'Error updating about data'
+    error.value = err.message || 'Error updating color'
   } finally {
     loading.value = false
   }
 }
 
 const cancelEdit = () => {
-  editingAbout.value = null
-  editingTextInput.value = ''
+  editingColor.value = null
 }
 
-const handleDelete = async () => {
-  if (!aboutData.value || !aboutData.value._id) return
+const handleDelete = async (color) => {
+  if (!color._id) return
   
-  if (!confirm('Are you sure you want to delete this about data? This action cannot be undone.')) {
+  if (!confirm('Are you sure you want to delete this color scheme? This action cannot be undone.')) {
     return
   }
   
   loading.value = true
   error.value = null
   try {
-    const response = await apiService.deleteAbout(aboutData.value._id)
+    const response = await apiService.deleteColor(color._id)
     if (response.status === 200) {
-      aboutData.value = null
-      alert('About data deleted successfully!')
+      await loadColors()
+      alert('Color deleted successfully!')
     } else {
-      error.value = response.message || 'Failed to delete about data'
+      error.value = response.message || 'Failed to delete color'
     }
   } catch (err) {
-    error.value = err.message || 'Error deleting about data'
+    error.value = err.message || 'Error deleting color'
   } finally {
     loading.value = false
   }
@@ -172,17 +194,21 @@ const handleDelete = async () => {
 
 const cancelCreate = () => {
   showCreateForm.value = false
-  newAbout.value = { text: [] }
-  textInput.value = ''
+  newColor.value = {
+    lightColor: '',
+    auraColor: '',
+    innerColor: '',
+    textColor: '',
+  }
 }
 
 onMounted(() => {
-  loadAbout()
+  loadColors()
 })
 </script>
 
 <style scoped>
-.about-view {
+.colors-view {
   padding: 2rem;
   max-width: 1200px;
   margin: 0 auto;
@@ -191,7 +217,7 @@ onMounted(() => {
   min-height: calc(100vh - 100px);
 }
 
-.about-view h1 {
+.colors-view h1 {
   color: var(--color-heading);
   margin-bottom: 1rem;
   font-size: 2rem;
@@ -293,7 +319,7 @@ onMounted(() => {
   font-size: 0.95rem;
 }
 
-.form-group textarea {
+.form-group input {
   width: 100%;
   padding: 0.75rem;
   border: 1px solid var(--color-border);
@@ -302,11 +328,9 @@ onMounted(() => {
   background-color: var(--color-background);
   color: var(--color-text);
   transition: border-color 0.2s, box-shadow 0.2s;
-  font-family: inherit;
-  resize: vertical;
 }
 
-.form-group textarea:focus {
+.form-group input:focus {
   outline: none;
   border-color: #007bff;
   box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
@@ -319,21 +343,57 @@ onMounted(() => {
   flex-wrap: wrap;
 }
 
-.about-display {
+.colors-list {
   margin-top: 2rem;
 }
 
-.display-header {
+.colors-list h2 {
+  color: var(--color-heading);
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+}
+
+.color-card {
+  background: var(--color-background-soft);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  transition: box-shadow 0.2s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.color-card:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.color-preview {
+  width: 80px;
+  height: 80px;
+  border-radius: 8px;
+  border: 2px solid var(--color-border);
+  flex-shrink: 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.color-details {
+  flex: 1;
+}
+
+.card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1rem;
 }
 
-.display-header h2 {
+.card-header h3 {
   margin: 0;
   color: var(--color-heading);
-  font-size: 1.5rem;
+  font-size: 1.25rem;
 }
 
 .btn-edit {
@@ -363,29 +423,15 @@ onMounted(() => {
   background-color: #c82333;
 }
 
-.about-display h2 {
-  color: var(--color-heading);
-  margin-bottom: 1rem;
-  font-size: 1.5rem;
-}
-
-.text-list {
-  background: var(--color-background-soft);
-  border: 1px solid var(--color-border);
-  border-radius: 8px;
-  padding: 1.5rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
-
-.text-item {
-  padding: 0.75rem 0;
-  border-bottom: 1px solid var(--color-border);
+.color-details p {
+  margin: 0.5rem 0;
   color: var(--color-text);
   line-height: 1.6;
 }
 
-.text-item:last-child {
-  border-bottom: none;
+.color-details strong {
+  color: var(--color-heading);
+  font-weight: 600;
 }
 
 .no-data {
@@ -398,3 +444,4 @@ onMounted(() => {
   border: 1px dashed var(--color-border);
 }
 </style>
+
