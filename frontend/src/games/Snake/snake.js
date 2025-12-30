@@ -13,6 +13,19 @@ export function snakeGameSetup(canvas, gameEnded = fn) {
   let update, board, cellSize, sizeRem, botDelay, aiDelay;
   let hamiltonianCycle = null;
   let isGeneratingCycle = false;
+  // Track progress to detect unproductive loops
+  let lastFoodPos = null;
+  let lastDistanceToFood = null;
+  let movesWithoutProgress = 0;
+  // Backtracking state tracking
+  let backtrackState = {
+    isBacktracking: false,
+    backtrackMovesRemaining: 0,
+    recentDecisions: [], // Track recent path decisions
+    deadEndDetected: false,
+    lastSafePosition: null,
+    consecutiveDeadEnds: 0
+  };
   ({ update, board, cellSize, sizeRem } = sUtil.generateBoard(canvas));
   
   // Generate initial Hamiltonian cycle
@@ -29,7 +42,50 @@ export function snakeGameSetup(canvas, gameEnded = fn) {
       } else {
         // AI player
         updateAI();
-        ({ update, board, alive, tickDelay } = sUtil.movePlayer(aiPlayer, board, true));
+        const result = sUtil.movePlayer(aiPlayer, board, true);
+        update = result.update;
+        board = result.board;
+        alive = result.alive;
+        tickDelay = result.tickDelay;
+        
+        // Track progress toward food
+        if (alive) {
+          const { head } = aiPlayer.getSnake();
+          let foodPos = null;
+          for (let x = 0; x < board.length; x++) {
+            for (let y = 0; y < board[0].length; y++) {
+              if (board[x][y] === sUtil.BOARD_STATES.food) {
+                foodPos = [x, y];
+                break;
+              }
+            }
+            if (foodPos) break;
+          }
+          
+          if (foodPos) {
+            const currentDistance = Math.abs(head.x - foodPos[0]) + Math.abs(head.y - foodPos[1]);
+            
+            // Check if food position changed (new food spawned)
+            if (!lastFoodPos || lastFoodPos[0] !== foodPos[0] || lastFoodPos[1] !== foodPos[1]) {
+              lastFoodPos = foodPos;
+              lastDistanceToFood = currentDistance;
+              movesWithoutProgress = 0;
+            } else if (lastDistanceToFood !== null) {
+              // Check if we're making progress
+              if (currentDistance < lastDistanceToFood) {
+                // Making progress - reset counter
+                movesWithoutProgress = 0;
+                lastDistanceToFood = currentDistance;
+              } else {
+                // No progress or getting further away
+                movesWithoutProgress++;
+                lastDistanceToFood = currentDistance;
+              }
+            } else {
+              lastDistanceToFood = currentDistance;
+            }
+          }
+        }
       }
 
       // draw changed
@@ -98,24 +154,85 @@ export function snakeGameSetup(canvas, gameEnded = fn) {
       return;
     }
     
-    const nextDir = sUtil.getNextDirectionFromPath(
+    const pathResult = sUtil.getNextDirectionFromPath(
       hamiltonianCycle,
       head,
       segments,
-      board
+      board,
+      movesWithoutProgress, // Pass progress tracking
+      backtrackState // Pass backtracking state
     );
     
-    aiPlayer.direction(nextDir, false);
+    // Handle both object and string returns (backward compatibility)
+    const result = typeof pathResult === 'string' 
+      ? { direction: pathResult, backtrack: false }
+      : pathResult;
+    
+    // Handle backtracking result
+    if (result.backtrack) {
+      // Dead end detected - initiate backtracking
+      backtrackState.isBacktracking = true;
+      backtrackState.backtrackMovesRemaining = Math.min(10, Math.max(3, segments.length / 3)); // Backtrack 3-10 moves
+      backtrackState.consecutiveDeadEnds++;
+      backtrackState.deadEndDetected = true;
+      
+      // Reset progress tracking to force Hamiltonian path
+      movesWithoutProgress = 100; // Force Hamiltonian path following
+      
+      // Use Hamiltonian path direction as safe fallback
+      const safeDir = hamiltonianCycle[head.x]?.[head.y]?.dir || '+x';
+      aiPlayer.direction(safeDir, false);
+    } else {
+      // Normal path finding
+      if (backtrackState.isBacktracking) {
+        backtrackState.backtrackMovesRemaining--;
+        if (backtrackState.backtrackMovesRemaining <= 0) {
+          // Backtracking complete - reset state
+          backtrackState.isBacktracking = false;
+          backtrackState.consecutiveDeadEnds = 0;
+          backtrackState.deadEndDetected = false;
+          movesWithoutProgress = 0; // Reset progress tracking
+        }
+      }
+      
+      // Track recent decisions for backtracking analysis
+      backtrackState.recentDecisions.push({
+        direction: result.direction,
+        head: { x: head.x, y: head.y },
+        timestamp: Date.now()
+      });
+      
+      // Keep only last 20 decisions
+      if (backtrackState.recentDecisions.length > 20) {
+        backtrackState.recentDecisions.shift();
+      }
+      
+      aiPlayer.direction(result.direction, false);
+    }
   }
 
-  function gameStart(isBot = false) {
-    // Stop any ongoing game
-    stop();
-    isPlayer = !isBot;
-    if (botDelay) botDelay = clearTimeout(botDelay);
-    if (aiDelay) aiDelay = clearTimeout(aiDelay);
-    
-    board = board.map(x => x.map(() => sUtil.BOARD_STATES.unset));
+      function gameStart(isBot = false) {
+        // Stop any ongoing game
+        stop();
+        isPlayer = !isBot;
+        if (botDelay) botDelay = clearTimeout(botDelay);
+        if (aiDelay) aiDelay = clearTimeout(aiDelay);
+        
+        // Reset progress tracking
+        lastFoodPos = null;
+        lastDistanceToFood = null;
+        movesWithoutProgress = 0;
+        // Reset backtracking state
+        backtrackState = {
+          isBacktracking: false,
+          backtrackMovesRemaining: 0,
+          recentDecisions: [],
+          deadEndDetected: false,
+          lastSafePosition: null,
+          consecutiveDeadEnds: 0
+        };
+        
+        board = board.map(x => x.map(() => sUtil.BOARD_STATES.unset));
 
     // create snake
     const snake = sUtil.generateSnake(board);
