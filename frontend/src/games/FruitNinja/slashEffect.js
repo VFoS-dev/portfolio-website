@@ -8,12 +8,15 @@ export function setupSlashEffect(canvas) {
   let path = [];
   let exiting = false;
   let tick = true;
+  let isPaused = false;
+  let isActive = false;
 
   // Initialize with current mouse position or center of screen
   function initializePath() {
-    const { clientWidth, clientHeight } = document.documentElement;
-    const initialX = window.mouseX ?? clientWidth / 2;
-    const initialY = window.mouseY ?? clientHeight / 2;
+    const rect = canvas.getBoundingClientRect();
+    // Use canvas-relative coordinates
+    const initialX = window.mouseX ? window.mouseX - rect.left : canvas.width / 2;
+    const initialY = window.mouseY ? window.mouseY - rect.top : canvas.height / 2;
     
     // Start with at least 2 points (required for drawing) at the current/cursor position
     // Duplicate the point so there's always something to draw
@@ -27,7 +30,13 @@ export function setupSlashEffect(canvas) {
   initializePath();
 
   function addVectorTouch(e) {
-    const newPoint = { x: e.targetTouches[0].clientX, y: e.targetTouches[0].clientY };
+    if (!isActive || isPaused) return;
+    // Use clientX/clientY for consistent coordinates with canvas
+    const rect = canvas.getBoundingClientRect();
+    const newPoint = { 
+      x: e.targetTouches[0].clientX - rect.left, 
+      y: e.targetTouches[0].clientY - rect.top 
+    };
     if (path.length > TAIL_MAX) path.shift();
     path = [newPoint, ...path];
     
@@ -38,11 +47,17 @@ export function setupSlashEffect(canvas) {
   }
 
   function addVector(e) {
-    // Store mouse position globally for initialization
-    window.mouseX = e.pageX;
-    window.mouseY = e.pageY;
+    if (!isActive || isPaused) return;
+    // Use clientX/clientY and account for canvas position
+    const rect = canvas.getBoundingClientRect();
+    const clientX = e.clientX - rect.left;
+    const clientY = e.clientY - rect.top;
     
-    const newPoint = { x: e.pageX, y: e.pageY };
+    // Store mouse position globally for initialization (use client coordinates)
+    window.mouseX = e.clientX;
+    window.mouseY = e.clientY;
+    
+    const newPoint = { x: clientX, y: clientY };
     if (path.length > TAIL_MAX) path.shift();
     path = [newPoint, ...path];
     
@@ -93,6 +108,10 @@ export function setupSlashEffect(canvas) {
   }
 
   function gameTick() {
+    // Check exiting first to avoid any work
+    if (exiting) return;
+    if (isPaused || !isActive) return;
+    
     if ((tick = !tick)) path.pop();
 
     const { clientWidth, clientHeight } = document.documentElement;
@@ -101,27 +120,76 @@ export function setupSlashEffect(canvas) {
     ctx.clearRect(0, 0, clientWidth, clientHeight);
 
     if (path.length > 1) drawSlice();
-    if (exiting) {
-      loopControl?.stop();
-      return;
-    }
   }
 
-  // Set up event listeners
-  document.onmousemove = addVector;
-  document.ontouchmove = addVectorTouch;
+  // Track if listeners are attached
+  let listenersAttached = false;
+
+  function attachListeners() {
+    if (!isActive || listenersAttached) return;
+    document.addEventListener('mousemove', addVector);
+    document.addEventListener('touchmove', addVectorTouch, { passive: true });
+    listenersAttached = true;
+  }
+
+  function detachListeners() {
+    if (!listenersAttached) return;
+    document.removeEventListener('mousemove', addVector);
+    document.removeEventListener('touchmove', addVectorTouch);
+    listenersAttached = false;
+  }
 
   const { start, stop } = gameLoop(gameTick, () => (exiting = true));
   const loopControl = { start, stop };
+  
+  // Start automatically when created
+  isActive = true;
+  isPaused = false;
+  attachListeners();
   start();
 
   return {
-    stop() {
-      document.onmousemove = null;
-      document.ontouchmove = null;
-      exiting = true;
+    pause() {
+      isPaused = true;
+      isActive = false;
+      detachListeners();
+      // Stop the game loop to save CPU
       if (loopControl) {
         loopControl.stop();
+      }
+      // Clear canvas when paused
+      const { clientWidth, clientHeight } = document.documentElement;
+      canvas.width = clientWidth;
+      canvas.height = clientHeight;
+      ctx.clearRect(0, 0, clientWidth, clientHeight);
+    },
+    unpause() {
+      isPaused = false;
+      isActive = true;
+      attachListeners();
+      // Start the game loop
+      if (loopControl) {
+        loopControl.start();
+      }
+    },
+    stop() {
+      // Set exiting first to stop gameTick from doing any work
+      exiting = true;
+      isActive = false;
+      isPaused = true;
+      detachListeners();
+      // Stop the game loop
+      if (loopControl) {
+        loopControl.stop();
+      }
+      // Clear canvas
+      try {
+        const { clientWidth, clientHeight } = document.documentElement;
+        canvas.width = clientWidth;
+        canvas.height = clientHeight;
+        ctx.clearRect(0, 0, clientWidth, clientHeight);
+      } catch (e) {
+        // Canvas might be invalid, ignore
       }
     },
   };

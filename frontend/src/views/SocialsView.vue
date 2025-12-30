@@ -115,10 +115,23 @@ function pauseGifs(pause) {
   });
 }
 
-// Initialize slashEffect
+// Initialize/restart slashEffect
 function initializeSlashEffect() {
   if (!canvasRef.value) {
     // If canvas isn't ready, try again on next tick
+    nextTick(() => {
+      if (canvasRef.value) {
+        initializeSlashEffect();
+      }
+    });
+    return;
+  }
+  
+  // If effect already exists, stop it first and wait a tick for cleanup
+  if (slashEffect) {
+    slashEffect.stop();
+    slashEffect = null;
+    // Wait a tick to ensure cleanup completes before creating new effect
     nextTick(() => {
       if (canvasRef.value && !slashEffect) {
         slashEffect = setupSlashEffect(canvasRef.value);
@@ -127,13 +140,7 @@ function initializeSlashEffect() {
     return;
   }
   
-  // If effect already exists, stop it first
-  if (slashEffect) {
-    slashEffect.stop();
-    slashEffect = null;
-  }
-  
-  // Initialize new effect
+  // Initialize new effect (it will start automatically)
   slashEffect = setupSlashEffect(canvasRef.value);
 }
 
@@ -141,9 +148,15 @@ function initializeSlashEffect() {
 watch(() => cubeStore.state.socials, (isActive, wasActive) => {
   pauseGifs(!isActive);
   
-  // Ensure slashEffect is initialized when socials becomes active
-  if (isActive && !slashEffect) {
+  if (isActive) {
+    // Restart slashEffect when socials becomes active
     initializeSlashEffect();
+  } else {
+    // Stop slashEffect when socials becomes inactive
+    if (slashEffect) {
+      slashEffect.stop();
+      slashEffect = null;
+    }
   }
   
   // If socials loses focus while game is active, return to menu
@@ -153,9 +166,10 @@ watch(() => cubeStore.state.socials, (isActive, wasActive) => {
 }, { immediate: true });
 
 onMounted(() => {
-  // Initialize slashEffect when component mounts
-  initializeSlashEffect();
-  // Initial pause state
+  // Initialize slashEffect only if socials is active
+  if (cubeStore.state.socials) {
+    initializeSlashEffect();
+  }
   pauseGifs(!cubeStore.state.socials);
 });
 

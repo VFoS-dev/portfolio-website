@@ -6,6 +6,10 @@ const DIAMETER = 100;
 const MIN_DIAMETER = 60;
 const MAX_DIAMETER = 140;
 
+// Reference screen dimensions for scaling (1920x1080)
+const REFERENCE_WIDTH = 1920;
+const REFERENCE_HEIGHT = 1080;
+
 function generateElements() {
   const img = {};
   const defaultSplatPath = '/images/socials/game/splat.webp';
@@ -42,9 +46,46 @@ function generateElements() {
 }
 
 export function fruitNinja(activePage = false, checkAchievement = () => {}, onLivesUpdate = null, onGameEnd = null, onScoreUpdate = null) {
-  const GRAVITY = 1;
   const TAIL_MAX = 5;
   const RANDOM_DELAY = 1250;
+  
+  // Calculate scale factor based on screen size
+  // Use the smaller dimension to ensure consistent scaling
+  function getScaleFactor() {
+    // Fallback to window dimensions if canvas isn't set up yet
+    const screenWidth = canvas?.width || window.innerWidth;
+    const screenHeight = canvas?.height || window.innerHeight;
+    // Use the smaller dimension to maintain aspect ratio
+    const scaleX = screenWidth / REFERENCE_WIDTH;
+    const scaleY = screenHeight / REFERENCE_HEIGHT;
+    // Use minimum to ensure fruits aren't too large on small screens
+    return Math.min(scaleX, scaleY, 1.5); // Cap at 1.5x for very large screens
+  }
+  
+  // Get velocity scale factor - more aggressive scaling for smaller screens
+  // Uses power function to make velocities decrease more on small screens
+  function getVelocityScale() {
+    const baseScale = getScaleFactor();
+    // Use power of 1.5 to make velocities decrease more aggressively on small screens
+    // This prevents fruits from falling too fast on smaller screens
+    // Example: scale=0.5 -> velocityScale=0.5^1.5≈0.35 (much slower)
+    return Math.pow(baseScale, 1.5);
+  }
+  
+  // Get scaled values
+  function getGravity() {
+    // Use velocity scale for gravity to slow down falling on small screens
+    return 1 * getVelocityScale();
+  }
+  
+  function getScaledDiameter() {
+    const scale = getScaleFactor();
+    return {
+      min: MIN_DIAMETER * scale,
+      max: MAX_DIAMETER * scale,
+      base: DIAMETER * scale,
+    };
+  }
 
   // visuals
   let canvas;
@@ -80,26 +121,29 @@ export function fruitNinja(activePage = false, checkAchievement = () => {}, onLi
       bombImg.src = '/images/socials/game/bomb.svg';
       bombImg.onerror = () => {
         // If bomb image doesn't exist, create a simple canvas representation
+        // Use scaled diameter for bomb size
+        const scaledDiam = getScaledDiameter();
+        const bombSize = scaledDiam.base * 2;
         const canvas = document.createElement('canvas');
-        canvas.width = DIAMETER * 2;
-        canvas.height = DIAMETER * 2;
+        canvas.width = bombSize;
+        canvas.height = bombSize;
         const ctx = canvas.getContext('2d');
         // Draw a simple bomb (black circle with fuse)
         ctx.fillStyle = '#000';
         ctx.beginPath();
-        ctx.arc(DIAMETER, DIAMETER, DIAMETER * 0.8, 0, Math.PI * 2);
+        ctx.arc(scaledDiam.base, scaledDiam.base, scaledDiam.base * 0.8, 0, Math.PI * 2);
         ctx.fill();
         // Draw fuse
         ctx.strokeStyle = '#ff6b00';
         ctx.lineWidth = 4;
         ctx.beginPath();
-        ctx.moveTo(DIAMETER, DIAMETER * 0.2);
-        ctx.lineTo(DIAMETER * 0.7, DIAMETER * 0.1);
+        ctx.moveTo(scaledDiam.base, scaledDiam.base * 0.2);
+        ctx.lineTo(scaledDiam.base * 0.7, scaledDiam.base * 0.1);
         ctx.stroke();
         // Draw spark
         ctx.fillStyle = '#ffeb3b';
         ctx.beginPath();
-        ctx.arc(DIAMETER * 0.7, DIAMETER * 0.1, 3, 0, Math.PI * 2);
+        ctx.arc(scaledDiam.base * 0.7, scaledDiam.base * 0.1, 3, 0, Math.PI * 2);
         ctx.fill();
         bombImg.src = canvas.toDataURL();
       };
@@ -179,8 +223,10 @@ export function fruitNinja(activePage = false, checkAchievement = () => {}, onLi
   }
 
   function generateFruit() {
-    // Random diameter between MIN and MAX for size variation
-    const diameter = Math.random() * (MAX_DIAMETER - MIN_DIAMETER) + MIN_DIAMETER;
+    const scale = getScaleFactor();
+    const scaledDiam = getScaledDiameter();
+    // Random diameter between MIN and MAX for size variation (scaled)
+    const diameter = Math.random() * (scaledDiam.max - scaledDiam.min) + scaledDiam.min;
     const left = Math.random() * canvas.width;
     const side = canvas.width / 2 >= left;
     const maxY = canvas.height / 60;
@@ -196,15 +242,25 @@ export function fruitNinja(activePage = false, checkAchievement = () => {}, onLi
       checkAchievement('fruitCheck3', fruitSliced);
     }
 
+    const velocityScale = getVelocityScale();
+    // Calculate initial upward velocity to ensure fruits can reach full height
+    // Use base scale for initial velocity (less aggressive) so fruits can reach the top
+    // The base velocity should scale with screen height to ensure full coverage
+    const baseVelocity = 30 + Math.random() * maxY;
+    // Scale initial velocity less aggressively - use linear scale instead of power scale
+    // This ensures fruits can still reach the top on smaller screens
+    const initialVelY = -baseVelocity * scale;
+    
     fruits.push({
       type: isBomb ? 'bomb' : chances[Math.floor(Math.random() * chances.length)].split('-')[0],
       top: canvas.height + diameter,
       diameter,
       left,
-      velX: (side * 2 - 1) * (Math.random() * 10 + 2),
-      velY: -(30 + Math.random() * maxY),
+      // Scale horizontal and rotation velocities with velocity scale
+      velX: (side * 2 - 1) * (Math.random() * 10 + 2) * velocityScale,
+      velY: initialVelY, // Use less aggressive scaling for initial upward velocity
       rot: 360 * Math.random(),
-      velZ: (Math.random() * 2 - 1) * 5,
+      velZ: (Math.random() * 2 - 1) * 5 * velocityScale,
       frame: 0,
       isBomb,
     });
@@ -231,7 +287,7 @@ export function fruitNinja(activePage = false, checkAchievement = () => {}, onLi
         left: left + velX,
         rot: rot + velZ,
         frame: frame + 1,
-        velY: Math.min(15, velY + GRAVITY),
+        velY: Math.min(15 * getVelocityScale(), velY + getGravity()),
       };
     }
     for (let [i, slice] of sliced.reverse().entries()) {
@@ -246,7 +302,7 @@ export function fruitNinja(activePage = false, checkAchievement = () => {}, onLi
         left: left + velX,
         rot: rot + velZ,
         frame: frame + 1,
-        velY: Math.min(15, velY + GRAVITY),
+        velY: Math.min(15 * getVelocityScale(), velY + getGravity()),
       };
     }
     for (let [i, splat] of splats.reverse().entries()) {
@@ -260,78 +316,112 @@ export function fruitNinja(activePage = false, checkAchievement = () => {}, onLi
 
   function slicedCheck() {
     if (path.length < 2) return;
-    const [{ x: x1, y: y1 }, { x: x2, y: y2 }] = path;
+    
+    // Check all line segments in the path, not just the first two points
+    // This allows cutting all fruits along the entire slash line
     let update = false;
-    const indexes = [];
+    const indexes = new Set(); // Use Set to avoid duplicate indexes
+    const hitFruits = new Set(); // Track which fruits have been hit
 
-    for (let [i, fruit] of fruits.entries()) {
-      const { left: Cx, top: Cy } = fruit;
-      const distance = distanceSegmentToPoint(
-        { x: x1, y: y1 },
-        { x: x2, y: y2 },
-        { x: Cx, y: Cy }
-      );
-
-      if (isNaN(distance) || distance > fruit.diameter) continue;
-
-      // Check if it's a bomb
-      if (fruit.isBomb) {
-        lives--;
-        if (onLivesChange) onLivesChange(lives);
-        // Create scorch mark effect (no separation, just a burnt mark)
-        const bomb = fruits.splice(i, 1)[0];
+    // Iterate through all consecutive pairs of points in the path
+    for (let j = 0; j < path.length - 1; j++) {
+      const point1 = path[j];
+      const point2 = path[j + 1];
+      
+      for (let [i, fruit] of fruits.entries()) {
+        // Skip if this fruit was already hit
+        if (hitFruits.has(i)) continue;
         
-        // Add scorch mark splatter (longer lasting than fruit splatter)
-        splats.push({
-          ...bomb,
-          type: 'bomb-scorch',
-          tick: 400, // Longer lasting scorch mark
-        });
-        
-        if (lives <= 0) {
-          gameState = false;
-          // Delay freezing to show bomb explosion animation
-          freezeDelay = 300; // 300ms delay to see the explosion
-          if (onGameOver) {
-            // Delay the game over callback slightly
-            setTimeout(() => {
-              if (onGameOver) onGameOver();
-            }, freezeDelay);
+        const { left: Cx, top: Cy, diameter } = fruit;
+        const distance = distanceSegmentToPoint(
+          { x: point1.x, y: point1.y },
+          { x: point2.x, y: point2.y },
+          { x: Cx, y: Cy }
+        );
+
+        // Check if fruit intersects with the line segment
+        // Use 1.5x diameter as threshold for more forgiving cutting (allows near misses)
+        const hitThreshold = diameter * 1.5;
+        if (isNaN(distance) || distance > hitThreshold) continue;
+
+        // Mark fruit as hit
+        hitFruits.add(i);
+        indexes.add(i);
+        update = true;
+
+        // Check if it's a bomb
+        if (fruit.isBomb) {
+          lives--;
+          if (onLivesChange) onLivesChange(lives);
+          // Create scorch mark effect (no separation, just a burnt mark)
+          const bomb = fruits.splice(i, 1)[0];
+          
+          // Add scorch mark splatter (longer lasting than fruit splatter)
+          splats.push({
+            ...bomb,
+            type: 'bomb-scorch',
+            tick: 400, // Longer lasting scorch mark
+          });
+          
+          // Remove from indexes since we already processed it
+          indexes.delete(i);
+          
+          if (lives <= 0) {
+            gameState = false;
+            // Delay freezing to show bomb explosion animation
+            freezeDelay = 300; // 300ms delay to see the explosion
+            if (onGameOver) {
+              // Delay the game over callback slightly
+              setTimeout(() => {
+                if (onGameOver) onGameOver();
+              }, freezeDelay);
+            }
           }
+          continue;
         }
-        continue;
+
+        checkAchievement('fruitcomplete', fruit.type);
       }
-
-      checkAchievement('fruitcomplete', fruit.type);
-
-      indexes.push(i);
-      update = true;
     }
 
     if (update) {
       // Calculate score based on fruit size - smaller fruits give more points
       // Score formula: base score * (MAX_DIAMETER / fruit diameter)
       // This means smaller fruits (lower diameter) give higher scores
+      const scaledDiam = getScaledDiameter();
       let pointsEarned = 0;
-      indexes.forEach(i => {
+      
+      // Convert Set to Array and sort in reverse order for safe removal
+      const indexesArray = Array.from(indexes).sort((a, b) => b - a);
+      
+      indexesArray.forEach(i => {
         const fruit = fruits[i];
         // Calculate points: smaller fruits = more points
         // Base score of 2, multiplied by size ratio (larger ratio for smaller fruits)
-        const sizeMultiplier = MAX_DIAMETER / fruit.diameter;
+        const sizeMultiplier = scaledDiam.max / fruit.diameter;
         const fruitPoints = Math.max(1, Math.floor(2 * sizeMultiplier));
         pointsEarned += fruitPoints;
       });
+      
       score += pointsEarned;
       if (onScoreChange) onScoreChange(score);
-      const slope = (y1 - y2) / (x1 - x2);
-      updateSlice(fruits, indexes, slope);
+      
+      // Calculate average slope from the path for slice direction
+      // Use the first and last points of the path for overall slash direction
+      if (path.length >= 2) {
+        const firstPoint = path[0];
+        const lastPoint = path[path.length - 1];
+        const slope = (firstPoint.y - lastPoint.y) / (firstPoint.x - lastPoint.x);
+        updateSlice(fruits, indexesArray, slope);
+      }
     }
   }
 
   function updateSlice(fruits, indexes, slope) {
+    const velocityScale = getVelocityScale();
     const rotate = Math.atan(slope) + Math.PI / 2;
-    const offsetX = Math.cos(rotate) * 10;
-    const offsetY = Math.sin(rotate) * 10;
+    const offsetX = Math.cos(rotate) * 10 * velocityScale;
+    const offsetY = Math.sin(rotate) * 10 * velocityScale;
     const rot = (Math.tan(slope) * 180) / Math.PI;
     indexes.reverse().forEach((i) => {
       const splat = fruits.splice(i, 1)[0];
@@ -363,13 +453,23 @@ export function fruitNinja(activePage = false, checkAchievement = () => {}, onLi
 
   function addVectorTouch(e) {
     if (path.length > TAIL_MAX) path.shift();
-    path = [{ x: e.targetTouches[0].clientX, y: e.targetTouches[0].clientY }, ...path];
+    // Use canvas-relative coordinates
+    const rect = canvas.getBoundingClientRect();
+    path = [{ 
+      x: e.targetTouches[0].clientX - rect.left, 
+      y: e.targetTouches[0].clientY - rect.top 
+    }, ...path];
     if (path.length > 1) slicedCheck();
   }
 
   function addVector(e) {
     if (path.length > TAIL_MAX) path.shift();
-    path = [{ x: e.pageX, y: e.pageY }, ...path];
+    // Use canvas-relative coordinates for consistency
+    const rect = canvas.getBoundingClientRect();
+    path = [{ 
+      x: e.clientX - rect.left, 
+      y: e.clientY - rect.top 
+    }, ...path];
     if (path.length > 1) slicedCheck();
   }
 
