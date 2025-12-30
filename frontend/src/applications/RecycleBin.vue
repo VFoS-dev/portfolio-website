@@ -33,8 +33,12 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed, inject } from 'vue';
 import { trashStore } from '@/stores/trashStore';
+import { windowStore } from '@/stores/windowStore';
+import EmptyTrashConfirmationForm from './RecycleBin/EmptyTrashConfirmationForm.vue';
+
+const windowId = inject('windowId', null);
 
 const deletedIcons = computed(() => trashStore.getDeletedIcons);
 
@@ -47,9 +51,45 @@ function handleRestore(iconConfig) {
 }
 
 function handleEmptyTrash() {
-  if (confirm('Are you sure you want to permanently delete all items in the Trash?')) {
-    trashStore.emptyTrash();
+  if (deletedIcons.value.length === 0) {
+    return;
   }
+  
+  // Calculate center position for the window
+  const windowWidth = 280;
+  const windowHeight = 160;
+  const left = (window.innerWidth - windowWidth) / 2;
+  const top = (window.innerHeight - windowHeight) / 2;
+  
+  // Create a Submittable window for empty trash confirmation
+  const emptyTrashWindow = windowStore.createWindow({
+    title: 'Empty Trash',
+    icon: '/images/resume/recyclebin_full.svg',
+    app: 'Submittable',
+    width: windowWidth,
+    height: windowHeight,
+    left: left,
+    top: top,
+    appProps: {
+      component: EmptyTrashConfirmationForm,
+      componentProps: {},
+      initialData: {},
+      validate: () => true,
+      onSubmit: async () => {
+        trashStore.emptyTrash();
+        
+        // Close the Empty Trash window
+        windowStore.closeWindow(emptyTrashWindow.id);
+        
+        // Refocus the RecycleBin window
+        if (windowId) {
+          windowStore.focusWindow(windowId);
+        }
+        
+        return { success: true };
+      },
+    },
+  });
 }
 </script>
 

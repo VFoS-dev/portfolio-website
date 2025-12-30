@@ -67,17 +67,19 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount, nextTick, watch } from 'vue';
+import { ref, computed, onMounted, onBeforeUnmount, nextTick, watch, inject } from 'vue';
 import PagedEditor from './Word/PagedEditor/PagedEditor.vue';
 import MenuBar from './Word/MenuBar.vue';
 import StandardToolbar from './Word/StandardToolbar.vue';
 import FormattingToolbar from './Word/FormattingToolbar.vue';
 import { cubeStore } from '@/stores/cubeStore';
+import { windowStore } from '@/stores/windowStore';
 import { useEditorCommands } from './Word/composables/useEditorCommands.js';
 import { useFonts } from './Word/composables/useFonts.js';
 import { useFileOperations } from './Word/composables/useFileOperations.js';
 import { getState } from './Word/PagedEditor/scripts/service.js';
 import { generateId, getPageContentHeight } from './Word/PagedEditor/scripts/helpers.js';
+import ResetConfirmationForm from './Word/ResetConfirmationForm.vue';
 
 const props = defineProps({
   content: {
@@ -101,6 +103,7 @@ const props = defineProps({
 const editorRef = ref(null);
 const editorContent = ref(props.content || '');
 const originalContent = ref(props.originalContent || props.content || '');
+const windowId = inject('windowId', null);
 
 // Watch for changes to props.content and update editorContent
 watch(() => props.content, (newContent) => {
@@ -281,33 +284,65 @@ function handleReset() {
     return;
   }
   
-  if (confirm('Are you sure you want to reset the document to its original state? All unsaved changes will be lost.')) {
-    // Reset editor content to original
-    editorContent.value = originalContent.value;
-    
-    // Update the editor view with original content using the same mechanism as PagedEditor
-    const view = editorRef.value?.getEditorView();
-    if (view) {
-      // Use getState to properly parse and structure the content
-      const getPageHeight = () => getPageContentHeight('1in', '1in'); // Default margins
-      
-      const newState = getState(originalContent.value || '', {
-        generateId,
-        getPageContentHeight: getPageHeight,
-        editorViewRef: { current: view },
-      });
-      
-      // Update the view with the new state
-      view.updateState(newState);
-    }
-    
-    // Delete the modified version from localStorage if it exists
-    if (!props.isCustom && props.originalTitle) {
-      const fileName = props.originalTitle.replace('.doc', '');
-      const modifiedKey = `r_wordDocument_modified_${fileName}`;
-      localStorage.removeItem(modifiedKey);
-    }
-  }
+  // Calculate center position for the window
+  const windowWidth = 280;
+  const windowHeight = 160;
+  const left = (window.innerWidth - windowWidth) / 2;
+  const top = (window.innerHeight - windowHeight) / 2;
+  
+  // Create a Submittable window for reset confirmation
+  const resetWindow = windowStore.createWindow({
+    title: 'Reset to Original',
+    icon: '/images/resume/wordIcon.png',
+    app: 'Submittable',
+    width: windowWidth,
+    height: windowHeight,
+    left: left,
+    top: top,
+    appProps: {
+      component: ResetConfirmationForm,
+      componentProps: {},
+      initialData: {},
+      validate: () => true,
+      onSubmit: async () => {
+        // Reset editor content to original
+        editorContent.value = originalContent.value;
+        
+        // Update the editor view with original content using the same mechanism as PagedEditor
+        const view = editorRef.value?.getEditorView();
+        if (view) {
+          // Use getState to properly parse and structure the content
+          const getPageHeight = () => getPageContentHeight('1in', '1in'); // Default margins
+          
+          const newState = getState(originalContent.value || '', {
+            generateId,
+            getPageContentHeight: getPageHeight,
+            editorViewRef: { current: view },
+          });
+          
+          // Update the view with the new state
+          view.updateState(newState);
+        }
+        
+        // Delete the modified version from localStorage if it exists
+        if (!props.isCustom && props.originalTitle) {
+          const fileName = props.originalTitle.replace('.doc', '');
+          const modifiedKey = `r_wordDocument_modified_${fileName}`;
+          localStorage.removeItem(modifiedKey);
+        }
+        
+        // Close the Reset window
+        windowStore.closeWindow(resetWindow.id);
+        
+        // Refocus the Word window
+        if (windowId) {
+          windowStore.focusWindow(windowId);
+        }
+        
+        return { success: true };
+      },
+    },
+  });
 }
 
 function handleEditorFocus() {
