@@ -6,12 +6,12 @@
     <div class="window-page" v-bind="editableProps">
       <ResumeHeader />
       <br />
-      <ResumeEducation :education="resumeData.education" />
+      <ResumeEducation :education="resumeData?.education || []" />
       <br />
       <ResumeExperienceAndLinks
         :flavored="flavored"
-        :experience="resumeData.experience"
-        :flavored-experience="resumeData.flavored?.experience || []"
+        :experience="resumeData?.experience || []"
+        :flavored-experience="resumeData?.flavored?.experience || []"
       />
     </div>
   </div>
@@ -21,7 +21,6 @@
 import ResumeHeader from './ResumeHeader.vue';
 import ResumeEducation from './ResumeEducation.vue';
 import ResumeExperienceAndLinks from './ResumeExperienceAndLinks.vue';
-import resumeData from '@/json/resumeData.json';
 import { editableFocusRot } from '@/utilities/window';
 
 defineProps({
@@ -30,6 +29,8 @@ defineProps({
     default: false,
   },
 });
+
+const resumeData = { education: [], experience: [], flavored: { experience: [] } };
 
 function getEditableProps() {
   return editableFocusRot();

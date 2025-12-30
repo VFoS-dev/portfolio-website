@@ -64,17 +64,24 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue';
+import { ref, computed, watch, onMounted, onBeforeUnmount, nextTick } from 'vue';
 import ResumeDesktopIcon from '@/components/Resume/ResumeDesktopIcon.vue';
 import Window from '@/components/Window/Window.vue';
 import ResumeTaskbar from '@/components/Resume/ResumeTaskbar.vue';
 import DesktopContextMenu from '@/components/Resume/DesktopContextMenu.vue';
 import { onDoubleClick, dragParentElement, dragParentElementWithTrash } from '@/utilities/window';
-import windowConfig from '@/json/windowConfig.json';
+import { windowConfigStore } from '@/stores/windowConfigStore';
 import { trashStore } from '@/stores/trashStore';
 import { navStore } from '@/stores/navStore';
 import { cubeStore } from '@/stores/cubeStore';
 import { windowStore } from '@/stores/windowStore';
+
+// Get window config from store
+// Get window config from store - combine icons and defaultWindow
+const windowConfig = computed(() => ({
+  icons: windowConfigStore.getIcons || [],
+  defaultWindow: windowConfigStore.getDefaultWindow || {},
+}));
 
 const defaultBackground = 'url(/images/resume/windows_xp_background.webp)';
 const desktopBackground = ref(localStorage.getItem('r_desktopBackground') || defaultBackground);
@@ -123,10 +130,18 @@ const windows = computed(() => windowStore.getWindows);
 
 
 function handleNewWindow(windowConfig) {
+  // Normalize windowConfig - handle both refs and plain objects
+  const config = windowConfig?.value || windowConfig;
+  
+  if (!config) {
+    console.error('handleNewWindow: windowConfig is undefined');
+    return;
+  }
+  
   // If this is a saved Word document, load its content from localStorage
-  if (windowConfig.isCustom && windowConfig.title) {
+  if (config.isCustom && config.title) {
     // Extract fileName - handle both with and without .doc extension
-    let fileName = windowConfig.title;
+    let fileName = config.title;
     if (fileName.endsWith('.doc')) {
       fileName = fileName.slice(0, -4); // Remove .doc extension
     }
@@ -137,79 +152,84 @@ function handleNewWindow(windowConfig) {
       
       if (savedData) {
         const data = JSON.parse(savedData);
-        windowConfig.appProps = {
-          ...windowConfig.appProps,
-          content: data.content || windowConfig.appProps?.content || '', // Use localStorage content, fallback to appProps
+        config.appProps = {
+          ...config.appProps,
+          content: data.content || config.appProps?.content || '', // Use localStorage content, fallback to appProps
           isCustom: true, // Mark as custom icon
-          originalTitle: windowConfig.title,
+          originalTitle: config.title,
         };
       } else {
         // If no localStorage data, use appProps content as fallback
-        windowConfig.appProps = {
-          ...windowConfig.appProps,
+        config.appProps = {
+          ...config.appProps,
           isCustom: true,
-          originalTitle: windowConfig.title,
+          originalTitle: config.title,
         };
       }
     } catch (e) {
       console.warn('Failed to load saved document content', e);
       // On error, still set the props
-      windowConfig.appProps = {
-        ...windowConfig.appProps,
+      config.appProps = {
+        ...config.appProps,
         isCustom: true,
-        originalTitle: windowConfig.title,
+        originalTitle: config.title,
       };
     }
   } else {
     // For non-custom apps, check if a modified version exists
-    const fileName = windowConfig.title.replace('.doc', '');
+    const fileName = config.title?.replace('.doc', '') || '';
     const modifiedKey = `r_wordDocument_modified_${fileName}`;
     
     try {
       const modifiedData = localStorage.getItem(modifiedKey);
-      const originalContent = windowConfig.appProps?.content || ''; // Store original content from JSON
+      const originalContent = config.appProps?.content || ''; // Store original content from JSON
       if (modifiedData) {
         // Modified version exists, use it instead of original
         const data = JSON.parse(modifiedData);
-        windowConfig.appProps = {
-          ...windowConfig.appProps,
-          content: data.content || windowConfig.appProps?.content || '', // Use modified content
+        config.appProps = {
+          ...config.appProps,
+          content: data.content || config.appProps?.content || '', // Use modified content
           isCustom: false, // Still non-custom (from JSON config)
-          originalTitle: windowConfig.title, // Store original title
+          originalTitle: config.title, // Store original title
           originalContent: originalContent, // Store original content for reset
         };
       } else {
         // No modified version, use original content
-        windowConfig.appProps = {
-          ...windowConfig.appProps,
+        config.appProps = {
+          ...config.appProps,
           isCustom: false, // Mark as non-custom (from JSON config)
-          originalTitle: windowConfig.title, // Store original title
+          originalTitle: config.title, // Store original title
           originalContent: originalContent, // Store original content for reset
         };
       }
     } catch (e) {
       console.warn('Failed to check for modified document', e);
       // On error, use original content
-      windowConfig.appProps = {
-        ...windowConfig.appProps,
+      config.appProps = {
+        ...config.appProps,
         isCustom: false,
-        originalTitle: windowConfig.title,
-        originalContent: windowConfig.appProps?.content || '',
+        originalTitle: config.title,
+        originalContent: config.appProps?.content || '',
       };
     }
   }
   
-  windowStore.createWindow(windowConfig);
+  windowStore.createWindow(config);
 }
 
 const iconRefreshKey = ref(0);
 const savedIconsRefreshKey = ref(0); // Separate key for saved icons updates
 
 // Store original icon positions from windowConfig
-const originalIconPositions = new Map();
-windowConfig.icons.forEach(icon => {
-  originalIconPositions.set(icon.title, { x: icon.x, y: icon.y });
-});
+const originalIconPositions = ref(new Map());
+watch(() => windowConfig.value?.icons, (icons) => {
+  if (icons) {
+    originalIconPositions.value = new Map();
+    icons.forEach(icon => {
+      originalIconPositions.value.set(icon.title, { x: icon.x, y: icon.y });
+    });
+  }
+}, { immediate: true });
 
 // Load saved icons from localStorage
 function loadSavedIcons() {
@@ -229,7 +249,7 @@ function saveIconPositionsToLocalStorage() {
   try {
     const positions = {};
     // Save positions from windowConfig icons
-    windowConfig.icons.forEach(icon => {
+    windowConfig.value.icons.forEach(icon => {
       if (icon.x && icon.y) {
         positions[icon.title] = { x: icon.x, y: icon.y };
       }
@@ -266,7 +286,7 @@ onMounted(() => {
   const savedPositions = loadIconPositions();
   if (Object.keys(savedPositions).length > 0) {
     // Apply positions to windowConfig icons
-    windowConfig.icons.forEach(icon => {
+    windowConfig.value.icons.forEach(icon => {
       if (savedPositions[icon.title]) {
         icon.x = savedPositions[icon.title].x;
         icon.y = savedPositions[icon.title].y;
@@ -301,16 +321,31 @@ onMounted(() => {
     savedIconsRefreshKey.value++; // Also refresh saved icons
   });
   
-  // Open default window on mount if specified
-  if (windowConfig.defaultWindow && windowConfig.defaultWindow.iconTitle) {
-    // Wait for icons to be loaded
+  // Listen for default window load event
+  function handleLoadDefaultWindow(event) {
+    const { icons, defaultWindow } = event.detail;
+    if (defaultWindow && defaultWindow.iconTitle) {
+      nextTick(() => {
+        // Find the icon by title
+        const defaultIcon = icons.find(icon => icon.title === defaultWindow.iconTitle);
+        
+        if (defaultIcon) {
+          // Open the icon using handleNewWindow
+          handleNewWindow(defaultIcon);
+        }
+      });
+    }
+  }
+  
+  window.addEventListener('load-default-window', handleLoadDefaultWindow);
+  
+  // Also check on mount if data is already loaded
+  if (windowConfig.value.defaultWindow && windowConfig.value.defaultWindow.iconTitle && windowConfig.value.icons && windowConfig.value.icons.length > 0) {
     nextTick(() => {
-      // Find the icon by title
       const allIconsList = allIcons.value;
-      const defaultIcon = allIconsList.find(icon => icon.title === windowConfig.defaultWindow.iconTitle);
+      const defaultIcon = allIconsList.find(icon => icon.title === windowConfig.value.defaultWindow.iconTitle);
       
       if (defaultIcon) {
-        // Open the icon using handleNewWindow
         handleNewWindow(defaultIcon);
       }
     });
@@ -318,6 +353,7 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
+  window.removeEventListener('load-default-window', handleLoadDefaultWindow);
   window.removeEventListener('saved-icons-updated', () => {
     iconRefreshKey.value++;
     savedIconsRefreshKey.value++;
@@ -338,7 +374,7 @@ onBeforeUnmount(() => {
 const allIcons = computed(() => {
   savedIconsRefreshKey.value; // Make this computed property reactive to saved icons updates
   const savedIcons = loadSavedIcons();
-  return [...windowConfig.icons, ...savedIcons];
+  return [...windowConfig.value.icons, ...savedIcons];
 });
 
 const visibleIcons = computed(() => {
@@ -400,7 +436,7 @@ function handleIconRestored(event) {
       }
     } else {
       // Update windowConfig icon position
-      const configIcon = windowConfig.icons.find(icon => icon.title === restoredIcon.title);
+      const configIcon = windowConfig.value.icons.find(icon => icon.title === restoredIcon.title);
       if (configIcon) {
         configIcon.x = `${x}px`;
         configIcon.y = y;
@@ -472,8 +508,8 @@ function handleResetAll() {
   });
 
   // Reset icon positions to original positions from windowConfig
-  windowConfig.icons.forEach(icon => {
-    const originalPos = originalIconPositions.get(icon.title);
+  windowConfig.value.icons.forEach(icon => {
+    const originalPos = originalIconPositions.value.get(icon.title);
     if (originalPos) {
       icon.x = originalPos.x;
       icon.y = originalPos.y;
@@ -853,7 +889,7 @@ function saveIconPositions() {
             savedIconsRefreshKey.value++; // Trigger reactivity update
           }
         } else {
-          const configIcon = windowConfig.icons.find(cfgIcon => cfgIcon.title === icon.title);
+          const configIcon = windowConfig.value.icons.find(cfgIcon => cfgIcon.title === icon.title);
           if (configIcon) {
             configIcon.x = left;
             configIcon.y = top;
@@ -997,7 +1033,7 @@ function handleIconDragEnd(element) {
       }
       
       // Otherwise, check windowConfig icons
-      const configIcon = windowConfig.icons.find(icon => icon.title === label);
+      const configIcon = windowConfig.value.icons.find(icon => icon.title === label);
       if (configIcon) {
         configIcon.x = left;
         configIcon.y = top;
@@ -1067,8 +1103,8 @@ function getIconProps(iconConfig, index) {
 
 function handleOpenApp(appConfig) {
   // If this is the defaultWindow menu item from start menu, use the defaultWindow icon
-  if (appConfig.iconTitle && windowConfig.defaultWindow && appConfig.iconTitle === windowConfig.defaultWindow.iconTitle) {
-    const defaultIcon = windowConfig.icons.find(icon => icon.title === appConfig.iconTitle);
+  if (appConfig.iconTitle && windowConfig.value.defaultWindow && appConfig.iconTitle === windowConfig.value.defaultWindow.iconTitle) {
+    const defaultIcon = windowConfig.value.icons.find(icon => icon.title === appConfig.iconTitle);
     if (defaultIcon) {
       // Replace appConfig with the default icon configuration
       Object.assign(appConfig, {

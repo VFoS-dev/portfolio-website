@@ -19,7 +19,7 @@
         @animationend="panelHasShrunk"
         @transitionend="panelHasExpanded"
       >
-        <div class="cube-label">{{ capitalize(key) }}</div>
+        <div v-if="teleportDisabled(key)" class="cube-label">{{ capitalize(key) }}</div>
         <slot :name="key">
           <div class="empty">{{ key }}</div>
         </slot>

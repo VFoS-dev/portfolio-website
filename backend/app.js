@@ -8,8 +8,10 @@ const origin = JSON.parse(env('origins', '["http://localhost:3000", "http://loca
 const express = require("express");
 const http = require("http");
 const cors = require('cors');
+require('./src/_helper/db'); // Initialize database connection
 
 const app = express();
+app.use(express.json()); // Parse JSON request bodies
 app.use(cors({ origin, credentials: true }));
 app.use('/', require('./src/routes'));
 app.use((req, res, next) => {

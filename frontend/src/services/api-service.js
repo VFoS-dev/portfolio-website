@@ -1,23 +1,45 @@
-import skillData from '@/json/skillData.json';
-import aboutData from '@/json/aboutData.json';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
-async function sleep(time = 250) {
-  return new Promise(res => {
-    setTimeout(res, time);
-  });
+async function fetchFromAPI(endpoint) {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/data/${endpoint}`);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch ${endpoint}: ${response.statusText}`);
+    }
+    const result = await response.json();
+    return result.data;
+  } catch (error) {
+    console.error(`Error fetching ${endpoint}:`, error);
+    throw error;
+  }
 }
 
 export async function getSkills() {
-  await sleep();
-  return skillData.skills;
+  return await fetchFromAPI('skills');
 }
 
 export async function getColors() {
-  await sleep();
-  return skillData.colors;
+  return await fetchFromAPI('colors');
 }
 
 export async function getAbout() {
-  await sleep();
+  const aboutData = await fetchFromAPI('about');
   return aboutData.text.join('\n');
+}
+
+export async function getIcons() {
+  return await fetchFromAPI('icons');
+}
+
+export async function getDefaultWindow() {
+  return await fetchFromAPI('default-window');
+}
+
+
+export async function getProjects() {
+  return await fetchFromAPI('projects');
+}
+
+export async function getSocials() {
+  return await fetchFromAPI('socials');
 }

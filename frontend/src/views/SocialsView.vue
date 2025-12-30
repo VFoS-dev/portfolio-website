@@ -38,7 +38,7 @@ import { ref, computed, onMounted, onBeforeUnmount, watch, nextTick } from 'vue'
 import FruitNinja from '@/games/FruitNinja/FruitNinja.vue';
 import { setupSlashEffect } from '@/games/FruitNinja/slashEffect';
 import { cubeStore } from '@/stores/cubeStore';
-import socialsDataRaw from '@/json/socialsData.json';
+import { socialStore } from '@/stores/socialStore';
 
 const canvasRef = ref(null);
 const toGame = ref(false);
@@ -52,7 +52,8 @@ const pausedGifSrc = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAA
 
 // Generate random rotations for each social item
 const socialsData = computed(() => {
-  return socialsDataRaw.map((item) => ({
+  const socials = socialStore.getSocials || [];
+  return socials.map((item) => ({
     ...item,
     startRot: Math.random() * 360,
   }));

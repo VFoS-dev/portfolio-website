@@ -10,13 +10,13 @@ const MAX_DIAMETER = 140;
 const REFERENCE_WIDTH = 1920;
 const REFERENCE_HEIGHT = 1080;
 
-function generateElements() {
-  const img = {};
-  const defaultSplatPath = '/images/socials/game/splat.webp';
-  const basePath = '/images/socials/game/fruit';
-  const imageTypes = ['whole', 'top', 'bottom'];
-  
-  fruitData.forEach((fruitName) => {
+  function generateElements() {
+    const img = {};
+    const defaultSplatPath = '/images/socials/game/splat.webp';
+    const basePath = '/images/socials/game/fruit';
+    const imageTypes = ['whole', 'top', 'bottom'];
+    
+    fruitData.forEach((fruitName) => {
     // Create images for whole, top, and bottom
     imageTypes.forEach((type) => {
       const imageName = type !== 'whole' ? `${fruitName}-${type}` : fruitName;

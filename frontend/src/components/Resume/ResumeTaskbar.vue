@@ -34,7 +34,7 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount, defineAsyncComponent, computed } from 'vue';
 import StartMenu from './StartMenu.vue';
-import windowConfig from '@/json/windowConfig.json';
+import { windowConfigStore } from '@/stores/windowConfigStore';
 import { windowStore } from '@/stores/windowStore';
 
 const emit = defineEmits(['open-app', 'shutdown']);
@@ -46,12 +46,14 @@ const windows = computed(() => {
 
 const startMenuOpen = ref(false);
 
+const windowConfig = computed(() => windowConfigStore.getConfig || { icons: [], defaultWindow: {} });
+
 const menuItems = computed(() => {
   // Create menu items: Word, Minesweeper, and Resume
   const items = [];
   
   // Add Microsoft Word (use first Word entry)
-  const wordIcon = windowConfig.icons.find(icon => icon.app === 'Word');
+  const wordIcon = windowConfig.value.icons.find(icon => icon.app === 'Word');
   if (wordIcon) {
     items.push({
       title: 'Microsoft Word',
@@ -62,7 +64,7 @@ const menuItems = computed(() => {
   }
   
   // Add Minesweeper
-  const minesweeperIcon = windowConfig.icons.find(icon => icon.app === 'Minesweeper');
+  const minesweeperIcon = windowConfig.value.icons.find(icon => icon.app === 'Minesweeper');
   if (minesweeperIcon) {
     items.push({
       title: 'Minesweeper',
@@ -73,8 +75,8 @@ const menuItems = computed(() => {
   }
   
   // Add Resume (use defaultWindow configuration)
-  if (windowConfig.defaultWindow && windowConfig.defaultWindow.iconTitle) {
-    const defaultIcon = windowConfig.icons.find(icon => icon.title === windowConfig.defaultWindow.iconTitle);
+  if (windowConfig.value.defaultWindow && windowConfig.value.defaultWindow.iconTitle) {
+    const defaultIcon = windowConfig.value.icons.find(icon => icon.title === windowConfig.value.defaultWindow.iconTitle);
     if (defaultIcon) {
       items.push({
         title: defaultIcon.title, // Use the actual icon title (default window's name)

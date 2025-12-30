@@ -6,17 +6,22 @@ import { cubeStore } from './cubeStore';
 import sides from '@/enums/sides';
 
 const useAboutStore = defineStore('aboutStore', {
-  state: () => {
-    return {
-      scroll: 0,
-      lastFetched: 0,
-      content: '',
-    };
-  },
+  state: () => ({
+    scroll: 0,
+    lastFetched: 0,
+    content: '',
+  }),
   getters: {
     getContent(state) {
       if (shouldFetch(state.lastFetched)) {
-        getAbout().then(text => Object.assign(state, { content: text, lastFetched: new Date() }));
+        getAbout()
+          .then(text => {
+            state.content = text;
+            state.lastFetched = new Date();
+          })
+          .catch(error => {
+            console.error('Failed to fetch about data:', error);
+          });
       }
 
       return state.content;

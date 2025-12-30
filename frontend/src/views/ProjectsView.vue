@@ -132,12 +132,20 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { projectStore } from '@/stores/projectStore';
 import ProjectCard from '@/components/Projects/ProjectCard.vue';
 import Wrapper from '@/components/Wrapper.vue';
 
 const selectedProject = ref(null);
+
+// Ensure projects are fetched on mount
+onMounted(() => {
+  // Trigger fetch if needed (empty array or stale data)
+  if (projectStore.projects.length === 0) {
+    projectStore.fetchProjects();
+  }
+});
 
 function selectCard(project) {
   selectedProject.value = project;

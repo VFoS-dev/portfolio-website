@@ -1,25 +1,30 @@
 import { defineStore } from 'pinia';
 import pinia from './piniaInstance';
-import projectsData from '@/json/projectsData.json';
+import { getProjects } from '@/services/api-service';
 import { cubeStore } from './cubeStore';
 import sides from '@/enums/sides';
+import { shouldFetch } from '@/utilities/persistence';
 
 const useProjectStore = defineStore('projectStore', {
-  state: () => {
-    return {
-      scroll: 0,
-      projects: projectsData,
-      filters: {
-        company: null,
-        rarity: null,
-        type: null,
-        search: '',
-        showDeprecated: false,
-      },
-    };
-  },
+  state: () => ({
+    scroll: 0,
+    lastFetched: 0,
+    projects: [],
+    filters: {
+      company: null,
+      rarity: null,
+      type: null,
+      search: '',
+      showDeprecated: false,
+    },
+  }),
   getters: {
     getProjects(state) {
+      // Fetch if data is stale OR if there are no projects loaded
+      if (shouldFetch(state.lastFetched) || state.projects.length === 0) {
+        // Use the action to fetch projects
+        useProjectStore(pinia).fetchProjects();
+      }
       return state.projects;
     },
     getFilteredProjects(state) {
@@ -89,6 +94,15 @@ const useProjectStore = defineStore('projectStore', {
     },
   },
   actions: {
+    async fetchProjects() {
+      try {
+        const projects = await getProjects();
+        this.projects = projects;
+        this.lastFetched = new Date();
+      } catch (error) {
+        console.error('Failed to fetch projects:', error);
+      }
+    },
     setFilters(filters) {
       this.filters = { ...this.filters, ...filters };
     },
