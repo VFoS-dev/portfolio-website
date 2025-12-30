@@ -66,7 +66,7 @@ function cubeRotationFinished({ propertyName }) {
 function panelHasExpanded({ target, propertyName }) {
   // Only handle width/height transitions, ignore other properties
   if (propertyName !== 'width' && propertyName !== 'height') return;
-  
+
   const { [target.id]: active, expand } = cubeStore.state;
   if (!active || !expand) return;
 
@@ -143,6 +143,11 @@ function teleportDisabled(side) {
   transform: none;
 }
 
+section.in .cube-label {
+  opacity: 0;
+  display: none;
+}
+
 #cube {
   --cube-size: 50vmin;
   --half-size: calc(var(--cube-size) / 2);
@@ -176,7 +181,7 @@ function teleportDisabled(side) {
     font-weight: 900;
     color: #ffffff;
     text-transform: capitalize;
-    text-shadow: 
+    text-shadow:
       0 0 20px rgba(0, 0, 0, 1),
       0 0 40px rgba(0, 0, 0, 0.8),
       0 0 60px rgba(0, 0, 0, 0.6),
@@ -197,10 +202,6 @@ function teleportDisabled(side) {
   }
 
   &.expand > section .cube-label {
-    opacity: 0;
-  }
-
-  & > section.in .cube-label {
     opacity: 0;
   }
 

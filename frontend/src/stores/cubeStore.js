@@ -5,6 +5,19 @@ import router from '@/router';
 import { prefersLessMotion } from '@/services/motion-service';
 import sides from '@/enums/sides';
 
+// Map each side to its corresponding color
+const SIDE_TO_COLOR = {
+  [sides.home]: 'red',
+  [sides.projects]: 'blue',
+  [sides.socials]: 'yellow',
+  [sides.resume]: 'green',
+  [sides.about]: 'orange',
+  [sides.skills]: 'purple',
+};
+
+// Cache valid sides to avoid creating new array on every check
+const VALID_SIDES = new Set(Object.values(sides));
+
 const useCubeStore = defineStore('cubeStore', {
   state: () => {
     let projects;
@@ -31,12 +44,43 @@ const useCubeStore = defineStore('cubeStore', {
       skills: Quaternion.ConvertFromEuler(0, 270, 0),
       project: (projects = Quaternion.ConvertFromEuler(-90, 0, 0)),
       projects,
+      // Navigation history for snake colors
+      navigationHistory: [],
     };
   },
   getters: {
     getActiveScroll(state) {
       const { scrolls, focus } = state;
       return scrolls[focus];
+    },
+    getHistoryLength(state) {
+      return state.navigationHistory.length;
+    },
+    getSnakeColors(state) {
+      const { navigationHistory } = state;
+      const hLength = navigationHistory.length;
+
+      // If no history, head is gold, rest uses default pattern
+      if (hLength === 0) {
+        return ['gold', 'green', -1];
+      }
+
+      // Build color array based on visited sides
+      // Each side visited adds its corresponding color to the snake
+      const colors = [];
+
+      // For each visited side, use its mapped color
+      for (let i = 0; i < hLength; i++) {
+        const visitedSide = navigationHistory[i];
+        const color = SIDE_TO_COLOR[visitedSide] || 'green'; // Default to green if side not mapped
+        colors.push(color);
+      }
+
+      // Add white marker for segments beyond history length
+      // This allows the snake to grow beyond the visited sides
+      colors.push(-1); // Marker for white segments
+
+      return colors;
     },
   },
   actions: {
@@ -69,6 +113,29 @@ const useCubeStore = defineStore('cubeStore', {
     },
     rotateTo({ name }) {
       if (!this[name]) return;
+      
+      // Track navigation history for snake colors based on route names
+      // Only track if not initial mount and not a fix rotation
+      const isFixRotation = this.fromMound ||
+        this.state.instant ||
+        this._resetting ||
+        this.focus === (name === 'project' ? sides.projects : name);
+
+      if (!isFixRotation) {
+        // Only track base routes (not project detail pages)
+        const baseRoute = name === 'project' ? sides.projects : name;
+        
+        // Skip if it's not a valid side to track (use Set for O(1) lookup)
+        if (VALID_SIDES.has(baseRoute)) {
+          // Always track navigation, even if it's the same route (cube rotation can land on same view)
+          // Cap history at 6 - only keep the most recent entries
+          this.navigationHistory.push(baseRoute);
+          if (this.navigationHistory.length > 6) {
+            this.navigationHistory.shift();
+          }
+        }
+      }
+      
       this.scrolls = {
         ...this.scrolls,
         ...this.scrolls.defaults,

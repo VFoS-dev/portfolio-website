@@ -1,13 +1,26 @@
 import { fn } from '@/utilities/defaults';
 import { gameLoop } from '@/utilities/game';
 import sUtil from './snake-util';
+import { cubeStore } from '@/stores/cubeStore';
 
 export function snakeGameSetup(canvas, gameEnded = fn) {
   let tickDelay = 500;
   let loopEnded = true;
   let isPlayer = false;
   let alive = false;
-  let snakeColors = ['green', 'gold', -1];
+  
+  // Cache snake colors and only update when navigation history changes
+  let snakeColors = cubeStore.getSnakeColors;
+  let lastHistoryLength = cubeStore.getHistoryLength;
+  
+  const updateSnakeColors = () => {
+    const currentLength = cubeStore.getHistoryLength;
+    // Only update if navigation history actually changed
+    if (currentLength !== lastHistoryLength) {
+      snakeColors = cubeStore.getSnakeColors;
+      lastHistoryLength = currentLength;
+    }
+  };
   const player = sUtil.inputPlayer();
   const aiPlayer = sUtil.inputPlayer();
   let update, board, cellSize, sizeRem, botDelay, aiDelay;
@@ -88,6 +101,9 @@ export function snakeGameSetup(canvas, gameEnded = fn) {
         }
       }
 
+      // Update snake colors from navigation history (only if it changed)
+      updateSnakeColors();
+      
       // draw changed
       update = sUtil.drawUpdated(canvas, board, update, cellSize, sizeRem, snakeColors);
 
@@ -246,6 +262,8 @@ export function snakeGameSetup(canvas, gameEnded = fn) {
 
     ({ board } = sUtil.populateFood(board, isPlayer ? 5 : 1));
 
+    // Update snake colors from navigation history before drawing
+    updateSnakeColors();
     sUtil.fullDraw(canvas, board, cellSize, sizeRem, snakeColors);
 
     // start loop

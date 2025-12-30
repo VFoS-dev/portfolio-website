@@ -2,7 +2,6 @@
   <nav :class="{ hide: navStore.hide }">
     <AnimatedLogo :scroll-percent="navStore.getScroll" />
     <section>
-      <CheckPoints @reset="console.log('reset')" />
       <Portal to="#mobile-nav" :disabled="!isMobile">
         <ul>
           <li v-if="isMobile">
@@ -22,7 +21,6 @@
 <script setup>
 import AnimatedLogo from '@/components/Navigation/AnimatedLogo.vue';
 import NavLink from '@/components/Navigation/NavLink.vue';
-import CheckPoints from '@/components/CheckPoints/CheckPoints.vue';
 import Portal from '@/components/Portal.vue';
 import { inject } from 'vue';
 import provideInject from '@/enums/provideInject';
@@ -32,6 +30,7 @@ import { capitalize } from '@/utilities/conversions';
 
 const links = ['projects', 'skills', 'resume', 'about', 'socials'];
 const isMobile = inject(provideInject.isMobile);
+
 
 function toggleNav() {
   if (!navStore.toggleOpen()) return;
@@ -122,7 +121,7 @@ section{
     flex-grow: 1;
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
   }
 }
