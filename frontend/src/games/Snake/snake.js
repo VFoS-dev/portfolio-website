@@ -25,11 +25,11 @@ export function snakeGameSetup(canvas, gameEnded = fn) {
       if (tickDelay > 0) return;
 
       if (isPlayer) {
-        ({ update, board, alive, tickDelay } = sUtil.movePlayer(player, board));
+        ({ update, board, alive, tickDelay } = sUtil.movePlayer(player, board, false));
       } else {
         // AI player
         updateAI();
-        ({ update, board, alive, tickDelay } = sUtil.movePlayer(aiPlayer, board));
+        ({ update, board, alive, tickDelay } = sUtil.movePlayer(aiPlayer, board, true));
       }
 
       // draw changed

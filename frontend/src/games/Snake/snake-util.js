@@ -200,8 +200,8 @@ export function generateSnake(board, length = 5) {
   };
 }
 
-export function movePlayer(player, board) {
-  const dead = { board, tickDelay: 500, alive: false, update: [] };
+export function movePlayer(player, board, isAI = false) {
+  const dead = { board, tickDelay: isAI ? 300 : 500, alive: false, update: [] };
 
   // get snake
   let head, x, y, segments, update;
@@ -232,7 +232,11 @@ export function movePlayer(player, board) {
   // move player
   player.snakeMoved({ x: x + dx, y: y + dy }, ateFood);
   ({ head, segments } = player.getSnake());
-  const tickDelay = Math.max(125, 500 - 10 * (segments.length - 4));
+  
+  // Calculate tick delay - AI is faster and gains speed faster
+  const tickDelay = isAI 
+    ? Math.max(75, 300 - 15 * (segments.length - 4))  // AI: faster start (300ms), faster acceleration (15ms per segment), minimum 75ms
+    : Math.max(125, 500 - 10 * (segments.length - 4)); // Player: normal speed (500ms start, 10ms per segment, minimum 125ms)
 
   if (ateFood) {
     let updates;
