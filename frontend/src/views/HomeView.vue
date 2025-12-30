@@ -27,13 +27,26 @@ const toResume = () => router.push({ name: 'resume' });
 const playingGame = ref(false);
 const gameState = computed(() => {
   const state = cubeStore.state.home;
-  if (state) game.value.unpause?.();
-  else game.value.pause?.();
+  if (state) {
+    game.value.unpause?.();
+    // Start AI when home view is in focus and player is not playing
+    if (!playingGame.value) {
+      game.value.startAI?.();
+    }
+  } else {
+    game.value.pause?.();
+  }
   return state;
 });
 
 onMounted(() => {
   game.value = snakeGameSetup(canvasRef.value.canvas, gameEnded);
+  // Start AI when component mounts if home is in focus
+  if (cubeStore.state.home) {
+    setTimeout(() => {
+      game.value.startAI?.();
+    }, 500);
+  }
 });
 
 onBeforeUnmount(() => {
@@ -41,6 +54,7 @@ onBeforeUnmount(() => {
 });
 
 function playSnake() {
+  // Clear AI and start player game
   game.value.gameStart();
   navStore.activeGame(true);
   cubeStore.activeGame(true);

@@ -259,7 +259,7 @@ export function populateFood(board, count = 0) {
   const possibleSpots = [];
   const updates = [];
   for (var x = 0; x < board.length; x++) {
-    for (var y = 0; y < board.length; y++) {
+    for (var y = 0; y < board[0].length; y++) {
       if (board[x][y] === BOARD_STATES.unset) {
         possibleSpots.push({ x, y });
       }
@@ -277,6 +277,156 @@ export function populateFood(board, count = 0) {
   return { board, updates };
 }
 
+// Direction mappings for Hamiltonian path
+const MOVE_DIRECTIONS = {
+  '+x': { dx: 1, dy: 0 },
+  '-x': { dx: -1, dy: 0 },
+  '+y': { dx: 0, dy: 1 },
+  '-y': { dx: 0, dy: -1 },
+};
+
+// Convert direction string to move direction
+function dirToMoveDir(dir) {
+  return MOVE_DIRECTIONS[dir] || MOVE_DIRECTIONS['+x'];
+}
+
+// Generate Hamiltonian cycle - always synchronous but can be called with setTimeout for large boards
+export function generateHamiltonianCycle(width, height, callback = null) {
+  const result = generateHamiltonianCycleSync(width, height);
+  if (callback) {
+    // Call callback asynchronously to allow UI to update
+    setTimeout(() => callback(1), 0);
+  }
+  return result;
+}
+
+// Synchronous version for immediate use (smaller boards)
+export function generateHamiltonianCycleSync(width, height) {
+  const temp = new Array(width).fill(false).map((_, x) =>
+    new Array(height).fill(false).map((_, y) => {
+      if (!x && !y) return { dir: '+y' };
+      if (!y) return { dir: '-x' };
+      if (y === 1 && x === width - 1) return { dir: '-y' };
+      if (!(x % 2) && y === height - 1) return { dir: '+x' };
+      if (x % 2 && y === height - 1) return { dir: '-y' };
+      if (!(x % 2) && y === 1) return { dir: '+y' };
+      if (x % 2 && y === 1) return { dir: '+x' };
+      if (!x) return { dir: '+y' };
+      if (!(x % 2)) return { dir: '+y' };
+      if (x % 2) return { dir: '-y' };
+    })
+  );
+
+  let x = 0;
+  let y = 0;
+  let index = 0;
+  const boardSize = width * height;
+
+  while (index < boardSize) {
+    temp[x][y].index = index;
+    index++;
+    
+    if (index >= boardSize) break;
+    
+    const next = dirToMoveDir(temp[x][y].dir);
+    x = x + next.dx;
+    y = y + next.dy;
+  }
+
+  // Apply random transformations
+  let result = temp;
+  
+  if (Math.round(Math.random())) {
+    result = result.map(t => t.reverse());
+  }
+
+  if (Math.round(Math.random())) {
+    result = result.reverse();
+    const swap = { '+x': '-x', '-x': '+x' };
+    result = result.map(t => t.map(a => ({ ...a, dir: swap[a.dir] || a.dir })));
+  }
+
+  return result;
+}
+
+// Find next direction using Hamiltonian path
+export function getNextDirectionFromPath(cycle, head, food, board, snakeLength) {
+  if (!cycle || !cycle[head.x] || !cycle[head.x][head.y]) {
+    return '+x'; // fallback
+  }
+
+  const headCell = cycle[head.x][head.y];
+  
+  // Check if cycle is fully generated (has index property)
+  if (typeof headCell.index === 'undefined') {
+    // Cycle not ready yet, use default direction
+    return headCell.dir || '+x';
+  }
+
+  const boardSize = board.length * board[0].length;
+  const headIndex = headCell.index;
+  
+  // Find food index in cycle
+  let foodIndex = -1;
+  for (let x = 0; x < board.length; x++) {
+    for (let y = 0; y < board[0].length; y++) {
+      if (board[x][y] === BOARD_STATES.food) {
+        if (cycle[x] && cycle[x][y] && typeof cycle[x][y].index !== 'undefined') {
+          foodIndex = cycle[x][y].index;
+          break;
+        }
+      }
+    }
+    if (foodIndex !== -1) break;
+  }
+
+  if (foodIndex === -1) {
+    // No food found, just follow the path
+    return headCell.dir;
+  }
+
+  // Calculate distance to food along the cycle
+  let fruitIndex = (foodIndex - headIndex + boardSize) % boardSize;
+  if (fruitIndex < 0) fruitIndex += boardSize;
+
+  // Check all possible directions
+  let bestDir = cycle[head.x][head.y].dir;
+  let bestIndex = Infinity;
+
+  for (const [dir, move] of Object.entries(MOVE_DIRECTIONS)) {
+    const newX = head.x + move.dx;
+    const newY = head.y + move.dy;
+
+    // Check bounds
+    if (!inBounds({ x: newX, y: newY }, { xMax: board.length - 1, yMax: board[0].length - 1 })) {
+      continue;
+    }
+
+    // Check if cell is available (not snake body)
+    const cellState = board[newX][newY];
+    if (cellState !== BOARD_STATES.unset && cellState !== BOARD_STATES.food) {
+      // Check if it's the tail (which will move)
+      const isTail = typeof cellState === 'number' && cellState >= snakeLength - 1;
+      if (!isTail) continue;
+    }
+
+    // Get index in cycle for this direction
+    if (!cycle[newX] || !cycle[newX][newY] || typeof cycle[newX][newY].index === 'undefined') continue;
+    
+    let dirIndex = (cycle[newX][newY].index - headIndex + boardSize) % boardSize;
+    if (dirIndex < 0) dirIndex += boardSize;
+
+    // Prefer direction that gets us closer to food
+    if (dirIndex <= fruitIndex && dirIndex < bestIndex) {
+      bestIndex = dirIndex;
+      bestDir = dir;
+    }
+  }
+
+  // If no good direction found, use the path direction
+  return bestDir;
+}
+
 export default {
   CELLS,
   COLORS,
@@ -291,5 +441,8 @@ export default {
   generateSnake,
   movePlayer,
   populateFood,
+  generateHamiltonianCycle,
+  generateHamiltonianCycleSync,
+  getNextDirectionFromPath,
 };
 
