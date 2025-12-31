@@ -16,5 +16,6 @@ router.use('/api/skills', require('./skillRoutes.js'));
 router.use('/api/sabers', require('./saberRoutes.js'));
 router.use('/api/socials', require('./socialRoutes.js'));
 router.use('/api/companies', require('./companyRoutes.js'));
+router.use('/api/media', require('./mediaRoutes.js'));
 
 module.exports = router;

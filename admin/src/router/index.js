@@ -66,6 +66,12 @@ const router = createRouter({
       meta: { requiresAuth: true }
     },
     {
+      path: '/media',
+      name: 'media',
+      component: () => import('../views/MediaView.vue'),
+      meta: { requiresAuth: true }
+    },
+    {
       path: '/change-password',
       name: 'change-password',
       component: () => import('../views/ChangePasswordView.vue'),

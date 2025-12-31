@@ -19,6 +19,7 @@ function direct(func) {
     return (req, res, next) => {
         let info = {
             ...(req.files && { files: req.files }),
+            ...(req.file && { file: req.file }),
             ...req.query,
             ...req.body,
             ...req.params,

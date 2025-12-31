@@ -212,6 +212,30 @@ export const apiService = {
     const response = await api.delete(`/api/companies/${id}`)
     return formatResponse(response)
   },
+
+  // Media
+  async getMedia() {
+    const response = await api.get('/api/media?beta=1')
+    return formatResponse(response)
+  },
+  async uploadMedia(file) {
+    const formData = new FormData()
+    formData.append('file', file)
+    const response = await api.post('/api/media', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    })
+    return formatResponse(response)
+  },
+  async updateMedia(id, data) {
+    const response = await api.put(`/api/media/${id}`, data)
+    return formatResponse(response)
+  },
+  async deleteMedia(id) {
+    const response = await api.delete(`/api/media/${id}`)
+    return formatResponse(response)
+  },
 }
 
 export default apiService

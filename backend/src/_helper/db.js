@@ -20,4 +20,5 @@ module.exports = {
   Social: require('../_models/Social'),
   User: require('../_models/User'),
   Company: require('../_models/Company'),
+  Media: require('../_models/Media'),
 };

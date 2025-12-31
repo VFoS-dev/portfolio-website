@@ -47,6 +47,11 @@ import { RouterLink } from 'vue-router'
         <h2>Companies</h2>
         <p>Manage companies and organizations</p>
       </RouterLink>
+      
+      <RouterLink to="/media" class="dashboard-card">
+        <h2>Media</h2>
+        <p>Upload and manage images and videos</p>
+      </RouterLink>
     </div>
   </div>
 </template>
