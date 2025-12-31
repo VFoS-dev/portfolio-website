@@ -186,12 +186,12 @@ export const apiService = {
     const response = await api.post('/api/default-window', data)
     return formatResponse(response)
   },
-  async updateDefaultWindow(id, data) {
-    const response = await api.put(`/api/default-window/${id}`, data)
+  async updateDefaultWindow(data) {
+    const response = await api.put('/api/default-window', data)
     return formatResponse(response)
   },
-  async deleteDefaultWindow(id) {
-    const response = await api.delete(`/api/default-window/${id}`)
+  async deleteDefaultWindow() {
+    const response = await api.delete('/api/default-window')
     return formatResponse(response)
   },
 

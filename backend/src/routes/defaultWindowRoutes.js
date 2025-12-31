@@ -6,8 +6,8 @@ const router = express.Router();
 
 router.get('/', direct(getDefaultWindow));
 router.post('/', authenticateToken, direct(createDefaultWindow));
-router.put('/:id', authenticateToken, direct(updateDefaultWindow));
-router.delete('/:id', authenticateToken, direct(deleteDefaultWindow));
+router.put('/', authenticateToken, direct(updateDefaultWindow));
+router.delete('/', authenticateToken, direct(deleteDefaultWindow));
 
 module.exports = router;
 

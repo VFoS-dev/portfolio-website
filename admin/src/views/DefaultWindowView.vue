@@ -4,36 +4,21 @@
     
     <div class="actions">
       <button @click="loadDefaultWindow" class="btn btn-primary">Refresh</button>
-      <button @click="showCreateForm = true" class="btn btn-success">Create New Default Window</button>
     </div>
 
     <div v-if="loading" class="loading">Loading...</div>
     <div v-if="error" class="error">{{ error }}</div>
 
-    <div v-if="editingDefaultWindow" class="form-container">
-      <h2>Edit Default Window</h2>
+    <div v-if="editingDefaultWindow || !defaultWindow" class="form-container">
+      <h2>{{ defaultWindow ? 'Edit Default Window' : 'Create Default Window' }}</h2>
       <form @submit.prevent="handleUpdate">
         <div class="form-group">
           <label>Icon Title (required):</label>
           <input v-model="editingDefaultWindow.iconTitle" type="text" required />
         </div>
         <div class="form-actions">
-          <button type="submit" class="btn btn-primary">Update</button>
-          <button type="button" @click="cancelEdit" class="btn btn-secondary">Cancel</button>
-        </div>
-      </form>
-    </div>
-
-    <div v-if="showCreateForm" class="form-container">
-      <h2>Create New Default Window</h2>
-      <form @submit.prevent="handleCreate">
-        <div class="form-group">
-          <label>Icon Title (required):</label>
-          <input v-model="newDefaultWindow.iconTitle" type="text" required />
-        </div>
-        <div class="form-actions">
-          <button type="submit" class="btn btn-primary">Create</button>
-          <button type="button" @click="cancelCreate" class="btn btn-secondary">Cancel</button>
+          <button type="submit" class="btn btn-primary">{{ defaultWindow ? 'Update' : 'Create' }}</button>
+          <button v-if="defaultWindow" type="button" @click="cancelEdit" class="btn btn-secondary">Cancel</button>
         </div>
       </form>
     </div>
@@ -46,7 +31,6 @@
           <button @click="toggleDeactivated" class="btn" :class="defaultWindow.deactivated ? 'btn-activate' : 'btn-deactivate'">
             {{ defaultWindow.deactivated ? 'Activate' : 'Deactivate' }}
           </button>
-          <button @click="handleDelete" class="btn btn-delete">Delete</button>
         </div>
       </div>
       <div v-if="defaultWindow.deactivated" class="deactivated-badge">⚠️ Deactivated</div>
@@ -65,12 +49,7 @@ import apiService from '@/services/api'
 const defaultWindow = ref(null)
 const loading = ref(false)
 const error = ref(null)
-const showCreateForm = ref(false)
 const editingDefaultWindow = ref(null)
-
-const newDefaultWindow = ref({
-  iconTitle: '',
-})
 
 const loadDefaultWindow = async () => {
   loading.value = true
@@ -89,42 +68,26 @@ const loadDefaultWindow = async () => {
   }
 }
 
-const handleCreate = async () => {
-  loading.value = true
-  error.value = null
-  try {
-    const response = await apiService.createDefaultWindow(newDefaultWindow.value)
-    if (response.status === 201) {
-      await loadDefaultWindow()
-      cancelCreate()
-      alert('Default window created successfully!')
-    } else {
-      error.value = response.message || 'Failed to create default window'
-    }
-  } catch (err) {
-    error.value = err.message || 'Error creating default window'
-  } finally {
-    loading.value = false
+const startEdit = () => {
+  if (defaultWindow.value) {
+    editingDefaultWindow.value = { ...defaultWindow.value }
+  } else {
+    // If no default window exists, start with empty form
+    editingDefaultWindow.value = { iconTitle: '' }
   }
 }
 
-const startEdit = () => {
-  if (!defaultWindow.value) return
-  editingDefaultWindow.value = { ...defaultWindow.value }
-  showCreateForm.value = false
-}
-
 const handleUpdate = async () => {
-  if (!editingDefaultWindow.value._id) return
-  
   loading.value = true
   error.value = null
   try {
-    const response = await apiService.updateDefaultWindow(editingDefaultWindow.value._id, editingDefaultWindow.value)
+    const hadExistingData = !!defaultWindow.value
+    // Use updateDefaultWindow (no ID needed - it updates the single default window entry)
+    const response = await apiService.updateDefaultWindow({ iconTitle: editingDefaultWindow.value.iconTitle })
     if (response.status === 200) {
       await loadDefaultWindow()
       cancelEdit()
-      alert('Default window updated successfully!')
+      alert(hadExistingData ? 'Default window updated successfully!' : 'Default window created successfully!')
     } else {
       error.value = response.message || 'Failed to update default window'
     }
@@ -140,7 +103,7 @@ const cancelEdit = () => {
 }
 
 const toggleDeactivated = async () => {
-  if (!defaultWindow.value || !defaultWindow.value._id) return
+  if (!defaultWindow.value) return
   
   const action = defaultWindow.value.deactivated ? 'activate' : 'deactivate'
   if (!confirm(`Are you sure you want to ${action} this default window?`)) {
@@ -150,8 +113,7 @@ const toggleDeactivated = async () => {
   loading.value = true
   error.value = null
   try {
-    const response = await apiService.updateDefaultWindow(defaultWindow.value._id, {
-      ...defaultWindow.value,
+    const response = await apiService.updateDefaultWindow({
       deactivated: !defaultWindow.value.deactivated,
     })
     if (response.status === 200) {
@@ -167,39 +129,13 @@ const toggleDeactivated = async () => {
   }
 }
 
-const handleDelete = async () => {
-  if (!defaultWindow.value || !defaultWindow.value._id) return
-  
-  if (!confirm('Are you sure you want to delete this default window? This action cannot be undone.')) {
-    return
-  }
-  
-  loading.value = true
-  error.value = null
-  try {
-    const response = await apiService.deleteDefaultWindow(defaultWindow.value._id)
-    if (response.status === 200) {
-      defaultWindow.value = null
-      alert('Default window deleted successfully!')
-    } else {
-      error.value = response.message || 'Failed to delete default window'
-    }
-  } catch (err) {
-    error.value = err.message || 'Error deleting default window'
-  } finally {
-    loading.value = false
-  }
-}
-
-const cancelCreate = () => {
-  showCreateForm.value = false
-  newDefaultWindow.value = {
-    iconTitle: '',
-  }
-}
-
 onMounted(() => {
-  loadDefaultWindow()
+  loadDefaultWindow().then(() => {
+    // If no default window exists, show the form immediately
+    if (!defaultWindow.value) {
+      startEdit()
+    }
+  })
 })
 </script>
 
