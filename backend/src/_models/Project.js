@@ -10,12 +10,14 @@ const schema = new Schema({
   keyFeatures: [String],
   startDate: String,
   endDate: String,
-  company: String,
+  company: {
+    type: Schema.Types.ObjectId,
+    ref: 'Company',
+  },
   type: String,
   secondaryType: String,
   links: Schema.Types.Mixed,
   cardNumber: Number,
-  companyLogo: String,
   deprecated: Boolean,
   rarity: String,
   deactivated: {

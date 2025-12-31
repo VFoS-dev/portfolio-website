@@ -19,4 +19,5 @@ module.exports = {
   Color: require('../_models/Color'),
   Social: require('../_models/Social'),
   User: require('../_models/User'),
+  Company: require('../_models/Company'),
 };

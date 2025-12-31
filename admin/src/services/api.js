@@ -194,6 +194,24 @@ export const apiService = {
     const response = await api.delete(`/api/default-window/${id}`)
     return formatResponse(response)
   },
+
+  // Companies
+  async getCompanies() {
+    const response = await api.get('/api/companies?beta=1')
+    return formatResponse(response)
+  },
+  async createCompany(data) {
+    const response = await api.post('/api/companies', data)
+    return formatResponse(response)
+  },
+  async updateCompany(id, data) {
+    const response = await api.put(`/api/companies/${id}`, data)
+    return formatResponse(response)
+  },
+  async deleteCompany(id) {
+    const response = await api.delete(`/api/companies/${id}`)
+    return formatResponse(response)
+  },
 }
 
 export default apiService

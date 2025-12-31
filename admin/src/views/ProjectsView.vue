@@ -47,7 +47,12 @@
         </div>
         <div class="form-group">
           <label>Company:</label>
-          <input v-model="editingProject.company" type="text" />
+          <select v-model="editingProject.company" class="form-select">
+            <option :value="null">No Company</option>
+            <option v-for="company in companies" :key="company._id" :value="company._id">
+              {{ company.name }}
+            </option>
+          </select>
         </div>
         <div class="form-group">
           <label>Type:</label>
@@ -60,10 +65,6 @@
         <div class="form-group">
           <label>Card Number:</label>
           <input v-model.number="editingProject.cardNumber" type="number" />
-        </div>
-        <div class="form-group">
-          <label>Company Logo:</label>
-          <input v-model="editingProject.companyLogo" type="text" />
         </div>
         <div class="form-group">
           <label>
@@ -119,7 +120,12 @@
         </div>
         <div class="form-group">
           <label>Company:</label>
-          <input v-model="newProject.company" type="text" />
+          <select v-model="newProject.company" class="form-select">
+            <option :value="null">No Company</option>
+            <option v-for="company in companies" :key="company._id" :value="company._id">
+              {{ company.name }}
+            </option>
+          </select>
         </div>
         <div class="form-group">
           <label>Type:</label>
@@ -132,10 +138,6 @@
         <div class="form-group">
           <label>Card Number:</label>
           <input v-model.number="newProject.cardNumber" type="number" />
-        </div>
-        <div class="form-group">
-          <label>Company Logo:</label>
-          <input v-model="newProject.companyLogo" type="text" />
         </div>
         <div class="form-group">
           <label>
@@ -169,7 +171,7 @@
         </div>
         <p><strong>ID:</strong> {{ project.id }}</p>
         <p v-if="project.deactivated" class="deactivated-badge">⚠️ Deactivated</p>
-        <p><strong>Company:</strong> {{ project.company }}</p>
+        <p><strong>Company:</strong> {{ project.company?.name || 'No Company' }}</p>
         <p><strong>Type:</strong> {{ project.type }}</p>
         <p><strong>Card Number:</strong> {{ project.cardNumber }}</p>
         <p v-if="project.description"><strong>Description:</strong> {{ project.description }}</p>
@@ -185,6 +187,7 @@ import { ref, onMounted, watch } from 'vue'
 import apiService from '@/services/api'
 
 const projects = ref([])
+const companies = ref([])
 const loading = ref(false)
 const error = ref(null)
 const showCreateForm = ref(false)
@@ -203,12 +206,11 @@ const newProject = ref({
   keyFeatures: [],
   startDate: '',
   endDate: '',
-  company: '',
+  company: null,
   type: '',
   secondaryType: '',
   links: {},
   cardNumber: 0,
-  companyLogo: '',
   deprecated: false,
   rarity: '',
 })
@@ -270,7 +272,10 @@ const handleCreate = async () => {
 }
 
 const startEdit = (project) => {
-  editingProject.value = { ...project }
+  editingProject.value = { 
+    ...project,
+    company: project.company?._id || project.company || null
+  }
   editingStackInput.value = project.stack ? project.stack.join(', ') : ''
   editingFeaturesInput.value = project.keyFeatures ? project.keyFeatures.join(', ') : ''
   showCreateForm.value = false
@@ -366,12 +371,11 @@ const cancelCreate = () => {
     keyFeatures: [],
     startDate: '',
     endDate: '',
-    company: '',
+    company: null,
     type: '',
     secondaryType: '',
     links: {},
     cardNumber: 0,
-    companyLogo: '',
     deprecated: false,
     rarity: '',
   }
@@ -379,8 +383,20 @@ const cancelCreate = () => {
   featuresInput.value = ''
 }
 
+const loadCompanies = async () => {
+  try {
+    const response = await apiService.getCompanies()
+    if (response.status === 200) {
+      companies.value = Array.isArray(response.data) ? response.data : [response.data]
+    }
+  } catch (err) {
+    console.error('Error loading companies:', err)
+  }
+}
+
 onMounted(() => {
   loadProjects()
+  loadCompanies()
 })
 </script>
 
@@ -502,7 +518,8 @@ onMounted(() => {
 }
 
 .form-group input,
-.form-group textarea {
+.form-group textarea,
+.form-group select {
   width: 100%;
   padding: 0.75rem;
   border: 1px solid var(--color-border);
@@ -514,10 +531,15 @@ onMounted(() => {
 }
 
 .form-group input:focus,
-.form-group textarea:focus {
+.form-group textarea:focus,
+.form-group select:focus {
   outline: none;
   border-color: #007bff;
   box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.form-select {
+  cursor: pointer;
 }
 
 .form-actions {

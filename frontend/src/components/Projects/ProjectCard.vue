@@ -34,7 +34,7 @@
           <!-- Type Line -->
           <div class="type-line">
             <span class="card-type">{{ project.type }} — {{ project.secondaryType }}</span>
-            <img :src="project.companyLogo" :alt="project.company" class="company-logo" />
+            <img v-if="project.company?.logo" :src="project.company.logo" :alt="project.company?.name || 'Company'" class="company-logo" />
           </div>
 
           <!-- Text Box -->
@@ -49,7 +49,7 @@
             <span class="rarity-badge">{{ getRarityLabel() }}</span>
             <span v-if="isDeprecated" class="deprecated-badge">DEPRECATED</span>
             <span class="card-number-bottom">#{{ formattedCardNumber }}</span>
-            <span class="set-name">{{ project.company || 'VFoS' }}</span>
+            <span class="set-name">{{ project.company?.name || 'VFoS' }}</span>
             <span class="date-range">{{ formatDateRange() }}</span>
           </div>
         </div>

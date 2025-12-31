@@ -21,8 +21,7 @@
     "type": "Game",
     "secondaryType": "Personal",
     "links": {},
-    "cardNumber": 23,
-    "companyLogo": "/favicon.gif"
+    "cardNumber": 23
   },
   {
     "id": "portfolio_website",
@@ -54,8 +53,7 @@
     "links": {
       "website": "/"
     },
-    "cardNumber": 22,
-    "companyLogo": "/favicon.gif"
+    "cardNumber": 22
   },
   {
     "id": "resume_builder",
@@ -84,8 +82,7 @@
     "links": {
       "website": "https://vfos.dev/resume?create=1"
     },
-    "cardNumber": 21,
-    "companyLogo": "/favicon.gif"
+    "cardNumber": 21
   },
   {
     "id": "venture_title",
@@ -109,8 +106,7 @@
     "links": {
       "website": "https://ventureidaho.com"
     },
-    "cardNumber": 20,
-    "companyLogo": "/images/companies/matraex.png"
+    "cardNumber": 20
   },
   {
     "id": "hbv",
@@ -133,8 +129,7 @@
     "links": {
       "website": "https://venturesys.org"
     },
-    "cardNumber": 19,
-    "companyLogo": "/images/companies/matraex.png"
+    "cardNumber": 19
   },
   {
     "id": "high_call_rodeo",
@@ -160,8 +155,7 @@
     "links": {
       "website": "https://app.highcallrodeo.com"
     },
-    "cardNumber": 18,
-    "companyLogo": "/images/companies/matraex.png"
+    "cardNumber": 18
   },
   {
     "id": "sales_trak",
@@ -190,8 +184,7 @@
       "website": "https://salestrak.io",
       "about": "https://bartlettroofs.com/"
     },
-    "cardNumber": 17,
-    "companyLogo": "/images/companies/matraex.png"
+    "cardNumber": 17
   },
   {
     "id": "bronco_beam",
@@ -225,8 +218,7 @@
       "android": "https://play.google.com/store/apps/details?id=com.broncobeam_mobile&hl=en_US&gl=US",
       "apple": "https://apps.apple.com/us/app/beam-tours/id1588971126"
     },
-    "cardNumber": 16,
-    "companyLogo": "/images/companies/gimmworks.png"
+    "cardNumber": 16
   },
   {
     "id": "all_in_favor",
@@ -254,8 +246,7 @@
     "links": {
       "website": "https://www.allinfavor.org"
     },
-    "cardNumber": 15,
-    "companyLogo": "/images/companies/gimmworks.png"
+    "cardNumber": 15
   },
   {
     "id": "planet_destroyer",
@@ -277,8 +268,7 @@
     "type": "Game",
     "secondaryType": "Personal",
     "links": {},
-    "cardNumber": 14,
-    "companyLogo": "/favicon.gif"
+    "cardNumber": 14
   },
   {
     "id": "abc_stories",
@@ -309,8 +299,7 @@
       "website": "https://www.abcstories.org/about",
       "apple": "https://apps.apple.com/us/app/abc-stories/id1539194514"
     },
-    "cardNumber": 13,
-    "companyLogo": "/images/companies/gimmworks.png"
+    "cardNumber": 13
   },
   {
     "id": "rio_genesis",
@@ -335,8 +324,7 @@
     "links": {
       "website": "https://riogenesis.com"
     },
-    "cardNumber": 12,
-    "companyLogo": "/images/companies/matraex.png"
+    "cardNumber": 12
   },
   {
     "id": "black_sage_tech",
@@ -360,8 +348,7 @@
     "links": {
       "about": "https://blacksagetech.com"
     },
-    "cardNumber": 11,
-    "companyLogo": "/images/companies/matraex.png"
+    "cardNumber": 11
   },
   {
     "id": "motorpool_services",
@@ -390,8 +377,7 @@
     "links": {
       "website": "https://motorpooldrivercertification.com"
     },
-    "cardNumber": 10,
-    "companyLogo": "/images/companies/gimmworks.png"
+    "cardNumber": 10
   },
   {
     "id": "the_simple_ring_alpha",
@@ -412,15 +398,14 @@
     ],
     "startDate": "October 8, 2020",
     "endDate": "December 24, 2021",
-    "company": "VFoS",
+    "company": "The Simple Ring",
     "type": "Website",
     "secondaryType": "Personal",
     "links": {
       "demo": "https://ringtesting.jonathankido.com",
       "about": "https://thesimplering.com"
     },
-    "cardNumber": 9,
-    "companyLogo": "/favicon.gif"
+    "cardNumber": 9
   },
   {
     "id": "minesweeper_solver",
@@ -440,8 +425,7 @@
     "type": "Game",
     "secondaryType": "Personal",
     "links": {},
-    "cardNumber": 8,
-    "companyLogo": "/favicon.gif"
+    "cardNumber": 8
   },
   {
     "id": "cash_n_slash",
@@ -464,8 +448,7 @@
     "type": "Game",
     "secondaryType": "Professional",
     "links": {},
-    "cardNumber": 7,
-    "companyLogo": "/images/companies/gimmworks.png"
+    "cardNumber": 7
   },
   {
     "id": "swordwhip",
@@ -489,8 +472,7 @@
     "type": "Game",
     "secondaryType": "Personal",
     "links": {},
-    "cardNumber": 6,
-    "companyLogo": "/favicon.gif"
+    "cardNumber": 6
   },
   {
     "id": "deadline",
@@ -514,8 +496,7 @@
     "type": "Game",
     "secondaryType": "Personal",
     "links": {},
-    "cardNumber": 5,
-    "companyLogo": "/favicon.gif"
+    "cardNumber": 5
   },
   {
     "id": "defend",
@@ -537,8 +518,7 @@
     "type": "Game",
     "secondaryType": "Personal",
     "links": {},
-    "cardNumber": 4,
-    "companyLogo": "/favicon.gif"
+    "cardNumber": 4
   },
   {
     "id": "uno_ai",
@@ -560,8 +540,7 @@
     "type": "Game",
     "secondaryType": "Personal",
     "links": {},
-    "cardNumber": 3,
-    "companyLogo": "/favicon.gif"
+    "cardNumber": 3
   },
   {
     "id": "survive",
@@ -583,8 +562,7 @@
     "type": "Game",
     "secondaryType": "Personal",
     "links": {},
-    "cardNumber": 2,
-    "companyLogo": "/favicon.gif"
+    "cardNumber": 2
   },
   {
     "id": "original_logo_animation",
@@ -603,7 +581,6 @@
     "type": "Project",
     "secondaryType": "Personal",
     "links": {},
-    "cardNumber": 1,
-    "companyLogo": "/favicon.gif"
+    "cardNumber": 1
   }
 ]

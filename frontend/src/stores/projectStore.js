@@ -37,7 +37,7 @@ const useProjectStore = defineStore('projectStore', {
 
       // Filter by company
       if (state.filters.company) {
-        filtered = filtered.filter(p => p.company === state.filters.company);
+        filtered = filtered.filter(p => p.company?.name === state.filters.company);
       }
 
       // Filter by rarity
@@ -71,12 +71,20 @@ const useProjectStore = defineStore('projectStore', {
       });
       return Array.from(types).sort();
     },
-    getCompanies() {
+    getCompanies(state) {
+      const companies = new Set();
+      state.projects.forEach(project => {
+        if (project.company?.name) {
+          companies.add(project.company.name);
+        }
+      });
+      const companyList = Array.from(companies).sort().map(name => ({
+        label: name,
+        value: name,
+      }));
       return [
         { label: 'All', value: null },
-        { label: 'VFoS', value: 'VFoS' },
-        { label: 'Matraex Inc.', value: 'Matraex Inc.' },
-        { label: 'GIMM Works', value: 'GIMM Works' },
+        ...companyList,
       ];
     },
     getRarities() {

@@ -13,6 +13,7 @@ const Skill = require('../_models/Skill');
 const Color = require('../_models/Color');
 const Social = require('../_models/Social');
 const User = require('../_models/User');
+const Company = require('../_models/Company');
 
 // Connect to database
 const mongoUrl = env("MongoDB_URL", 'mongodb://127.0.0.1:27017/Portfolio');
@@ -41,10 +42,50 @@ mongoose.connect(mongoUrl).then(async () => {
     await AboutData.create(aboutData);
     console.log('✓ Seeded AboutData');
     
-    // Seed Projects
+    // Seed Companies (must be before Projects since Projects reference Companies)
+    const companiesArray = JSON.parse(fs.readFileSync(path.join(seedJsonPath, 'companies.json'), 'utf8'));
+    await Company.deleteMany({});
+    const insertedCompanies = await Company.insertMany(companiesArray);
+    console.log('✓ Seeded Companies');
+    
+    // Helper function to resolve company name to ObjectId
+    const resolveCompany = async (companyName) => {
+      if (!companyName || companyName === '') {
+        return null;
+      }
+      
+      // Check if it's already a valid MongoDB ObjectId
+      if (mongoose.Types.ObjectId.isValid(companyName)) {
+        const existingCompany = await Company.findById(companyName);
+        if (existingCompany) {
+          return companyName;
+        }
+        throw new Error(`Company with ID ${companyName} not found`);
+      }
+      
+      // Find company by name
+      const foundCompany = await Company.findOne({ name: companyName });
+      if (!foundCompany) {
+        throw new Error(`Company "${companyName}" not found`);
+      }
+      return foundCompany._id;
+    };
+    
+    // Seed Projects - convert company names to IDs
     const projectsArray = JSON.parse(fs.readFileSync(path.join(seedJsonPath, 'projectsData.json'), 'utf8'));
+    
+    // Convert company names to ObjectIds
+    const projectsWithCompanyIds = await Promise.all(
+      projectsArray.map(async (project) => {
+        if (project.company) {
+          project.company = await resolveCompany(project.company);
+        }
+        return project;
+      })
+    );
+    
     await Project.deleteMany({});
-    await Project.insertMany(projectsArray);
+    await Project.insertMany(projectsWithCompanyIds);
     console.log('✓ Seeded Projects');
     
     // Seed Skills

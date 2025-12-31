@@ -15,5 +15,6 @@ router.use('/api/projects', require('./projectRoutes.js'));
 router.use('/api/skills', require('./skillRoutes.js'));
 router.use('/api/colors', require('./colorRoutes.js'));
 router.use('/api/socials', require('./socialRoutes.js'));
+router.use('/api/companies', require('./companyRoutes.js'));
 
 module.exports = router;

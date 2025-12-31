@@ -42,6 +42,11 @@ import { RouterLink } from 'vue-router'
         <h2>Default Window</h2>
         <p>Manage default window settings</p>
       </RouterLink>
+      
+      <RouterLink to="/companies" class="dashboard-card">
+        <h2>Companies</h2>
+        <p>Manage companies and organizations</p>
+      </RouterLink>
     </div>
   </div>
 </template>

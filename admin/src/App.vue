@@ -25,6 +25,7 @@ const handleLogout = () => {
           <RouterLink to="/colors">Colors</RouterLink>
           <RouterLink to="/socials">Socials</RouterLink>
           <RouterLink to="/default-window">Default Window</RouterLink>
+          <RouterLink to="/companies">Companies</RouterLink>
           <RouterLink to="/change-password">Change Password</RouterLink>
           <button @click="handleLogout" class="btn-logout">Logout</button>
         </nav>

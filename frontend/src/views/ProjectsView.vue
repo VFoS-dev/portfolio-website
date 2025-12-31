@@ -48,7 +48,7 @@
               <div class="card-meta">
                 <div class="meta-item">
                   <span class="meta-label">Company:</span>
-                  <span class="meta-value">{{ selectedProject.company }}</span>
+                  <span class="meta-value">{{ selectedProject.company?.name || 'VFoS' }}</span>
                 </div>
                 <div class="meta-item">
                   <span class="meta-label">Period:</span>
