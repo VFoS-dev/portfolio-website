@@ -114,12 +114,12 @@ export const apiService = {
     const response = await api.post('/api/about', data)
     return formatResponse(response)
   },
-  async updateAbout(id, data) {
-    const response = await api.put(`/api/about/${id}`, data)
+  async updateAbout(data) {
+    const response = await api.put('/api/about', data)
     return formatResponse(response)
   },
-  async deleteAbout(id) {
-    const response = await api.delete(`/api/about/${id}`)
+  async deleteAbout() {
+    const response = await api.delete('/api/about')
     return formatResponse(response)
   },
 

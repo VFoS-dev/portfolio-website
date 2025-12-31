@@ -1,52 +1,36 @@
 <template>
   <div class="about-view">
-    <h1>About Data Management</h1>
+    <h1>About Management</h1>
     
     <div class="actions">
       <button @click="loadAbout" class="btn btn-primary">Refresh</button>
-      <button @click="showCreateForm = true" class="btn btn-success">Create New About Data</button>
     </div>
 
     <div v-if="loading" class="loading">Loading...</div>
     <div v-if="error" class="error">{{ error }}</div>
 
-    <div v-if="editingAbout" class="form-container">
-      <h2>Edit About Data</h2>
+    <div v-if="editingAbout || !aboutData" class="form-container">
+      <h2>{{ aboutData ? 'Edit About' : 'Create About' }}</h2>
       <form @submit.prevent="handleUpdate">
         <div class="form-group">
           <label>Text:</label>
           <textarea v-model="editingTextInput" rows="15" placeholder="Enter text. Use tabs or two spaces at the start of lines for indentation. Use #id at the end of lines for IDs (e.g., 'Section:#section')"></textarea>
         </div>
         <div class="form-actions">
-          <button type="submit" class="btn btn-primary">Update</button>
-          <button type="button" @click="cancelEdit" class="btn btn-secondary">Cancel</button>
-        </div>
-      </form>
-    </div>
-
-    <div v-if="showCreateForm" class="form-container">
-      <h2>Create New About Data</h2>
-      <form @submit.prevent="handleCreate">
-        <div class="form-group">
-          <label>Text:</label>
-          <textarea v-model="textInput" rows="15" placeholder="Enter text. Use tabs or two spaces at the start of lines for indentation. Use #id at the end of lines for IDs (e.g., 'Section:#section')"></textarea>
-        </div>
-        <div class="form-actions">
-          <button type="submit" class="btn btn-primary">Create</button>
-          <button type="button" @click="cancelCreate" class="btn btn-secondary">Cancel</button>
+          <button type="submit" class="btn btn-primary">{{ aboutData ? 'Update' : 'Create' }}</button>
+          <button v-if="aboutData" type="button" @click="cancelEdit" class="btn btn-secondary">Cancel</button>
         </div>
       </form>
     </div>
 
     <div v-if="aboutData" class="about-display">
       <div class="display-header">
-        <h2>Current About Data</h2>
+        <h2>Current About</h2>
         <div class="card-actions">
           <button @click="startEdit" class="btn btn-edit">Edit</button>
           <button @click="toggleDeactivated" class="btn" :class="aboutData.deactivated ? 'btn-activate' : 'btn-deactivate'">
             {{ aboutData.deactivated ? 'Activate' : 'Deactivate' }}
           </button>
-          <button @click="handleDelete" class="btn btn-delete">Delete</button>
         </div>
       </div>
       <div v-if="aboutData.deactivated" class="deactivated-badge">⚠️ Deactivated</div>
@@ -65,14 +49,8 @@ import apiService from '@/services/api'
 const aboutData = ref(null)
 const loading = ref(false)
 const error = ref(null)
-const showCreateForm = ref(false)
 const editingAbout = ref(null)
-const textInput = ref('')
 const editingTextInput = ref('')
-
-const newAbout = ref({
-  text: '',
-})
 
 const loadAbout = async () => {
   loading.value = true
@@ -91,43 +69,20 @@ const loadAbout = async () => {
   }
 }
 
-const handleCreate = async () => {
-  loading.value = true
-  error.value = null
-  try {
-    // Convert tabs to "new line space space" format for storage
-    let textString = textInput.value || ''
-    // Replace tabs at start of lines with "new line space space"
-    textString = textString.replace(/^\t/gm, '  ')
-    // Also handle tabs that might be in the middle (convert all tabs to two spaces)
-    textString = textString.replace(/\t/g, '  ')
-    
-    const response = await apiService.createAbout({ text: textString })
-    if (response.status === 201) {
-      await loadAbout()
-      cancelCreate()
-      alert('About data created successfully!')
-    } else {
-      error.value = response.message || 'Failed to create about data'
-    }
-  } catch (err) {
-    error.value = err.message || 'Error creating about data'
-  } finally {
-    loading.value = false
+
+const startEdit = () => {
+  if (aboutData.value) {
+    editingAbout.value = { ...aboutData.value }
+    // Convert two-space indentation back to tabs for easier editing
+    editingTextInput.value = aboutData.value.text ? aboutData.value.text.replace(/^  /gm, '\t') : ''
+  } else {
+    // If no about data exists, start with empty form
+    editingAbout.value = { text: '' }
+    editingTextInput.value = ''
   }
 }
 
-const startEdit = () => {
-  if (!aboutData.value) return
-  editingAbout.value = { ...aboutData.value }
-  // Convert two-space indentation back to tabs for easier editing
-  editingTextInput.value = aboutData.value.text ? aboutData.value.text.replace(/^  /gm, '\t') : ''
-  showCreateForm.value = false
-}
-
 const handleUpdate = async () => {
-  if (!editingAbout.value._id) return
-  
   loading.value = true
   error.value = null
   try {
@@ -138,16 +93,18 @@ const handleUpdate = async () => {
     // Also handle tabs that might be in the middle (convert all tabs to two spaces)
     textString = textString.replace(/\t/g, '  ')
     
-    const response = await apiService.updateAbout(editingAbout.value._id, { text: textString })
+    // Use updateAbout (no ID needed - it updates the single about entry)
+    const hadExistingData = !!aboutData.value
+    const response = await apiService.updateAbout({ text: textString })
     if (response.status === 200) {
       await loadAbout()
       cancelEdit()
-      alert('About data updated successfully!')
+      alert(hadExistingData ? 'About updated successfully!' : 'About created successfully!')
     } else {
-      error.value = response.message || 'Failed to update about data'
+      error.value = response.message || 'Failed to update about'
     }
   } catch (err) {
-    error.value = err.message || 'Error updating about data'
+    error.value = err.message || 'Error updating about'
   } finally {
     loading.value = false
   }
@@ -159,65 +116,39 @@ const cancelEdit = () => {
 }
 
 const toggleDeactivated = async () => {
-  if (!aboutData.value || !aboutData.value._id) return
+  if (!aboutData.value) return
   
   const action = aboutData.value.deactivated ? 'activate' : 'deactivate'
-  if (!confirm(`Are you sure you want to ${action} this about data?`)) {
+  if (!confirm(`Are you sure you want to ${action} this about page?`)) {
     return
   }
   
   loading.value = true
   error.value = null
   try {
-    const response = await apiService.updateAbout(aboutData.value._id, {
-      ...aboutData.value,
+    const response = await apiService.updateAbout({
       deactivated: !aboutData.value.deactivated,
     })
     if (response.status === 200) {
       await loadAbout()
-      alert(`About data ${action}d successfully!`)
+      alert(`About page ${action}d successfully!`)
     } else {
-      error.value = response.message || `Failed to ${action} about data`
+      error.value = response.message || `Failed to ${action} about page`
     }
   } catch (err) {
-    error.value = err.message || `Error ${action}ing about data`
+    error.value = err.message || `Error ${action}ing about page`
   } finally {
     loading.value = false
   }
-}
-
-const handleDelete = async () => {
-  if (!aboutData.value || !aboutData.value._id) return
-  
-  if (!confirm('Are you sure you want to delete this about data? This action cannot be undone.')) {
-    return
-  }
-  
-  loading.value = true
-  error.value = null
-  try {
-    const response = await apiService.deleteAbout(aboutData.value._id)
-    if (response.status === 200) {
-      aboutData.value = null
-      alert('About data deleted successfully!')
-    } else {
-      error.value = response.message || 'Failed to delete about data'
-    }
-  } catch (err) {
-    error.value = err.message || 'Error deleting about data'
-  } finally {
-    loading.value = false
-  }
-}
-
-const cancelCreate = () => {
-  showCreateForm.value = false
-  newAbout.value = { text: '' }
-  textInput.value = ''
 }
 
 onMounted(() => {
-  loadAbout()
+  loadAbout().then(() => {
+    // If no about data exists, show the form immediately
+    if (!aboutData.value) {
+      startEdit()
+    }
+  })
 })
 </script>
 
