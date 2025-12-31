@@ -1,19 +1,19 @@
-const { AboutData } = require('../_helper/db');
+const { About } = require('../_helper/db');
 
 async function getAbout({ beta }) {
   const query = beta === '1' || beta === 1 ? {} : { deactivated: { $ne: true } };
-  const data = await AboutData.findOne(query).sort({ createdAt: -1 });
+  const data = await About.findOne(query).sort({ createdAt: -1 });
   if (!data) {
-    return { status: 404, message: 'AboutData not found' };
+    return { status: 404, message: 'About not found' };
   }
   return { status: 200, data: data.toJSON() };
 }
 
 async function createAbout(data) {
   try {
-    const aboutData = new AboutData(data);
-    await aboutData.save();
-    return { status: 201, data: aboutData.toJSON() };
+    const about = new About(data);
+    await about.save();
+    return { status: 201, data: about.toJSON() };
   } catch (error) {
     return { status: 400, message: error.message };
   }
@@ -21,13 +21,13 @@ async function createAbout(data) {
 
 async function updateAbout({ id, ...data }) {
   try {
-    const aboutData = await AboutData.findById(id);
-    if (!aboutData) {
-      return { status: 404, message: 'AboutData not found' };
+    const about = await About.findById(id);
+    if (!about) {
+      return { status: 404, message: 'About not found' };
     }
-    Object.assign(aboutData, data);
-    await aboutData.save();
-    return { status: 200, data: aboutData.toJSON() };
+    Object.assign(about, data);
+    await about.save();
+    return { status: 200, data: about.toJSON() };
   } catch (error) {
     return { status: 400, message: error.message };
   }
@@ -35,11 +35,11 @@ async function updateAbout({ id, ...data }) {
 
 async function deleteAbout({ id }) {
   try {
-    const aboutData = await AboutData.findByIdAndDelete(id);
-    if (!aboutData) {
-      return { status: 404, message: 'AboutData not found' };
+    const about = await About.findByIdAndDelete(id);
+    if (!about) {
+      return { status: 404, message: 'About not found' };
     }
-    return { status: 200, message: 'AboutData deleted successfully' };
+    return { status: 200, message: 'About deleted successfully' };
   } catch (error) {
     return { status: 400, message: error.message };
   }

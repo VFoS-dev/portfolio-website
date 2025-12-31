@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const schema = new Schema({
-  text: [String],
+  text: String,
   deactivated: {
     type: Boolean,
     default: false,
@@ -11,5 +11,5 @@ const schema = new Schema({
 
 schema.set('toJSON', { virtuals: true });
 
-module.exports = mongoose.model('AboutData', schema);
+module.exports = mongoose.model('About', schema);
 

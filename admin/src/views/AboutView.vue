@@ -14,8 +14,8 @@
       <h2>Edit About Data</h2>
       <form @submit.prevent="handleUpdate">
         <div class="form-group">
-          <label>Text (one per line):</label>
-          <textarea v-model="editingTextInput" rows="10" placeholder="Enter text, one item per line"></textarea>
+          <label>Text:</label>
+          <textarea v-model="editingTextInput" rows="15" placeholder="Enter text. Use tabs or two spaces at the start of lines for indentation. Use #id at the end of lines for IDs (e.g., 'Section:#section')"></textarea>
         </div>
         <div class="form-actions">
           <button type="submit" class="btn btn-primary">Update</button>
@@ -28,8 +28,8 @@
       <h2>Create New About Data</h2>
       <form @submit.prevent="handleCreate">
         <div class="form-group">
-          <label>Text (one per line):</label>
-          <textarea v-model="textInput" rows="10" placeholder="Enter text, one item per line"></textarea>
+          <label>Text:</label>
+          <textarea v-model="textInput" rows="15" placeholder="Enter text. Use tabs or two spaces at the start of lines for indentation. Use #id at the end of lines for IDs (e.g., 'Section:#section')"></textarea>
         </div>
         <div class="form-actions">
           <button type="submit" class="btn btn-primary">Create</button>
@@ -50,10 +50,8 @@
         </div>
       </div>
       <div v-if="aboutData.deactivated" class="deactivated-badge">⚠️ Deactivated</div>
-      <div class="text-list">
-        <div v-for="(text, index) in aboutData.text" :key="index" class="text-item">
-          {{ text }}
-        </div>
+      <div class="text-display">
+        <pre class="text-content">{{ aboutData.text }}</pre>
       </div>
     </div>
     <div v-else-if="!loading" class="no-data">No about data found</div>
@@ -73,11 +71,7 @@ const textInput = ref('')
 const editingTextInput = ref('')
 
 const newAbout = ref({
-  text: [],
-})
-
-watch(textInput, (val) => {
-  newAbout.value.text = val ? val.split('\n').map(t => t.trim()).filter(t => t) : []
+  text: '',
 })
 
 const loadAbout = async () => {
@@ -101,7 +95,14 @@ const handleCreate = async () => {
   loading.value = true
   error.value = null
   try {
-    const response = await apiService.createAbout(newAbout.value)
+    // Convert tabs to "new line space space" format for storage
+    let textString = textInput.value || ''
+    // Replace tabs at start of lines with "new line space space"
+    textString = textString.replace(/^\t/gm, '  ')
+    // Also handle tabs that might be in the middle (convert all tabs to two spaces)
+    textString = textString.replace(/\t/g, '  ')
+    
+    const response = await apiService.createAbout({ text: textString })
     if (response.status === 201) {
       await loadAbout()
       cancelCreate()
@@ -119,7 +120,8 @@ const handleCreate = async () => {
 const startEdit = () => {
   if (!aboutData.value) return
   editingAbout.value = { ...aboutData.value }
-  editingTextInput.value = aboutData.value.text ? aboutData.value.text.join('\n') : ''
+  // Convert two-space indentation back to tabs for easier editing
+  editingTextInput.value = aboutData.value.text ? aboutData.value.text.replace(/^  /gm, '\t') : ''
   showCreateForm.value = false
 }
 
@@ -129,8 +131,14 @@ const handleUpdate = async () => {
   loading.value = true
   error.value = null
   try {
-    const textArray = editingTextInput.value ? editingTextInput.value.split('\n').map(t => t.trim()).filter(t => t) : []
-    const response = await apiService.updateAbout(editingAbout.value._id, { text: textArray })
+    // Convert tabs to "new line space space" format for storage
+    let textString = editingTextInput.value || ''
+    // Replace tabs at start of lines with "new line space space"
+    textString = textString.replace(/^\t/gm, '  ')
+    // Also handle tabs that might be in the middle (convert all tabs to two spaces)
+    textString = textString.replace(/\t/g, '  ')
+    
+    const response = await apiService.updateAbout(editingAbout.value._id, { text: textString })
     if (response.status === 200) {
       await loadAbout()
       cancelEdit()
@@ -204,7 +212,7 @@ const handleDelete = async () => {
 
 const cancelCreate = () => {
   showCreateForm.value = false
-  newAbout.value = { text: [] }
+  newAbout.value = { text: '' }
   textInput.value = ''
 }
 
@@ -433,7 +441,7 @@ onMounted(() => {
   font-size: 1.5rem;
 }
 
-.text-list {
+.text-display {
   background: var(--color-background-soft);
   border: 1px solid var(--color-border);
   border-radius: 8px;
@@ -441,15 +449,13 @@ onMounted(() => {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
-.text-item {
-  padding: 0.75rem 0;
-  border-bottom: 1px solid var(--color-border);
+.text-content {
   color: var(--color-text);
   line-height: 1.6;
-}
-
-.text-item:last-child {
-  border-bottom: none;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  margin: 0;
+  font-family: inherit;
 }
 
 .no-data {

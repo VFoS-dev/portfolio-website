@@ -7,7 +7,7 @@ const fs = require('fs');
 // Import models
 const Icon = require('../_models/Icon');
 const DefaultWindow = require('../_models/DefaultWindow');
-const AboutData = require('../_models/AboutData');
+const About = require('../_models/About');
 const Project = require('../_models/Project');
 const Skill = require('../_models/Skill');
 const Color = require('../_models/Color');
@@ -36,11 +36,11 @@ mongoose.connect(mongoUrl).then(async () => {
     await DefaultWindow.create(defaultWindowData);
     console.log('✓ Seeded DefaultWindow');
     
-    // Seed AboutData
-    const aboutData = JSON.parse(fs.readFileSync(path.join(seedJsonPath, 'aboutData.json'), 'utf8'));
-    await AboutData.deleteMany({});
-    await AboutData.create(aboutData);
-    console.log('✓ Seeded AboutData');
+    // Seed About
+    const aboutData = JSON.parse(fs.readFileSync(path.join(seedJsonPath, 'about.json'), 'utf8'));
+    await About.deleteMany({});
+    await About.create(aboutData);
+    console.log('✓ Seeded About');
     
     // Seed Companies (must be before Projects since Projects reference Companies)
     const companiesArray = JSON.parse(fs.readFileSync(path.join(seedJsonPath, 'companies.json'), 'utf8'));

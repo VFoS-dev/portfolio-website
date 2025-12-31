@@ -24,7 +24,7 @@ export async function getColors() {
 
 export async function getAbout() {
   const aboutData = await fetchFromAPI('about');
-  return aboutData.text.join('\n');
+  return aboutData.text || '';
 }
 
 export async function getIcons() {

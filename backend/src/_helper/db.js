@@ -13,7 +13,7 @@ module.exports = {
   _template: require('../_models/_template'),
   Icon: require('../_models/Icon'),
   DefaultWindow: require('../_models/DefaultWindow'),
-  AboutData: require('../_models/AboutData'),
+  About: require('../_models/About'),
   Project: require('../_models/Project'),
   Skill: require('../_models/Skill'),
   Color: require('../_models/Color'),
