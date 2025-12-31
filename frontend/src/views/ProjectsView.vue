@@ -117,7 +117,7 @@
                         :key="index"
                         class="tech-tag"
                       >
-                        {{ tech }}
+                        {{ typeof tech === 'object' ? tech.name : tech }}
                       </span>
                     </div>
                   </div>

@@ -6,7 +6,7 @@ const schema = new Schema({
   title: String,
   img: String,
   description: String,
-  stack: [String],
+  stack: [{ type: Schema.Types.ObjectId, ref: 'Skill' }],
   keyFeatures: [String],
   startDate: String,
   endDate: String,

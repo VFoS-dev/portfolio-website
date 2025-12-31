@@ -5,6 +5,7 @@ const schema = new Schema({
   group: String,
   name: String,
   percent: Number,
+  icon: { type: String, default: '' },
   deactivated: {
     type: Boolean,
     default: false,

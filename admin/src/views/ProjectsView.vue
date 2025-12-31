@@ -30,8 +30,17 @@
           <textarea v-model="editingProject.description" rows="3"></textarea>
         </div>
         <div class="form-group">
-          <label>Stack (comma-separated):</label>
-          <input v-model="editingStackInput" type="text" placeholder="React, Vue, Node.js" />
+          <label>Stack:</label>
+          <StackInput
+            v-model="editingProject.stack"
+            :options="skills"
+            placeholder="Type to search skills..."
+            @enter="handleStackEnter"
+          >
+            <template #chip="{ item, label }">
+              <span>{{ label }}</span>
+            </template>
+          </StackInput>
         </div>
         <div class="form-group">
           <label>Key Features (comma-separated):</label>
@@ -103,8 +112,17 @@
           <textarea v-model="newProject.description" rows="3"></textarea>
         </div>
         <div class="form-group">
-          <label>Stack (comma-separated):</label>
-          <input v-model="stackInput" type="text" placeholder="React, Vue, Node.js" />
+          <label>Stack:</label>
+          <StackInput
+            v-model="newProject.stack"
+            :options="skills"
+            placeholder="Type to search skills..."
+            @enter="handleStackEnter"
+          >
+            <template #chip="{ item, label }">
+              <span>{{ label }}</span>
+            </template>
+          </StackInput>
         </div>
         <div class="form-group">
           <label>Key Features (comma-separated):</label>
@@ -175,7 +193,7 @@
         <p><strong>Type:</strong> {{ project.type }}</p>
         <p><strong>Card Number:</strong> {{ project.cardNumber }}</p>
         <p v-if="project.description"><strong>Description:</strong> {{ project.description }}</p>
-        <p v-if="project.stack && project.stack.length > 0"><strong>Stack:</strong> {{ project.stack.join(', ') }}</p>
+        <p v-if="project.stack && project.stack.length > 0"><strong>Stack:</strong> {{ project.stack.map(s => s.name || s).join(', ') }}</p>
       </div>
     </div>
     <div v-else-if="!loading" class="no-data">No projects found</div>
@@ -185,16 +203,16 @@
 <script setup>
 import { ref, onMounted, watch } from 'vue'
 import apiService from '@/services/api'
+import StackInput from '@/components/StackInput.vue'
 
 const projects = ref([])
 const companies = ref([])
+const skills = ref([])
 const loading = ref(false)
 const error = ref(null)
 const showCreateForm = ref(false)
 const editingProject = ref(null)
-const stackInput = ref('')
 const featuresInput = ref('')
-const editingStackInput = ref('')
 const editingFeaturesInput = ref('')
 
 const newProject = ref({
@@ -215,18 +233,8 @@ const newProject = ref({
   rarity: '',
 })
 
-watch(stackInput, (val) => {
-  newProject.value.stack = val ? val.split(',').map(s => s.trim()).filter(s => s) : []
-})
-
 watch(featuresInput, (val) => {
   newProject.value.keyFeatures = val ? val.split(',').map(f => f.trim()).filter(f => f) : []
-})
-
-watch(editingStackInput, (val) => {
-  if (editingProject.value) {
-    editingProject.value.stack = val ? val.split(',').map(s => s.trim()).filter(s => s) : []
-  }
 })
 
 watch(editingFeaturesInput, (val) => {
@@ -234,6 +242,7 @@ watch(editingFeaturesInput, (val) => {
     editingProject.value.keyFeatures = val ? val.split(',').map(f => f.trim()).filter(f => f) : []
   }
 })
+
 
 const loadProjects = async () => {
   loading.value = true
@@ -250,6 +259,23 @@ const loadProjects = async () => {
   } finally {
     loading.value = false
   }
+}
+
+const loadSkills = async () => {
+  try {
+    const response = await apiService.getSkills()
+    if (response.status === 200) {
+      skills.value = Array.isArray(response.data) ? response.data : [response.data]
+    }
+  } catch (err) {
+    console.error('Failed to load skills:', err)
+  }
+}
+
+// Handle enter key on stack input (could be used to create new skills or other actions)
+const handleStackEnter = (searchValue) => {
+  // You can add custom logic here, like creating a new skill
+  console.log('Enter pressed with search value:', searchValue)
 }
 
 const handleCreate = async () => {
@@ -274,9 +300,9 @@ const handleCreate = async () => {
 const startEdit = (project) => {
   editingProject.value = { 
     ...project,
-    company: project.company?._id || project.company || null
+    company: project.company?._id || project.company || null,
+    stack: project.stack ? (Array.isArray(project.stack) ? project.stack.map(s => s._id || s) : []) : []
   }
-  editingStackInput.value = project.stack ? project.stack.join(', ') : ''
   editingFeaturesInput.value = project.keyFeatures ? project.keyFeatures.join(', ') : ''
   showCreateForm.value = false
 }
@@ -304,7 +330,6 @@ const handleUpdate = async () => {
 
 const cancelEdit = () => {
   editingProject.value = null
-  editingStackInput.value = ''
   editingFeaturesInput.value = ''
 }
 
@@ -379,7 +404,6 @@ const cancelCreate = () => {
     deprecated: false,
     rarity: '',
   }
-  stackInput.value = ''
   featuresInput.value = ''
 }
 
@@ -397,6 +421,7 @@ const loadCompanies = async () => {
 onMounted(() => {
   loadProjects()
   loadCompanies()
+  loadSkills()
 })
 </script>
 
@@ -665,5 +690,6 @@ onMounted(() => {
   border-radius: 8px;
   border: 1px dashed var(--color-border);
 }
+
 </style>
 

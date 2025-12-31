@@ -21,7 +21,7 @@
               </div>
               <div v-for="(tech, index) in project.stack.slice(0, 3)" :key="index"
                 :class="['mana-cost', getTypeClass(tech)]">
-                <img :src="getTechIcon(tech)" :alt="tech" class="tech-icon" />
+                <img :src="getTechIcon(tech)" :alt="getTechName(tech)" class="tech-icon" />
               </div>
             </div>
           </div>
@@ -345,7 +345,19 @@ watch(() => props.project.title, () => {
   });
 });
 
+function getTechName(tech) {
+  // Handle skill object or string
+  if (typeof tech === 'object' && tech !== null) {
+    return tech.name || '';
+  }
+  return tech || '';
+}
+
 function getTypeClass(type) {
+  // Handle skill object or string
+  const typeName = typeof type === 'object' && type !== null ? type.name : type;
+  if (!typeName) return 'type-normal';
+  
   // Map tech stack to type colors
   const typeMap = {
     React: 'type-fire',
@@ -389,7 +401,7 @@ function getTypeClass(type) {
   };
 
   // Try to find a match (case-insensitive)
-  const lowerType = type.toLowerCase();
+  const lowerType = typeName.toLowerCase();
   for (const [key, value] of Object.entries(typeMap)) {
     if (lowerType.includes(key.toLowerCase())) {
       return value;
@@ -449,8 +461,17 @@ function formatDateRange() {
 }
 
 function getTechIcon(tech) {
+  // Handle skill object - use icon if available
+  if (typeof tech === 'object' && tech !== null) {
+    if (tech.icon) {
+      return tech.icon;
+    }
+    // Fall back to name-based logic if no icon
+    tech = tech.name || '';
+  }
+  
   // Return path to SVG icon for tech stack based on their logos
-  const lowerTech = tech.toLowerCase();
+  const lowerTech = (tech || '').toLowerCase();
 
   // React - Atom symbol
   if (lowerTech.includes('react')) {

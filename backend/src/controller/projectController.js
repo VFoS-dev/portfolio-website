@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { Project, Company } = require('../_helper/db');
+const { Project, Company, Skill } = require('../_helper/db');
 
 /**
  * Resolves company field to a MongoDB ObjectId
@@ -32,9 +32,52 @@ async function resolveCompany(company) {
   return foundCompany._id;
 }
 
+/**
+ * Resolves an array of skills to MongoDB ObjectIds
+ * If a skill is already a valid ObjectId, returns it
+ * If a skill is a string (name), finds the skill by name and returns its ID
+ * Filters out null/undefined/empty values
+ */
+async function resolveSkills(skills) {
+  if (!skills || !Array.isArray(skills)) {
+    return [];
+  }
+
+  const resolvedSkills = await Promise.all(
+    skills.map(async (skill) => {
+      // Handle null, undefined, or empty string
+      if (!skill || skill === '') {
+        return null;
+      }
+
+      // Check if it's already a valid MongoDB ObjectId
+      if (mongoose.Types.ObjectId.isValid(skill)) {
+        // Verify the skill exists
+        const existingSkill = await Skill.findById(skill);
+        if (existingSkill) {
+          return skill;
+        }
+        // If ObjectId is valid but skill doesn't exist, return null (will be filtered)
+        return null;
+      }
+
+      // If it's not an ObjectId, treat it as a skill name and find by name
+      const foundSkill = await Skill.findOne({ name: skill });
+      if (!foundSkill) {
+        console.warn(`Skill "${skill}" not found`);
+        return null;
+      }
+      return foundSkill._id;
+    })
+  );
+
+  // Filter out null values
+  return resolvedSkills.filter(skill => skill !== null);
+}
+
 async function getProjects({ beta }) {
   const query = beta === '1' || beta === 1 ? {} : { deactivated: { $ne: true } };
-  const projects = await Project.find(query).populate('company').sort({ cardNumber: -1 });
+  const projects = await Project.find(query).populate('company').populate('stack').sort({ cardNumber: -1 });
   if (!projects || projects.length === 0) {
     return { status: 404, message: 'Projects not found' };
   }
@@ -48,9 +91,15 @@ async function createProject(data) {
       data.company = await resolveCompany(data.company);
     }
     
+    // Resolve skill names to IDs if needed
+    if (data.stack !== undefined && Array.isArray(data.stack)) {
+      data.stack = await resolveSkills(data.stack);
+    }
+    
     const project = new Project(data);
     await project.save();
     await project.populate('company');
+    await project.populate('stack');
     return { status: 201, data: project.toJSON() };
   } catch (error) {
     return { status: 400, message: error.message };
@@ -69,9 +118,15 @@ async function updateProject({ id, ...data }) {
       data.company = await resolveCompany(data.company);
     }
     
+    // Resolve skill names to IDs if needed
+    if (data.stack !== undefined && Array.isArray(data.stack)) {
+      data.stack = await resolveSkills(data.stack);
+    }
+    
     Object.assign(project, data);
     await project.save();
     await project.populate('company');
+    await project.populate('stack');
     return { status: 200, data: project.toJSON() };
   } catch (error) {
     return { status: 400, message: error.message };

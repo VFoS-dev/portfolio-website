@@ -47,6 +47,12 @@ mongoose.connect(mongoUrl).then(async () => {
     await Company.deleteMany({});
     const insertedCompanies = await Company.insertMany(companiesArray);
     console.log('✓ Seeded Companies');
+
+    // Seed Skills (must be before Projects since Projects reference Skills)
+    const skillsArray = JSON.parse(fs.readFileSync(path.join(seedJsonPath, 'skills.json'), 'utf8'));
+    await Skill.deleteMany({});
+    await Skill.insertMany(skillsArray);
+    console.log('✓ Seeded Skills');
     
     // Helper function to resolve company name to ObjectId
     const resolveCompany = async (companyName) => {
@@ -71,28 +77,42 @@ mongoose.connect(mongoUrl).then(async () => {
       return foundCompany._id;
     };
     
-    // Seed Projects - convert company names to IDs
+    // Seed Projects - convert company names and skill names to IDs
     const projectsArray = JSON.parse(fs.readFileSync(path.join(seedJsonPath, 'projectsData.json'), 'utf8'));
     
-    // Convert company names to ObjectIds
-    const projectsWithCompanyIds = await Promise.all(
+    // Helper to resolve skill name to ID for seeding
+    const resolveSkillForSeed = async (skillName) => {
+      if (!skillName) return null;
+      const foundSkill = await Skill.findOne({ name: skillName });
+      if (!foundSkill) {
+        console.warn(`Skill "${skillName}" not found during project seeding. Project will be created without this skill reference.`);
+        return null;
+      }
+      return foundSkill._id;
+    };
+    
+    // Convert company names and skill names to ObjectIds
+    const projectsWithIds = await Promise.all(
       projectsArray.map(async (project) => {
+        // Convert company
         if (project.company) {
           project.company = await resolveCompany(project.company);
+        }
+        // Convert stack (skills)
+        if (project.stack && Array.isArray(project.stack)) {
+          project.stack = await Promise.all(
+            project.stack.map(skillName => resolveSkillForSeed(skillName))
+          );
+          // Filter out null values
+          project.stack = project.stack.filter(id => id !== null);
         }
         return project;
       })
     );
     
     await Project.deleteMany({});
-    await Project.insertMany(projectsWithCompanyIds);
+    await Project.insertMany(projectsWithIds);
     console.log('✓ Seeded Projects');
-    
-    // Seed Skills
-    const skillsArray = JSON.parse(fs.readFileSync(path.join(seedJsonPath, 'skills.json'), 'utf8'));
-    await Skill.deleteMany({});
-    await Skill.insertMany(skillsArray);
-    console.log('✓ Seeded Skills');
     
     // Seed Colors
     const colorsArray = JSON.parse(fs.readFileSync(path.join(seedJsonPath, 'colors.json'), 'utf8'));
