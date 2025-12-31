@@ -10,7 +10,7 @@ const DefaultWindow = require('../_models/DefaultWindow');
 const About = require('../_models/About');
 const Project = require('../_models/Project');
 const Skill = require('../_models/Skill');
-const Color = require('../_models/Color');
+const Saber = require('../_models/Saber');
 const Social = require('../_models/Social');
 const User = require('../_models/User');
 const Company = require('../_models/Company');
@@ -114,11 +114,11 @@ mongoose.connect(mongoUrl).then(async () => {
     await Project.insertMany(projectsWithIds);
     console.log('✓ Seeded Projects');
     
-    // Seed Colors
-    const colorsArray = JSON.parse(fs.readFileSync(path.join(seedJsonPath, 'colors.json'), 'utf8'));
-    await Color.deleteMany({});
-    await Color.insertMany(colorsArray);
-    console.log('✓ Seeded Colors');
+    // Seed Sabers
+    const sabersArray = JSON.parse(fs.readFileSync(path.join(seedJsonPath, 'sabers.json'), 'utf8'));
+    await Saber.deleteMany({});
+    await Saber.insertMany(sabersArray);
+    console.log('✓ Seeded Sabers');
     
     // Seed Socials
     const socialsArray = JSON.parse(fs.readFileSync(path.join(seedJsonPath, 'socialsData.json'), 'utf8'));

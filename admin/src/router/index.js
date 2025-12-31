@@ -42,9 +42,9 @@ const router = createRouter({
       meta: { requiresAuth: true }
     },
     {
-      path: '/colors',
-      name: 'colors',
-      component: () => import('../views/ColorsView.vue'),
+      path: '/sabers',
+      name: 'sabers',
+      component: () => import('../views/SabersView.vue'),
       meta: { requiresAuth: true }
     },
     {

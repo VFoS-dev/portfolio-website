@@ -121,7 +121,7 @@ function getTitleBarProps() {
     if (element && props.windowId) {
       requestAnimationFrame(() => {
         // Don't update if window is minimized (display: none causes getBoundingClientRect to return 0)
-        const window = windowStore.getWindowById(props.windowId);
+        const window = windowStore.windows[props.windowId];
         if (window?.state?.minimized || props.state.minimized) {
           return;
         }

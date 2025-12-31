@@ -9,12 +9,17 @@
     <div v-if="loading" class="loading">Loading...</div>
     <div v-if="error" class="error">{{ error }}</div>
 
-    <div v-if="editingDefaultWindow || !defaultWindow" class="form-container">
+    <div v-if="editingDefaultWindow" class="form-container">
       <h2>{{ defaultWindow ? 'Edit Default Window' : 'Create Default Window' }}</h2>
       <form @submit.prevent="handleUpdate">
         <div class="form-group">
           <label>Icon Title (required):</label>
-          <input v-model="editingDefaultWindow.iconTitle" type="text" required />
+          <select v-model="editingDefaultWindow.iconTitle" required>
+            <option value="">Select an icon...</option>
+            <option v-for="icon in icons" :key="icon._id" :value="icon.title">
+              {{ icon.title }}
+            </option>
+          </select>
         </div>
         <div class="form-actions">
           <button type="submit" class="btn btn-primary">{{ defaultWindow ? 'Update' : 'Create' }}</button>
@@ -50,6 +55,22 @@ const defaultWindow = ref(null)
 const loading = ref(false)
 const error = ref(null)
 const editingDefaultWindow = ref(null)
+const icons = ref([])
+const loadingIcons = ref(false)
+
+const loadIcons = async () => {
+  loadingIcons.value = true
+  try {
+    const response = await apiService.getIcons()
+    if (response.status === 200) {
+      icons.value = response.data || []
+    }
+  } catch (err) {
+    console.error('Error loading icons:', err)
+  } finally {
+    loadingIcons.value = false
+  }
+}
 
 const loadDefaultWindow = async () => {
   loading.value = true
@@ -78,6 +99,11 @@ const startEdit = () => {
 }
 
 const handleUpdate = async () => {
+  if (!editingDefaultWindow.value || !editingDefaultWindow.value.iconTitle) {
+    error.value = 'Icon Title is required'
+    return
+  }
+  
   loading.value = true
   error.value = null
   try {
@@ -129,13 +155,13 @@ const toggleDeactivated = async () => {
   }
 }
 
-onMounted(() => {
-  loadDefaultWindow().then(() => {
-    // If no default window exists, show the form immediately
-    if (!defaultWindow.value) {
-      startEdit()
-    }
-  })
+onMounted(async () => {
+  await loadIcons()
+  await loadDefaultWindow()
+  // If no default window exists, show the form immediately
+  if (!defaultWindow.value) {
+    editingDefaultWindow.value = { iconTitle: '' }
+  }
 })
 </script>
 
@@ -251,7 +277,8 @@ onMounted(() => {
   font-size: 0.95rem;
 }
 
-.form-group input {
+.form-group input,
+.form-group select {
   width: 100%;
   padding: 0.75rem;
   border: 1px solid var(--color-border);
@@ -262,7 +289,8 @@ onMounted(() => {
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-.form-group input:focus {
+.form-group input:focus,
+.form-group select:focus {
   outline: none;
   border-color: #007bff;
   box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);

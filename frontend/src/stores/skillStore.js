@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import pinia from './piniaInstance';
-import { getSkills, getColors } from '@/services/api-service';
+import { getSkills, getSabers } from '@/services/api-service';
 import { randomIndex } from '@/utilities/arrays';
 import { shouldFetch } from '@/utilities/persistence';
 import { cubeStore } from './cubeStore';
@@ -12,15 +12,15 @@ const useSkillStore = defineStore('skillStore', {
     loading: true,
     lastFetched: {
       skills: 0,
-      colors: 0,
+      sabers: 0,
     },
     skills: {},
-    colors: [],
+    sabers: [],
   }),
   getters: {
     getSkills(state) {
       if (shouldFetch(state.lastFetched.skills)) {
-        this.getColors;
+        this.getColors; // Trigger saber fetch
         getSkills()
           .then(skills => {
             state.lastFetched.skills = new Date();
@@ -50,23 +50,24 @@ const useSkillStore = defineStore('skillStore', {
       return state.skills;
     },
     getColors(state) {
-      if (shouldFetch(state.lastFetched.colors)) {
-        getColors()
-          .then(colors => {
-            state.lastFetched.colors = new Date();
-            state.colors = colors;
+      // Keep getColors name for backward compatibility with components
+      if (shouldFetch(state.lastFetched.sabers)) {
+        getSabers()
+          .then(sabers => {
+            state.lastFetched.sabers = new Date();
+            state.sabers = sabers;
           })
           .catch(error => {
-            console.error('Failed to fetch colors:', error);
+            console.error('Failed to fetch sabers:', error);
           });
       }
 
-      return state.colors;
+      return state.sabers;
     },
   },
   actions: {
     randomColor() {
-      return randomIndex(this.colors) ?? {};
+      return randomIndex(this.sabers) ?? {};
     },
     updateScroll({ scroll, percent, mount }) {
       this.scroll = scroll;

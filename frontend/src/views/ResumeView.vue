@@ -340,10 +340,10 @@ onMounted(() => {
   window.addEventListener('load-default-window', handleLoadDefaultWindow);
   
   // Also check on mount if data is already loaded
-  if (windowConfig.value.defaultWindow && windowConfig.value.defaultWindow.iconTitle && windowConfig.value.icons && windowConfig.value.icons.length > 0) {
+  if (windowConfig.value?.defaultWindow && windowConfig.value.defaultWindow?.iconTitle && windowConfig.value.icons && windowConfig.value.icons.length > 0) {
     nextTick(() => {
       const allIconsList = allIcons.value;
-      const defaultIcon = allIconsList.find(icon => icon.title === windowConfig.value.defaultWindow.iconTitle);
+      const defaultIcon = allIconsList.find(icon => icon.title === windowConfig.value.defaultWindow?.iconTitle);
       
       if (defaultIcon) {
         handleNewWindow(defaultIcon);
@@ -1103,7 +1103,7 @@ function getIconProps(iconConfig, index) {
 
 function handleOpenApp(appConfig) {
   // If this is the defaultWindow menu item from start menu, use the defaultWindow icon
-  if (appConfig.iconTitle && windowConfig.value.defaultWindow && appConfig.iconTitle === windowConfig.value.defaultWindow.iconTitle) {
+  if (appConfig.iconTitle && windowConfig.value?.defaultWindow && appConfig.iconTitle === windowConfig.value.defaultWindow?.iconTitle) {
     const defaultIcon = windowConfig.value.icons.find(icon => icon.title === appConfig.iconTitle);
     if (defaultIcon) {
       // Replace appConfig with the default icon configuration

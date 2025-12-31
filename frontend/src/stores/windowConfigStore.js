@@ -32,15 +32,16 @@ const useWindowConfigStore = defineStore('windowConfigStore', {
       if (shouldFetch(state.lastFetched.defaultWindow)) {
         getDefaultWindow()
           .then(defaultWindow => {
-            state.defaultWindow = defaultWindow;
+            state.defaultWindow = defaultWindow || {};
             state.lastFetched.defaultWindow = new Date();
             this.checkAndLoadDefaultWindow();
           })
           .catch(error => {
             console.error('Failed to fetch default window:', error);
+            state.defaultWindow = {};
           });
       }
-      return state.defaultWindow;
+      return state.defaultWindow || {};
     },
     getConfig(state) {
       // Return combined config for backwards compatibility

@@ -18,8 +18,8 @@ export async function getSkills() {
   return await fetchFromAPI('skills');
 }
 
-export async function getColors() {
-  return await fetchFromAPI('colors');
+export async function getSabers() {
+  return await fetchFromAPI('sabers');
 }
 
 export async function getAbout() {
@@ -32,7 +32,13 @@ export async function getIcons() {
 }
 
 export async function getDefaultWindow() {
-  return await fetchFromAPI('default-window');
+  try {
+    const data = await fetchFromAPI('default-window');
+    return data || {};
+  } catch (error) {
+    console.error('Error fetching default window:', error);
+    return {};
+  }
 }
 
 

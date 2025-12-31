@@ -22,7 +22,7 @@ const handleLogout = () => {
           <RouterLink to="/icons">Icons</RouterLink>
           <RouterLink to="/about">About</RouterLink>
           <RouterLink to="/skills">Skills</RouterLink>
-          <RouterLink to="/colors">Colors</RouterLink>
+          <RouterLink to="/sabers">Sabers</RouterLink>
           <RouterLink to="/socials">Socials</RouterLink>
           <RouterLink to="/default-window">Default Window</RouterLink>
           <RouterLink to="/companies">Companies</RouterLink>

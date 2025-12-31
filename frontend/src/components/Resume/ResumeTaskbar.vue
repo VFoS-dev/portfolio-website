@@ -75,8 +75,8 @@ const menuItems = computed(() => {
   }
   
   // Add Resume (use defaultWindow configuration)
-  if (windowConfig.value.defaultWindow && windowConfig.value.defaultWindow.iconTitle) {
-    const defaultIcon = windowConfig.value.icons.find(icon => icon.title === windowConfig.value.defaultWindow.iconTitle);
+  if (windowConfig.value?.defaultWindow && windowConfig.value.defaultWindow?.iconTitle) {
+    const defaultIcon = windowConfig.value.icons.find(icon => icon.title === windowConfig.value.defaultWindow?.iconTitle);
     if (defaultIcon) {
       items.push({
         title: defaultIcon.title, // Use the actual icon title (default window's name)

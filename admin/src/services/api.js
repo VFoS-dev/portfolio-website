@@ -141,21 +141,21 @@ export const apiService = {
     return formatResponse(response)
   },
 
-  // Colors
-  async getColors() {
-    const response = await api.get('/api/colors?beta=1')
+  // Sabers
+  async getSabers() {
+    const response = await api.get('/api/sabers?beta=1')
     return formatResponse(response)
   },
-  async createColor(data) {
-    const response = await api.post('/api/colors', data)
+  async createSaber(data) {
+    const response = await api.post('/api/sabers', data)
     return formatResponse(response)
   },
-  async updateColor(id, data) {
-    const response = await api.put(`/api/colors/${id}`, data)
+  async updateSaber(id, data) {
+    const response = await api.put(`/api/sabers/${id}`, data)
     return formatResponse(response)
   },
-  async deleteColor(id) {
-    const response = await api.delete(`/api/colors/${id}`)
+  async deleteSaber(id) {
+    const response = await api.delete(`/api/sabers/${id}`)
     return formatResponse(response)
   },
 

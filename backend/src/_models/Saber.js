@@ -14,5 +14,5 @@ const schema = new Schema({
 
 schema.set('toJSON', { virtuals: true });
 
-module.exports = mongoose.model('Color', schema);
+module.exports = mongoose.model('Saber', schema);
 

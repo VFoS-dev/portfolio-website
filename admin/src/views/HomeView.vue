@@ -28,8 +28,8 @@ import { RouterLink } from 'vue-router'
         <p>Manage skills and proficiencies</p>
       </RouterLink>
       
-      <RouterLink to="/colors" class="dashboard-card">
-        <h2>Colors</h2>
+      <RouterLink to="/sabers" class="dashboard-card">
+        <h2>Sabers</h2>
         <p>Manage color schemes</p>
       </RouterLink>
       

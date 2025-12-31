@@ -25,6 +25,10 @@
           <label>Percent:</label>
           <input v-model.number="editingSkill.percent" type="number" min="0" max="100" required />
         </div>
+        <div class="form-group">
+          <label>Icon:</label>
+          <input v-model="editingSkill.icon" type="text" placeholder="Icon path or class name" />
+        </div>
         <div class="form-actions">
           <button type="submit" class="btn btn-primary">Update</button>
           <button type="button" @click="cancelEdit" class="btn btn-secondary">Cancel</button>
@@ -46,6 +50,10 @@
         <div class="form-group">
           <label>Percent:</label>
           <input v-model.number="newSkill.percent" type="number" min="0" max="100" required />
+        </div>
+        <div class="form-group">
+          <label>Icon:</label>
+          <input v-model="newSkill.icon" type="text" placeholder="Icon path or class name" />
         </div>
         <div class="form-actions">
           <button type="submit" class="btn btn-primary">Create</button>
@@ -71,6 +79,7 @@
           <p v-if="skill.deactivated" class="deactivated-badge">⚠️ Deactivated</p>
           <p><strong>Group:</strong> {{ skill.group }}</p>
           <p><strong>Percent:</strong> {{ skill.percent }}%</p>
+          <p v-if="skill.icon"><strong>Icon:</strong> {{ skill.icon }}</p>
         </div>
       </div>
     </div>
@@ -92,6 +101,7 @@ const newSkill = ref({
   group: '',
   name: '',
   percent: 0,
+  icon: '',
 })
 
 const loadSkills = async () => {
@@ -218,6 +228,7 @@ const cancelCreate = () => {
     group: '',
     name: '',
     percent: 0,
+    icon: '',
   }
 }
 

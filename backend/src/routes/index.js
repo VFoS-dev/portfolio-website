@@ -13,7 +13,7 @@ router.use('/api/default-window', require('./defaultWindowRoutes.js'));
 router.use('/api/about', require('./aboutRoutes.js'));
 router.use('/api/projects', require('./projectRoutes.js'));
 router.use('/api/skills', require('./skillRoutes.js'));
-router.use('/api/colors', require('./colorRoutes.js'));
+router.use('/api/sabers', require('./saberRoutes.js'));
 router.use('/api/socials', require('./socialRoutes.js'));
 router.use('/api/companies', require('./companyRoutes.js'));
 

@@ -16,7 +16,7 @@ module.exports = {
   About: require('../_models/About'),
   Project: require('../_models/Project'),
   Skill: require('../_models/Skill'),
-  Color: require('../_models/Color'),
+  Saber: require('../_models/Saber'),
   Social: require('../_models/Social'),
   User: require('../_models/User'),
   Company: require('../_models/Company'),
