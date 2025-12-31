@@ -50,10 +50,23 @@ const linksRef = ref(null);
 // Transparent 1x1 pixel data URL to pause GIFs
 const pausedGifSrc = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
 
+// Hardcoded Fruit Ninja social (always first)
+const fruitNinjaSocial = {
+  name: "Play Fruit Ninja",
+  href: "game-start",
+  gif: "/images/socials/pineapple.gif",
+  ring: "/images/socials/svg/endless.svg",
+  shadow: "/images/socials/svg/shadow.svg",
+  upper: { fill: "white", stroke: "black" },
+  lower: { fill: "white", stroke: "black" },
+};
+
 // Generate random rotations for each social item
 const socialsData = computed(() => {
   const socials = socialStore.getSocials || [];
-  return socials.map((item) => ({
+  // Combine hardcoded Fruit Ninja with database socials
+  const allSocials = [fruitNinjaSocial, ...socials];
+  return allSocials.map((item) => ({
     ...item,
     startRot: Math.random() * 360,
   }));

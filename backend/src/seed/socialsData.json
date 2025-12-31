@@ -1,14 +1,5 @@
 [
   {
-    "name": "Play Fruit Ninja",
-    "href": "game-start",
-    "gif": "/images/socials/pineapple.gif",
-    "ring": "/images/socials/svg/endless.svg",
-    "shadow": "/images/socials/svg/shadow.svg",
-    "upper": { "fill": "white", "stroke": "black" },
-    "lower": { "fill": "white", "stroke": "black" }
-  },
-  {
     "name": "Github",
     "gif": "/images/socials/github.gif",
     "href": "https://github.com/VFoS-dev",
