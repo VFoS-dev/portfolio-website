@@ -38,7 +38,8 @@ async function uploadToS3(fileBuffer, originalName, mimeType) {
     Key: key,
     Body: fileBuffer,
     ContentType: mimeType,
-    ACL: 'public-read', // Make file publicly accessible
+    // ACL removed - use bucket policy for public access instead
+    // Modern S3 buckets (created after April 2023) have ACLs disabled by default
   });
 
   await s3Client.send(command);

@@ -83,6 +83,7 @@ async function createMedia({ files, file }) {
     json.url = formatMediaUrl(json.url);
     return { status: 201, data: json };
   } catch (error) {
+    console.error('Error creating media:', error);
     return { status: 400, message: error.message };
   }
 }
