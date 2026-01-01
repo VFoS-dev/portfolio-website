@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "start": "nodemon app.js",
+    "build": "node esbuild.config.js",
     "seed": "node src/scripts/seed.js",
     "seed:media": "node src/scripts/seedMedia.js"
   },
@@ -19,5 +20,8 @@
     "mongoose": "^8.2.1",
     "multer": "^2.0.2",
     "nodemon": "^3.1.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.27.2"
   }
 }

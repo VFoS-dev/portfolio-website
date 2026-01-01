@@ -1,5 +1,11 @@
 // enviroment variables
-require('dotenv').config({ path: __dirname + '/.env' });
+const path = require('path');
+const fs = require('fs');
+// Try .env in current directory first (development), then parent directory (production build)
+const envPath = fs.existsSync(path.join(__dirname, '.env'))
+  ? path.join(__dirname, '.env')
+  : path.join(__dirname, '..', '.env');
+require('dotenv').config({ path: envPath });
 const { env } = require("./src/_helper/env");
 const port = env('port', 3001);
 const origin = JSON.parse(env('origins', '["http://localhost:3000", "http://localhost:3002"]'))

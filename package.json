@@ -5,9 +5,13 @@
   "scripts": {
     "start": "concurrently 'npm:backend:start' 'npm:frontend:start' 'npm:admin:start'",
     "postinstall": "npm run install:backend && npm run install:frontend && npm run install:admin && echo 'Install Complete!'",
-    "install:frontend": "echo 'Installing frontend' && cd frontend && npm i",
-    "install:backend": "echo 'Installing backend' && cd backend && npm i",
-    "install:admin": "echo 'Installing admin' && cd admin && npm i",
+    "build": "npm run build:backend && npm run build:frontend && npm run build:admin && echo 'Build Complete!'",
+    "build:backend": "cd backend && npm run build",
+    "build:frontend": "cd frontend && npm run build",
+    "build:admin": "cd admin && npm run build",
+    "install:frontend": "cd frontend && npm i",
+    "install:backend": "cd backend && npm i",
+    "install:admin": "cd admin && npm i",
     "backend:start": "cd backend && npm run start",
     "frontend:start": "cd frontend && npm run start",
     "admin:start": "cd admin && npm run start"
