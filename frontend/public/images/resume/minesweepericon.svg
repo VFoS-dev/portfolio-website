@@ -1,0 +1,19 @@
+<svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+  <!-- Windows XP style Minesweeper bomb icon -->
+  <g>
+    <!-- Bomb body (round) -->
+    <circle cx="8" cy="9" r="5" fill="#ece9d8" stroke="#000000" stroke-width="0.5"/>
+    <!-- Bomb highlight -->
+    <ellipse cx="7" cy="8" rx="1.5" ry="2" fill="#ffffff" opacity="0.6"/>
+    <!-- Fuse (top part) -->
+    <rect x="7.5" y="3" width="1" height="3" fill="#8B4513" stroke="#000000" stroke-width="0.3"/>
+    <!-- Fuse tip (spark) -->
+    <circle cx="8" cy="3" r="1" fill="#FFD700" stroke="#FF8C00" stroke-width="0.3"/>
+    <!-- Spark lines -->
+    <line x1="6.5" y1="2.5" x2="5.5" y2="1.5" stroke="#FFD700" stroke-width="0.4"/>
+    <line x1="9.5" y1="2.5" x2="10.5" y2="1.5" stroke="#FFD700" stroke-width="0.4"/>
+    <line x1="8" y1="2" x2="8" y2="0.5" stroke="#FFD700" stroke-width="0.4"/>
+    <!-- Bomb shadow/depth -->
+    <ellipse cx="8.5" cy="9.5" rx="4" ry="4.5" fill="#808080" opacity="0.3"/>
+  </g>
+</svg>

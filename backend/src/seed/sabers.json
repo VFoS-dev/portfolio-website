@@ -1,0 +1,21 @@
+[
+  { "lightColor": "#ffffff", "auraColor": "#0000ff", "innerColor": "#ffffff", "textColor": "#335cff" },
+  {
+    "lightColor": "#ffffff",
+    "auraColor": "#ff00ff",
+    "innerColor": "#ffffff",
+    "textColor": "#ff00ff"
+  },
+  { "lightColor": "#ffffff", "auraColor": "#ffa500", "innerColor": "#ffffff", "textColor": "#ffa500" },
+  { "lightColor": "#ffffff", "auraColor": "#ffff00", "innerColor": "#ffffff", "textColor": "#ffff00" },
+  {
+    "lightColor": "#ffffff",
+    "auraColor": "#a733ff",
+    "innerColor": "#ffffff",
+    "textColor": "#a733ff"
+  },
+  { "lightColor": "#ffffff", "auraColor": "#00ff00", "innerColor": "#ffffff", "textColor": "#00ff00" },
+  { "lightColor": "#000000", "auraColor": "#ffffff", "innerColor": "#ffffff", "textColor": "#ffffff" },
+  { "lightColor": "#ffffff", "auraColor": "#ff0000", "innerColor": "#ffffff", "textColor": "#ff0000" }
+]
+

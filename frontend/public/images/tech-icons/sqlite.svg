@@ -1,0 +1,9 @@
+<svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+  <ellipse cx="12" cy="6" rx="8" ry="2" fill="none" stroke="currentColor" stroke-width="1.5"/>
+  <ellipse cx="12" cy="12" rx="8" ry="2" fill="none" stroke="currentColor" stroke-width="1.5"/>
+  <ellipse cx="12" cy="18" rx="8" ry="2" fill="none" stroke="currentColor" stroke-width="1.5"/>
+  <line x1="4" y1="6" x2="4" y2="18" stroke="currentColor" stroke-width="1.5"/>
+  <line x1="20" y1="6" x2="20" y2="18" stroke="currentColor" stroke-width="1.5"/>
+  <path d="M14 10v8h2" stroke="currentColor" stroke-width="1.5" fill="none"/>
+</svg>
+

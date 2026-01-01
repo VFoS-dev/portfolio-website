@@ -1,0 +1,54 @@
+[
+  {
+    "title": "Jon Kido Resume 20XX Rough Draft",
+    "desktop-icon": "/images/resume/wordicon_destop.svg",
+    "icon": "/images/resume/wordIcon.png",
+    "app": "Word",
+    "x": "10px",
+    "y": "150px",
+    "appProps": {
+      "content": "<p style='text-align: center;'><span style='font-size: 18pt;'>Resume</span></p><p style='text-align: left;'><span style='font-size: 18pt;'>Experience</span></p><p style='text-align: left;'>Software Engineer</p><p style='text-align: left;'><strong>Matraex Inc.</strong> - January 2023 - August 2023</p><ul><li><p style='text-align: left;'>Did full stack development on multiple web/app projects for clients</p></li><li><p style='text-align: left;'>Created scripts to automate tasks, making development faster and smoother</p></li><li><p style='text-align: left;'>Worked with the team to improve processes and increase documentation standards</p></li><li><p style='text-align: left;'>Made flexible tools and reusable features that are used across several projects</p></li><li><p style='text-align: left;'>Presented work to clients and responded to their feedback</p></li><li><p style='text-align: left;'>Collaborated with teammates, giving them feedback on problem solving and code optimization</p></li></ul><p style='text-align: left;'></p><p style='text-align: left;'>Software Developer</p><p style='text-align: left;'><strong>GIMM Works</strong> - January 2020 - January 2023</p><ul><li><p style='text-align: left;'>Worked with other student developers on unique software projects for clients</p></li><li><p style='text-align: left;'>Led back-end dev on several projects</p></li><li><p style='text-align: left;'>Did full stack development and 3D modeling for multiple projects</p></li><li><p style='text-align: left;'>Helped other teams implement security features on their projects</p></li><li><p style='text-align: left;'>Mentored two new hires to help them learn React</p></li></ul><p style='text-align: left;'></p><p style='text-align: left;'>Independent Contractor, App Development</p><p style='text-align: left;'><strong>The Simple Ring</strong> - September 2020 - December 2021</p><ul><li><p style='text-align: left;'>Worked for the founders of The Simple Ring on a consumer-based mobile app</p></li><li><p style='text-align: left;'>Wrote the back-end data storage structure, designed and implemented the front-end UI, and integrated Firebase into the app</p></li><li><p style='text-align: left;'>Prompted improvements in code quality and structure that affected both the front-end and the back-end</p></li></ul><p style='text-align: left;'></p><p style='text-align: left;'>GIMM Senior Peer Mentor</p><p style='text-align: left;'><strong>Boise State GIMM Program</strong> - July 2018 - December 2019</p><ul><li><p style='text-align: left;'>Helped current GIMM students with debugging and gave advice about their code</p></li><li><p style='text-align: left;'>Assisted other peer mentors when they got stuck</p></li><li><p style='text-align: left;'>Presented previous projects of the department to prospective students and clients</p></li><li><p style='text-align: left;'>Managed checking out equipment to other students</p></li></ul><p style='text-align: left;'></p><p style='text-align: left;'><span style='font-size: 18pt;'>Education</span></p><p style='text-align: left;'>Boise State University</p><p style='text-align: left;'><strong>Major:</strong> GIMM (Games, Interactive Media, and Mobile)</p><p style='text-align: left;'><strong>Minors:</strong> MATH (Applied Mathematics), ITM (Information Technology Management)</p>"
+    }
+  },
+  {
+    "title": "Flavored Resume 20XX Rough Draft",
+    "desktop-icon": "/images/resume/wordicon_destop.svg",
+    "icon": "/images/resume/wordIcon.png",
+    "app": "Word",
+    "x": "calc(50% - 35px)",
+    "y": "calc(50% - 40px)",
+    "appProps": {
+      "content": "<p style='text-align: left;'><span style='font-size: 18pt;'>Hi Bye</span></p>"
+    }
+  },
+  {
+    "title": "Minesweeper",
+    "desktop-icon": "/images/resume/minesweepericon.svg",
+    "icon": "/images/resume/minesweepericon.svg",
+    "app": "Minesweeper",
+    "x": "10px",
+    "y": "calc(100% - 120px)",
+    "width": "266px",
+    "height": "395px"
+  },
+  {
+    "title": "Tetris",
+    "desktop-icon": "/images/resume/tetrisicon.svg",
+    "icon": "/images/resume/tetrisicon.svg",
+    "app": "Tetris",
+    "x": "10px",
+    "y": "calc(100% - 200px)",
+    "height": "815px",
+    "width": "610px"
+  },
+  {
+    "title": "Trash",
+    "desktop-icon": "/images/resume/recyclebin_empty.svg",
+    "icon": "/images/resume/recyclebin_empty.svg",
+    "app": "RecycleBin",
+    "x": "calc(100% - 80px)",
+    "y": "0px",
+    "isTrash": true
+  }
+]
+

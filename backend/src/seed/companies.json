@@ -1,0 +1,33 @@
+[
+  {
+    "name": "VFoS",
+    "logo": "/favicon.gif",
+    "startDate": "June 2015",
+    "endDate": "Present"
+  },
+  {
+    "name": "Matraex Inc.",
+    "logo": "/images/companies/matraex.png",
+    "startDate": "January 2023",
+    "endDate": "August 2023"
+  },
+  {
+    "name": "GIMM Works",
+    "logo": "/images/companies/gimmworks.png",
+    "startDate": "January 2020",
+    "endDate": "January 2023"
+  },
+  {
+    "name": "The Simple Ring",
+    "logo": "/images/companies/thesimplering.png",
+    "startDate": "September 2020",
+    "endDate": "December 2021"
+  },
+  {
+    "name": "Boise State University",
+    "logo": "/images/companies/boisestate.png",
+    "startDate": "July 2018",
+    "endDate": "December 2019"
+  }
+]
+
