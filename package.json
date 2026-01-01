@@ -4,7 +4,7 @@
   "version": "3.0.0",
   "scripts": {
     "start": "concurrently 'npm:backend:start' 'npm:frontend:start' 'npm:admin:start'",
-    "postinstall": "npm run install:backend && npm run install:frontend && echo 'Install Complete!'",
+    "postinstall": "npm run install:backend && npm run install:frontend && npm run install:admin && echo 'Install Complete!'",
     "install:frontend": "echo 'Installing frontend' && cd frontend && npm i",
     "install:backend": "echo 'Installing backend' && cd backend && npm i",
     "install:admin": "echo 'Installing admin' && cd admin && npm i",
