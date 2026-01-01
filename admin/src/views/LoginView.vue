@@ -4,11 +4,10 @@
       <h1>Portfolio Admin</h1>
       <h2>Sign In</h2>
       
-      <div v-if="error" class="error">{{ error }}</div>
+      <ErrorMessage :error="error" />
       
       <form @submit.prevent="handleLogin" class="login-form">
-        <div class="form-group">
-          <label>Username:</label>
+        <FormGroup label="Username:">
           <input 
             v-model="username" 
             type="text" 
@@ -16,9 +15,8 @@
             autocomplete="username"
             :disabled="loading"
           />
-        </div>
-        <div class="form-group">
-          <label>Password:</label>
+        </FormGroup>
+        <FormGroup label="Password:">
           <input 
             v-model="password" 
             type="password" 
@@ -26,10 +24,10 @@
             autocomplete="current-password"
             :disabled="loading"
           />
-        </div>
-        <button type="submit" class="btn btn-primary" :disabled="loading">
+        </FormGroup>
+        <Button type="submit" variant="primary" :disabled="loading" class="login-button">
           {{ loading ? 'Signing in...' : 'Sign In' }}
-        </button>
+        </Button>
       </form>
     </div>
   </div>
@@ -40,6 +38,9 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import apiService from '@/services/api'
 import { useAuthStore } from '@/stores/auth'
+import ErrorMessage from '@/components/ErrorMessage.vue'
+import FormGroup from '@/components/FormGroup.vue'
+import Button from '@/components/Button.vue'
 
 const router = useRouter()
 const authStore = useAuthStore()
@@ -109,78 +110,13 @@ const handleLogin = async () => {
   font-weight: normal;
 }
 
-.error {
-  background-color: #f8d7da;
-  color: #721c24;
-  padding: 1rem;
-  border-radius: 6px;
-  margin-bottom: 1.5rem;
-  border: 1px solid #f5c6cb;
-}
-
 .login-form {
   display: flex;
   flex-direction: column;
 }
 
-.form-group {
-  margin-bottom: 1.5rem;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-weight: 600;
-  color: var(--color-heading);
-  font-size: 0.95rem;
-}
-
-.form-group input {
+.login-button {
   width: 100%;
-  padding: 0.75rem;
-  border: 1px solid var(--color-border);
-  border-radius: 6px;
-  font-size: 1rem;
-  background-color: var(--color-background);
-  color: var(--color-text);
-  transition: border-color 0.2s, box-shadow 0.2s;
-  box-sizing: border-box;
-}
-
-.form-group input:focus {
-  outline: none;
-  border-color: #007bff;
-  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
-}
-
-.form-group input:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.btn {
-  padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 1rem;
-  font-weight: 500;
-  transition: all 0.2s;
-}
-
-.btn-primary {
-  background-color: #007bff;
-  color: white;
-  width: 100%;
-}
-
-.btn-primary:hover:not(:disabled) {
-  background-color: #0056b3;
-}
-
-.btn-primary:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
+  margin-top: 0.5rem;
 }
 </style>
-

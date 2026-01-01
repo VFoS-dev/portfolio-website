@@ -2,14 +2,13 @@
   <div class="change-password-view">
     <h1>Change Password</h1>
     
-    <div v-if="loading" class="loading">Processing...</div>
-    <div v-if="error" class="error">{{ error }}</div>
-    <div v-if="success" class="success">{{ success }}</div>
+    <LoadingState :loading="loading" message="Processing..." />
+    <ErrorMessage :error="error" />
+    <SuccessMessage :message="success" />
 
-    <div class="form-container">
+    <FormContainer>
       <form @submit.prevent="handleChangePassword">
-        <div class="form-group">
-          <label>Current Password:</label>
+        <FormGroup label="Current Password:">
           <input 
             v-model="currentPassword" 
             type="password" 
@@ -17,9 +16,8 @@
             autocomplete="current-password"
             :disabled="loading"
           />
-        </div>
-        <div class="form-group">
-          <label>New Password:</label>
+        </FormGroup>
+        <FormGroup label="New Password:">
           <input 
             v-model="newPassword" 
             type="password" 
@@ -28,9 +26,8 @@
             :disabled="loading"
             minlength="6"
           />
-        </div>
-        <div class="form-group">
-          <label>Confirm New Password:</label>
+        </FormGroup>
+        <FormGroup label="Confirm New Password:">
           <input 
             v-model="confirmPassword" 
             type="password" 
@@ -39,23 +36,32 @@
             :disabled="loading"
             minlength="6"
           />
-        </div>
-        <div v-if="newPassword && confirmPassword && newPassword !== confirmPassword" class="error">
-          Passwords do not match
-        </div>
-        <div class="form-actions">
-          <button type="submit" class="btn btn-primary" :disabled="loading || newPassword !== confirmPassword">
+        </FormGroup>
+        <ErrorMessage v-if="newPassword && confirmPassword && newPassword !== confirmPassword" error="Passwords do not match" />
+        <FormActions>
+          <Button 
+            type="submit" 
+            variant="primary" 
+            :disabled="loading || (newPassword && confirmPassword && newPassword !== confirmPassword)"
+          >
             {{ loading ? 'Changing Password...' : 'Change Password' }}
-          </button>
-        </div>
+          </Button>
+        </FormActions>
       </form>
-    </div>
+    </FormContainer>
   </div>
 </template>
 
 <script setup>
 import { ref } from 'vue'
 import apiService from '@/services/api'
+import LoadingState from '@/components/LoadingState.vue'
+import ErrorMessage from '@/components/ErrorMessage.vue'
+import SuccessMessage from '@/components/SuccessMessage.vue'
+import FormContainer from '@/components/FormContainer.vue'
+import FormGroup from '@/components/FormGroup.vue'
+import FormActions from '@/components/FormActions.vue'
+import Button from '@/components/Button.vue'
 
 const currentPassword = ref('')
 const newPassword = ref('')
@@ -116,103 +122,4 @@ const handleChangePassword = async () => {
   margin-bottom: 2rem;
   font-size: 2rem;
 }
-
-.loading {
-  padding: 1rem;
-  margin: 1rem 0;
-  border-radius: 6px;
-  background-color: #e7f3ff;
-  color: #004085;
-  text-align: center;
-}
-
-.error {
-  padding: 1rem;
-  margin: 1rem 0;
-  border-radius: 6px;
-  background-color: #f8d7da;
-  color: #721c24;
-  border: 1px solid #f5c6cb;
-}
-
-.success {
-  padding: 1rem;
-  margin: 1rem 0;
-  border-radius: 6px;
-  background-color: #d4edda;
-  color: #155724;
-  border: 1px solid #c3e6cb;
-}
-
-.form-container {
-  background: var(--color-background-soft);
-  padding: 2rem;
-  border-radius: 8px;
-  border: 1px solid var(--color-border);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.form-group {
-  margin-bottom: 1.5rem;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-weight: 600;
-  color: var(--color-heading);
-  font-size: 0.95rem;
-}
-
-.form-group input {
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid var(--color-border);
-  border-radius: 6px;
-  font-size: 1rem;
-  background-color: var(--color-background);
-  color: var(--color-text);
-  transition: border-color 0.2s, box-shadow 0.2s;
-  box-sizing: border-box;
-}
-
-.form-group input:focus {
-  outline: none;
-  border-color: #007bff;
-  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
-}
-
-.form-group input:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.form-actions {
-  margin-top: 2rem;
-}
-
-.btn {
-  padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 1rem;
-  font-weight: 500;
-  transition: all 0.2s;
-}
-
-.btn-primary {
-  background-color: #007bff;
-  color: white;
-}
-
-.btn-primary:hover:not(:disabled) {
-  background-color: #0056b3;
-}
-
-.btn-primary:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
 </style>
-

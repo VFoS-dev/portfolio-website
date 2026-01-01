@@ -2,19 +2,20 @@
   <div class="media-view">
     <h1>Media Management</h1>
     
-    <div class="actions">
-      <button @click="loadMedia" class="btn btn-primary">Refresh</button>
-      <button @click="showUploadForm = true" class="btn btn-success">Upload Media</button>
-    </div>
+    <ActionButtons 
+      :show-refresh="true"
+      :show-create="false"
+      @refresh="loadMedia"
+    >
+      <Button variant="success" @click="showUploadForm = true">Upload Media</Button>
+    </ActionButtons>
 
-    <div v-if="loading" class="loading">Loading...</div>
-    <div v-if="error" class="error">{{ error }}</div>
+    <LoadingState :loading="loading" />
+    <ErrorMessage :error="error" />
 
-    <div v-if="showUploadForm" class="form-container">
-      <h2>Upload Media</h2>
+    <FormContainer v-if="showUploadForm" title="Upload Media">
       <form @submit.prevent="handleUpload">
-        <div class="form-group">
-          <label>Select File (Images or Videos):</label>
+        <FormGroup label="Select File (Images or Videos):">
           <input 
             ref="fileInput"
             type="file" 
@@ -31,15 +32,15 @@
             <img v-if="selectedFile.type.startsWith('image/')" :src="previewUrl" alt="Preview" class="preview-image" />
             <video v-else-if="selectedFile.type.startsWith('video/')" :src="previewUrl" controls class="preview-video" />
           </div>
-        </div>
-        <div class="form-actions">
-          <button type="submit" class="btn btn-primary" :disabled="uploading">
+        </FormGroup>
+        <FormActions>
+          <Button type="submit" variant="primary" :disabled="uploading">
             {{ uploading ? 'Uploading...' : 'Upload' }}
-          </button>
-          <button type="button" @click="cancelUpload" class="btn btn-secondary">Cancel</button>
-        </div>
+          </Button>
+          <Button type="button" variant="secondary" @click="cancelUpload">Cancel</Button>
+        </FormActions>
       </form>
-    </div>
+    </FormContainer>
 
     <div v-if="media && media.length > 0" class="media-list">
       <h2>Uploaded Media ({{ media.length }})</h2>
@@ -63,20 +64,28 @@
               <span>{{ formatDate(item.createdAt) }}</span>
             </p>
             <div class="media-actions">
-              <button @click="copyUrl(item.url)" class="btn btn-small">Copy URL</button>
-              <button @click="handleDelete(item)" class="btn btn-small btn-delete">Delete</button>
+              <Button variant="primary" size="small" @click="copyUrl(item.url)">Copy URL</Button>
+              <Button variant="danger" size="small" @click="handleDelete(item)">Delete</Button>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <div v-else-if="!loading" class="no-data">No media found</div>
+    <NoData v-else-if="!loading" message="No media found" />
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
 import apiService from '@/services/api'
+import ActionButtons from '@/components/ActionButtons.vue'
+import LoadingState from '@/components/LoadingState.vue'
+import ErrorMessage from '@/components/ErrorMessage.vue'
+import FormContainer from '@/components/FormContainer.vue'
+import FormGroup from '@/components/FormGroup.vue'
+import FormActions from '@/components/FormActions.vue'
+import Button from '@/components/Button.vue'
+import NoData from '@/components/NoData.vue'
 
 const media = ref([])
 const loading = ref(false)
@@ -224,121 +233,6 @@ onMounted(() => {
   font-size: 2rem;
 }
 
-.actions {
-  margin-bottom: 2rem;
-  display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
-.btn {
-  padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 1rem;
-  font-weight: 500;
-  transition: all 0.2s;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.btn:hover:not(:disabled) {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
-}
-
-.btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.btn-primary {
-  background-color: #007bff;
-  color: white;
-}
-
-.btn-primary:hover:not(:disabled) {
-  background-color: #0056b3;
-}
-
-.btn-success {
-  background-color: #28a745;
-  color: white;
-}
-
-.btn-success:hover:not(:disabled) {
-  background-color: #218838;
-}
-
-.btn-secondary {
-  background-color: #6c757d;
-  color: white;
-}
-
-.btn-secondary:hover:not(:disabled) {
-  background-color: #5a6268;
-}
-
-.btn-small {
-  padding: 0.5rem 1rem;
-  font-size: 0.9rem;
-}
-
-.btn-delete {
-  background-color: #dc3545;
-  color: white;
-}
-
-.btn-delete:hover:not(:disabled) {
-  background-color: #c82333;
-}
-
-.loading {
-  padding: 1rem;
-  margin: 1rem 0;
-  border-radius: 6px;
-  background-color: #e7f3ff;
-  color: #004085;
-  text-align: center;
-}
-
-.error {
-  padding: 1rem;
-  margin: 1rem 0;
-  border-radius: 6px;
-  background-color: #f8d7da;
-  color: #721c24;
-  border: 1px solid #f5c6cb;
-}
-
-.form-container {
-  background: var(--color-background-soft);
-  padding: 2rem;
-  border-radius: 8px;
-  margin-bottom: 2rem;
-  border: 1px solid var(--color-border);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.form-container h2 {
-  color: var(--color-heading);
-  margin-top: 0;
-  margin-bottom: 1.5rem;
-  font-size: 1.5rem;
-}
-
-.form-group {
-  margin-bottom: 1.5rem;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-weight: 600;
-  color: var(--color-heading);
-  font-size: 0.95rem;
-}
-
 .form-group input[type="file"] {
   width: 100%;
   padding: 0.75rem;
@@ -380,13 +274,6 @@ onMounted(() => {
   max-height: 400px;
   border-radius: 6px;
   border: 1px solid var(--color-border);
-}
-
-.form-actions {
-  display: flex;
-  gap: 1rem;
-  margin-top: 2rem;
-  flex-wrap: wrap;
 }
 
 .media-list {
@@ -477,15 +364,4 @@ onMounted(() => {
   gap: 0.5rem;
   margin-top: 1rem;
 }
-
-.no-data {
-  text-align: center;
-  padding: 3rem;
-  color: var(--color-text);
-  font-size: 1.1rem;
-  background: var(--color-background-soft);
-  border-radius: 8px;
-  border: 1px dashed var(--color-border);
-}
 </style>
-

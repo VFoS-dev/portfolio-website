@@ -2,107 +2,98 @@
   <div class="sabers-view">
     <h1>Sabers Management</h1>
     
-    <div class="actions">
-      <button @click="loadSabers" class="btn btn-primary">Refresh</button>
-      <button @click="showCreateForm = true" class="btn btn-success">Create New Saber</button>
-    </div>
+    <ActionButtons 
+      :show-refresh="true"
+      :show-create="true"
+      create-label="Create New Saber"
+      @refresh="loadSabers"
+      @create="showCreateForm = true"
+    />
 
-    <div v-if="loading" class="loading">Loading...</div>
-    <div v-if="error" class="error">{{ error }}</div>
+    <LoadingState :loading="loading" />
+    <ErrorMessage :error="error" />
 
-    <div v-if="editingSaber" class="form-container">
-      <h2>Edit Saber</h2>
+    <FormContainer v-if="editingSaber" title="Edit Saber">
       <form @submit.prevent="handleUpdate">
-        <div class="form-group">
-          <label>Light Color:</label>
+        <FormGroup label="Light Color:">
           <div class="color-input-group">
             <input v-model="editingSaber.lightColor" type="color" class="color-picker" />
             <input v-model="editingSaber.lightColor" type="text" class="color-text" placeholder="#ffffff" />
           </div>
-        </div>
-        <div class="form-group">
-          <label>Aura Color:</label>
+        </FormGroup>
+        <FormGroup label="Aura Color:">
           <div class="color-input-group">
             <input v-model="editingSaber.auraColor" type="color" class="color-picker" />
             <input v-model="editingSaber.auraColor" type="text" class="color-text" placeholder="#0000ff" />
           </div>
-        </div>
-        <div class="form-group">
-          <label>Inner Color:</label>
+        </FormGroup>
+        <FormGroup label="Inner Color:">
           <div class="color-input-group">
             <input v-model="editingSaber.innerColor" type="color" class="color-picker" />
             <input v-model="editingSaber.innerColor" type="text" class="color-text" placeholder="#ffffff" />
           </div>
-        </div>
-        <div class="form-group">
-          <label>Text Color:</label>
+        </FormGroup>
+        <FormGroup label="Text Color:">
           <div class="color-input-group">
             <input v-model="editingSaber.textColor" type="color" class="color-picker" />
             <input v-model="editingSaber.textColor" type="text" class="color-text" placeholder="#000000" />
           </div>
-        </div>
-        <div class="form-group">
-          <label>Preview:</label>
+        </FormGroup>
+        <FormGroup label="Preview:">
           <div class="saber-preview-container">
             <div class="saber-preview-hilt"></div>
             <div class="saber-preview-blade" :style="getPreviewStyles(editingSaber)">
               <div class="saber-preview-light"></div>
             </div>
           </div>
-        </div>
-        <div class="form-actions">
-          <button type="submit" class="btn btn-primary">Update</button>
-          <button type="button" @click="cancelEdit" class="btn btn-secondary">Cancel</button>
-        </div>
+        </FormGroup>
+        <FormActions>
+          <Button type="submit" variant="primary">Update</Button>
+          <Button type="button" variant="secondary" @click="cancelEdit">Cancel</Button>
+        </FormActions>
       </form>
-    </div>
+    </FormContainer>
 
-    <div v-if="showCreateForm" class="form-container">
-      <h2>Create New Saber</h2>
+    <FormContainer v-if="showCreateForm" title="Create New Saber">
       <form @submit.prevent="handleCreate">
-        <div class="form-group">
-          <label>Light Color:</label>
+        <FormGroup label="Light Color:">
           <div class="color-input-group">
             <input v-model="newSaber.lightColor" type="color" class="color-picker" />
             <input v-model="newSaber.lightColor" type="text" class="color-text" placeholder="#ffffff" />
           </div>
-        </div>
-        <div class="form-group">
-          <label>Aura Color:</label>
+        </FormGroup>
+        <FormGroup label="Aura Color:">
           <div class="color-input-group">
             <input v-model="newSaber.auraColor" type="color" class="color-picker" />
             <input v-model="newSaber.auraColor" type="text" class="color-text" placeholder="#0000ff" />
           </div>
-        </div>
-        <div class="form-group">
-          <label>Inner Color:</label>
+        </FormGroup>
+        <FormGroup label="Inner Color:">
           <div class="color-input-group">
             <input v-model="newSaber.innerColor" type="color" class="color-picker" />
             <input v-model="newSaber.innerColor" type="text" class="color-text" placeholder="#ffffff" />
           </div>
-        </div>
-        <div class="form-group">
-          <label>Text Color:</label>
+        </FormGroup>
+        <FormGroup label="Text Color:">
           <div class="color-input-group">
             <input v-model="newSaber.textColor" type="color" class="color-picker" />
             <input v-model="newSaber.textColor" type="text" class="color-text" placeholder="#000000" />
           </div>
-        </div>
-        <div class="form-group">
-          <label>Preview:</label>
+        </FormGroup>
+        <FormGroup label="Preview:">
           <div class="saber-preview-container">
             <div class="saber-preview-hilt"></div>
             <div class="saber-preview-blade" :style="getPreviewStyles(newSaber)">
               <div class="saber-preview-light"></div>
             </div>
           </div>
-        </div>
-        <div class="form-actions">
-          <button type="submit" class="btn btn-primary">Create</button>
-          <button type="button" @click="cancelCreate" class="btn btn-secondary">Cancel</button>
-        </div>
+        </FormGroup>
+        <FormActions>
+          <Button type="submit" variant="primary">Create</Button>
+          <Button type="button" variant="secondary" @click="cancelCreate">Cancel</Button>
+        </FormActions>
       </form>
-    </div>
+    </FormContainer>
 
     <div v-if="sabers && sabers.length > 0" class="sabers-list">
       <h2>Existing Sabers ({{ sabers.length }})</h2>
@@ -117,14 +108,18 @@
           <div class="card-header">
             <h3>Saber Scheme</h3>
             <div class="card-actions">
-              <button @click="startEdit(saber)" class="btn btn-edit">Edit</button>
-              <button @click="toggleDeactivated(saber)" class="btn" :class="saber.deactivated ? 'btn-activate' : 'btn-deactivate'">
+              <Button variant="warning" size="small" @click="startEdit(saber)">Edit</Button>
+              <Button 
+                :variant="saber.deactivated ? 'success' : 'warning'" 
+                size="small" 
+                @click="toggleDeactivated(saber)"
+              >
                 {{ saber.deactivated ? 'Activate' : 'Deactivate' }}
-              </button>
-              <button @click="handleDelete(saber)" class="btn btn-delete">Delete</button>
+              </Button>
+              <Button variant="danger" size="small" @click="handleDelete(saber)">Delete</Button>
             </div>
           </div>
-          <p v-if="saber.deactivated" class="deactivated-badge">⚠️ Deactivated</p>
+          <DeactivatedBadge :is-deactivated="saber.deactivated" />
           <p><strong>Light Color:</strong> {{ saber.lightColor }}</p>
           <p><strong>Aura Color:</strong> {{ saber.auraColor }}</p>
           <p><strong>Inner Color:</strong> {{ saber.innerColor }}</p>
@@ -132,19 +127,45 @@
         </div>
       </div>
     </div>
-    <div v-else-if="!loading" class="no-data">No sabers found</div>
+    <NoData v-else-if="!loading" message="No sabers found" />
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
 import apiService from '@/services/api'
+import { useCrud } from '@/composables/useCrud'
+import ActionButtons from '@/components/ActionButtons.vue'
+import LoadingState from '@/components/LoadingState.vue'
+import ErrorMessage from '@/components/ErrorMessage.vue'
+import FormContainer from '@/components/FormContainer.vue'
+import FormGroup from '@/components/FormGroup.vue'
+import FormActions from '@/components/FormActions.vue'
+import Button from '@/components/Button.vue'
+import DeactivatedBadge from '@/components/DeactivatedBadge.vue'
+import NoData from '@/components/NoData.vue'
 
-const sabers = ref([])
-const loading = ref(false)
-const error = ref(null)
-const showCreateForm = ref(false)
-const editingSaber = ref(null)
+const {
+  items: sabers,
+  loading,
+  error,
+  showCreateForm,
+  editingItem: editingSaber,
+  loadItems: loadSabersBase,
+  handleCreate: handleCreateBase,
+  startEdit: startEditBase,
+  handleUpdate: handleUpdateBase,
+  cancelEdit,
+  toggleDeactivated,
+  handleDelete,
+  cancelCreate: cancelCreateBase
+} = useCrud(apiService, {
+  loadMethod: 'getSabers',
+  createMethod: 'createSaber',
+  updateMethod: 'updateSaber',
+  deleteMethod: 'deleteSaber',
+  itemName: 'Saber'
+})
 
 const newSaber = ref({
   lightColor: '#ffffff',
@@ -173,145 +194,53 @@ const normalizeColor = (color) => {
 }
 
 const loadSabers = async () => {
-  loading.value = true
-  error.value = null
-  try {
-    const response = await apiService.getSabers()
-    if (response.status === 200) {
-      sabers.value = Array.isArray(response.data) ? response.data : [response.data]
-      // Normalize colors to hex format
-      sabers.value = sabers.value.map(saber => ({
-        ...saber,
-        lightColor: normalizeColor(saber.lightColor),
-        auraColor: normalizeColor(saber.auraColor),
-        innerColor: normalizeColor(saber.innerColor),
-        textColor: normalizeColor(saber.textColor),
-      }))
-    } else {
-      error.value = response.message || 'Failed to load sabers'
-    }
-  } catch (err) {
-    error.value = err.message || 'Error loading sabers'
-  } finally {
-    loading.value = false
+  await loadSabersBase()
+  // Normalize colors to hex format after loading
+  if (sabers.value) {
+    sabers.value = sabers.value.map(saber => ({
+      ...saber,
+      lightColor: normalizeColor(saber.lightColor),
+      auraColor: normalizeColor(saber.auraColor),
+      innerColor: normalizeColor(saber.innerColor),
+      textColor: normalizeColor(saber.textColor),
+    }))
   }
 }
 
 const handleCreate = async () => {
-  loading.value = true
-  error.value = null
-  try {
-    const response = await apiService.createSaber(newSaber.value)
-    if (response.status === 201) {
-      await loadSabers()
-      cancelCreate()
-      alert('Saber created successfully!')
-    } else {
-      error.value = response.message || 'Failed to create saber'
-    }
-  } catch (err) {
-    error.value = err.message || 'Error creating saber'
-  } finally {
-    loading.value = false
+  const success = await handleCreateBase(newSaber.value)
+  if (success) {
+    resetNewSaber()
   }
 }
 
 const startEdit = (saber) => {
-  editingSaber.value = { 
-    ...saber,
-    lightColor: normalizeColor(saber.lightColor),
-    auraColor: normalizeColor(saber.auraColor),
-    innerColor: normalizeColor(saber.innerColor),
-    textColor: normalizeColor(saber.textColor),
-  }
-  showCreateForm.value = false
-}
-
-const handleUpdate = async () => {
-  if (!editingSaber.value._id) return
-  
-  loading.value = true
-  error.value = null
-  try {
-    const response = await apiService.updateSaber(editingSaber.value._id, editingSaber.value)
-    if (response.status === 200) {
-      await loadSabers()
-      cancelEdit()
-      alert('Saber updated successfully!')
-    } else {
-      error.value = response.message || 'Failed to update saber'
-    }
-  } catch (err) {
-    error.value = err.message || 'Error updating saber'
-  } finally {
-    loading.value = false
+  startEditBase(saber)
+  // Normalize colors when editing
+  if (editingSaber.value) {
+    editingSaber.value.lightColor = normalizeColor(editingSaber.value.lightColor)
+    editingSaber.value.auraColor = normalizeColor(editingSaber.value.auraColor)
+    editingSaber.value.innerColor = normalizeColor(editingSaber.value.innerColor)
+    editingSaber.value.textColor = normalizeColor(editingSaber.value.textColor)
   }
 }
 
-const cancelEdit = () => {
-  editingSaber.value = null
+const handleUpdate = () => {
+  handleUpdateBase()
 }
 
-const toggleDeactivated = async (saber) => {
-  if (!saber._id) return
-  
-  const action = saber.deactivated ? 'activate' : 'deactivate'
-  if (!confirm(`Are you sure you want to ${action} this saber scheme?`)) {
-    return
-  }
-  
-  loading.value = true
-  error.value = null
-  try {
-    const response = await apiService.updateSaber(saber._id, {
-      ...saber,
-      deactivated: !saber.deactivated,
-    })
-    if (response.status === 200) {
-      await loadSabers()
-      alert(`Saber ${action}d successfully!`)
-    } else {
-      error.value = response.message || `Failed to ${action} saber`
-    }
-  } catch (err) {
-    error.value = err.message || `Error ${action}ing saber`
-  } finally {
-    loading.value = false
-  }
-}
-
-const handleDelete = async (saber) => {
-  if (!saber._id) return
-  
-  if (!confirm('Are you sure you want to delete this saber scheme? This action cannot be undone.')) {
-    return
-  }
-  
-  loading.value = true
-  error.value = null
-  try {
-    const response = await apiService.deleteSaber(saber._id)
-    if (response.status === 200) {
-      await loadSabers()
-      alert('Saber deleted successfully!')
-    } else {
-      error.value = response.message || 'Failed to delete saber'
-    }
-  } catch (err) {
-    error.value = err.message || 'Error deleting saber'
-  } finally {
-    loading.value = false
-  }
-}
-
-const cancelCreate = () => {
-  showCreateForm.value = false
+const resetNewSaber = () => {
   newSaber.value = {
     lightColor: '#ffffff',
     auraColor: '#0000ff',
     innerColor: '#ffffff',
     textColor: '#000000',
   }
+}
+
+const cancelCreate = () => {
+  cancelCreateBase()
+  resetNewSaber()
 }
 
 const getPreviewStyles = (saber) => {
@@ -333,7 +262,7 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.colors-view {
+.sabers-view {
   padding: 2rem;
   max-width: 1200px;
   margin: 0 auto;
@@ -342,123 +271,10 @@ onMounted(() => {
   min-height: calc(100vh - 100px);
 }
 
-.colors-view h1 {
+.sabers-view h1 {
   color: var(--color-heading);
   margin-bottom: 1rem;
   font-size: 2rem;
-}
-
-.actions {
-  margin-bottom: 2rem;
-  display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
-.btn {
-  padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 1rem;
-  font-weight: 500;
-  transition: all 0.2s;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
-}
-
-.btn-primary {
-  background-color: #007bff;
-  color: white;
-}
-
-.btn-primary:hover {
-  background-color: #0056b3;
-}
-
-.btn-success {
-  background-color: #28a745;
-  color: white;
-}
-
-.btn-success:hover {
-  background-color: #218838;
-}
-
-.btn-secondary {
-  background-color: #6c757d;
-  color: white;
-}
-
-.btn-secondary:hover {
-  background-color: #5a6268;
-}
-
-.loading {
-  padding: 1rem;
-  margin: 1rem 0;
-  border-radius: 6px;
-  background-color: #e7f3ff;
-  color: #004085;
-  text-align: center;
-}
-
-.error {
-  padding: 1rem;
-  margin: 1rem 0;
-  border-radius: 6px;
-  background-color: #f8d7da;
-  color: #721c24;
-  border: 1px solid #f5c6cb;
-}
-
-.form-container {
-  background: var(--color-background-soft);
-  padding: 2rem;
-  border-radius: 8px;
-  margin-bottom: 2rem;
-  border: 1px solid var(--color-border);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.form-container h2 {
-  color: var(--color-heading);
-  margin-top: 0;
-  margin-bottom: 1.5rem;
-  font-size: 1.5rem;
-}
-
-.form-group {
-  margin-bottom: 1.5rem;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-weight: 600;
-  color: var(--color-heading);
-  font-size: 0.95rem;
-}
-
-.form-group input {
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid var(--color-border);
-  border-radius: 6px;
-  font-size: 1rem;
-  background-color: var(--color-background);
-  color: var(--color-text);
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-.form-group input:focus {
-  outline: none;
-  border-color: #007bff;
-  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
 }
 
 .color-input-group {
@@ -502,13 +318,6 @@ onMounted(() => {
   outline: none;
   border-color: #007bff;
   box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
-}
-
-.form-actions {
-  display: flex;
-  gap: 1rem;
-  margin-top: 2rem;
-  flex-wrap: wrap;
 }
 
 .sabers-list {
@@ -599,84 +408,19 @@ onMounted(() => {
   font-size: 1.25rem;
 }
 
-.btn-edit {
-  background-color: #ffc107;
-  color: #000;
-  padding: 0.5rem 1rem;
-  font-size: 0.9rem;
-}
-
-.btn-edit:hover {
-  background-color: #e0a800;
-}
-
 .card-actions {
   display: flex;
   gap: 0.5rem;
 }
 
-.btn-delete {
-  background-color: #dc3545;
-  color: white;
-  padding: 0.5rem 1rem;
-  font-size: 0.9rem;
-}
-
-.btn-delete:hover {
-  background-color: #c82333;
-}
-
-.btn-deactivate {
-  background-color: #ffc107;
-  color: #000;
-  padding: 0.5rem 1rem;
-  font-size: 0.9rem;
-}
-
-.btn-deactivate:hover {
-  background-color: #e0a800;
-}
-
-.btn-activate {
-  background-color: #28a745;
-  color: white;
-  padding: 0.5rem 1rem;
-  font-size: 0.9rem;
-}
-
-.btn-activate:hover {
-  background-color: #218838;
-}
-
-.deactivated-badge {
-  color: #856404;
-  background-color: #fff3cd;
-  padding: 0.5rem;
-  border-radius: 4px;
-  font-weight: bold;
-  margin-bottom: 0.5rem;
-  display: inline-block;
-}
-
-.color-details p {
+.saber-details p {
   margin: 0.5rem 0;
   color: var(--color-text);
   line-height: 1.6;
 }
 
-.color-details strong {
+.saber-details strong {
   color: var(--color-heading);
   font-weight: 600;
 }
-
-.no-data {
-  text-align: center;
-  padding: 3rem;
-  color: var(--color-text);
-  font-size: 1.1rem;
-  background: var(--color-background-soft);
-  border-radius: 8px;
-  border: 1px dashed var(--color-border);
-}
 </style>
-

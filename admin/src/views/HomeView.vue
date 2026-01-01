@@ -1,60 +1,69 @@
-<script setup>
-import { RouterLink } from 'vue-router'
-</script>
-
 <template>
   <div class="home-view">
     <h1>Admin Dashboard</h1>
     <p class="subtitle">Manage your portfolio data</p>
     
     <div class="dashboard-grid">
-      <RouterLink to="/projects" class="dashboard-card">
-        <h2>Projects</h2>
-        <p>Manage portfolio projects</p>
-      </RouterLink>
+      <DashboardCard 
+        to="/projects"
+        title="Projects"
+        description="Manage portfolio projects"
+      />
       
-      <RouterLink to="/icons" class="dashboard-card">
-        <h2>Icons</h2>
-        <p>Manage desktop icons</p>
-      </RouterLink>
+      <DashboardCard 
+        to="/icons"
+        title="Icons"
+        description="Manage desktop icons"
+      />
       
-      <RouterLink to="/about" class="dashboard-card">
-        <h2>About</h2>
-        <p>Manage about data</p>
-      </RouterLink>
+      <DashboardCard 
+        to="/about"
+        title="About"
+        description="Manage about data"
+      />
       
-      <RouterLink to="/skills" class="dashboard-card">
-        <h2>Skills</h2>
-        <p>Manage skills and proficiencies</p>
-      </RouterLink>
+      <DashboardCard 
+        to="/skills"
+        title="Skills"
+        description="Manage skills and proficiencies"
+      />
       
-      <RouterLink to="/sabers" class="dashboard-card">
-        <h2>Sabers</h2>
-        <p>Manage color schemes</p>
-      </RouterLink>
+      <DashboardCard 
+        to="/sabers"
+        title="Sabers"
+        description="Manage color schemes"
+      />
       
-      <RouterLink to="/socials" class="dashboard-card">
-        <h2>Socials</h2>
-        <p>Manage social media links</p>
-      </RouterLink>
+      <DashboardCard 
+        to="/socials"
+        title="Socials"
+        description="Manage social media links"
+      />
       
-      <RouterLink to="/default-window" class="dashboard-card">
-        <h2>Default Window</h2>
-        <p>Manage default window settings</p>
-      </RouterLink>
+      <DashboardCard 
+        to="/default-window"
+        title="Default Window"
+        description="Manage default window settings"
+      />
       
-      <RouterLink to="/companies" class="dashboard-card">
-        <h2>Companies</h2>
-        <p>Manage companies and organizations</p>
-      </RouterLink>
+      <DashboardCard 
+        to="/companies"
+        title="Companies"
+        description="Manage companies and organizations"
+      />
       
-      <RouterLink to="/media" class="dashboard-card">
-        <h2>Media</h2>
-        <p>Upload and manage images and videos</p>
-      </RouterLink>
+      <DashboardCard 
+        to="/media"
+        title="Media"
+        description="Upload and manage images and videos"
+      />
     </div>
   </div>
 </template>
+
+<script setup>
+import DashboardCard from '@/components/DashboardCard.vue'
+</script>
 
 <style scoped>
 .home-view {
@@ -82,34 +91,6 @@ h1 {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 1.5rem;
-}
-
-.dashboard-card {
-  background: var(--color-background-soft);
-  border: 1px solid var(--color-border);
-  border-radius: 8px;
-  padding: 2rem;
-  text-decoration: none;
-  color: inherit;
-  transition: all 0.2s;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.dashboard-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-  border-color: #3498db;
-}
-
-.dashboard-card h2 {
-  margin: 0 0 0.5rem 0;
-  color: var(--color-heading);
-  font-size: 1.5rem;
-}
-
-.dashboard-card p {
-  margin: 0;
-  color: var(--color-text);
 }
 
 @media (max-width: 768px) {
