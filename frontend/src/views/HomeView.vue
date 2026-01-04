@@ -80,10 +80,31 @@ function gameEnded() {
   top: 53%;
   transform: translateY(-50%);
   transition: opacity var(--hide-duration);
+  width: calc(100% - 20%);
+  max-width: 90%;
+  padding: 0 1rem;
+  box-sizing: border-box;
+  backface-visibility: visible;
+  -webkit-backface-visibility: visible;
+  will-change: transform, opacity;
 
   &.hide {
     opacity: 0;
     pointer-events: none;
+  }
+
+  // Mobile styles
+  @media (max-width: 991px) {
+    left: 5%;
+    width: 90%;
+    padding: 0 1.5rem;
+  }
+
+  @media (max-width: 480px) {
+    left: 2.5%;
+    width: 95%;
+    padding: 0 1rem;
+    gap: clamp(3px, 2vh, 20px);
   }
 }
 
@@ -92,6 +113,18 @@ function gameEnded() {
   flex-direction: row;
   flex-wrap: wrap;
   gap: 2rem;
+  width: 100%;
+  justify-content: flex-start;
+
+  @media (max-width: 991px) {
+    gap: 1.5rem;
+  }
+
+  @media (max-width: 480px) {
+    flex-direction: column;
+    gap: 1rem;
+    width: auto;
+  }
 }
 
 h1,
@@ -102,10 +135,20 @@ span {
   font-size: var(--font-size);
   font-weight: bold;
   line-height: var(--font-size);
+  backface-visibility: visible;
+  -webkit-backface-visibility: visible;
 }
 
 h1 {
   --font-size: clamp(30px, 15vh, 120px);
+
+  @media (max-width: 991px) {
+    --font-size: clamp(24px, 12vh, 80px);
+  }
+
+  @media (max-width: 480px) {
+    --font-size: clamp(20px, 10vh, 60px);
+  }
 
   span {
     background: linear-gradient(180deg, #f5bf00, #ed4b05);
@@ -118,6 +161,14 @@ h1 {
 
 h2 {
   --font-size: clamp(10px, 5vh, 40px);
+
+  @media (max-width: 991px) {
+    --font-size: clamp(8px, 4vh, 32px);
+  }
+
+  @media (max-width: 480px) {
+    --font-size: clamp(7px, 3.5vh, 28px);
+  }
 
   &::after {
     content: '';
@@ -132,11 +183,29 @@ h2 {
     transform-origin: left center;
     margin-left: 1.5rem;
     top: 50%;
+
+    @media (max-width: 991px) {
+      scale: 1.2;
+      margin-left: 1rem;
+    }
+
+    @media (max-width: 480px) {
+      scale: 1;
+      margin-left: 0.5rem;
+    }
   }
 }
 
 h3 {
   color: #f32222;
   --font-size: clamp(14px, 7vh, 56px);
+
+  @media (max-width: 991px) {
+    --font-size: clamp(12px, 6vh, 48px);
+  }
+
+  @media (max-width: 480px) {
+    --font-size: clamp(10px, 5vh, 40px);
+  }
 }
 </style>
