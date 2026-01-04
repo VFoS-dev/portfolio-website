@@ -2,9 +2,9 @@ import fruitData from '@/json/fruitData.json';
 import { distanceSegmentToPoint } from '@/utilities/math';
 import { gameLoop } from '@/utilities/game';
 
-const DIAMETER = 100;
-const MIN_DIAMETER = 60;
-const MAX_DIAMETER = 140;
+const DIAMETER = 140;
+const MIN_DIAMETER = 80;
+const MAX_DIAMETER = 200;
 
 // Reference screen dimensions for scaling (1920x1080)
 const REFERENCE_WIDTH = 1920;
@@ -58,8 +58,10 @@ export function fruitNinja(activePage = false, checkAchievement = () => {}, onLi
     // Use the smaller dimension to maintain aspect ratio
     const scaleX = screenWidth / REFERENCE_WIDTH;
     const scaleY = screenHeight / REFERENCE_HEIGHT;
-    // Use minimum to ensure fruits aren't too large on small screens
-    return Math.min(scaleX, scaleY, 1.5); // Cap at 1.5x for very large screens
+    // Clamp between minimum and maximum to ensure fruits are always visible but not too large
+    const minScale = 0.4; // Minimum 40% of reference size (prevents fruits from being too small)
+    const maxScale = 1.5; // Maximum 150% of reference size (prevents fruits from being too large)
+    return Math.max(minScale, Math.min(scaleX, scaleY, maxScale));
   }
   
   // Get velocity scale factor - more aggressive scaling for smaller screens
@@ -348,91 +350,113 @@ export function fruitNinja(activePage = false, checkAchievement = () => {}, onLi
     }
   }
 
+  // Simple line-circle intersection check
+  function lineIntersectsCircle(lineStart, lineEnd, circleCenter, radius) {
+    const dx = lineEnd.x - lineStart.x;
+    const dy = lineEnd.y - lineStart.y;
+    const fx = lineStart.x - circleCenter.x;
+    const fy = lineStart.y - circleCenter.y;
+    
+    const a = dx * dx + dy * dy;
+    const b = 2 * (fx * dx + fy * dy);
+    const c = (fx * fx + fy * fy) - radius * radius;
+    
+    const discriminant = b * b - 4 * a * c;
+    
+    if (discriminant < 0) return false;
+    
+    const sqrt = Math.sqrt(discriminant);
+    const t1 = (-b - sqrt) / (2 * a);
+    const t2 = (-b + sqrt) / (2 * a);
+    
+    // Check if intersection point is within the line segment
+    return (t1 >= 0 && t1 <= 1) || (t2 >= 0 && t2 <= 1) || (t1 < 0 && t2 > 1);
+  }
+
   function slicedCheck() {
     // Don't allow slicing if game is not active or is frozen
     if (!gameState || frozen || path.length < 2) return;
     
-    // Check all line segments in the path, not just the first two points
-    // This allows cutting all fruits along the entire slash line
-    let update = false;
-    const indexes = new Set(); // Use Set to avoid duplicate indexes
-    const hitFruits = new Set(); // Track which fruits have been hit
-
-    // Iterate through all consecutive pairs of points in the path
+    const hitFruits = new Set(); // Track hit fruits by reference
+    const hitBombs = new Set();
+    
+    // Check all line segments in the path against all fruits
     for (let j = 0; j < path.length - 1; j++) {
       const point1 = path[j];
       const point2 = path[j + 1];
       
-      for (let [i, fruit] of fruits.entries()) {
-        // Skip if this fruit was already hit
-        if (hitFruits.has(i)) continue;
+      for (const fruit of fruits) {
+        // Skip if already hit
+        if (hitFruits.has(fruit) || hitBombs.has(fruit)) continue;
         
-        const { left: Cx, top: Cy, diameter } = fruit;
-        const distance = distanceSegmentToPoint(
-          { x: point1.x, y: point1.y },
-          { x: point2.x, y: point2.y },
-          { x: Cx, y: Cy }
+        const { left: fruitX, top: fruitY, diameter } = fruit;
+        const radius = diameter / 2;
+        
+        // Use line-circle intersection with a more forgiving threshold
+        const hitRadius = radius * 1.2; // 20% larger hit radius for better feel
+        const hit = lineIntersectsCircle(
+          point1,
+          point2,
+          { x: fruitX, y: fruitY },
+          hitRadius
         );
-
-        // Check if fruit intersects with the line segment
-        // Use 1.5x diameter as threshold for more forgiving cutting (allows near misses)
-        const hitThreshold = diameter * 1.5;
-        if (isNaN(distance) || distance > hitThreshold) continue;
-
-        // Mark fruit as hit
-        hitFruits.add(i);
-        indexes.add(i);
-        update = true;
-
-        // Check if it's a bomb
-        if (fruit.isBomb) {
-          lives--;
-          if (onLivesChange) onLivesChange(lives);
-          // Create scorch mark effect (no separation, just a burnt mark)
-          const bomb = fruits.splice(i, 1)[0];
-          
-          // Add scorch mark splatter (longer lasting than fruit splatter)
-          splats.push({
-            ...bomb,
-            type: 'bomb-scorch',
-            tick: 400, // Longer lasting scorch mark
-          });
-          
-          // Remove from indexes since we already processed it
-          indexes.delete(i);
-          
-          if (lives <= 0) {
-            gameState = false;
-            // Delay freezing to show bomb explosion animation
-            freezeDelay = 300; // 300ms delay to see the explosion
-            if (onGameOver) {
-              // Delay the game over callback slightly
-              setTimeout(() => {
-                if (onGameOver) onGameOver();
-              }, freezeDelay);
-            }
+        
+        if (hit) {
+          if (fruit.isBomb) {
+            hitBombs.add(fruit);
+          } else {
+            hitFruits.add(fruit);
+            checkAchievement('fruitcomplete', fruit.type);
           }
-          continue;
         }
-
-        checkAchievement('fruitcomplete', fruit.type);
       }
     }
-
-    if (update) {
-      // Calculate score based on fruit size - smaller fruits give more points
-      // Score formula: base score * (MAX_DIAMETER / fruit diameter)
-      // This means smaller fruits (lower diameter) give higher scores
+    
+    // Process bombs first (they remove lives and can end the game)
+    for (const bomb of hitBombs) {
+      const bombIndex = fruits.indexOf(bomb);
+      if (bombIndex === -1) continue; // Already removed
+      
+      lives--;
+      if (onLivesChange) onLivesChange(lives);
+      
+      // Add scorch mark splatter
+      splats.push({
+        ...bomb,
+        type: 'bomb-scorch',
+        tick: 400,
+      });
+      
+      // Remove bomb from fruits
+      fruits.splice(bombIndex, 1);
+      
+      if (lives <= 0) {
+        gameState = false;
+        freezeDelay = 300;
+        if (onGameOver) {
+          setTimeout(() => {
+            if (onGameOver) onGameOver();
+          }, freezeDelay);
+        }
+        // Stop processing more fruits if game ended
+        return;
+      }
+    }
+    
+    // Process regular fruits
+    if (hitFruits.size > 0) {
       const scaledDiam = getScaledDiameter();
       let pointsEarned = 0;
       
-      // Convert Set to Array and sort in reverse order for safe removal
-      const indexesArray = Array.from(indexes).sort((a, b) => b - a);
+      // Get indexes of hit fruits, sorted in reverse for safe removal
+      const indexesArray = fruits
+        .map((fruit, index) => hitFruits.has(fruit) ? index : -1)
+        .filter(index => index !== -1)
+        .sort((a, b) => b - a);
       
+      // Calculate points
       indexesArray.forEach(i => {
         const fruit = fruits[i];
-        // Calculate points: smaller fruits = more points
-        // Base score of 2, multiplied by size ratio (larger ratio for smaller fruits)
         const sizeMultiplier = scaledDiam.max / fruit.diameter;
         const fruitPoints = Math.max(1, Math.floor(2 * sizeMultiplier));
         pointsEarned += fruitPoints;
@@ -441,12 +465,14 @@ export function fruitNinja(activePage = false, checkAchievement = () => {}, onLi
       score += pointsEarned;
       if (onScoreChange) onScoreChange(score);
       
-      // Calculate average slope from the path for slice direction
-      // Use the first and last points of the path for overall slash direction
+      // Calculate slope from path for slice direction
       if (path.length >= 2) {
         const firstPoint = path[0];
         const lastPoint = path[path.length - 1];
-        const slope = (firstPoint.y - lastPoint.y) / (firstPoint.x - lastPoint.x);
+        const dx = lastPoint.x - firstPoint.x;
+        const dy = lastPoint.y - firstPoint.y;
+        // Avoid division by zero
+        const slope = Math.abs(dx) > 0.001 ? dy / dx : 0;
         updateSlice(fruits, indexesArray, slope);
       }
     }
@@ -492,7 +518,7 @@ export function fruitNinja(activePage = false, checkAchievement = () => {}, onLi
     // Don't add to path or check slicing if game is not active or frozen
     if (!gameState || frozen) return;
     if (path.length > TAIL_MAX) path.shift();
-    // Use canvas-relative coordinates
+    // Use canvas-relative coordinates (canvas internal size now matches bounding rect)
     const rect = canvas.getBoundingClientRect();
     path = [{ 
       x: e.targetTouches[0].clientX - rect.left, 
@@ -505,7 +531,7 @@ export function fruitNinja(activePage = false, checkAchievement = () => {}, onLi
     // Don't add to path or check slicing if game is not active or frozen
     if (!gameState || frozen) return;
     if (path.length > TAIL_MAX) path.shift();
-    // Use canvas-relative coordinates for consistency
+    // Use canvas-relative coordinates (canvas internal size now matches bounding rect)
     const rect = canvas.getBoundingClientRect();
     path = [{ 
       x: e.clientX - rect.left, 
@@ -550,11 +576,11 @@ export function fruitNinja(activePage = false, checkAchievement = () => {}, onLi
       const img = imgSet[type];
       // Check if image is loaded and not broken
       if (!img.complete || img.naturalWidth === 0 || img.naturalHeight === 0) continue;
-      const radius = diameter;
+      const radius = diameter / 2;
       ctx.save();
       ctx.translate(left, top);
       ctx.rotate((rot * Math.PI) / 180);
-      ctx.drawImage(img, -radius, -radius);
+      ctx.drawImage(img, -radius, -radius, diameter, diameter);
       ctx.restore();
     }
   }
@@ -572,10 +598,11 @@ export function fruitNinja(activePage = false, checkAchievement = () => {}, onLi
 
     if ((tick = !tick) && !frozen && freezeDelay <= 0) path.pop();
 
-    const { clientWidth, clientHeight } = document.documentElement;
-    canvas.width = clientWidth;
-    canvas.height = clientHeight;
-    ctx.clearRect(0, 0, clientWidth, clientHeight);
+    // Use canvas element's bounding rect to ensure internal dimensions match CSS size
+    const rect = canvas.getBoundingClientRect();
+    canvas.width = rect.width;
+    canvas.height = rect.height;
+    ctx.clearRect(0, 0, rect.width, rect.height);
 
     // Update animations during freeze delay (to show bomb explosion), but stop spawning
     if (!frozen || freezeDelay > 0) {

@@ -15,9 +15,9 @@ export function setupSlashEffect(canvas, gameCanvas = null) {
   // Initialize with current mouse position or center of screen
   function initializePath() {
     const rect = canvas.getBoundingClientRect();
-    // Use canvas-relative coordinates
-    const initialX = window.mouseX ? window.mouseX - rect.left : canvas.width / 2;
-    const initialY = window.mouseY ? window.mouseY - rect.top : canvas.height / 2;
+    // Use canvas-relative coordinates (canvas internal size should match bounding rect)
+    const initialX = window.mouseX ? window.mouseX - rect.left : rect.width / 2;
+    const initialY = window.mouseY ? window.mouseY - rect.top : rect.height / 2;
     
     // Start with at least 2 points (required for drawing) at the current/cursor position
     // Duplicate the point so there's always something to draw
@@ -42,7 +42,7 @@ export function setupSlashEffect(canvas, gameCanvas = null) {
         e.preventDefault();
       }
     }
-    // Use clientX/clientY for consistent coordinates with canvas
+    // Use clientX/clientY (canvas internal size should match bounding rect)
     const rect = canvas.getBoundingClientRect();
     const newPoint = { 
       x: e.targetTouches[0].clientX - rect.left, 
@@ -59,7 +59,7 @@ export function setupSlashEffect(canvas, gameCanvas = null) {
 
   function addVector(e) {
     if (!isActive || isPaused) return;
-    // Use clientX/clientY and account for canvas position
+    // Use clientX/clientY (canvas internal size should match bounding rect)
     const rect = canvas.getBoundingClientRect();
     const clientX = e.clientX - rect.left;
     const clientY = e.clientY - rect.top;
