@@ -80,6 +80,23 @@ function handleKeyPress(e) {
   // Don't prevent default for other keys - let WASD and other keys work normally when game is not active
 }
 
+// Lock body scroll when game is active
+function lockBodyScroll(lock) {
+  if (lock) {
+    document.body.style.overflow = 'hidden';
+    document.body.style.position = 'fixed';
+    document.body.style.width = '100%';
+    document.body.style.height = '100%';
+    document.documentElement.style.overflow = 'hidden';
+  } else {
+    document.body.style.overflow = '';
+    document.body.style.position = '';
+    document.body.style.width = '';
+    document.body.style.height = '';
+    document.documentElement.style.overflow = '';
+  }
+}
+
 onMounted(() => {
   loadHighScore();
   if (canvasRef.value) {
@@ -89,6 +106,7 @@ onMounted(() => {
     cubeStore.activeGame(true);
     if (props.active) {
       game.value.unpause?.();
+      lockBodyScroll(true);
     }
   }
   window.addEventListener('keydown', handleKeyPress);
@@ -105,6 +123,7 @@ watch(
         cubeStore.activeGame(true);
         if (state) {
           game.value.unpause?.();
+          lockBodyScroll(true);
         }
       } else if (game.value) {
         // If game was frozen and we're restarting, reset it
@@ -117,9 +136,11 @@ watch(
         if (state && lives.value > 0) {
           game.value.unpause?.();
           cubeStore.activeGame(true);
+          lockBodyScroll(true);
         } else {
           game.value.pause?.();
           cubeStore.activeGame(false);
+          lockBodyScroll(false);
         }
       }
     }, 0);
@@ -128,6 +149,7 @@ watch(
 
 onBeforeUnmount(() => {
   window.removeEventListener('keydown', handleKeyPress);
+  lockBodyScroll(false);
   if (game.value) {
     game.value.dismount();
     game.value.gameEnd();
@@ -150,6 +172,10 @@ canvas {
   height: 100%;
   z-index: 1;
   cursor: crosshair;
+  touch-action: none;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 canvas.menu-visible {

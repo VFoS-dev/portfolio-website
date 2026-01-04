@@ -212,6 +212,11 @@ onBeforeUnmount(() => {
   background-blend-mode: multiply;
   min-height: 100vh;
   width: 100%;
+  
+  // Lock viewport when game is active
+  :deep(canvas) {
+    touch-action: none;
+  }
 }
 
 .fnFont {

@@ -192,6 +192,7 @@ export function fruitNinja(activePage = false, checkAchievement = () => {}, onLi
       // Store existing listeners (from slash effect) to chain them
       const existingMouseMove = document.onmousemove;
       const existingTouchMove = document.ontouchmove;
+      const existingTouchStart = document.ontouchstart;
       
       // Set up game's listeners that also call existing ones
       document.onmousemove = (e) => {
@@ -201,9 +202,23 @@ export function fruitNinja(activePage = false, checkAchievement = () => {}, onLi
         }
       };
       document.ontouchmove = (e) => {
+        // Prevent default to stop scrolling and browser UI movement
+        if (gameState && !frozen) {
+          e.preventDefault();
+        }
         addVectorTouch(e);
         if (existingTouchMove && existingTouchMove !== addVectorTouch) {
           existingTouchMove(e);
+        }
+      };
+      
+      // Also prevent touchstart default to prevent pull-to-refresh and other gestures
+      document.ontouchstart = (e) => {
+        if (gameState && !frozen) {
+          e.preventDefault();
+        }
+        if (existingTouchStart && existingTouchStart !== document.ontouchstart) {
+          existingTouchStart(e);
         }
       };
       const { start, stop, restart } = gameLoop(gameTick, () => (exiting = true));
