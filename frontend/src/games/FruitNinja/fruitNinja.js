@@ -61,23 +61,44 @@ export function fruitNinja(activePage = false, checkAchievement = () => {}, onLi
     // Clamp between minimum and maximum to ensure fruits are always visible but not too large
     const minScale = 0.4; // Minimum 40% of reference size (prevents fruits from being too small)
     const maxScale = 1.5; // Maximum 150% of reference size (prevents fruits from being too large)
-    return Math.max(minScale, Math.min(scaleX, scaleY, maxScale));
+    const baseScale = Math.max(minScale, Math.min(scaleX, scaleY, maxScale));
+    
+    // Apply size multipliers: 2x for smaller screens, 1.5x for larger screens
+    // Interpolate between 2x (at minScale) and 1.5x (at maxScale)
+    const sizeMultiplier = 2.0 - (baseScale - minScale) / (maxScale - minScale) * 0.5;
+    
+    return baseScale * sizeMultiplier;
   }
   
-  // Get velocity scale factor - more aggressive scaling for smaller screens
-  // Uses power function to make velocities decrease more on small screens
+  // Get the base scale factor (before size multipliers)
+  function getBaseScaleFactor() {
+    const screenWidth = canvas?.width || window.innerWidth;
+    const screenHeight = canvas?.height || window.innerHeight;
+    const scaleX = screenWidth / REFERENCE_WIDTH;
+    const scaleY = screenHeight / REFERENCE_HEIGHT;
+    const minScale = 0.4;
+    const maxScale = 1.5;
+    return Math.max(minScale, Math.min(scaleX, scaleY, maxScale));
+  }
+
+  // Get velocity scale factor - balanced scaling for all screen sizes
+  // Uses vertical (height) scaling to keep velocities proportional to vertical space
   function getVelocityScale() {
-    const baseScale = getScaleFactor();
-    // Use power of 1.5 to make velocities decrease more aggressively on small screens
-    // This prevents fruits from falling too fast on smaller screens
-    // Example: scale=0.5 -> velocityScale=0.5^1.5≈0.35 (much slower)
-    return Math.pow(baseScale, 1.5);
+    // Fallback to window dimensions if canvas isn't set up yet
+    const screenHeight = canvas?.height || window.innerHeight;
+    // Use vertical dimension for velocity scaling since movement is primarily vertical
+    const scaleY = screenHeight / REFERENCE_HEIGHT;
+    const minScale = 0.4;
+    const maxScale = 1.5;
+    // Clamp and return vertical-based scale
+    return Math.max(minScale, Math.min(scaleY, maxScale));
   }
   
   // Get scaled values
   function getGravity() {
-    // Use velocity scale for gravity to slow down falling on small screens
-    return 1 * getVelocityScale();
+    // Increase gravity to balance the higher initial velocity
+    // This makes fruits fall faster to create better arc trajectories
+    return 1.2 * getVelocityScale();
   }
   
   function getScaledDiameter() {
@@ -278,13 +299,12 @@ export function fruitNinja(activePage = false, checkAchievement = () => {}, onLi
     }
 
     const velocityScale = getVelocityScale();
-    // Calculate initial upward velocity to ensure fruits can reach full height
-    // Use base scale for initial velocity (less aggressive) so fruits can reach the top
-    // The base velocity should scale with screen height to ensure full coverage
-    const baseVelocity = 30 + Math.random() * maxY;
-    // Scale initial velocity less aggressively - use linear scale instead of power scale
-    // This ensures fruits can still reach the top on smaller screens
-    const initialVelY = -baseVelocity * scale;
+    // Calculate initial upward velocity - balanced with increased gravity
+    // The base velocity should scale with screen height to ensure good coverage
+    const baseVelocity = 40 + Math.random() * maxY * 1.2;
+    // Use velocity scale for initial velocity to match gravity scaling
+    // This keeps upward and downward motion balanced
+    const initialVelY = -baseVelocity * velocityScale;
     
     fruits.push({
       id: fruitIndexCounter++,
@@ -305,6 +325,9 @@ export function fruitNinja(activePage = false, checkAchievement = () => {}, onLi
   function updateData() {
     for (let [i, fruit] of fruits.reverse().entries()) {
       const { top, left, velX, velY, rot, velZ, frame, diameter } = fruit;
+      const radius = diameter / 2;
+      
+      // Check if fruit goes below screen
       if (velY > 0 && top - diameter > canvas.height) {
         fruits.splice(i, 1);
         // loose health here
@@ -317,13 +340,34 @@ export function fruitNinja(activePage = false, checkAchievement = () => {}, onLi
         }
         continue;
       }
+      
+      // Calculate new position
+      let newTop = top + velY;
+      let newLeft = left + velX;
+      let newVelX = velX;
+      let newVelY = velY;
+      
+      // Clamp position to keep fruit within screen bounds (sides only, allow going above top)
+      // Left boundary: fruit center should not go left of radius
+      if (newLeft < radius) {
+        newLeft = radius;
+        newVelX = Math.abs(velX); // Bounce off left wall
+      }
+      
+      // Right boundary: fruit center should not go right of canvas.width - radius
+      if (newLeft > canvas.width - radius) {
+        newLeft = canvas.width - radius;
+        newVelX = -Math.abs(velX); // Bounce off right wall
+      }
+      
       fruits[i] = {
         ...fruit,
-        top: top + velY,
-        left: left + velX,
+        top: newTop,
+        left: newLeft,
         rot: rot + velZ,
         frame: frame + 1,
-        velY: Math.min(15 * getVelocityScale(), velY + getGravity()),
+        velX: newVelX,
+        velY: Math.min(15 * getVelocityScale(), newVelY + getGravity()),
       };
     }
     for (let [i, slice] of sliced.reverse().entries()) {
@@ -332,10 +376,23 @@ export function fruitNinja(activePage = false, checkAchievement = () => {}, onLi
         sliced.splice(i, 1);
         continue;
       }
+      
+      const radius = diameter / 2;
+      let newTop = top + velY;
+      let newLeft = left + velX;
+      
+      // Clamp sliced fruit pieces to screen bounds (sides only, allow going above top)
+      if (newLeft < radius) {
+        newLeft = radius;
+      }
+      if (newLeft > canvas.width - radius) {
+        newLeft = canvas.width - radius;
+      }
+      
       sliced[i] = {
         ...slice,
-        top: top + velY,
-        left: left + velX,
+        top: newTop,
+        left: newLeft,
         rot: rot + velZ,
         frame: frame + 1,
         velY: Math.min(15 * getVelocityScale(), velY + getGravity()),
