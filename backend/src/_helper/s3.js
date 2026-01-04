@@ -13,6 +13,7 @@ const s3Client = new S3Client({
 });
 
 const BUCKET_NAME = env('AWS_S3_BUCKET_NAME', '');
+const BUCKET_CDN = env('AWS_BUCKET_CDN', '');
 
 /**
  * Upload a file to S3
@@ -44,8 +45,16 @@ async function uploadToS3(fileBuffer, originalName, mimeType) {
 
   await s3Client.send(command);
 
-  // Construct public URL
-  const url = `https://${BUCKET_NAME}.s3.${env('AWS_REGION', 'us-east-1')}.amazonaws.com/${key}`;
+  // Construct public URL - use CDN if defined, otherwise use S3 URL
+  let url;
+  if (BUCKET_CDN) {
+    // Remove trailing slash from CDN URL if present, then append key
+    const cdnBase = BUCKET_CDN.replace(/\/$/, '');
+    url = `${cdnBase}/${key}`;
+  } else {
+    // Fall back to S3 URL construction
+    url = `https://${BUCKET_NAME}.s3.${env('AWS_REGION', 'us-east-1')}.amazonaws.com/${key}`;
+  }
 
   return { url, key };
 }
@@ -70,12 +79,23 @@ async function deleteFromS3(key) {
 
 /**
  * Extract S3 key from URL
- * @param {String} url - S3 URL
+ * @param {String} url - S3 URL or CDN URL
  * @returns {String} - S3 key
  */
 function extractKeyFromUrl(url) {
   if (!url) return null;
-  // Extract key from URL like: https://bucket.s3.region.amazonaws.com/media/filename.ext
+  
+  // If CDN is configured, try to extract key from CDN URL first
+  if (BUCKET_CDN) {
+    const cdnBase = BUCKET_CDN.replace(/\/$/, '');
+    if (url.startsWith(cdnBase)) {
+      // Extract key from CDN URL: https://cdn.example.com/media/filename.ext
+      const key = url.replace(cdnBase, '').replace(/^\//, '');
+      return key || null;
+    }
+  }
+  
+  // Extract key from S3 URL like: https://bucket.s3.region.amazonaws.com/media/filename.ext
   const match = url.match(/\.amazonaws\.com\/(.+)$/);
   return match ? match[1] : null;
 }
