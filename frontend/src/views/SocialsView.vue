@@ -6,7 +6,7 @@
     <div class="navpadding"></div>
     <div ref="linksRef" :class="['links', { toGame: toGame, hidden: gameStarted && !showMenu, paused: !cubeStore.state.socials }]" @animationend="handleAnimationEnd">
       <div v-for="(item, index) in socialsData" :key="`option-${item.name}`" class="option"
-        :style="{ backgroundImage: `url(${item.shadow})` }">
+        :style="{ '--shadow-image': `url(${item.shadow})` }">
         <div class="option-group">
           <div class="circle" :style="{ '--rot': `${item.startRot}deg` }">
             <svg class="text" viewBox="0 0 168 168" xmlns="http://www.w3.org/2000/svg">
@@ -266,15 +266,44 @@ onBeforeUnmount(() => {
   --size: min(25vmax, 44vh, 44vw);
   width: var(--size);
   height: var(--size);
-  transform: translate(-2%, 7.5%);
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    transform: translate(-50%, -50%) translate(5%, 10%);
+    background-image: var(--shadow-image);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  @media (max-width: 991px) {
+    --size: min(40vw, 35vh, 180px);
+    flex: 0 0 calc(50% - 2.5%);
+    max-width: calc(50% - 2.5%);
+  }
+
+  @media (max-width: 480px) {
+    --size: min(45vw, 30vh, 160px);
+  }
 }
 
 .option-group {
   overflow: hidden;
-  transform: translate(2%, -7.5%);
-  position: relative;
+  transform: translate(-50%, -50%);
+  position: absolute;
+  top: 50%;
+  left: 50%;
   width: var(--size);
   height: var(--size);
+  z-index: 1;
 }
 
 .option-group .circle .text {
