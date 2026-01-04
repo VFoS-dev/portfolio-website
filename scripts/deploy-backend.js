@@ -116,6 +116,19 @@ async function deploy() {
         `ssh -i "${sshKeyPath}" -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} "pm2 restart portfolio-backend || pm2 start ${EC2_DEPLOY_PATH}/app.js --name portfolio-backend || true"`,
         { stdio: 'inherit' }
       );
+      
+      // Save PM2 process list and ensure startup on reboot
+      console.log('\nSaving PM2 process list...');
+      execSync(
+        `ssh -i "${sshKeyPath}" -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} "pm2 save"`,
+        { stdio: 'inherit' }
+      );
+      
+      console.log('Ensuring PM2 starts on system boot...');
+      execSync(
+        `ssh -i "${sshKeyPath}" -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} "pm2 startup systemd -u ${EC2_USER} --hp /home/${EC2_USER} || true"`,
+        { stdio: 'inherit' }
+      );
     } catch (error) {
       // If PM2 fails, try systemd
       try {
