@@ -75,23 +75,6 @@ function copyFilesToDist() {
     }
   }
   
-  // Create a README for the dist folder
-  const readmeContent = `# Backend Production Build
-
-This is a production build of the backend application.
-
-## Setup
-
-1. If a \`.env\` file wasn't copied, create one in this directory
-2. Run \`npm install\` to install dependencies
-3. Run \`npm start\` to start the server
-
-## Environment Variables
-
-Make sure to set up your \`.env\` file with the required environment variables before starting the server.
-`;
-  fs.writeFileSync(path.join(distPath, 'README.md'), readmeContent);
-  console.log('✓ Created README.md');
 }
 
 // Build function

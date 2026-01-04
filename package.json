@@ -6,10 +6,16 @@
     "start": "concurrently -n backend,frontend,admin -c cyan,magenta,yellow \"npm start --prefix backend\" \"npm start --prefix frontend\" \"npm start --prefix admin\"",
     "build": "npm run build --prefix backend && npm run build --prefix frontend && npm run build --prefix admin",
     "postinstall": "npm install --prefix backend && npm install --prefix frontend && npm install --prefix admin",
-    "env": "node scripts/fetch-env.js"
+    "env": "node scripts/fetch-env.js",
+    "deploy:admin": "node scripts/deploy-admin.js",
+    "deploy:frontend": "node scripts/deploy-frontend.js",
+    "deploy:backend": "node scripts/deploy-backend.js",
+    "deploy:all": "npm run deploy:admin && npm run deploy:frontend && npm run deploy:backend"
   },
   "devDependencies": {
+    "@aws-sdk/client-cloudfront": "^3.958.0",
     "@aws-sdk/client-secrets-manager": "^3.958.0",
+    "@aws-sdk/client-s3": "^3.958.0",
     "concurrently": "^8.2.2",
     "dotenv": "^16.4.5"
   }
