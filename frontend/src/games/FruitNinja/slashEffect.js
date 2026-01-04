@@ -3,13 +3,14 @@ import { gameLoop } from '@/utilities/game';
 const SIZE = 4;
 const TAIL_MAX = 5;
 
-export function setupSlashEffect(canvas) {
+export function setupSlashEffect(canvas, gameCanvas = null) {
   let ctx = canvas.getContext('2d');
   let path = [];
   let exiting = false;
   let tick = true;
   let isPaused = false;
   let isActive = false;
+  let gameCanvasRef = gameCanvas;
 
   // Initialize with current mouse position or center of screen
   function initializePath() {
@@ -31,6 +32,16 @@ export function setupSlashEffect(canvas) {
 
   function addVectorTouch(e) {
     if (!isActive || isPaused) return;
+    // Prevent default to stop scrolling and browser UI movement when game is active
+    // Only prevent if touching the game canvas, not other elements like options
+    if (gameCanvasRef && gameCanvasRef.style.display !== 'none') {
+      const touch = e.targetTouches[0];
+      const target = document.elementFromPoint(touch.clientX, touch.clientY);
+      // Only prevent default if touching the game canvas or its children
+      if (target && (target === gameCanvasRef || gameCanvasRef.contains(target))) {
+        e.preventDefault();
+      }
+    }
     // Use clientX/clientY for consistent coordinates with canvas
     const rect = canvas.getBoundingClientRect();
     const newPoint = { 
@@ -124,11 +135,28 @@ export function setupSlashEffect(canvas) {
 
   // Track if listeners are attached
   let listenersAttached = false;
+  let touchStartHandler = null;
 
   function attachListeners() {
     if (!isActive || listenersAttached) return;
     document.addEventListener('mousemove', addVector);
-    document.addEventListener('touchmove', addVectorTouch, { passive: true });
+    // Remove passive: true to allow preventDefault when game is active
+    document.addEventListener('touchmove', addVectorTouch, { passive: false });
+    // Store touchstart handler reference for cleanup
+    touchStartHandler = (e) => {
+      // Prevent default touchstart when game is active, but only for touches on the game canvas
+      if (gameCanvasRef && gameCanvasRef.style.display !== 'none') {
+        const touch = e.touches[0];
+        if (touch) {
+          const target = document.elementFromPoint(touch.clientX, touch.clientY);
+          // Only prevent default if touching the game canvas or its children
+          if (target && (target === gameCanvasRef || gameCanvasRef.contains(target))) {
+            e.preventDefault();
+          }
+        }
+      }
+    };
+    document.addEventListener('touchstart', touchStartHandler, { passive: false });
     listenersAttached = true;
   }
 
@@ -136,6 +164,10 @@ export function setupSlashEffect(canvas) {
     if (!listenersAttached) return;
     document.removeEventListener('mousemove', addVector);
     document.removeEventListener('touchmove', addVectorTouch);
+    if (touchStartHandler) {
+      document.removeEventListener('touchstart', touchStartHandler);
+      touchStartHandler = null;
+    }
     listenersAttached = false;
   }
 
@@ -149,6 +181,9 @@ export function setupSlashEffect(canvas) {
   start();
 
   return {
+    setGameCanvas(newGameCanvas) {
+      gameCanvasRef = newGameCanvas;
+    },
     pause() {
       isPaused = true;
       isActive = false;

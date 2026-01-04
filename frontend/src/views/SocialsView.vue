@@ -1,7 +1,7 @@
 <template>
   <canvas id="slash" class="sticky-overlay" ref="canvasRef"></canvas>
   <div class="socials">
-    <FruitNinja v-if="gameStarted" :active="cubeStore.state.socials && gameStarted && !showMenu"
+    <FruitNinja v-if="gameStarted" ref="fruitNinjaRef" :active="cubeStore.state.socials && gameStarted && !showMenu"
       :on-game-over="handleGameOver" :show-menu="showMenu" />
     <div class="navpadding"></div>
     <div ref="linksRef" :class="['links', { toGame: toGame, hidden: gameStarted && !showMenu, paused: !cubeStore.state.socials }]" @animationend="handleAnimationEnd">
@@ -46,6 +46,7 @@ const gameStarted = ref(false);
 const showMenu = ref(false);
 let slashEffect = null;
 const linksRef = ref(null);
+const fruitNinjaRef = ref(null);
 
 // Transparent 1x1 pixel data URL to pause GIFs
 const pausedGifSrc = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
@@ -98,6 +99,12 @@ function handleAnimationEnd() {
     gameStarted.value = true;
     showMenu.value = false;
     toGame.value = false;
+    // Update slash effect with game canvas after game starts
+    nextTick(() => {
+      if (slashEffect && fruitNinjaRef.value?.canvasRef) {
+        slashEffect.setGameCanvas(fruitNinjaRef.value.canvasRef);
+      }
+    });
   }
 }
 
@@ -141,21 +148,28 @@ function initializeSlashEffect() {
     return;
   }
   
-  // If effect already exists, stop it first and wait a tick for cleanup
-  if (slashEffect) {
-    slashEffect.stop();
-    slashEffect = null;
-    // Wait a tick to ensure cleanup completes before creating new effect
-    nextTick(() => {
-      if (canvasRef.value && !slashEffect) {
-        slashEffect = setupSlashEffect(canvasRef.value);
-      }
-    });
-    return;
-  }
+  // Get game canvas reference if available
+  const gameCanvas = fruitNinjaRef.value?.canvasRef || null;
   
-  // Initialize new effect (it will start automatically)
-  slashEffect = setupSlashEffect(canvasRef.value);
+  // If effect already exists, update game canvas reference or recreate
+  if (slashEffect) {
+    if (gameCanvas) {
+      slashEffect.setGameCanvas(gameCanvas);
+    } else {
+      slashEffect.stop();
+      slashEffect = null;
+      // Wait a tick to ensure cleanup completes before creating new effect
+      nextTick(() => {
+        if (canvasRef.value && !slashEffect) {
+          slashEffect = setupSlashEffect(canvasRef.value, gameCanvas);
+        }
+      });
+      return;
+    }
+  } else {
+    // Initialize new effect (it will start automatically)
+    slashEffect = setupSlashEffect(canvasRef.value, gameCanvas);
+  }
 }
 
 // Watch for socials active state changes
@@ -209,13 +223,17 @@ onBeforeUnmount(() => {
   background-image: url(/images/socials/game/woodplankbackground.webp);
   background-repeat: repeat;
   background-position: 50%;
+  background-attachment: fixed;
   background-blend-mode: multiply;
   min-height: 100vh;
   width: 100%;
+  overscroll-behavior: none;
+  -webkit-overflow-scrolling: touch;
   
   // Lock viewport when game is active
   :deep(canvas) {
     touch-action: none;
+    overscroll-behavior: none;
   }
 }
 
@@ -240,6 +258,8 @@ onBeforeUnmount(() => {
   z-index: 5;
   pointer-events: none;
   cursor: crosshair;
+  touch-action: none;
+  overscroll-behavior: none;
 }
 
 .sticky-overlay:hover {

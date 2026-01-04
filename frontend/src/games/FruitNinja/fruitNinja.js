@@ -103,6 +103,7 @@ export function fruitNinja(activePage = false, checkAchievement = () => {}, onLi
   let splats = [];
   let sliced = [];
   let fruits = [];
+  let fruitIndexCounter = 0;
   let queue = [];
   let lives = 3;
   let score = 0;
@@ -175,6 +176,7 @@ export function fruitNinja(activePage = false, checkAchievement = () => {}, onLi
     splats = [];
     path = [];
     queue = [];
+    fruitIndexCounter = 0; // Reset index counter
     if (onLivesChange) onLivesChange(lives);
     if (onScoreChange) onScoreChange(score);
   }
@@ -203,8 +205,16 @@ export function fruitNinja(activePage = false, checkAchievement = () => {}, onLi
       };
       document.ontouchmove = (e) => {
         // Prevent default to stop scrolling and browser UI movement
-        if (gameState && !frozen) {
-          e.preventDefault();
+        // Only prevent if touching the game canvas, not other elements
+        if (gameState && !frozen && canvas) {
+          const touch = e.targetTouches[0];
+          if (touch) {
+            const target = document.elementFromPoint(touch.clientX, touch.clientY);
+            // Only prevent default if touching the game canvas or its children
+            if (target && (target === canvas || canvas.contains(target))) {
+              e.preventDefault();
+            }
+          }
         }
         addVectorTouch(e);
         if (existingTouchMove && existingTouchMove !== addVectorTouch) {
@@ -214,8 +224,16 @@ export function fruitNinja(activePage = false, checkAchievement = () => {}, onLi
       
       // Also prevent touchstart default to prevent pull-to-refresh and other gestures
       document.ontouchstart = (e) => {
-        if (gameState && !frozen) {
-          e.preventDefault();
+        // Only prevent if touching the game canvas, not other elements
+        if (gameState && !frozen && canvas) {
+          const touch = e.touches[0];
+          if (touch) {
+            const target = document.elementFromPoint(touch.clientX, touch.clientY);
+            // Only prevent default if touching the game canvas or its children
+            if (target && (target === canvas || canvas.contains(target))) {
+              e.preventDefault();
+            }
+          }
         }
         if (existingTouchStart && existingTouchStart !== document.ontouchstart) {
           existingTouchStart(e);
@@ -267,6 +285,7 @@ export function fruitNinja(activePage = false, checkAchievement = () => {}, onLi
     const initialVelY = -baseVelocity * scale;
     
     fruits.push({
+      id: fruitIndexCounter++,
       type: isBomb ? 'bomb' : chances[Math.floor(Math.random() * chances.length)].split('-')[0],
       top: canvas.height + diameter,
       diameter,
@@ -330,7 +349,8 @@ export function fruitNinja(activePage = false, checkAchievement = () => {}, onLi
   }
 
   function slicedCheck() {
-    if (path.length < 2) return;
+    // Don't allow slicing if game is not active or is frozen
+    if (!gameState || frozen || path.length < 2) return;
     
     // Check all line segments in the path, not just the first two points
     // This allows cutting all fruits along the entire slash line
@@ -447,6 +467,7 @@ export function fruitNinja(activePage = false, checkAchievement = () => {}, onLi
       });
       sliced.push({
         ...splat,
+        id: splat.id + 0.1, // Preserve the original fruit's id with small offset for top slice
         rot,
         type: `${splat.type}-top`,
         top: splat.top + offsetY,
@@ -456,6 +477,7 @@ export function fruitNinja(activePage = false, checkAchievement = () => {}, onLi
       });
       sliced.push({
         ...splat,
+        id: splat.id + 0.2, // Preserve the original fruit's id with small offset for bottom slice
         rot,
         type: `${splat.type}-bottom`,
         top: splat.top - offsetY,
@@ -467,6 +489,8 @@ export function fruitNinja(activePage = false, checkAchievement = () => {}, onLi
   }
 
   function addVectorTouch(e) {
+    // Don't add to path or check slicing if game is not active or frozen
+    if (!gameState || frozen) return;
     if (path.length > TAIL_MAX) path.shift();
     // Use canvas-relative coordinates
     const rect = canvas.getBoundingClientRect();
@@ -478,6 +502,8 @@ export function fruitNinja(activePage = false, checkAchievement = () => {}, onLi
   }
 
   function addVector(e) {
+    // Don't add to path or check slicing if game is not active or frozen
+    if (!gameState || frozen) return;
     if (path.length > TAIL_MAX) path.shift();
     // Use canvas-relative coordinates for consistency
     const rect = canvas.getBoundingClientRect();
@@ -511,9 +537,15 @@ export function fruitNinja(activePage = false, checkAchievement = () => {}, onLi
     // Sort splats by tick (ascending) so older splats (lower tick) are drawn first (behind)
     const sortedSplats = [...splats].sort((a, b) => (a.tick || 0) - (b.tick || 0));
     
-    // Draw in order: splats (background, sorted by age), sliced (middle), fruits (foreground)
+    // Sort fruits by static index to ensure consistent rendering order (prevent flickering)
+    const sortedFruits = [...fruits].sort((a, b) => (a.id || 0) - (b.id || 0));
+    
+    // Sort sliced fruits by static index to ensure consistent rendering order (prevent flickering)
+    const sortedSliced = [...sliced].sort((a, b) => (a.id || 0) - (b.id || 0));
+    
+    // Draw in order: splats (background, sorted by age), sliced (middle, sorted by index), fruits (foreground, sorted by index)
     // In canvas, things drawn later appear on top, so fruits will be above splats
-    for (const { type, top, left, diameter, rot } of [sortedSplats, sliced, fruits].flat()) {
+    for (const { type, top, left, diameter, rot } of [sortedSplats, sortedSliced, sortedFruits].flat()) {
       if (!imgSet[type]) continue;
       const img = imgSet[type];
       // Check if image is loaded and not broken

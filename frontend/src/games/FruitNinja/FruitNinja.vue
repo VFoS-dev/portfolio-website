@@ -1,11 +1,13 @@
 <template>
   <canvas ref="canvasRef" :class="{ 'menu-visible': props.showMenu }"></canvas>
-  <div v-if="cubeStore.state.socials" class="score-display">
-    <div class="score">Score: {{ score }}</div>
-    <div class="high-score">High Score: {{ highScore }}</div>
-  </div>
-  <div v-if="lives > 0" class="lives-display">
-    <span v-for="i in lives" :key="i" class="life">❤️</span>
+  <div v-if="cubeStore.state.socials" class="game-ui">
+    <div v-if="lives > 0" class="lives-display">
+      <span v-for="i in lives" :key="i" class="life">❤️</span>
+    </div>
+    <div class="score-display">
+      <div class="score">Score: {{ score }}</div>
+      <div class="high-score">High Score: {{ highScore }}</div>
+    </div>
   </div>
 </template>
 
@@ -19,6 +21,10 @@ const props = defineProps({
   active: { type: Boolean, default: false },
   onGameOver: { type: Function, default: null },
   showMenu: { type: Boolean, default: false },
+});
+
+defineExpose({
+  canvasRef,
 });
 const game = ref();
 const lives = ref(3);
@@ -87,13 +93,17 @@ function lockBodyScroll(lock) {
     document.body.style.position = 'fixed';
     document.body.style.width = '100%';
     document.body.style.height = '100%';
+    document.body.style.overscrollBehavior = 'none';
     document.documentElement.style.overflow = 'hidden';
+    document.documentElement.style.overscrollBehavior = 'none';
   } else {
     document.body.style.overflow = '';
     document.body.style.position = '';
     document.body.style.width = '';
     document.body.style.height = '';
+    document.body.style.overscrollBehavior = '';
     document.documentElement.style.overflow = '';
+    document.documentElement.style.overscrollBehavior = '';
   }
 }
 
@@ -182,22 +192,29 @@ canvas.menu-visible {
   pointer-events: none;
 }
 
-.score-display {
+.game-ui {
   position: fixed;
-  bottom: 20px;
-  right: 20px;
-  z-index: 10;
+  bottom: clamp(10px, 2vh, 20px);
+  right: clamp(10px, 2vw, 20px);
+  z-index: 9;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: clamp(4px, 1vh, 8px);
+}
+
+.score-display {
   text-align: right;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: clamp(4px, 1vh, 8px);
 }
 
 .score,
 .high-score {
   color: #fff;
   font-family: go3v2, sans-serif;
-  font-size: 32px;
+  font-size: clamp(18px, 4vw, 32px);
   font-weight: bold;
   letter-spacing: 0.15rem;
   -webkit-text-stroke: 2px black;
@@ -214,14 +231,10 @@ canvas.menu-visible {
 }
 
 .lives-display {
-  position: fixed;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 10;
   display: flex;
-  gap: 10px;
-  font-size: 24px;
+  gap: clamp(5px, 1.5vw, 10px);
+  font-size: clamp(16px, 3.5vw, 24px);
+  align-items: center;
 }
 
 .life {
