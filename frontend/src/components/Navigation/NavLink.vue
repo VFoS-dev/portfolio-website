@@ -24,7 +24,7 @@ a {
 
   position: relative;
   font-family: 'lato', sans-serif;
-  font-size: 1.875rem;
+  font-size: clamp(1.125rem, 4vw, 1.875rem);
   text-decoration: none;
 
   &:hover {
@@ -71,5 +71,12 @@ a {
       opacity: 1;
     }
   }
+}
+</style>
+
+<style lang="less">
+// Mobile nav specific scaling - unscoped to target #mobile-nav
+#mobile-nav a {
+  font-size: clamp(1.25rem, 5vw, 2rem);
 }
 </style>

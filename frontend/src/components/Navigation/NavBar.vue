@@ -132,7 +132,7 @@ section{
   right: 0;
   width: min(85%, 320px);
   padding: 2rem 1.5rem;
-  padding-top: 5rem;
+  padding-top: clamp(3rem, 8vh, 4rem);
   background: linear-gradient(135deg, rgba(26, 26, 46, 0.98) 0%, rgba(22, 33, 62, 0.98) 100%);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
