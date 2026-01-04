@@ -32,7 +32,7 @@ a {
   background-position-x: calc(var(--frame, 16) / 16 * 100%);
   background-size: cover;
   background-repeat: no-repeat;
-  height: clamp(90px, 17vh, 121px);
+  height: clamp(3rem, 6vw, 4rem);
 
   &:hover {
     animation: iconAni 1s steps(16) 500ms infinite alternate-reverse;
