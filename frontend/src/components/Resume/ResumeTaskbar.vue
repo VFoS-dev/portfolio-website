@@ -184,6 +184,12 @@ onBeforeUnmount(() => {
   bottom: 0;
   height: @taskbar-height;
   display: flex;
+  
+  // Mobile responsive scaling
+  @media (max-width: 991px) {
+    height: clamp(24px, 6vh, 28px);
+    border-top-width: clamp(2px, 0.5vw, 3px);
+  }
 
   .start {
     pointer-events: all;
@@ -213,12 +219,38 @@ onBeforeUnmount(() => {
       font-size: 30px !important;
       background-image: url(/images/resume/xpIcon.png);
     }
+    
+    // Mobile responsive scaling
+    @media (max-width: 991px) {
+      width: clamp(60px, 15vw, 80px);
+      font-size: clamp(0.7em, 2.5vw, 0.9em);
+      padding: clamp(1px, 0.5vw, 2px);
+      
+      .windowIcon {
+        width: clamp(16px, 4vw, 18px);
+        height: clamp(16px, 4vw, 18px);
+        margin: clamp(2px, 0.5vw, 3px);
+      }
+    }
   }
 
   .applications {
     display: flex;
     flex-grow: 1;
     overflow: hidden;
+    
+    // Mobile: allow horizontal scrolling if needed
+    @media (max-width: 991px) {
+      overflow-x: auto;
+      overflow-y: hidden;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none; // Firefox
+      -ms-overflow-style: none; // IE/Edge
+      
+      &::-webkit-scrollbar {
+        display: none; // Chrome/Safari
+      }
+    }
   }
 
   .application {
@@ -247,6 +279,30 @@ onBeforeUnmount(() => {
       white-space: nowrap;
       overflow: hidden;
     }
+    
+    // Mobile responsive scaling
+    @media (max-width: 991px) {
+      width: clamp(80px, 20vw, 120px);
+      font-size: clamp(9px, 2.5vw, 11px) !important;
+      text-indent: clamp(20px, 5vw, 24px);
+      margin-left: clamp(5px, 1.5vw, 8px);
+      height: clamp(20px, 5vh, 25px);
+      
+      .txt {
+        font-size: clamp(9px, 2.5vw, 11px);
+      }
+    }
+    
+    @media (max-width: 480px) {
+      width: clamp(60px, 18vw, 100px);
+      font-size: clamp(8px, 2vw, 10px) !important;
+      text-indent: clamp(18px, 4.5vw, 22px);
+      margin-left: clamp(3px, 1vw, 5px);
+      
+      .txt {
+        font-size: clamp(8px, 2vw, 10px);
+      }
+    }
   }
 
   #time {
@@ -256,6 +312,13 @@ onBeforeUnmount(() => {
     color: @white;
     display: flex;
     align-items: center;
+    
+    // Mobile responsive scaling
+    @media (max-width: 991px) {
+      font-size: clamp(0.7em, 2.5vw, 0.9em);
+      margin: 0 clamp(5px, 1.5vw, 8px);
+      width: clamp(50px, 12vw, 65px);
+    }
   }
 }
 
@@ -272,6 +335,13 @@ onBeforeUnmount(() => {
     width: 100%;
     height: 100%;
     object-fit: contain;
+  }
+  
+  // Mobile responsive scaling
+  @media (max-width: 991px) {
+    width: clamp(16px, 4vw, 18px);
+    height: clamp(16px, 4vw, 18px);
+    margin: clamp(2px, 0.5vw, 3px);
   }
 }
 </style>

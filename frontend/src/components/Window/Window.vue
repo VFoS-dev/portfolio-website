@@ -284,6 +284,18 @@ provide('windowId', props.windowId);
   top: 10vh;
   font-size: 11px;
   background: @window-bg;
+  
+  // Mobile rendering fixes
+  @media (max-width: 991px) {
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    will-change: transform;
+    // Ensure proper rendering on mobile
+    -webkit-perspective: 1000;
+    perspective: 1000;
+  }
 
   &.minimized {
     display: none;
@@ -306,6 +318,13 @@ provide('windowId', props.windowId);
   margin-top: 0;
   height: calc(100% - @taskbar-height);
   overflow: auto;
+  
+  // Mobile rendering fixes
+  @media (max-width: 991px) {
+    -webkit-overflow-scrolling: touch;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+  }
 
   &::-webkit-scrollbar {
     width: 17px;

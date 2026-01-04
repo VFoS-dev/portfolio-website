@@ -65,6 +65,15 @@ defineProps({
   align-items: center;
   cursor: pointer;
   pointer-events: all;
+  
+  // Mobile rendering fixes
+  @media (max-width: 991px) {
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    will-change: transform;
+  }
 
   * {
     pointer-events: none;

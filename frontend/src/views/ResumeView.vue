@@ -1221,6 +1221,20 @@ function handleShutdown() {
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
+  
+  // Mobile rendering fixes
+  @media (max-width: 991px) {
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    will-change: transform;
+    -webkit-perspective: 1000;
+    perspective: 1000;
+    // Force hardware acceleration
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
 }
 
 .desktop-icons-container {
@@ -1230,6 +1244,15 @@ function handleShutdown() {
   width: 100%;
   height: 100%;
   pointer-events: none;
+  
+  // Mobile rendering fixes
+  @media (max-width: 991px) {
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    will-change: contents;
+  }
 }
 
 .selection-box {
