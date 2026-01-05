@@ -8,6 +8,7 @@ import sides from '@/enums/sides';
 const useSkillStore = defineStore('skillStore', {
   state: () => ({
     scroll: 0,
+    cubeStore: useCubeStore(),
     loading: true,
     lastFetched: {
       skills: 0,
@@ -70,8 +71,7 @@ const useSkillStore = defineStore('skillStore', {
     },
     updateScroll({ scroll, percent, mount }) {
       this.scroll = scroll;
-      const cubeStore = useCubeStore();
-      cubeStore.updateScroll(sides.skills, percent, mount);
+      this.cubeStore.updateScroll(sides.skills, percent, mount);
     },
   },
 });

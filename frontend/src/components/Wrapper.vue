@@ -5,15 +5,19 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch, nextTick } from 'vue';
 
 const props = defineProps({
   scrollTop: { type: Number, default: 0 },
 });
 const emit = defineEmits(['scroll']);
 const wrapper = ref();
+let isRestoringScroll = false;
 
 function handleScroll({ target: { scrollTop, scrollHeight } }, mount = false) {
+  // Don't emit scroll events while we're restoring scroll position
+  if (isRestoringScroll) return;
+  
   let percent = Math.min(1, scrollTop / (scrollHeight - innerHeight));
   if (scrollHeight - innerHeight <= 0) {
     percent = 1;
@@ -26,7 +30,39 @@ function handleScroll({ target: { scrollTop, scrollHeight } }, mount = false) {
   });
 }
 
-onMounted(() => setTimeout(() => handleScroll({ target: wrapper.value }, true), 0));
+// Watch scrollTop prop and restore scroll position
+watch(
+  () => props.scrollTop,
+  (newScrollTop) => {
+    if (wrapper.value && wrapper.value.scrollTop !== newScrollTop) {
+      isRestoringScroll = true;
+      wrapper.value.scrollTop = newScrollTop;
+      // Reset flag after a brief delay to allow scroll to settle
+      nextTick(() => {
+        setTimeout(() => {
+          isRestoringScroll = false;
+        }, 0);
+      });
+    }
+  },
+  { immediate: false }
+);
+
+onMounted(() => {
+  // Restore scroll position if provided
+  if (props.scrollTop > 0 && wrapper.value) {
+    isRestoringScroll = true;
+    wrapper.value.scrollTop = props.scrollTop;
+    nextTick(() => {
+      setTimeout(() => {
+        isRestoringScroll = false;
+        handleScroll({ target: wrapper.value }, true);
+      }, 0);
+    });
+  } else {
+    setTimeout(() => handleScroll({ target: wrapper.value }, true), 0);
+  }
+});
 </script>
 
 <style lang="less" scoped>
