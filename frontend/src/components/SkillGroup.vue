@@ -98,6 +98,24 @@ header {
     font-size: 1rem;
     line-height: 1rem;
   }
+  
+  // Mobile responsive font sizes
+  @media (max-width: 991px) {
+    h1 {
+      font-size: clamp(1.5rem, 5vw, 2rem);
+      line-height: clamp(1.5rem, 5vw, 2rem);
+    }
+    
+    h2 {
+      font-size: clamp(1.25rem, 4vw, 1.75rem);
+      line-height: clamp(1.25rem, 4vw, 1.75rem);
+    }
+    
+    span {
+      font-size: clamp(0.875rem, 2.5vw, 1rem);
+      line-height: clamp(0.875rem, 2.5vw, 1rem);
+    }
+  }
 }
 
 * {
@@ -119,6 +137,12 @@ section {
   &:hover {
     transition-delay: 0s;
     opacity: 1;
+  }
+  
+  // Mobile responsive adjustments
+  @media (max-width: 991px) {
+    padding: clamp(1.5rem, 4vw, 2rem);
+    border-radius: clamp(20px, 5vw, 30px);
   }
 }
 

@@ -55,5 +55,23 @@ onBeforeUnmount(() => {
     flex-basis: 700px;
     max-width: min(100%, 900px);
   }
+  
+  // Mobile responsive adjustments
+  @media (max-width: 991px) {
+    gap: clamp(2rem, 5vw, 4rem);
+    
+    & > * {
+      flex-basis: min(100%, 500px);
+      max-width: 100%;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    gap: clamp(1.5rem, 4vw, 2.5rem);
+    
+    & > * {
+      flex-basis: 100%;
+    }
+  }
 }
 </style>
