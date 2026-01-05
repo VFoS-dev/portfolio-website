@@ -13,7 +13,7 @@
             :card-number="project.cardNumber"
             :is-selected="selectedProject?.id === project.id"
             @click="selectCard(project)"
-          />
+          ></ProjectCard>
         </div>
 
         <!-- Empty State -->
@@ -35,7 +35,7 @@
             :card-number="selectedProject.cardNumber"
             :is-floating="true"
             class="floating-card"
-          />
+          ></ProjectCard>
         </div>
 
         <!-- Details Panel on Right -->

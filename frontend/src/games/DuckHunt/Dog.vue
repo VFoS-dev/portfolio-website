@@ -1,5 +1,5 @@
 <template>
-  <div type="dog" :state="props.state" :class="classes" :style="style" @animationend="nextState" />
+  <div type="dog" :state="props.state" :class="classes" :style="style" @animationend="nextState"></div>
 </template>
 
 <script setup>

@@ -1,23 +1,23 @@
 <template>
-  <NavBar />
+  <NavBar></NavBar>
   <CubeRouter>
     <template #home>
-      <HomeView />
+      <HomeView></HomeView>
     </template>
     <template #projects>
-      <ProjectsView />
+      <ProjectsView></ProjectsView>
     </template>
     <template #skills>
-      <SkillsView />
+      <SkillsView></SkillsView>
     </template>
     <template #resume>
-      <ResumeView />
+      <ResumeView></ResumeView>
     </template>
     <template #about>
-      <AboutView />
+      <AboutView></AboutView>
     </template>
     <template #socials>
-      <SocialsView />
+      <SocialsView></SocialsView>
     </template>
   </CubeRouter>
 </template>

@@ -1,6 +1,6 @@
 <template>
   <nav :class="{ hide: navStore.hide }">
-    <AnimatedLogo :scroll-percent="scrollPercent" />
+    <AnimatedLogo :scroll-percent="scrollPercent"></AnimatedLogo>
     <section>
       <Portal to="#mobile-nav" :disabled="!isMobile">
         <ul>
@@ -12,7 +12,7 @@
           </li>
         </ul>
       </Portal>
-      <HambergerMenu id="mobile-switch" @click="toggleNav" />
+      <HambergerMenu id="mobile-switch" @click="toggleNav"></HambergerMenu>
     </section>
   </nav>
   <div id="mobile-nav" :class="{ open: navStore.open, hide: navStore.hide }"></div>

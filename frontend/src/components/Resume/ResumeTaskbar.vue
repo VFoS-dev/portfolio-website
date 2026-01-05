@@ -1,7 +1,7 @@
 <template>
   <div class="taskbar">
     <div class="start" @click="toggleStartMenu" @touchend="toggleStartMenu">
-      <div class="windowIcon" />
+      <div class="windowIcon"></div>
       start
     </div>
     <div class="applications">

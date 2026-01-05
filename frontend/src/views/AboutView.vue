@@ -1,9 +1,9 @@
 <template>
   <Wrapper :scroll-top="aboutStore.scroll" @scroll="aboutStore.updateScroll">
-    <StringToHTML :key="aboutStore.lastFetched" :string="aboutStore.getContent" />
+    <StringToHTML :key="aboutStore.lastFetched" :string="aboutStore.getContent"></StringToHTML>
   </Wrapper>
   <Wrapper display>
-    <DuckHunt :active="cubeStore.state.about" />
+    <DuckHunt :active="cubeStore.state.about"></DuckHunt>
   </Wrapper>
 </template>
 

@@ -1,5 +1,5 @@
 <template>
-  <Canvas ref="canvasRef" :state="starFieldState" />
+  <Canvas ref="canvasRef" :state="starFieldState"></Canvas>
   <Wrapper :scroll-top="skillStore.scroll" @scroll="skillStore.updateScroll">
     <SkillGroup
       v-for="[name, value] of Object.entries(skillStore.getSkills)"
@@ -7,7 +7,7 @@
       :header="name"
       :skills="value"
       :get-colors="skillStore.randomColor"
-    />
+    ></SkillGroup>
   </Wrapper>
 </template>
 

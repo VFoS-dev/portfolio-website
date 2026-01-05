@@ -2,7 +2,7 @@
   <canvas id="slash" class="sticky-overlay" ref="canvasRef"></canvas>
   <div class="socials">
     <FruitNinja v-if="gameStarted" ref="fruitNinjaRef" :active="cubeStore.state.socials && gameStarted && !showMenu"
-      :on-game-over="handleGameOver" :show-menu="showMenu" />
+      :on-game-over="handleGameOver" :show-menu="showMenu"></FruitNinja>
     <div class="navpadding"></div>
     <div ref="linksRef" :class="['links', { toGame: toGame, hidden: gameStarted && !showMenu, paused: !cubeStore.state.socials }]" @animationend="handleAnimationEnd">
       <div v-for="(item, index) in socialsData" :key="`option-${item.name}`" class="option"

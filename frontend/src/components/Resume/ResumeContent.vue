@@ -1,6 +1,6 @@
 <template>
   <div class="window-options">
-    <div class="window-options-default" />
+    <div class="window-options-default" ></div>
   </div>
   <div class="window-body">
     <div class="window-page" v-bind="editableProps">

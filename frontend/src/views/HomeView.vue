@@ -1,5 +1,5 @@
 <template>
-  <Canvas ref="canvasRef" :game-state="gameState" />
+  <Canvas ref="canvasRef" :game-state="gameState"></Canvas>
   <div class="welcome" :class="{ hide: playingGame }">
     <h2>Hello</h2>
     <h1>I'm <span>Jon Kido</span></h1>

@@ -6,17 +6,17 @@
       :key="bird.id"
       @remove-duck="duckHunt?.removeDuck"
       @hit-duck="duckHunt?.hitDuck"
-    />
+    ></Duck>
   </div>
   <div grass :class="{ active }">
-    <ActiveBirds :birds="birds" class="ui" />
-    <Score :score="score" class="ui" />
+    <ActiveBirds :birds="birds" class="ui"></ActiveBirds>
+    <Score :score="score" class="ui"></Score>
     <Dog
       v-for="dog of Object.values(dogs)"
       v-bind="dog.getObject?.()"
       :key="dog.id"
       @next-state="duckHunt?.dogNextState"
-    />
+    ></Dog>
   </div>
 </template>
 
