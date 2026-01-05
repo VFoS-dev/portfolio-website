@@ -68,7 +68,9 @@
 
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount, nextTick, inject, watch } from 'vue';
-import { windowStore } from '@/stores/windowStore';
+import { useWindowStore } from '@/stores/windowStore';
+
+const windowStore = useWindowStore();
 import CustomFieldForm from './MinesweeperComponents/CustomFieldForm.vue';
 
 const difficulties = {

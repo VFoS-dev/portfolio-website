@@ -34,8 +34,12 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount, defineAsyncComponent, computed } from 'vue';
 import StartMenu from './StartMenu.vue';
-import { windowConfigStore } from '@/stores/windowConfigStore';
-import { windowStore } from '@/stores/windowStore';
+import { useWindowConfigStore } from '@/stores/windowConfigStore';
+
+const windowConfigStore = useWindowConfigStore();
+import { useWindowStore } from '@/stores/windowStore';
+
+const windowStore = useWindowStore();
 
 const emit = defineEmits(['open-app', 'shutdown']);
 

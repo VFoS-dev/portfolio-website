@@ -8,11 +8,15 @@
 </template>
 
 <script setup>
-import { aboutStore } from '@/stores/aboutStore';
+import { useAboutStore } from '@/stores/aboutStore';
+
+const aboutStore = useAboutStore();
 import StringToHTML from '@/components/StringToHTML.vue';
 import Wrapper from '@/components/Wrapper.vue';
 import DuckHunt from '@/games/DuckHunt/DuckHunt.vue';
-import { cubeStore } from '@/stores/cubeStore';
+import { useCubeStore } from '@/stores/cubeStore';
+
+const cubeStore = useCubeStore();
 </script>
 
 <style lang="less" scoped>

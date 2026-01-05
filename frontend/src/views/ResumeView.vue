@@ -70,11 +70,21 @@ import Window from '@/components/Window/Window.vue';
 import ResumeTaskbar from '@/components/Resume/ResumeTaskbar.vue';
 import DesktopContextMenu from '@/components/Resume/DesktopContextMenu.vue';
 import { onDoubleClick, dragParentElement, dragParentElementWithTrash } from '@/utilities/window';
-import { windowConfigStore } from '@/stores/windowConfigStore';
-import { trashStore } from '@/stores/trashStore';
-import { navStore } from '@/stores/navStore';
-import { cubeStore } from '@/stores/cubeStore';
-import { windowStore } from '@/stores/windowStore';
+import { useWindowConfigStore } from '@/stores/windowConfigStore';
+
+const windowConfigStore = useWindowConfigStore();
+import { useTrashStore } from '@/stores/trashStore';
+
+const trashStore = useTrashStore();
+import { useNavStore } from '@/stores/navStore';
+
+const navStore = useNavStore();
+import { useCubeStore } from '@/stores/cubeStore';
+
+const cubeStore = useCubeStore();
+import { useWindowStore } from '@/stores/windowStore';
+
+const windowStore = useWindowStore();
 
 // Get window config from store
 // Get window config from store - combine icons and defaultWindow

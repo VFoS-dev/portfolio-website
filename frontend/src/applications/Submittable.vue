@@ -11,7 +11,9 @@
 <script setup>
 import { ref, computed, defineAsyncComponent, inject } from 'vue';
 import Fragment from '@/components/Fragment.vue';
-import { windowStore } from '@/stores/windowStore';
+import { useWindowStore } from '@/stores/windowStore';
+
+const windowStore = useWindowStore();
 
 const props = defineProps({
   // Component to render - can be a string path or component object

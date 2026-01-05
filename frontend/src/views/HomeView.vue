@@ -17,8 +17,12 @@ import { snakeGameSetup } from '@/games/Snake/snake';
 import Canvas from '@/components/Canvas.vue';
 import StyledButton from '@/components/Buttons/StyledButton.vue';
 import router from '@/router';
-import { cubeStore } from '@/stores/cubeStore';
-import { navStore } from '@/stores/navStore';
+import { useCubeStore } from '@/stores/cubeStore';
+
+const cubeStore = useCubeStore();
+import { useNavStore } from '@/stores/navStore';
+
+const navStore = useNavStore();
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 
 const game = ref({});

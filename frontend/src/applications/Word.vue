@@ -72,8 +72,12 @@ import PagedEditor from './Word/PagedEditor/PagedEditor.vue';
 import MenuBar from './Word/MenuBar.vue';
 import StandardToolbar from './Word/StandardToolbar.vue';
 import FormattingToolbar from './Word/FormattingToolbar.vue';
-import { cubeStore } from '@/stores/cubeStore';
-import { windowStore } from '@/stores/windowStore';
+import { useCubeStore } from '@/stores/cubeStore';
+
+const cubeStore = useCubeStore();
+import { useWindowStore } from '@/stores/windowStore';
+
+const windowStore = useWindowStore();
 import { useEditorCommands } from './Word/composables/useEditorCommands.js';
 import { useFonts } from './Word/composables/useFonts.js';
 import { useFileOperations } from './Word/composables/useFileOperations.js';

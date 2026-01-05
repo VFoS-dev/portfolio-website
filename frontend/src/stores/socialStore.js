@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia';
-import pinia from './piniaInstance';
 import { getSocials } from '@/services/api-service';
 import { shouldFetch } from '@/utilities/persistence';
 
@@ -26,4 +25,4 @@ const useSocialStore = defineStore('socialStore', {
   actions: {},
 });
 
-export const socialStore = useSocialStore(pinia);
+export { useSocialStore };

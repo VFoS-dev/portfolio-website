@@ -29,7 +29,9 @@
 </template>
 
 <script setup>
-import { cubeStore } from '@/stores/cubeStore';
+import { useCubeStore } from '@/stores/cubeStore';
+
+const cubeStore = useCubeStore();
 import { reactive, computed, onMounted, ref } from 'vue';
 import { capitalize } from '@/utilities/conversions';
 

@@ -1,9 +1,10 @@
 import { fn } from '@/utilities/defaults';
 import { gameLoop } from '@/utilities/game';
 import sUtil from './snake-util';
-import { cubeStore } from '@/stores/cubeStore';
+import { useCubeStore } from '@/stores/cubeStore';
 
 export function snakeGameSetup(canvas, gameEnded = fn) {
+  const cubeStore = useCubeStore();
   let tickDelay = 500;
   let loopEnded = true;
   let isPlayer = false;

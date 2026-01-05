@@ -35,7 +35,9 @@
 import { onBeforeUnmount, onMounted, reactive, ref } from 'vue';
 import Board from './Board/Board.vue';
 import { tetrisSetup } from './tetris';
-import { cubeStore } from '@/stores/cubeStore';
+import { useCubeStore } from '@/stores/cubeStore';
+
+const cubeStore = useCubeStore();
 
 const tetris = ref();
 const playing = ref(false);

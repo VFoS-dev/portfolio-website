@@ -1,8 +1,6 @@
 import { defineStore } from 'pinia';
-import pinia from './piniaInstance';
 import { Quaternion } from '@/utilities/quaternions';
 import router from '@/router';
-import { prefersLessMotion } from '@/services/motion-service';
 import sides from '@/enums/sides';
 
 // Map each side to its corresponding color
@@ -18,7 +16,7 @@ const SIDE_TO_COLOR = {
 // Cache valid sides to avoid creating new array on every check
 const VALID_SIDES = new Set(Object.values(sides));
 
-const useCubeStore = defineStore('cubeStore', {
+export const useCubeStore = defineStore('cubeStore', {
   state: () => {
     let projects;
     return {
@@ -93,7 +91,7 @@ const useCubeStore = defineStore('cubeStore', {
       this.canKeyRotate = !bool;
     },
     getTransformation() {
-      return `matrix3d(${Quaternion.ConvertToMatrix(cubeStore.current).toString()})`;
+      return `matrix3d(${Quaternion.ConvertToMatrix(this.current).toString()})`;
     },
     getList() {
       return Object.values(sides);
@@ -259,5 +257,3 @@ const useCubeStore = defineStore('cubeStore', {
   },
 });
 
-export const cubeStore = useCubeStore(pinia);
-prefersLessMotion.subscribe(cubeStore.reducedMotion);

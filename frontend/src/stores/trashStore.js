@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia';
-import pinia from './piniaInstance';
 
 const useTrashStore = defineStore('trashStore', {
   state: () => {
@@ -103,5 +102,5 @@ const useTrashStore = defineStore('trashStore', {
   },
 });
 
-export const trashStore = useTrashStore(pinia);
+export { useTrashStore };
 

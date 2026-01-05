@@ -1,9 +1,8 @@
 import { defineStore } from 'pinia';
-import pinia from './piniaInstance';
 import { getSkills, getSabers } from '@/services/api-service';
 import { randomIndex } from '@/utilities/arrays';
 import { shouldFetch } from '@/utilities/persistence';
-import { cubeStore } from './cubeStore';
+import { useCubeStore } from './cubeStore';
 import sides from '@/enums/sides';
 
 const useSkillStore = defineStore('skillStore', {
@@ -71,9 +70,10 @@ const useSkillStore = defineStore('skillStore', {
     },
     updateScroll({ scroll, percent, mount }) {
       this.scroll = scroll;
+      const cubeStore = useCubeStore();
       cubeStore.updateScroll(sides.skills, percent, mount);
     },
   },
 });
 
-export const skillStore = useSkillStore(pinia);
+export { useSkillStore };

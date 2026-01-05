@@ -29,9 +29,15 @@
 
 <script setup>
 import { ref, computed } from 'vue';
-import { navStore } from '@/stores/navStore';
-import { cubeStore } from '@/stores/cubeStore';
-import { windowStore } from '@/stores/windowStore';
+import { useNavStore } from '@/stores/navStore';
+
+const navStore = useNavStore();
+import { useCubeStore } from '@/stores/cubeStore';
+
+const cubeStore = useCubeStore();
+import { useWindowStore } from '@/stores/windowStore';
+
+const windowStore = useWindowStore();
 import ResetAllForm from './ResetAllForm.vue';
 
 const props = defineProps({

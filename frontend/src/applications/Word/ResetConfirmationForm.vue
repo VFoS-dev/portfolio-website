@@ -28,7 +28,9 @@
 </template>
 
 <script setup>
-import { cubeStore } from '@/stores/cubeStore';
+import { useCubeStore } from '@/stores/cubeStore';
+
+const cubeStore = useCubeStore();
 
 const props = defineProps({
   isSubmitting: {

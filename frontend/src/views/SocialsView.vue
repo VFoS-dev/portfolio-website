@@ -37,8 +37,12 @@
 import { ref, computed, onMounted, onBeforeUnmount, watch, nextTick } from 'vue';
 import FruitNinja from '@/games/FruitNinja/FruitNinja.vue';
 import { setupSlashEffect } from '@/games/FruitNinja/slashEffect';
-import { cubeStore } from '@/stores/cubeStore';
-import { socialStore } from '@/stores/socialStore';
+import { useCubeStore } from '@/stores/cubeStore';
+
+const cubeStore = useCubeStore();
+import { useSocialStore } from '@/stores/socialStore';
+
+const socialStore = useSocialStore();
 
 const canvasRef = ref(null);
 const toGame = ref(false);

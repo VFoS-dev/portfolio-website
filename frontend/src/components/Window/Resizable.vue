@@ -13,7 +13,9 @@
 
 <script setup>
 import { ref, onBeforeUnmount } from 'vue';
-import { windowStore } from '@/stores/windowStore';
+import { useWindowStore } from '@/stores/windowStore';
+
+const windowStore = useWindowStore();
 
 const props = defineProps({
   disabled: { type: Boolean, default: false },

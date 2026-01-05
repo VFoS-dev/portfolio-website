@@ -25,7 +25,9 @@ import { computed, defineAsyncComponent, ref, provide } from 'vue';
 import Resizable from './Resizable.vue';
 import { dragParentElement } from '@/utilities/window';
 import App from './App.vue';
-import { windowStore } from '@/stores/windowStore';
+import { useWindowStore } from '@/stores/windowStore';
+
+const windowStore = useWindowStore();
 
 const props = defineProps({
   title: {

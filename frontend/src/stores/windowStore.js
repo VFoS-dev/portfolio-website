@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia';
-import pinia from './piniaInstance';
 import { createKey } from '@/utilities/window';
 
 /**
@@ -10,7 +9,8 @@ import { createKey } from '@/utilities/window';
  * 
  * Example usage in an application:
  * ```javascript
- * import { windowStore } from '@/stores/windowStore';
+ * import { useWindowStore } from '@/stores/windowStore';
+ * const windowStore = useWindowStore();
  * 
  * // Create a new window (returns window object with unique 'id')
  * const newWindow = windowStore.createWindow({
@@ -349,4 +349,4 @@ const useWindowStore = defineStore('windowStore', {
   },
 });
 
-export const windowStore = useWindowStore(pinia);
+export { useWindowStore };

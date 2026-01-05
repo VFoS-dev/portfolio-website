@@ -34,8 +34,12 @@
 
 <script setup>
 import { computed, inject } from 'vue';
-import { trashStore } from '@/stores/trashStore';
-import { windowStore } from '@/stores/windowStore';
+import { useTrashStore } from '@/stores/trashStore';
+
+const trashStore = useTrashStore();
+import { useWindowStore } from '@/stores/windowStore';
+
+const windowStore = useWindowStore();
 import EmptyTrashConfirmationForm from './RecycleBin/EmptyTrashConfirmationForm.vue';
 
 const windowId = inject('windowId', null);

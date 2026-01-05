@@ -133,7 +133,9 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import { projectStore } from '@/stores/projectStore';
+import { useProjectStore } from '@/stores/projectStore';
+
+const projectStore = useProjectStore();
 import ProjectCard from '@/components/Projects/ProjectCard.vue';
 import Wrapper from '@/components/Wrapper.vue';
 

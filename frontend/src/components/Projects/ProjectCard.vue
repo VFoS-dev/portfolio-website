@@ -60,7 +60,9 @@
 
 <script setup>
 import { ref, computed, onBeforeUnmount, watch, nextTick, onMounted } from 'vue';
-import { projectStore } from '@/stores/projectStore';
+import { useProjectStore } from '@/stores/projectStore';
+
+const projectStore = useProjectStore();
 
 const props = defineProps({
   project: {

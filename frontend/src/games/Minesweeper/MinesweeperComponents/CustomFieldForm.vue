@@ -72,7 +72,9 @@
 
 <script setup>
 import { ref, computed, watch, onMounted } from 'vue';
-import { cubeStore } from '@/stores/cubeStore';
+import { useCubeStore } from '@/stores/cubeStore';
+
+const cubeStore = useCubeStore();
 
 const props = defineProps({
   height: {

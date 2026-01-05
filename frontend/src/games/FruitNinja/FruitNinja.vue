@@ -14,7 +14,9 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount, watch } from 'vue';
 import { fruitNinja } from './fruitNinja';
-import { cubeStore } from '@/stores/cubeStore';
+import { useCubeStore } from '@/stores/cubeStore';
+
+const cubeStore = useCubeStore();
 
 const canvasRef = ref(null);
 const props = defineProps({

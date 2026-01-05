@@ -15,9 +15,13 @@
 import { setupStarField } from '@/canvas/StarField/starfield';
 import Canvas from '@/components/Canvas.vue';
 import SkillGroup from '@/components/SkillGroup.vue';
-import { cubeStore } from '@/stores/cubeStore';
+import { useCubeStore } from '@/stores/cubeStore';
+
+const cubeStore = useCubeStore();
 import { computed, onMounted, ref, onBeforeUnmount } from 'vue';
-import { skillStore } from '@/stores/skillStore';
+import { useSkillStore } from '@/stores/skillStore';
+
+const skillStore = useSkillStore();
 import Wrapper from '@/components/Wrapper.vue';
 
 const canvasRef = ref();

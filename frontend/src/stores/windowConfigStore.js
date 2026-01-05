@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia';
-import pinia from './piniaInstance';
 import { getIcons, getDefaultWindow } from '@/services/api-service';
 import { shouldFetch } from '@/utilities/persistence';
 
@@ -68,5 +67,5 @@ const useWindowConfigStore = defineStore('windowConfigStore', {
   },
 });
 
-export const windowConfigStore = useWindowConfigStore(pinia);
+export { useWindowConfigStore };
 

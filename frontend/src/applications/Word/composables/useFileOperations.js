@@ -2,10 +2,11 @@
  * Composable for file operations (save, load, etc.)
  */
 import { inject } from 'vue';
-import { windowStore } from '@/stores/windowStore';
+import { useWindowStore } from '@/stores/windowStore';
 import SaveAsForm from '../SaveAsForm.vue';
 
 export function useFileOperations(editorRef, editorContent, props) {
+  const windowStore = useWindowStore();
   // Inject windowId from Window component
   const windowId = inject('windowId', null);
   function handleSave() {

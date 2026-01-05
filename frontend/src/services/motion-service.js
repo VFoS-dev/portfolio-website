@@ -1,4 +1,5 @@
 import { createEvent } from '@/utilities/event';
+import { useCubeStore } from '@/stores/cubeStore';
 
 export const prefersLessMotion = createEvent();
 
@@ -12,4 +13,6 @@ function handleReduceMotionChange(e) {
 mediaQuery.addEventListener('change', handleReduceMotionChange);
 
 // Initial check after first pass
+const cubeStore = useCubeStore();
 setTimeout(handleReduceMotionChange, 0, mediaQuery);
+prefersLessMotion.subscribe(cubeStore.reducedMotion);

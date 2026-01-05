@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia';
-import pinia from './piniaInstance';
-import { cubeStore } from './cubeStore';
+import { useCubeStore } from './cubeStore';
 
 const useNavStore = defineStore('navStore', {
   state: () => {
@@ -11,6 +10,7 @@ const useNavStore = defineStore('navStore', {
   },
   getters: {
     getScroll() {
+      const cubeStore = useCubeStore();
       return cubeStore.getActiveScroll;
     },
   },
@@ -31,4 +31,4 @@ const useNavStore = defineStore('navStore', {
   },
 });
 
-export const navStore = useNavStore(pinia);
+export { useNavStore };

@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia';
-import pinia from './piniaInstance';
 import { getProjects } from '@/services/api-service';
-import { cubeStore } from './cubeStore';
+import { useCubeStore } from './cubeStore';
 import sides from '@/enums/sides';
 import { shouldFetch } from '@/utilities/persistence';
 
@@ -23,7 +22,7 @@ const useProjectStore = defineStore('projectStore', {
       // Fetch if data is stale OR if there are no projects loaded
       if (shouldFetch(state.lastFetched) || state.projects.length === 0) {
         // Use the action to fetch projects
-        useProjectStore(pinia).fetchProjects();
+        useProjectStore().fetchProjects();
       }
       return state.projects;
     },
@@ -125,9 +124,10 @@ const useProjectStore = defineStore('projectStore', {
     },
     updateScroll({ scroll, percent, mount }) {
       this.scroll = scroll;
+      const cubeStore = useCubeStore();
       cubeStore.updateScroll(sides.projects, percent, mount);
     },
   },
 });
 
-export const projectStore = useProjectStore(pinia);
+export { useProjectStore };

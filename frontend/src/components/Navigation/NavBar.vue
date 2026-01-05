@@ -24,7 +24,9 @@ import NavLink from '@/components/Navigation/NavLink.vue';
 import Portal from '@/components/Portal.vue';
 import { inject } from 'vue';
 import provideInject from '@/enums/provideInject';
-import { navStore } from '@/stores/navStore';
+import { useNavStore } from '@/stores/navStore';
+
+const navStore = useNavStore();
 import HambergerMenu from './HambergerMenu.vue';
 import { capitalize } from '@/utilities/conversions';
 

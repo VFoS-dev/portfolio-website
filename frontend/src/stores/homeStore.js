@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia';
-import pinia from './piniaInstance';
 
 const useHomeStore = defineStore('homeStore', {
   state: () => {
@@ -8,4 +7,4 @@ const useHomeStore = defineStore('homeStore', {
   actions: {},
 });
 
-export const homeStore = useHomeStore(pinia);
+export const homeStore = useHomeStore();

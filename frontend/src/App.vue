@@ -27,7 +27,7 @@ import CubeRouter from '@/router/CubeRouter.vue';
 import NavBar from '@/components/Navigation/NavBar.vue';
 import { onBeforeUnmount, onMounted, provide, ref } from 'vue';
 import provideInject from './enums/provideInject';
-import { navStore } from './stores/navStore';
+import { useNavStore } from './stores/navStore';
 
 import HomeView from './views/HomeView.vue';
 import ProjectsView from './views/ProjectsView.vue';
@@ -66,6 +66,7 @@ function resized() {
       document.documentElement.dataset.mobile = newIsMobile ? 'true' : 'false';
       
       if (!newIsMobile) {
+        const navStore = useNavStore();
         navStore.toggleOpen(false);
       }
     }

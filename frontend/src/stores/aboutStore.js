@@ -1,8 +1,7 @@
 import { defineStore } from 'pinia';
-import pinia from './piniaInstance';
 import { getAbout } from '@/services/api-service';
 import { shouldFetch } from '@/utilities/persistence';
-import { cubeStore } from './cubeStore';
+import { useCubeStore } from './cubeStore';
 import sides from '@/enums/sides';
 
 const useAboutStore = defineStore('aboutStore', {
@@ -30,9 +29,10 @@ const useAboutStore = defineStore('aboutStore', {
   actions: {
     updateScroll({ scroll, percent, mount }) {
       this.scroll = scroll;
+      const cubeStore = useCubeStore();
       cubeStore.updateScroll(sides.about, percent, mount);
     },
   },
 });
 
-export const aboutStore = useAboutStore(pinia);
+export { useAboutStore };
