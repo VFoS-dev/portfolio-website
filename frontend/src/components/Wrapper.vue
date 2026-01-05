@@ -46,5 +46,11 @@ onMounted(() => setTimeout(() => handleScroll({ target: wrapper.value }, true), 
     padding: 0;
     overflow: clip;
   }
+  
+  // Mobile responsive padding
+  @media (max-width: 991px) {
+    padding: clamp(1rem, 3vw, 2rem);
+    padding-top: clamp(80px, 20vh, 120px);
+  }
 }
 </style>

@@ -24,6 +24,13 @@ const cubeStore = useCubeStore();
   padding-left: 15vw;
   padding-right: 15vw;
   padding-bottom: 90px;
+  
+  // Mobile responsive padding
+  @media (max-width: 991px) {
+    padding-left: clamp(1rem, 4vw, 2rem);
+    padding-right: clamp(1rem, 4vw, 2rem);
+    padding-bottom: clamp(2rem, 5vh, 4rem);
+  }
 }
 
 :deep(p) {
@@ -43,6 +50,21 @@ const cubeStore = useCubeStore();
 
   &[id] {
     margin-top: 4rem;
+  }
+  
+  // Mobile responsive font sizing
+  @media (max-width: 991px) {
+    font-size: clamp(1.25rem, 5vw, 2rem);
+    margin-bottom: clamp(0.5rem, 2vh, 1rem);
+    line-height: 1.4;
+    
+    &.tab {
+      text-indent: calc(clamp(1.5rem, 4vw, 2rem) + clamp(0.5rem, 1.5vw, 1rem) * var(--tabAmount, 0));
+    }
+    
+    &[id] {
+      margin-top: clamp(2rem, 5vh, 3rem);
+    }
   }
 }
 </style>

@@ -59,6 +59,11 @@ div {
   pointer-events: all;
   cursor: pointer;
   position: absolute;
+  
+  // Mobile responsive scaling
+  @media (max-width: 991px) {
+    scale: 0.6;
+  }
 
   /* default blue bird */
   --y-start: -120px;
@@ -166,23 +171,29 @@ span.score {
   font-size: 2rem;
   z-index: -1;
   transform: translate(calc(50px - 50%), calc(50px - 50%));
+  
+  // Mobile responsive scaling
+  @media (max-width: 991px) {
+    font-size: clamp(1rem, 4vw, 1.5rem);
+    transform: translate(calc(clamp(25px, 6vw, 37px) - 50%), calc(clamp(25px, 6vw, 37px) - 50%));
+  }
 }
 </style>
 
 <style>
 @keyframes duckDeath {
   0% {
-    scale: 1 1;
+    transform: scaleX(1);
   }
 
   50% {
-    scale: -1 1;
+    transform: scaleX(-1);
   }
 
   100% {
-    scale: 1 1;
+    transform: scaleX(1);
   }
-}
+} 
 
 @keyframes duckFalling {
   from {
