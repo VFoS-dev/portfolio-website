@@ -88,7 +88,7 @@ nav {
     width: 100%;
     z-index: -1;
     background: -webkit-linear-gradient(rgba(1, 1, 1, 0.9), transparent);
-    height: clamp(100px, 18vh, 120px);
+    height: clamp(60px, 12vh, 80px);
   }
 }
 
