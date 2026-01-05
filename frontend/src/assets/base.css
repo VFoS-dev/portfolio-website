@@ -7,7 +7,7 @@
 }
 
 body {
-  min-height: 100vh;
+  min-height: 100dvh;
   color: var(--color-text);
   background: #181818;
   transition:

@@ -1,6 +1,6 @@
 <template>
   <nav :class="{ hide: navStore.hide }">
-    <AnimatedLogo :scroll-percent="navStore.getScroll" />
+    <AnimatedLogo :scroll-percent="scrollPercent" />
     <section>
       <Portal to="#mobile-nav" :disabled="!isMobile">
         <ul>
@@ -22,7 +22,7 @@
 import AnimatedLogo from '@/components/Navigation/AnimatedLogo.vue';
 import NavLink from '@/components/Navigation/NavLink.vue';
 import Portal from '@/components/Portal.vue';
-import { inject } from 'vue';
+import { inject, computed } from 'vue';
 import provideInject from '@/enums/provideInject';
 import { useNavStore } from '@/stores/navStore';
 
@@ -33,6 +33,8 @@ import { capitalize } from '@/utilities/conversions';
 const links = ['projects', 'skills', 'resume', 'about', 'socials'];
 const isMobile = inject(provideInject.isMobile);
 
+// Memoize scroll value to prevent unnecessary rerenders
+const scrollPercent = computed(() => navStore.getScroll);
 
 function toggleNav() {
   if (!navStore.toggleOpen()) return;
