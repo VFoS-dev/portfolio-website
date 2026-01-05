@@ -1,7 +1,17 @@
 <template>
-  <Wrapper :scroll-top="aboutStore.scroll" @scroll="aboutStore.updateScroll">
-    <StringToHTML :key="aboutStore.lastFetched" :string="aboutStore.getContent"></StringToHTML>
-  </Wrapper>
+  <VirtualWrapper
+    :scroll-top="aboutStore.scroll"
+    @scroll="aboutStore.updateScroll"
+    :use-virtual-scrolling="true"
+    :items="paragraphs"
+    :item-height="null"
+    :overscan="3"
+    :get-item-key="(item, index) => `para-${index}-${item.str.substring(0, 10)}`"
+  >
+    <template #default="{ item }">
+      <p v-bind="item.attr">{{ item.str }}</p>
+    </template>
+  </VirtualWrapper>
   <Wrapper display>
     <DuckHunt :active="cubeStore.state.about"></DuckHunt>
   </Wrapper>
@@ -11,25 +21,48 @@
 import { useAboutStore } from '@/stores/aboutStore';
 
 const aboutStore = useAboutStore();
-import StringToHTML from '@/components/StringToHTML.vue';
+import { computed } from 'vue';
+import VirtualWrapper from '@/components/VirtualWrapper.vue';
 import Wrapper from '@/components/Wrapper.vue';
 import DuckHunt from '@/games/DuckHunt/DuckHunt.vue';
 import { useCubeStore } from '@/stores/cubeStore';
 
 const cubeStore = useCubeStore();
+
+// Parse content into paragraphs for virtual scrolling
+const paragraphs = computed(() => {
+  const content = aboutStore.getContent;
+  if (!content) return [];
+  
+  return content.split('\n').map(s => {
+    let attr = {};
+    const [str, hasId] = s.split(/#.+$/);
+    if (hasId !== undefined) attr.id = s.split(str)[1]?.substring(1);
+
+    // Check for tab (original format) or lines starting with two spaces (new format)
+    const [, hasTab] = str.split(/^\t/);
+    const hasIndent = str.startsWith('  ');
+    if (hasTab || hasIndent) attr.class = 'tab';
+
+    return { str, attr };
+  });
+});
 </script>
 
 <style lang="less" scoped>
-.wrap {
+// Apply padding to virtual wrapper content
+:deep(.virtual-content) {
   padding-left: 15vw;
   padding-right: 15vw;
   padding-bottom: 90px;
+  padding-top: 1rem;
   
   // Mobile responsive padding
   @media (max-width: 991px) {
     padding-left: clamp(1rem, 4vw, 2rem);
     padding-right: clamp(1rem, 4vw, 2rem);
     padding-bottom: clamp(6rem, 12vh, 8rem);
+    padding-top: 0.5rem;
   }
 }
 

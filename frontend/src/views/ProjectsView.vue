@@ -1,28 +1,29 @@
 <template>
   <div class="collection-background"></div>
-  <Wrapper :scroll-top="projectStore.scroll" @scroll="projectStore.updateScroll">
-    <div class="trading-card-collection">
-      <div class="collection-container">
-        <!-- Card Grid -->
-        <div class="card-binder" :class="{ blurred: selectedProject }">
-          <ProjectCard
-            v-for="project in projectStore.getFilteredProjects"
-            :key="project.id"
-            :project="project"
-            :rarity="project.rarity"
-            :card-number="project.cardNumber"
-            :is-selected="selectedProject?.id === project.id"
-            @click="selectCard(project)"
-          ></ProjectCard>
-        </div>
-
-        <!-- Empty State -->
-        <div v-if="projectStore.getFilteredProjects.length === 0" class="empty-state">
-          <p>No projects found.</p>
-        </div>
-      </div>
-    </div>
-  </Wrapper>
+  <VirtualWrapper
+    :scroll-top="projectStore.scroll"
+    @scroll="projectStore.updateScroll"
+    :use-virtual-scrolling="true"
+    :items="projectStore.getFilteredProjects"
+    :item-height="null"
+    :overscan="2"
+    :get-item-key="(project) => project.id"
+  >
+    <template #default="{ item: project }">
+      <ProjectCard
+        :project="project"
+        :rarity="project.rarity"
+        :card-number="project.cardNumber"
+        :is-selected="selectedProject?.id === project.id"
+        @click="selectCard(project)"
+      ></ProjectCard>
+    </template>
+  </VirtualWrapper>
+  
+  <!-- Empty State -->
+  <div v-if="projectStore.getFilteredProjects.length === 0" class="empty-state">
+    <p>No projects found.</p>
+  </div>
   <div v-if="selectedProject" class="card-detail-overlay" @click.self="closeDetail">
     <!-- Card Detail View -->
     <div class="overlay-content">
@@ -137,7 +138,7 @@ import { useProjectStore } from '@/stores/projectStore';
 
 const projectStore = useProjectStore();
 import ProjectCard from '@/components/Projects/ProjectCard.vue';
-import Wrapper from '@/components/Wrapper.vue';
+import VirtualWrapper from '@/components/VirtualWrapper.vue';
 
 const selectedProject = ref(null);
 
@@ -232,6 +233,25 @@ function getLinkLabel(key) {
     filter: blur(5px) brightness(0.9);
     pointer-events: none;
   }
+}
+
+// Virtual scroller grid layout for projects
+:deep(.virtual-content) {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 2rem;
+  justify-items: center;
+  padding: 1rem;
+  
+  .virtual-item {
+    width: 100%;
+    max-width: 360px;
+  }
+}
+
+:deep(.virtual-wrapper.blurred .virtual-content) {
+  filter: blur(5px) brightness(0.9);
+  pointer-events: none;
 }
 
 .empty-state {

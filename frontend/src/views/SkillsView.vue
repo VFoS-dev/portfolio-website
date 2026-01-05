@@ -1,14 +1,22 @@
 <template>
   <Canvas ref="canvasRef" :state="starFieldState"></Canvas>
-  <Wrapper :scroll-top="skillStore.scroll" @scroll="skillStore.updateScroll">
-    <SkillGroup
-      v-for="[name, value] of Object.entries(skillStore.getSkills)"
-      :key="name"
-      :header="name"
-      :skills="value"
-      :get-colors="skillStore.randomColor"
-    ></SkillGroup>
-  </Wrapper>
+  <VirtualWrapper
+    :scroll-top="skillStore.scroll"
+    @scroll="skillStore.updateScroll"
+    :use-virtual-scrolling="true"
+    :items="skillGroups"
+    :item-height="null"
+    :overscan="2"
+    :get-item-key="(item) => item.name"
+  >
+    <template #default="{ item }">
+      <SkillGroup
+        :header="item.name"
+        :skills="item.skills"
+        :get-colors="skillStore.randomColor"
+      ></SkillGroup>
+    </template>
+  </VirtualWrapper>
 </template>
 
 <script setup>
@@ -22,7 +30,16 @@ import { computed, onMounted, ref, onBeforeUnmount } from 'vue';
 import { useSkillStore } from '@/stores/skillStore';
 
 const skillStore = useSkillStore();
-import Wrapper from '@/components/Wrapper.vue';
+import VirtualWrapper from '@/components/VirtualWrapper.vue';
+
+// Convert skills object to array for virtual scrolling
+const skillGroups = computed(() => {
+  const skills = skillStore.getSkills;
+  return Object.entries(skills).map(([name, value]) => ({
+    name,
+    skills: value,
+  }));
+});
 
 const canvasRef = ref();
 const starField = ref({});
