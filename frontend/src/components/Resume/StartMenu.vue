@@ -1,13 +1,13 @@
 <template>
   <Teleport to="body">
-    <div v-if="isOpen" class="start-menu-overlay" @click="closeMenu">
-      <div class="start-menu" @click.stop>
+    <div v-if="isOpen" class="start-menu-overlay" @click="closeMenu" @touchend="handleOverlayTouch">
+      <div class="start-menu" @click.stop @touchend.stop>
         <div class="start-menu-header">
           <span class="user-name">Guest</span>
         </div>
         <div class="start-menu-content">
           <div class="start-menu-left">
-            <div v-for="item in menuItems" :key="item.title" class="start-menu-item" @click="handleItemClick(item)">
+            <div v-for="item in menuItems" :key="item.title" class="start-menu-item" @click="handleItemClick(item)" @touchend="handleItemClick(item, $event)">
               <component :is="getIconComponent(item.icon)" v-if="item.icon && getIconComponent(item.icon)"
                 :src="getIconSrc(item.icon)" class="start-menu-icon" />
               <span v-else class="start-menu-icon">📄</span>
@@ -34,7 +34,7 @@
           </div>
         </div>
         <div class="start-menu-footer">
-          <div class="start-menu-button" @click="handleShutdown">
+          <div class="start-menu-button" @click="handleShutdown" @touchend="handleShutdown($event)">
             <div class="shutdown-icon"></div>
             <span>Shut Down</span>
           </div>
@@ -111,6 +111,7 @@ function closeMenu() {
 onMounted(() => {
   if (typeof window !== 'undefined') {
     window.addEventListener('click', handleOutsideClick);
+    window.addEventListener('touchend', handleOutsideClick);
     window.addEventListener('keydown', handleEscape);
   }
 });
@@ -118,6 +119,7 @@ onMounted(() => {
 onBeforeUnmount(() => {
   if (typeof window !== 'undefined') {
     window.removeEventListener('click', handleOutsideClick);
+    window.removeEventListener('touchend', handleOutsideClick);
     window.removeEventListener('keydown', handleEscape);
   }
 });
@@ -134,14 +136,29 @@ function handleEscape(e) {
   }
 }
 
-function handleItemClick(item) {
+function handleItemClick(item, e) {
+  if (e) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
   emit('open-app', item);
   closeMenu();
 }
 
-function handleShutdown() {
+function handleShutdown(e) {
+  if (e) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
   emit('shutdown');
   closeMenu();
+}
+
+function handleOverlayTouch(e) {
+  // Only close if touching the overlay itself, not the menu
+  if (e.target.classList.contains('start-menu-overlay')) {
+    closeMenu();
+  }
 }
 
 function getIconComponent(icon) {
@@ -208,6 +225,14 @@ function getIconSrc(icon) {
   border-bottom-color: @start-menu-gray-dark;
   box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
   z-index: 1001;
+  
+  // Mobile: adjust size and position
+  @media (max-width: 991px) {
+    width: clamp(300px, 85vw, 360px);
+    bottom: clamp(24px, 6vh, 28px);
+    max-height: calc(100vh - clamp(60px, 15vh, 80px));
+    overflow-y: auto;
+  }
 }
 
 .start-menu-header {
@@ -252,10 +277,19 @@ function getIconSrc(icon) {
   font-size: 11px;
   position: relative;
   text-decoration: none;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 
   &:hover {
     background-color: @start-menu-hover;
     color: @start-menu-white;
+  }
+  
+  // Mobile: make items larger and more touch-friendly
+  @media (max-width: 991px) {
+    padding: clamp(8px, 2vh, 10px) clamp(10px, 2.5vw, 14px);
+    font-size: clamp(10px, 2.5vw, 12px);
+    min-height: clamp(36px, 8vh, 40px);
   }
 
   .start-menu-icon {
@@ -306,6 +340,8 @@ function getIconSrc(icon) {
   color: @start-menu-white;
   font-size: 11px;
   font-weight: bold;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 
   &:hover {
     background: @start-menu-blue-light;
@@ -317,6 +353,13 @@ function getIconSrc(icon) {
     border-left-color: @start-menu-gray-dark;
     border-right-color: #ffffff;
     border-bottom-color: #ffffff;
+  }
+  
+  // Mobile: make button larger and more touch-friendly
+  @media (max-width: 991px) {
+    padding: clamp(8px, 2vh, 10px) clamp(10px, 2.5vw, 14px);
+    font-size: clamp(10px, 2.5vw, 12px);
+    min-height: clamp(36px, 8vh, 40px);
   }
 
   .shutdown-icon {

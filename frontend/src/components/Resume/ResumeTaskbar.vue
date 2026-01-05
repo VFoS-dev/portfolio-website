@@ -1,6 +1,6 @@
 <template>
   <div class="taskbar">
-    <div class="start" @click="toggleStartMenu">
+    <div class="start" @click="toggleStartMenu" @touchend="toggleStartMenu">
       <div class="windowIcon" />
       start
     </div>
@@ -91,7 +91,11 @@ const menuItems = computed(() => {
   return items;
 });
 
-function toggleStartMenu() {
+function toggleStartMenu(e) {
+  if (e) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
   startMenuOpen.value = !startMenuOpen.value;
 }
 
@@ -208,6 +212,8 @@ onBeforeUnmount(() => {
     transform: translateY(-3px);
     position: relative;
     cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
 
     .windowIcon {
       position: absolute;

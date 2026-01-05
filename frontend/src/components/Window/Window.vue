@@ -11,10 +11,10 @@
       </div>
       <div class="title-bar-controls">
         <button v-for="control in windowControls" :id="`${control}-${windowId}`" :key="control" :class="control"
-          :aria-label="control" @click="handleControlClick(control)" />
+          :aria-label="control" @click="handleControlClick(control, $event)" @touchend="handleControlClick(control, $event)" />
       </div>
     </div>
-    <div class="window-content">
+    <div class="window-content" @contextmenu.prevent="handleWindowContentContextMenu" @touchstart="handleWindowContentTouchStart" @touchend="handleWindowContentTouchEnd">
       <App :app="props.app" :app-props="props.appProps" />
     </div>
   </Resizable>
@@ -160,7 +160,13 @@ const windowControls = computed(() => {
 });
 
 // Handle window control button clicks
-function handleControlClick(control) {
+function handleControlClick(control, e) {
+  // Prevent default to avoid double-firing on mobile
+  if (e) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+  
   if (control === 'minimize') {
     windowStore.minimizeWindow(props.windowId);
   } else if (control === 'maximize') {
@@ -168,6 +174,52 @@ function handleControlClick(control) {
   } else if (control === 'close') {
     windowStore.closeWindow(props.windowId);
   }
+}
+
+// Long-press support for window content context menu on mobile
+let touchStartTime = null;
+let touchStartTimer = null;
+let touchStartEvent = null;
+
+function handleWindowContentTouchStart(e) {
+  touchStartTime = Date.now();
+  touchStartEvent = e;
+  // Long press after 500ms
+  touchStartTimer = setTimeout(() => {
+    if (touchStartEvent) {
+      handleWindowContentContextMenu(touchStartEvent);
+    }
+  }, 500);
+}
+
+function handleWindowContentTouchEnd(e) {
+  // Clear timer if touch ends before long press
+  if (touchStartTimer) {
+    clearTimeout(touchStartTimer);
+    touchStartTimer = null;
+  }
+  touchStartEvent = null;
+}
+
+function handleWindowContentContextMenu(e) {
+  // Clear any pending touch timer
+  if (touchStartTimer) {
+    clearTimeout(touchStartTimer);
+    touchStartTimer = null;
+  }
+  
+  // Prevent default context menu
+  if (e.preventDefault) {
+    e.preventDefault();
+  }
+  
+  // Get coordinates from touch or mouse event
+  const clientX = e.touches?.[0]?.clientX || e.clientX;
+  const clientY = e.touches?.[0]?.clientY || e.clientY;
+  
+  // Emit context menu event (window content apps can listen to this)
+  // For now, we'll just prevent the default and let apps handle it if needed
+  // You might want to emit a custom event here if apps need context menus
 }
 
 // Compute window style with custom width/height/left/top if provided
@@ -475,6 +527,8 @@ provide('windowId', props.windowId);
       background-color: @title-bar-blue;
       border: none;
       cursor: pointer;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
 
       &.minimize {
         background-image: url(/images/resume/minimize.svg);
@@ -486,6 +540,14 @@ provide('windowId', props.windowId);
 
       &.close {
         background-image: url(/images/resume/close.svg);
+      }
+      
+      // Mobile: make buttons larger and more touch-friendly
+      @media (max-width: 991px) {
+        min-width: clamp(28px, 7vw, 32px);
+        min-height: clamp(28px, 7vh, 32px);
+        margin-left: clamp(3px, 1vw, 4px);
+        background-size: clamp(16px, 4vw, 18px);
       }
     }
   }
