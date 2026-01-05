@@ -99,7 +99,7 @@ div {
 
   /* flying left */
   &.-x {
-    scale: -1 1;
+    transform: scaleX(-1);
   }
 
   &[alive='true'] {
@@ -139,7 +139,7 @@ div {
 
       /* flying down */
       &.-y {
-        scale: 1 -1;
+        transform: scaleY(-1);
       }
     }
   }

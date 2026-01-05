@@ -29,7 +29,7 @@ const cubeStore = useCubeStore();
   @media (max-width: 991px) {
     padding-left: clamp(1rem, 4vw, 2rem);
     padding-right: clamp(1rem, 4vw, 2rem);
-    padding-bottom: clamp(2rem, 5vh, 4rem);
+    padding-bottom: clamp(6rem, 12vh, 8rem);
   }
 }
 
